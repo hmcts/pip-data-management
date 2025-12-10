@@ -207,7 +207,6 @@
                 "items": {
                   "type": "object",
                   "required": [
-                    "HearingType",
                     "Fixture"
                   ],
                   "properties": {
@@ -238,14 +237,8 @@
                               "CaseNumberCaTH"
                             ],
                             "properties": {
-                              "CaseNumber": {
-                                "type": "string",
-                                "pattern": "^[A-Z][0-9]{8}$"
-                              },
-                              "CaseNumberCaTH": {
-                                "type": "string",
-                                "pattern": "^[A-Z][0-9]{8}$"
-                              },
+                              "CaseNumber": { "type": "string" },
+                              "CaseNumberCaTH": { "type": "string" },
                               "CaseArrivedFrom": {
                                 "description": "Case arrived from details for WithFixedDate",
                                 "$ref": "#/$defs/CaseArrivedFrom"
@@ -255,8 +248,7 @@
                                 "items": {
                                   "type": "object",
                                   "required": [
-                                    "HearingDescription",
-                                    "HearingType"
+                                    "HearingDescription"
                                   ],
                                   "properties": {
                                     "HearingDescription": {
@@ -304,9 +296,8 @@
                                               "maxLength": 35
                                             },
                                             "CitizenNameForename": {
-                                              "type": "string",
-                                              "minLength": 1,
-                                              "maxLength": 35
+                                              "type": "array",
+                                              "items": { "type": "string" }
                                             },
                                             "CitizenNameSurname": {
                                               "type": "string",
@@ -524,10 +515,7 @@
                 "type": "array",
                 "items": {
                   "type": "object",
-                  "required": [
-                    "HearingType",
-                    "Fixture"
-                  ],
+                  "required": ["Fixture"],
                   "properties": {
                     "HearingType": {
                       "type": "string",
@@ -556,14 +544,8 @@
                               "CaseNumberCaTH"
                             ],
                             "properties": {
-                              "CaseNumber": {
-                                "type": "string",
-                                "pattern": "^[A-Z][0-9]{8}$"
-                              },
-                              "CaseNumberCaTH": {
-                                "type": "string",
-                                "pattern": "^[A-Z][0-9]{8}$"
-                              },
+                              "CaseNumber": { "type": "string" },
+                              "CaseNumberCaTH": { "type": "string" },
                               "CaseArrivedFrom": {
                                 "description": "Case arrived from details for WithoutFixedDate",
                                 "$ref": "#/$defs/CaseArrivedFrom"
@@ -572,10 +554,7 @@
                                 "type": "array",
                                 "items": {
                                   "type": "object",
-                                  "required": [
-                                    "HearingDescription",
-                                    "HearingType"
-                                  ],
+                                  "required": ["HearingDescription"],
                                   "properties": {
                                     "HearingDescription": {
                                       "type": "string"
@@ -602,9 +581,7 @@
                                 "type": "array",
                                 "items": {
                                   "type": "object",
-                                  "required": [
-                                    "PersonalDetails"
-                                  ],
+                                  "required": ["PersonalDetails"],
                                   "properties": {
                                     "PersonalDetails": {
                                       "type": "object",
@@ -622,9 +599,8 @@
                                               "maxLength": 35
                                             },
                                             "CitizenNameForename": {
-                                              "type": "string",
-                                              "minLength": 1,
-                                              "maxLength": 35
+                                              "type": "array",
+                                              "items": { "type": "string" }
                                             },
                                             "CitizenNameSurname": {
                                               "type": "string",
@@ -713,9 +689,7 @@
                                     },
                                     "PrisonLocation": {
                                       "type": "object",
-                                      "required": [
-                                        "Location"
-                                      ],
+                                      "required": ["Location"],
                                       "properties": {
                                         "Location": {
                                           "type": "array",
