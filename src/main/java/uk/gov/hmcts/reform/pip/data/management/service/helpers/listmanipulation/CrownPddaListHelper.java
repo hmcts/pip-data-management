@@ -205,7 +205,12 @@ public final class CrownPddaListHelper {
     private static String formatNameParts(JsonNode individual) {
         List<String> nameParts = new ArrayList<>();
         nameParts.add(GeneralHelper.findAndReturnNodeText(individual, "CitizenNameTitle"));
-        nameParts.add(GeneralHelper.findAndReturnNodeText(individual, "CitizenNameForename"));
+        if (individual.has("CitizenNameForename")) {
+            individual.get("CitizenNameForename").forEach(forenameNode ->
+                nameParts.add(forenameNode.asText())
+            );
+        }
+//        nameParts.add(GeneralHelper.findAndReturnNodeText(individual, "CitizenNameForename"));
         nameParts.add(GeneralHelper.findAndReturnNodeText(individual, "CitizenNameSurname"));
         nameParts.add(GeneralHelper.findAndReturnNodeText(individual, "CitizenNameSuffix"));
 
