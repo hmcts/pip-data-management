@@ -57,7 +57,6 @@ import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 @AutoConfigureMockMvc
 @AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
-@SuppressWarnings({"PMD.ExcessiveImports"})
 class PublicationFileManagementTest extends PublicationIntegrationTestBase {
     private static final String ROOT_URL = "/publication";
     private static final String GET_FILE_URL = ROOT_URL + "/%s/%s";

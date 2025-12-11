@@ -74,7 +74,6 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_DAILY_HEA
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_T_AND_CC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
 
-@SuppressWarnings("PMD.ExcessiveImports")
 public final class NonStrategicListFormatter {
     private static final String DATE = "date";
     private static final String TIME = "time";

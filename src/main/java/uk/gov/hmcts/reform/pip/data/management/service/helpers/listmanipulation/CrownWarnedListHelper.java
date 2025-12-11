@@ -33,7 +33,6 @@ public final class CrownWarnedListHelper {
     private CrownWarnedListHelper() {
     }
 
-    @SuppressWarnings("PMD.UseConcurrentHashMap")
     public static Map<String, List<CrownWarnedList>> processRawListData(JsonNode data, Language language) {
         Map<String, List<CrownWarnedList>> result = new LinkedHashMap<>();
         data.get("courtLists").forEach(

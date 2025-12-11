@@ -57,7 +57,6 @@ class LocationRepositoryTest {
     LocationRepository locationRepository;
 
     @BeforeAll
-    @SuppressWarnings("PMD.NcssCount")
     void setup() {
         Location location1 = new Location();
         location1.setLocationId(1);

@@ -136,7 +136,6 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_T_AND_CC_DAI
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
 
 @Component
-@SuppressWarnings({"PMD.ExcessiveImports"})
 public class ListConversionFactory {
 
     private static final Map<ListType, ConversionPair> LIST_MAP = Map.ofEntries(

@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Objects;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SuppressWarnings("PMD.LooseCoupling")
 class MagistratesStandardListFileConverterTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 

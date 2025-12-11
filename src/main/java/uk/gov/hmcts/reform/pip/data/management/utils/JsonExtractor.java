@@ -24,7 +24,6 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @Component
 @Slf4j
-@SuppressWarnings("PMD.LooseCoupling")
 public class JsonExtractor {
     private final Configuration jsonConfiguration;
     private final SearchConfiguration searchConfiguration;

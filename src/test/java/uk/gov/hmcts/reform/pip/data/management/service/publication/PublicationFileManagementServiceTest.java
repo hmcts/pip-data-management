@@ -49,7 +49,6 @@ import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 
 @ActiveProfiles(profiles = "test")
 @ExtendWith(MockitoExtension.class)
-@SuppressWarnings({"PMD.ExcessiveImports"})
 class PublicationFileManagementServiceTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final Artefact ARTEFACT = new Artefact();

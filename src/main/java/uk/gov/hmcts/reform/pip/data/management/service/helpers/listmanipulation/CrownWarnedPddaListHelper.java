@@ -23,7 +23,6 @@ public final class CrownWarnedPddaListHelper {
     private CrownWarnedPddaListHelper() {
     }
 
-    @SuppressWarnings("PMD.UseConcurrentHashMap")
     public static Map<String, List<CrownWarnedPddaList>> processPayload(JsonNode warnedPddaListData) {
         Map<String, List<CrownWarnedPddaList>> groupedData = new LinkedHashMap<>();
 

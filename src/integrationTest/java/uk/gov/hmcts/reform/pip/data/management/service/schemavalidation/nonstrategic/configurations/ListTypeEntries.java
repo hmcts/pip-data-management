@@ -50,7 +50,6 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.UT_TAX_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.WPAFCC_WEEKLY_HEARING_LIST_JSON_FILE_PATH;
 
-@SuppressWarnings("PMD.ExcessiveImports")
 public final class ListTypeEntries {
     // Admiralty Court
     public static final Map.Entry<ListType, String> ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST_ENTRY =

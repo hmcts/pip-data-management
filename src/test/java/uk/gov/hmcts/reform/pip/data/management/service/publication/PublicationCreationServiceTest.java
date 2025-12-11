@@ -52,7 +52,6 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-@SuppressWarnings({"PMD.ExcessiveImports"})
 class PublicationCreationServiceTest {
 
     @Mock

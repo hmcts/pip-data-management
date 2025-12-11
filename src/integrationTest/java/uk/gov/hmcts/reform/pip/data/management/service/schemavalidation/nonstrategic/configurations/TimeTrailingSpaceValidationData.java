@@ -51,7 +51,6 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.UT_TAX_CHAMBER_DAILY_HEARING_LIST_JSON_FILE_PATH;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.WPAFCC_WEEKLY_HEARING_LIST_JSON_FILE_PATH;
 
-@SuppressWarnings("PMD.ExcessiveImports")
 public final class TimeTrailingSpaceValidationData extends AbstractSchemaValidationTestDataProvider {
     @Override
     protected Map<ListType, String> getListTypeJsonFile() {

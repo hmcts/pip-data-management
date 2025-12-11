@@ -16,7 +16,6 @@ import java.util.Map;
  */
 public class IacDailyListSummaryData implements ArtefactSummaryData {
     @Override
-    @SuppressWarnings("PMD.UseConcurrentHashMap")
     public Map<String, List<Map<String, String>>> get(JsonNode payload) {
         Map<String, List<Map<String, String>>> summaryData = new LinkedHashMap<>();
         payload.get("courtLists").forEach(courtList -> {

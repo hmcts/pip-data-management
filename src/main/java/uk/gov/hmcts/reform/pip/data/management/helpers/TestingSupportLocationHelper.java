@@ -6,7 +6,6 @@ import uk.gov.hmcts.reform.pip.model.location.LocationType;
 
 import java.util.List;
 
-@SuppressWarnings("PMD.TestClassWithoutTestCases")
 public final class TestingSupportLocationHelper {
     private TestingSupportLocationHelper() {
     }

@@ -12,7 +12,6 @@ import java.util.Objects;
 import static com.google.common.base.CaseFormat.LOWER_CAMEL;
 import static com.google.common.base.CaseFormat.UPPER_UNDERSCORE;
 
-@SuppressWarnings("PMD.TestClassWithoutTestCases")
 public final class TestUtils {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String LANGUAGE_FILE_PATH = "templates/languages/";

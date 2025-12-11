@@ -45,7 +45,6 @@ import static org.mockito.Mockito.verify;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-@SuppressWarnings("PMD.ExcessiveImports")
 class ValidationServiceTest extends IntegrationBasicTestBase {
 
     @MockitoBean

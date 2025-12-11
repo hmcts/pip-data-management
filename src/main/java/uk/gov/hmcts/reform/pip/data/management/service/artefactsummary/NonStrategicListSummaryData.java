@@ -82,7 +82,6 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_DAILY_HEA
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_T_AND_CC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
 
-@SuppressWarnings({"PMD.UseConcurrentHashMap", "PMD.ExcessiveImports"})
 public class NonStrategicListSummaryData implements ArtefactSummaryData {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String DATE = "date";

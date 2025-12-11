@@ -47,7 +47,6 @@ import static uk.gov.hmcts.reform.pip.data.management.utils.TestUtil.randomLocat
 
 @ActiveProfiles(profiles = "functional")
 @SpringBootTest(classes = {OAuthClient.class})
-@SuppressWarnings("PMD.ExcessiveImports")
 class FileGenerationTest extends FunctionalTestBase {
 
     private static final String UPLOAD_PUBLICATION_URL = "/publication";
