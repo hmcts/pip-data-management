@@ -16,7 +16,7 @@
     },
     "CrownCourt": {
       "CourtHouseType": "Crown Court",
-      "CourtHouseCode": "1234",
+      "CourtHouseCode": 1234,
       "CourtHouseName": "TestCourtHouseName",
       "CourtHouseAddress": {
         "Line": [
@@ -32,7 +32,7 @@
         "SittingDate": "2025-09-10",
         "CourtHouse": {
           "CourtHouseType": "Crown Court",
-          "CourtHouseCode": "1234",
+          "CourtHouseCode": 1234,
           "CourtHouseShortName": "TestShortName",
           "CourtHouseName": "TestCourtHouseName",
           "CourtHouseAddress": {
@@ -100,7 +100,7 @@
                 },
                 "CommittingCourt": {
                   "CourtHouseType": "Crown Court",
-                  "CourtHouseCode": "5678",
+                  "CourtHouseCode": 5678,
                   "CourtHouseShortName": "TestOriginShortName",
                   "CourtHouseName": "TestOriginName"
                 },
@@ -194,7 +194,7 @@
         "SittingDate": "2025-09-11",
         "CourtHouse": {
           "CourtHouseType": "Crown Court",
-          "CourtHouseCode": "1234",
+          "CourtHouseCode": 1234,
           "CourtHouseShortName": "TestShortName",
           "CourtHouseName": "TestCourtHouseName",
           "CourtHouseAddress": {
@@ -254,7 +254,7 @@
                 },
                 "CommittingCourt": {
                   "CourtHouseType": "Crown Court",
-                  "CourtHouseCode": "5678",
+                  "CourtHouseCode": 5678,
                   "CourtHouseShortName": "TestOriginShortName",
                   "CourtHouseName": "TestOriginName"
                 },
@@ -355,7 +355,7 @@
                 },
                 "CommittingCourt": {
                   "CourtHouseType": "Crown Court",
-                  "CourtHouseCode": "5678",
+                  "CourtHouseCode": 5678,
                   "CourtHouseShortName": "TestOriginShortName",
                   "CourtHouseName": "TestOriginName"
                 },
@@ -398,7 +398,7 @@
         },
         "CommittingCourt": {
           "CourtHouseType": "Magistrates Court",
-          "CourtHouseCode": "4321",
+          "CourtHouseCode": 4321,
           "CourtHouseShortName": "TestReserveOriginShortName",
           "CourtHouseName": "TestReserveOriginName"
         },
