@@ -134,7 +134,7 @@
               "type": "string",
               "enum": ["Crown Court", "Magistrates Court", "Youth Court"]
             },
-            "CourtHouseCode": { "type": "string", "pattern": "^[0-9]{3,4}$" },
+            "CourtHouseCode": { "type": "integer" },
             "CourtHouseName": { "type": "string" },
             "CourtHouseAddress": {
               "$ref": "#/$defs/Address"
@@ -156,7 +156,7 @@
                     "type": "string",
                     "enum": ["Crown Court", "Magistrates Court", "Youth Court"]
                   },
-                  "CourtHouseCode": { "type": "string", "pattern": "^[0-9]{3,4}$" },
+                  "CourtHouseCode": { "type": "integer" },
                   "CourtHouseShortName": { "type": "string" },
                   "CourtHouseName": { "type": "string" },
                   "CourtHouseAddress": {
@@ -262,7 +262,7 @@
                                 "type": "string",
                                 "enum": ["Crown Court", "Magistrates Court", "Youth Court"]
                               },
-                              "CourtHouseCode": { "type": "string", "pattern": "^[0-9]{3,4}$" },
+                              "CourtHouseCode": { "type": "integer" },
                               "CourtHouseShortName": { "type": "string" },
                               "CourtHouseName": { "type": "string" }
                             }

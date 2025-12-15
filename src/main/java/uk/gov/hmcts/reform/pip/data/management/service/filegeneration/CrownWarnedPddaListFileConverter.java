@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Map;
 
 public class CrownWarnedPddaListFileConverter implements FileConverter {
@@ -42,10 +43,13 @@ public class CrownWarnedPddaListFileConverter implements FileConverter {
         Language language = Language.valueOf(metadata.get("language"));
         JsonNode listHeader = listNode.get(LIST_HEADER);
         String publicationDateTime = listHeader.get("PublishedTime").asText();
-        context.setVariable("publicationDate",
-                            DateHelper.formatTimeStampToBst(publicationDateTime, language, false, false));
-        context.setVariable("publicationTime",
-                            DateHelper.formatTimeStampToBst(publicationDateTime, language, true, false));
+
+        boolean hasZ = publicationDateTime != null && publicationDateTime.toUpperCase(Locale.UK).endsWith("Z");
+        String publicationDate = hasZ ? publicationDateTime : publicationDateTime + "Z";
+        context.setVariable(
+            "publicationDate", DateHelper.formatTimeStampToBst(publicationDate, language, false, false));
+        String publicationTime = DateHelper.formatTimeStampToBst(publicationDate, language, true, false);
+        context.setVariable("publicationTime", hasZ ? publicationTime : publicationTime + "Z");
 
         String startDate = listHeader.get("StartDate").asText();
         context.setVariable("startDate", DateHelper.convertDateFormat(startDate, "yyyy-MM-dd"));
