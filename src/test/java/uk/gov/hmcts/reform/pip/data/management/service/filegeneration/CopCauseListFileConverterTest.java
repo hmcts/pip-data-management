@@ -316,4 +316,23 @@ class CopCauseListFileConverterTest {
             .isFalse();
     }
 
+    @Test
+    void testReportingRestrictionColspan() throws IOException {
+        Map<String, String> metadataMap = Map.of(CONTENT_DATE, Instant.now().toString(),
+                                                 PROVENANCE, PROVENANCE,
+                                                 LOCATION_NAME, LOCATION,
+                                                 LANGUAGE, ENGLISH,
+                                                 LIST_TYPE, COP_DAILY_CAUSE_LIST
+        );
+
+        String outputHtml = copDailyCauseListConverter.convert(inputJson, metadataMap, language);
+        Document document = Jsoup.parse(outputHtml);
+
+        Element reportingRestrictionRow = document.select("tr:has(td[colspan=7])").first();
+        Element reportingRestrictionCell = reportingRestrictionRow.selectFirst("td");
+        assertThat(reportingRestrictionCell.attr("colspan"))
+            .as("Reporting restriction cell should have colspan=7")
+            .isEqualTo("7");
+    }
+
 }
