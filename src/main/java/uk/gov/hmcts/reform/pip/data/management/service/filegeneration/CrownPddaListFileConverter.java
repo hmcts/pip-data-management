@@ -49,13 +49,10 @@ public class CrownPddaListFileConverter implements FileConverter {
     private void processDateInfo(Context context, JsonNode listNode, Language language) {
         JsonNode listHeader = listNode.get(LIST_HEADER);
         String publicationDateTime = listHeader.get("PublishedTime").asText();
-
-        boolean hasZ = publicationDateTime != null && publicationDateTime.toUpperCase(Locale.UK).endsWith("Z");
-        String publicationDate = hasZ ? publicationDateTime : publicationDateTime + "Z";
-        context.setVariable(
-            "publicationDate", DateHelper.formatTimeStampToBst(publicationDate, language, false, false));
-        String publicationTime = DateHelper.formatTimeStampToBst(publicationDate, language, true, false);
-        context.setVariable("publicationTime", hasZ ? publicationTime : publicationTime + "Z");
+        context.setVariable("publicationDate",
+                            DateHelper.formatTimeStampToBst(publicationDateTime, language, false, false));
+        context.setVariable("publicationTime",
+                            DateHelper.formatTimeStampToBst(publicationDateTime, language, true, false));
 
         String startDate = listHeader.get("StartDate").asText();
         context.setVariable("startDate", DateHelper.convertDateFormat(startDate, "yyyy-MM-dd"));

@@ -4,13 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
@@ -33,7 +27,11 @@ public final class DateHelper {
 
     public static String formatTimeStampToBst(String timestamp, Language language, boolean isTimeOnly,
                                               boolean isBothDateAndTime, String dateFormat) {
-        ZonedDateTime zonedDateTime = convertStringToBst(timestamp);
+
+        OffsetDateTime odt = OffsetDateTime.parse(timestamp, DateTimeFormatter.ISO_DATE_TIME);
+        String timestampWithZ = odt.withOffsetSameInstant(java.time.ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME);
+
+        ZonedDateTime zonedDateTime = convertStringToBst(timestampWithZ);
         String pattern = getDateTimeFormat(zonedDateTime, isTimeOnly, isBothDateAndTime, language,
                                                       dateFormat);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern(pattern, Locale.UK);
