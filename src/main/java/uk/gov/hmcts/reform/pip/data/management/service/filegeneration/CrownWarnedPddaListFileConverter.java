@@ -10,7 +10,6 @@ import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
 import java.io.IOException;
-import java.util.Locale;
 import java.util.Map;
 
 public class CrownWarnedPddaListFileConverter implements FileConverter {

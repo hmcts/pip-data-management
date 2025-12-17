@@ -11,7 +11,6 @@ import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
-import java.util.Locale;
 import java.util.Map;
 
 @AllArgsConstructor

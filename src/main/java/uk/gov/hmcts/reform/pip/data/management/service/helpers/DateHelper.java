@@ -4,7 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
@@ -28,10 +34,7 @@ public final class DateHelper {
     public static String formatTimeStampToBst(String timestamp, Language language, boolean isTimeOnly,
                                               boolean isBothDateAndTime, String dateFormat) {
 
-        OffsetDateTime odt = OffsetDateTime.parse(timestamp, DateTimeFormatter.ISO_DATE_TIME);
-        String timestampWithZ = odt.withOffsetSameInstant(java.time.ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME);
-
-        ZonedDateTime zonedDateTime = convertStringToBst(timestampWithZ);
+        ZonedDateTime zonedDateTime = convertStringToBst(timestamp);
         String pattern = getDateTimeFormat(zonedDateTime, isTimeOnly, isBothDateAndTime, language,
                                                       dateFormat);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern(pattern, Locale.UK);
@@ -99,9 +102,14 @@ public final class DateHelper {
     }
 
     static ZonedDateTime convertStringToBst(String timestamp) {
-        Instant unZonedDateTime = Instant.parse(timestamp);
         ZoneId zone = ZoneId.of(EUROPE_LONDON);
-        return unZonedDateTime.atZone(zone);
+        try {
+            Instant instant = Instant.parse(timestamp);
+            return instant.atZone(zone);
+        } catch (Exception e) {
+            LocalDateTime localDateTime = LocalDateTime.parse(timestamp, DateTimeFormatter.ISO_DATE_TIME);
+            return localDateTime.atZone(ZoneId.of("UTC")).withZoneSameInstant(zone);
+        }
     }
 
     public static void calculateDuration(JsonNode sitting, Language language) {
