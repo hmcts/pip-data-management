@@ -34,7 +34,6 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@SuppressWarnings("PMD.TooManyFields")
 public class Artefact {
 
     /**

@@ -27,7 +27,6 @@ import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 @IsAdmin
 @SecurityRequirement(name = "bearerAuth")
 @ConditionalOnProperty(prefix = "testingSupport", name = "enableApi", havingValue = "true")
-@SuppressWarnings("PMD.TestClassWithoutTestCases")
 public class TestingSupportController {
     private static final String OK_CODE = "200";
     private static final String CREATED_CODE = "201";

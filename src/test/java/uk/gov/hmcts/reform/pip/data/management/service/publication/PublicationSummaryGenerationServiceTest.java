@@ -11,7 +11,6 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SuppressWarnings("PMD.UseConcurrentHashMap")
 class PublicationSummaryGenerationServiceTest {
     private static final Map<String, String> SUMMARY_FIELDS1 = ImmutableMap.of(
         "key1", "value1",
