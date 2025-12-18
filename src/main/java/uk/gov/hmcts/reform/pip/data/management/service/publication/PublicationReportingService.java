@@ -37,7 +37,6 @@ public class PublicationReportingService {
      * Retrieve artefact data for MI reporting.
      * @return MI artefact data as a list of PublicationMiData objects
      */
-    @SuppressWarnings("PMD.EmptyCatchBlock")
     public List<PublicationMiData> getMiData() {
         LocalDateTime publicationReceivedDate = LocalDate.now()
             .minusDays(31)

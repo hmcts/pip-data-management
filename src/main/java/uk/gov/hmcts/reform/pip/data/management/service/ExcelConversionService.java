@@ -54,7 +54,6 @@ public class ExcelConversionService {
         return getSheetData(sheet);
     }
 
-    @SuppressWarnings("PMD.UseConcurrentHashMap")
     private Map<String, List<Map<String, String>>> getMultiSheetData(Workbook workbook) {
         Map<String, List<Map<String, String>>> data = new LinkedHashMap<>();
 
@@ -88,7 +87,6 @@ public class ExcelConversionService {
         return data;
     }
 
-    @SuppressWarnings("PMD.UseConcurrentHashMap")
     private Map<String, String> buildRowMap(List<String> headers, List<String> row) {
         // Link hashmap is used to ensure insertion order on the row values
         Map<String, String> values = new LinkedHashMap<>();
