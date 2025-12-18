@@ -61,7 +61,6 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
  */
 @Service
 @Slf4j
-@SuppressWarnings({"PMD"})
 public class LocationService {
     private final LocationRepository locationRepository;
 

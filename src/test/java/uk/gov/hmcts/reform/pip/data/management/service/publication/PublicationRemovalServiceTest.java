@@ -50,7 +50,6 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelpe
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-@SuppressWarnings({"PMD.ExcessiveImports"})
 class PublicationRemovalServiceTest {
     private static final UUID USER_ID = UUID.randomUUID();
     private static final String EMAIL_ADDRESS = "test@test.com";

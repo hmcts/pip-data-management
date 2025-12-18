@@ -28,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@SuppressWarnings("PMD.TooManyMethods")
 class AuthorisationServiceTest {
 
     private static final UUID TEST_USER_ID = UUID.randomUUID();
