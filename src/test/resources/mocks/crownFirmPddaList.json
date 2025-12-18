@@ -53,7 +53,7 @@
             "Judiciary": {
               "Judge": {
                 "CitizenNameTitle": "Mr",
-                "CitizenNameForename": "TestJudgeForename",
+                "CitizenNameForename": ["TestJudgeForename"],
                 "CitizenNameSurname": "TestJudgeSurname",
                 "CitizenNameSuffix": "Jr",
                 "CitizenNameRequestedName": "TestJudgeRequested"
@@ -61,7 +61,7 @@
               "Justice": [
                 {
                   "CitizenNameTitle": "Ms",
-                  "CitizenNameForename": "TestJusticeForename",
+                  "CitizenNameForename": ["TestJusticeForename"],
                   "CitizenNameSurname": "TestJusticeSurname",
                   "CitizenNameSuffix": "Sr"
                 }
@@ -84,7 +84,7 @@
                     "PersonalDetails": {
                       "Name": {
                         "CitizenNameTitle": "Mr",
-                        "CitizenNameForename": "TestAdvocateForename",
+                        "CitizenNameForename": ["TestAdvocateForename"],
                         "CitizenNameSurname": "TestAdvocateSurname",
                         "CitizenNameRequestedName": "TestAdvocateRequestedName"
                       },
@@ -110,7 +110,7 @@
                     "PersonalDetails": {
                       "Name": {
                         "CitizenNameTitle": "Mr",
-                        "CitizenNameForename": "TestDefendantForename",
+                        "CitizenNameForename": ["TestDefendantForename"],
                         "CitizenNameSurname": "TestDefendantSurname",
                         "CitizenNameSuffix": "TestDefendantSuffix",
                         "CitizenNameRequestedName": "TestDefendantRequestedName"
@@ -139,7 +139,7 @@
                                 "PersonalDetails": {
                                   "Name": {
                                     "CitizenNameTitle": "Mr",
-                                    "CitizenNameForename": "TestForename",
+                                    "CitizenNameForename": ["TestForename"],
                                     "CitizenNameSurname": "TestSurname",
                                     "CitizenNameSuffix": "TestSuffix",
                                     "CitizenNameRequestedName": "TestSolicitorRequestedName"
@@ -176,7 +176,7 @@
                     "PersonalDetails": {
                       "Name": {
                         "CitizenNameTitle": "Mr",
-                        "CitizenNameForename": "TestDefendantForename",
+                        "CitizenNameForename": ["TestDefendantForename"],
                         "CitizenNameSurname": "TestDefendantSurname",
                         "CitizenNameSuffix": "TestDefendantSuffix"
                       },
@@ -215,7 +215,7 @@
             "Judiciary": {
               "Judge": {
                 "CitizenNameTitle": "Mr",
-                "CitizenNameForename": "TestJudgeForename",
+                "CitizenNameForename": ["TestJudgeForename"],
                 "CitizenNameSurname": "TestJudgeSurname",
                 "CitizenNameSuffix": "Jr",
                 "CitizenNameRequestedName": "TestJudgeRequested"
@@ -238,7 +238,7 @@
                     "PersonalDetails": {
                       "Name": {
                         "CitizenNameTitle": "Mr",
-                        "CitizenNameForename": "TestAdvocateForename",
+                        "CitizenNameForename": ["TestAdvocateForename"],
                         "CitizenNameSurname": "TestAdvocateSurname",
                         "CitizenNameRequestedName": "TestAdvocateRequestedName"
                       },
@@ -264,7 +264,7 @@
                     "PersonalDetails": {
                       "Name": {
                         "CitizenNameTitle": "Mr",
-                        "CitizenNameForename": "TestDefendantForename",
+                        "CitizenNameForename": ["TestDefendantForename"],
                         "CitizenNameSurname": "TestDefendantSurname",
                         "CitizenNameSuffix": "TestDefendantSuffix",
                         "CitizenNameRequestedName": "TestDefendantRequestedName"
@@ -318,7 +318,7 @@
             "Judiciary": {
               "Judge": {
                 "CitizenNameTitle": "Mr",
-                "CitizenNameForename": "TestJudgeForename",
+                "CitizenNameForename": ["TestJudgeForename"],
                 "CitizenNameSurname": "TestJudgeSurname"
               }
             },
@@ -339,7 +339,7 @@
                     "PersonalDetails": {
                       "Name": {
                         "CitizenNameTitle": "Mr",
-                        "CitizenNameForename": "TestAdvocateForename",
+                        "CitizenNameForename": ["TestAdvocateForename"],
                         "CitizenNameSurname": "TestAdvocateSurname",
                         "CitizenNameRequestedName": "TestAdvocateRequestedName"
                       },
@@ -381,7 +381,7 @@
             "PersonalDetails": {
               "Name": {
                 "CitizenNameTitle": "Mr",
-                "CitizenNameForename": "TestReserveAdvocateForename",
+                "CitizenNameForename": ["TestReserveAdvocateForename"],
                 "CitizenNameSurname": "TestReserveAdvocateSurname",
                 "CitizenNameSuffix": "TestReserveAdvocateSuffix",
                 "CitizenNameRequestedName": "TestReserveAdvocateRequestedName"
@@ -408,7 +408,7 @@
             "PersonalDetails": {
               "Name": {
                 "CitizenNameTitle": "Mr",
-                "CitizenNameForename": "TestReserveForename",
+                "CitizenNameForename": ["TestReserveForename"],
                 "CitizenNameSurname": "TestReserveSurname",
                 "CitizenNameSuffix": "TestReserveSuffix",
                 "CitizenNameRequestedName": "TestReserveRequestedName"
