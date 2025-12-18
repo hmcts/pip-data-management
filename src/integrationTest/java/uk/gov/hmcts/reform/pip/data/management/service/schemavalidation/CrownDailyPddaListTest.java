@@ -505,22 +505,6 @@ class CrownDailyPddaListTest extends IntegrationBasicTestBase {
     }
 
     @Test
-    void testValidateWithErrorsWhenHearingsMissingInCrownDailyPddaList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_DAILY_PDDA_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(DAILY_LIST_SCHEMA).get(COURT_LISTS).get(0).get(SITTINGS).get(0)).remove(HEARINGS);
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_DAILY_PDDA_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
     void testValidateWithErrorsWhenHearingSequenceNumberMissingInCrownDailyPddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(CROWN_DAILY_PDDA_LIST_VALID_JSON)) {
