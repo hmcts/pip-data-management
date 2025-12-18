@@ -5,10 +5,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.ArtefactSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CivilDailyCauseListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CopDailyCauseListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CrownDailyListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CrownFirmListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CrownPddaListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CrownWarnedListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CrownWarnedPddaListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.EtDailyListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.EtFortnightlyPressListSummaryData;
@@ -22,10 +19,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.SscsDaily
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CivilAndFamilyDailyCauseListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CivilDailyCauseListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CopDailyCauseListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownDailyListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownFirmListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownPddaListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownWarnedListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownWarnedPddaListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.EtDailyListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.EtFortnightlyPressListFileConverter;
@@ -61,11 +55,8 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.COP_DAILY_CAUSE
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_DAILY_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_DAILY_PDDA_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_FIRM_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_FIRM_PDDA_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_WARNED_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_WARNED_PDDA_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.ET_DAILY_LIST;
@@ -143,12 +134,6 @@ public class ListConversionFactory {
         Map.entry(SJP_DELTA_PUBLIC_LIST, new ConversionPair(new SjpPublicListFileConverter())),
         Map.entry(SJP_PRESS_LIST, new ConversionPair(new SjpPressListFileConverter())),
         Map.entry(SJP_DELTA_PRESS_LIST, new ConversionPair(new SjpPressListFileConverter())),
-        Map.entry(CROWN_DAILY_LIST, new ConversionPair(new CrownDailyListFileConverter(),
-                                                       new CrownDailyListSummaryData())),
-        Map.entry(CROWN_FIRM_LIST, new ConversionPair(new CrownFirmListFileConverter(),
-                                                      new CrownFirmListSummaryData())),
-        Map.entry(CROWN_WARNED_LIST, new ConversionPair(new CrownWarnedListFileConverter(),
-                                                        new CrownWarnedListSummaryData())),
         Map.entry(MAGISTRATES_STANDARD_LIST, new ConversionPair(new MagistratesStandardListFileConverter(),
                                                                 new MagistratesStandardListSummaryData())),
         Map.entry(MAGISTRATES_PUBLIC_LIST, new ConversionPair(new MagistratesPublicListFileConverter(),
