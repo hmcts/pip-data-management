@@ -42,7 +42,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("integration-basic")
 @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
-@SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
 class PublicationInvalidHeadersTest extends IntegrationBasicTestBase {
 
     @Autowired
@@ -75,7 +74,6 @@ class PublicationInvalidHeadersTest extends IntegrationBasicTestBase {
 
     private static ObjectMapper objectMapper;
 
-    @SuppressWarnings("PMD.LooseCoupling")
     HttpHeaders httpHeaders;
 
     @BeforeAll

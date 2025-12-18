@@ -48,7 +48,6 @@ import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 @AutoConfigureMockMvc
 @ActiveProfiles("integration-basic")
 @WithMockUser(username = "admin", authorities = { "APPROLE_api.request.admin" })
-@SuppressWarnings({"PMD.AvoidFieldNameMatchingMethodName", "PMD.ExcessiveImports"})
 class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
 
     @Autowired
@@ -84,7 +83,6 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @MockitoBean
     protected AccountManagementService accountManagementService;
 
-    @SuppressWarnings("PMD.LooseCoupling")
     HttpHeaders httpHeaders;
 
     @BeforeAll
