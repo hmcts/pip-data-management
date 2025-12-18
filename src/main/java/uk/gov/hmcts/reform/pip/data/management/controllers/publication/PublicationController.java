@@ -67,7 +67,6 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @Tag(name = "Data Management Publications API")
 @RequestMapping("/publication")
 @SecurityRequirement(name = "bearerAuth")
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
 public class PublicationController {
     private static final String ADMIN_HEADER = "x-admin";
 

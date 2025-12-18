@@ -72,7 +72,6 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-@SuppressWarnings("PMD.ExcessiveImports")
 class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
 
     @Autowired
