@@ -13,7 +13,7 @@
     },
     "CrownCourt": {
       "CourtHouseType": "Crown Court",
-      "CourtHouseCode": "1234",
+      "CourtHouseCode": 1234,
       "CourtHouseName": "TestCourtHouseName",
       "CourtHouseAddress": {
         "Line": ["TestAddressLine1", "TestAddressLine2"],
@@ -26,7 +26,7 @@
       {
         "CourtHouse": {
           "CourtHouseType": "Crown Court",
-          "CourtHouseCode": "1234",
+          "CourtHouseCode": 1234,
           "CourtHouseShortName": "TestShortName",
           "CourtHouseName": "TestCourtHouseName",
           "CourtHouseAddress": {
@@ -47,7 +47,7 @@
                 "CaseNumberCaTH": "T00112233",
                 "CaseArrivedFrom": {
                   "OriginatingCourt": {
-                    "CourtHouseCode": "5678",
+                    "CourtHouseCode": 5678,
                     "CourtHouseShortName": "TestOriginShortName",
                     "CourtHouseName": "TestOriginName"
                   }

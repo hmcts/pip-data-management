@@ -10,10 +10,7 @@
               "type": "object",
               "required": ["CourtHouseCode", "CourtHouseName"],
               "properties": {
-                "CourtHouseCode": {
-                  "type": "string",
-                  "pattern": "^[0-9]{3,4}$"
-                },
+                "CourtHouseCode": { "type": "integer" },
                 "CourtHouseShortName": {
                   "type": "string"
                 },
@@ -114,10 +111,7 @@
                 "Youth Court"
               ]
             },
-            "CourtHouseCode": {
-              "type": "string",
-              "pattern": "^[0-9]{3,4}$"
-            },
+            "CourtHouseCode": { "type": "integer" },
             "CourtHouseName": {
               "type": "string"
             },
@@ -172,10 +166,7 @@
                       "Youth Court"
                     ]
                   },
-                  "CourtHouseCode": {
-                    "type": "string",
-                    "pattern": "^[0-9]{3,4}$"
-                  },
+                  "CourtHouseCode": { "type": "integer" },
                   "CourtHouseShortName": {
                     "type": "string"
                   },
