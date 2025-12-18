@@ -16,7 +16,6 @@ plugins {
   id 'org.springframework.boot' version '3.5.7'
   id 'org.owasp.dependencycheck' version '12.1.9'
   id 'org.sonarqube' version '7.0.1.6134'
-  id 'pmd'
   id 'org.flywaydb.flyway' version '11.15.0'
   id 'io.freefair.lombok' version '9.0.0'
   id 'org.jetbrains.kotlin.jvm' version '2.2.21'
@@ -98,13 +97,6 @@ tasks.register('smoke', Test) {
 
 checkstyle {
   toolVersion = '12.1.1'
-}
-
-pmd {
-  toolVersion = "7.18.0"
-  sourceSets = [sourceSets.main, sourceSets.test, sourceSets.functionalTest, sourceSets.integrationTest, sourceSets.smokeTest]
-  reportsDir = file("${layout.buildDirectory.get()}/reports/pmd")
-  ruleSetFiles = files("config/pmd/ruleset.xml")
 }
 
 configurations {
