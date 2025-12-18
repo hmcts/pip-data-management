@@ -44,7 +44,6 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.VALIDATION_MORE_THAN_PUBLIC;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.MESSAGES_MATCH;
 
-@SuppressWarnings({"PMD.ExcessiveImports"})
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 class PublicationSearchServiceTest {
