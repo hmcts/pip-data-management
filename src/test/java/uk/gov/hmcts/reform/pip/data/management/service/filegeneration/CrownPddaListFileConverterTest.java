@@ -225,7 +225,6 @@ class CrownPddaListFileConverterTest {
                 "T00112233",
                 "TestMaskedName, Mr TestDefendantForename TestDefendantSurname TestDefendantSuffix",
                 "TestHearingDescription",
-                "TestSolicitorRequestedName",
                 "Crown Prosecution Service",
                 "TestListNote"
             );
