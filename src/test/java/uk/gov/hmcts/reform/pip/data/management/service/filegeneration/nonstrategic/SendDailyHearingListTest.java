@@ -54,7 +54,6 @@ class SendDailyHearingListTest {
     private static final String LAST_UPDATED_DATE_MESSAGE = "Last updated date does not match";
     private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information heading does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
-    private static final String TABLE_CELL_MESSAGE = "Table cell does not match";
     private static final String LINK_MESSAGE = "Link does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
@@ -154,30 +153,6 @@ class SendDailyHearingListTest {
 
             );
 
-        softly.assertThat(document.getElementsByClass(TABLE_CELL_CLASS).get(0).text())
-            .as(TABLE_CELL_MESSAGE)
-            .contains("10am");
-
-        softly.assertThat(document.getElementsByClass(TABLE_CELL_CLASS).get(1).text())
-            .as(TABLE_CELL_MESSAGE)
-            .contains("1234");
-
-        softly.assertThat(document.getElementsByClass(TABLE_CELL_CLASS).get(2).text())
-            .as(TABLE_CELL_MESSAGE)
-            .contains("Respondent A");
-
-        softly.assertThat(document.getElementsByClass(TABLE_CELL_CLASS).get(3).text())
-            .as(TABLE_CELL_MESSAGE)
-            .contains("Hearing Type A");
-
-        softly.assertThat(document.getElementsByClass(TABLE_CELL_CLASS).get(4).text())
-            .as(TABLE_CELL_MESSAGE)
-            .contains("Venue A");
-
-        softly.assertThat(document.getElementsByClass(TABLE_CELL_CLASS).get(5).text())
-            .as(TABLE_CELL_MESSAGE)
-            .contains("2hrs");
-
         softly.assertAll();
     }
 
@@ -268,5 +243,41 @@ class SendDailyHearingListTest {
             );
 
         softly.assertAll();
+    }
+
+    @Test
+    void testSendDailyHearingListTableContents() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/sendDailyHearingList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, SEND_DAILY_HEARING_LIST.name(),
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(cstInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
+            .as("Table contents does not match")
+            .extracting(Element::text)
+            .containsSequence(
+                "10am",
+                "1234",
+                "Respondent A",
+                "Hearing Type A",
+                "Venue A",
+                "2hrs"
+            );
     }
 }

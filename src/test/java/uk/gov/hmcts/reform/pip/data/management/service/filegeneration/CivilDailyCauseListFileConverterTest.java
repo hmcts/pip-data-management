@@ -126,6 +126,31 @@ class CivilDailyCauseListFileConverterTest {
                 "Courtroom 1: Judge KnownAs Presiding, Judge KnownAs 2",
                 "Courtroom 2");
 
+    @Test
+    void testTableContents() throws IOException {
+        Map<String, Object> language;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader().getResourceAsStream("templates/languages/en/civilDailyCauseList.json")) {
+            language = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+        String result = converter.convert(getInput("/mocks/civilDailyCauseList.json"), METADATA, language);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
+            .as("Table contents does not match")
+            .extracting(Element::text)
+            .containsSequence(
+                "2:01am",
+                "This is case number 1",
+                "This is case name 1 [1 of 2]",
+                "This is a case type",
+                "This is hearing type 1",
+                "Channel A, Channel B",
+                "1 hour"
+            );
     }
 
     private void assertFirstPageContent(Element element) {
@@ -166,6 +191,7 @@ class CivilDailyCauseListFileConverterTest {
             .containsExactly(
                 "Courtroom 1: Judge KnownAs Presiding, Judge KnownAs 2",
                 "Courtroom 2");
+    }
 
         Elements tableElements = document.getElementsByClass("govuk-table");
         assertThat(tableElements)
