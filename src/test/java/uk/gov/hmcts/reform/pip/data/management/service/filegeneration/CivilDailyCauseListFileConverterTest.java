@@ -125,6 +125,7 @@ class CivilDailyCauseListFileConverterTest {
             .containsExactly(
                 "Courtroom 1: Judge KnownAs Presiding, Judge KnownAs 2",
                 "Courtroom 2");
+    }
 
     @Test
     void testTableContents() throws IOException {
@@ -191,7 +192,6 @@ class CivilDailyCauseListFileConverterTest {
             .containsExactly(
                 "Courtroom 1: Judge KnownAs Presiding, Judge KnownAs 2",
                 "Courtroom 2");
-    }
 
         Elements tableElements = document.getElementsByClass("govuk-table");
         assertThat(tableElements)
