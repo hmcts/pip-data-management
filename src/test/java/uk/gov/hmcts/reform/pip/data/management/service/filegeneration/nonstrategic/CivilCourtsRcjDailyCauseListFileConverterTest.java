@@ -278,7 +278,7 @@ class CivilCourtsRcjDailyCauseListFileConverterTest {
                 "9am",
                 "12345",
                 "Case details A",
-                "Directions A",
+                "Hearing type A",
                 "This is additional information"
             );
     }
