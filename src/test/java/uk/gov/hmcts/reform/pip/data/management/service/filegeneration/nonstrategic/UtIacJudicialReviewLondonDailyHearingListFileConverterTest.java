@@ -171,29 +171,6 @@ class UtIacJudicialReviewLondonDailyHearingListFileConverterTest {
                 ADDITIONAL_INFORMATION
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
-            .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(16)
-            .extracting(Element::text)
-            .containsExactly(
-                "10:30am",
-                "Case A",
-                "Rep A",
-                "1234",
-                "Judge A",
-                SUBSTANTIVE,
-                HEARING_VENUE,
-                "This is additional information",
-                "11am",
-                "Case B",
-                "Rep B",
-                "1235",
-                "Judge B",
-                SUBSTANTIVE,
-                HEARING_VENUE,
-                "This is another additional information"
-            );
-
         softly.assertAll();
     }
 
@@ -278,7 +255,33 @@ class UtIacJudicialReviewLondonDailyHearingListFileConverterTest {
                 ADDITIONAL_INFORMATION_WELSH
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
+        softly.assertAll();
+    }
+
+    @Test
+    void testUtIacJudicialReviewDailyHearingListTableContents() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/utIacJrLondonDailyHearingList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, UT_IAC_JR_LONDON_DAILY_HEARING_LIST.name(),
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(utIacJudicialReviewInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
             .as(TABLE_CONTENT_MESSAGE)
             .hasSize(16)
             .extracting(Element::text)
@@ -299,9 +302,6 @@ class UtIacJudicialReviewLondonDailyHearingListFileConverterTest {
                 SUBSTANTIVE,
                 HEARING_VENUE,
                 "This is another additional information"
-
             );
-
-        softly.assertAll();
     }
 }

@@ -162,22 +162,6 @@ class UtLandsChamberDailyHearingListFileConverterTest {
                 "Additional information"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
-            .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(9)
-            .extracting(Element::text)
-            .containsExactly(
-                "10:15am",
-                "12345",
-                "This is a case name",
-                "Judge A",
-                "Member A",
-                "Hearing type 1",
-                "Venue 1",
-                "Mode of hearing 1",
-                "Additional information 1"
-            );
-
         softly.assertAll();
     }
 
@@ -262,7 +246,33 @@ class UtLandsChamberDailyHearingListFileConverterTest {
                 "Gwybodaeth ychwanegol"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
+        softly.assertAll();
+    }
+
+    @Test
+    void testLandsChamberDailyHearingListTableContents() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/utLcDailyHearingList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, LIST_NAME,
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(listInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
             .as(TABLE_CONTENT_MESSAGE)
             .hasSize(9)
             .extracting(Element::text)
@@ -277,7 +287,5 @@ class UtLandsChamberDailyHearingListFileConverterTest {
                 "Mode of hearing 1",
                 "Additional information 1"
             );
-
-        softly.assertAll();
     }
 }

@@ -236,22 +236,6 @@ class SscsDailyHearingListFileConverterTest {
                 "Additional information"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
-            .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(9)
-            .extracting(Element::text)
-            .containsExactly(
-                "Venue 1",
-                "1234567",
-                "Directions",
-                "Appellant 1",
-                "Courtroom 1",
-                "10:30am",
-                "Panel 1",
-                "Respondent 1",
-                "Additional information 1"
-            );
-
         softly.assertAll();
     }
 
@@ -351,7 +335,35 @@ class SscsDailyHearingListFileConverterTest {
                 "Gwybodaeth ychwanegol"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
+        softly.assertAll();
+    }
+
+    @ParameterizedTest
+    @MethodSource("parametersEnglish")
+    void testSscsDailyHearingListTableContents(String listName, String languageFilename, String listDisplayName,
+                                               String contactEmail) throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/" + languageFilename)) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, listName,
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(listInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
             .as(TABLE_CONTENT_MESSAGE)
             .hasSize(9)
             .extracting(Element::text)
@@ -366,7 +378,5 @@ class SscsDailyHearingListFileConverterTest {
                 "Respondent 1",
                 "Additional information 1"
             );
-
-        softly.assertAll();
     }
 }

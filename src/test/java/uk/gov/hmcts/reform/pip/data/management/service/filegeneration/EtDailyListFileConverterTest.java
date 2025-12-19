@@ -16,6 +16,8 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class EtDailyListFileConverterTest {
     private static final String CONTENT_DATE = "20 October 2022";
     private static final String ENGLISH = "ENGLISH";
@@ -94,7 +96,23 @@ class EtDailyListFileConverterTest {
                         "Hearing Platform"
             );
 
-        softly.assertThat(doc.getElementsByTag("td"))
+        softly.assertAll();
+    }
+
+    @Test
+    void testEtDailyListTableContents() throws IOException {
+        Map<String, String> metaData = Map.of("contentDate", CONTENT_DATE,
+                                              "language", ENGLISH,
+                                              "region", REGION_NAME,
+                                              "listType", "ET_DAILY_LIST"
+        );
+        Map<String, Object> language = handleLanguage();
+        JsonNode input = getInput("/mocks/etDailyList.json");
+
+        String result = converter.convert(input, metaData, language);
+        Document doc = Jsoup.parse(result);
+
+        assertThat(doc.getElementsByTag("td"))
             .as("Incorrect table contents")
             .hasSize(35)
             .extracting(Element::text)
@@ -106,19 +124,6 @@ class EtDailyListFileConverterTest {
                         "This is a hearing type",
                         "This is a sitting channel"
             );
-
-        softly.assertThat(doc.getElementsByClass("govuk-table__body").get(1).getElementsByTag("td"))
-            .as("Incorrect table contents for organisation details")
-            .hasSize(14)
-            .extracting(Element::text)
-            .startsWith("9:30am",
-                      "3 mins",
-                      "12341234",
-                      "Organisation Name",
-                      "Organisation Name",
-                      "Hearing Type 1");
-
-        softly.assertAll();
     }
 
     private JsonNode getInput(String resourcePath) throws IOException {

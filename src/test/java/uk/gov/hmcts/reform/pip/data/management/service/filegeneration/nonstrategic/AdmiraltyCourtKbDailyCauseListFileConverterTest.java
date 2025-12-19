@@ -329,4 +329,42 @@ class AdmiraltyCourtKbDailyCauseListFileConverterTest {
 
         softly.assertAll();
     }
+
+    @Test
+    void testAdmiraltyCourtKbDailyCauseListTableContents() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/"
+                                     + "admiraltyCourtKbDailyCauseList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH, LIST_TYPE_METADATA,
+            ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST.name(),
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(inputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
+            .as("Table contents does not match")
+            .extracting(Element::text)
+            .containsSequence(
+                "Judge A",
+                "9am",
+                "Venue A",
+                "Type A",
+                "12345",
+                "Case name A",
+                "This is additional information"
+            );
+    }
 }

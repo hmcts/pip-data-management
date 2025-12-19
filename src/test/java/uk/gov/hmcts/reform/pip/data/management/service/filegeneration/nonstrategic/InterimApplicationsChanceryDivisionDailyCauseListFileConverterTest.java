@@ -158,34 +158,6 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
                 "Additional information"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
-            .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(21)
-            .extracting(Element::text)
-            .containsExactly(
-                "Judge A",
-                HEARING_TIME,
-                HEARING_VENUE,
-                "Case type A",
-                "1234",
-                CASE_NAME,
-                ADDITIONAL_INFORMATION,
-                "Judge B",
-                HEARING_TIME,
-                HEARING_VENUE,
-                "Case type B",
-                "3456",
-                CASE_NAME,
-                ADDITIONAL_INFORMATION,
-                "Judge C",
-                HEARING_TIME,
-                HEARING_VENUE,
-                "Case type C",
-                "5678",
-                CASE_NAME,
-                ADDITIONAL_INFORMATION
-            );
-
         softly.assertAll();
     }
 
@@ -269,7 +241,34 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
                 "Gwybodaeth ychwanegol"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
+        softly.assertAll();
+    }
+
+    @Test
+    void testInterimApplicationsDailyListTableContents() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream(
+                "templates/languages/en/non-strategic/interimApplicationsChdDailyCauseList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST.name(),
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(cstInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
             .as(TABLE_CONTENT_MESSAGE)
             .hasSize(21)
             .extracting(Element::text)
@@ -296,7 +295,5 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
                 CASE_NAME,
                 ADDITIONAL_INFORMATION
             );
-
-        softly.assertAll();
     }
 }

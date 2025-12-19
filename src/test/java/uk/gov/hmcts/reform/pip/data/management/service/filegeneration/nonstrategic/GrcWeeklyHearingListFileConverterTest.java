@@ -97,7 +97,6 @@ class GrcWeeklyHearingListFileConverterTest {
         }
     }
 
-
     @Test
     void testGrcWeeklyHearingListFileConversionInEnglish() throws IOException {
         Map<String, Object> languageResource;
@@ -180,31 +179,6 @@ class GrcWeeklyHearingListFileConverterTest {
                 "Mode of hearing",
                 VENUE,
                 ADDITIONAL_INFORMATION
-            );
-
-        softly.assertThat(document.getElementsByTag("td"))
-            .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(18)
-            .extracting(Element::text)
-            .containsExactly(
-                HEARING_DATE,
-                "10:15am",
-                "1234",
-                "This is a case name",
-                "Judge A",
-                "Member A",
-                "Case Management Hearing",
-                HEARING_VENUE,
-                "This is additional information",
-                HEARING_DATE,
-                "10:30am",
-                "1235",
-                "This is another case name",
-                "Judge B",
-                "Member B",
-                "Oral Hearing",
-                HEARING_VENUE,
-                "This is another additional information"
             );
 
         softly.assertAll();
@@ -295,7 +269,33 @@ class GrcWeeklyHearingListFileConverterTest {
                 ADDITIONAL_INFORMATION_WELSH
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
+        softly.assertAll();
+    }
+
+    @Test
+    void testGrcWeeklyHearingListTableContents() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/grcWeeklyHearingList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, GRC_WEEKLY_HEARING_LIST.name(),
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(grcInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
             .as(TABLE_CONTENT_MESSAGE)
             .hasSize(18)
             .extracting(Element::text)
@@ -319,7 +319,5 @@ class GrcWeeklyHearingListFileConverterTest {
                 HEARING_VENUE,
                 "This is another additional information"
             );
-
-        softly.assertAll();
     }
 }

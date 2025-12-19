@@ -7,6 +7,7 @@ import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_DAILY_PDDA_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_FIRM_PDDA_LIST;
 
@@ -191,6 +193,44 @@ class CrownPddaListFileConverterTest {
     }
 
     @Test
+    void testCrownDailyPddaListTableContents() throws IOException {
+        Map<String, Object> language;
+
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader().getResourceAsStream("templates/languages/en/crownDailyPddaList.json")) {
+            language = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(
+            Files.newInputStream(Paths.get(TEST_FILE_PATH, "crownDailyPddaList.json")),
+            writer, Charset.defaultCharset()
+        );
+        Map<String, String> metadataMap = new ConcurrentHashMap<>(COMMON_METADATA);
+        metadataMap.put(LANGUAGE, "ENGLISH");
+        metadataMap.put(LIST_TYPE, "CROWN_DAILY_PDDA_LIST");
+
+        JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
+        CrownPddaListFileConverter crownDailyPddaListConverter = new CrownPddaListFileConverter(CROWN_DAILY_PDDA_LIST);
+
+        String outputHtml = crownDailyPddaListConverter.convert(inputJson, metadataMap, language);
+        Document document = Jsoup.parse(outputHtml);
+
+        assertThat(document.getElementsByTag("td"))
+            .as("Table contents does not match")
+            .extracting(Element::text)
+            .containsSequence(
+                "T00112233",
+                "TestMaskedName, Mr TestDefendantForename TestDefendantSurname TestDefendantSuffix",
+                "TestHearingDescription",
+                "Crown Prosecution Service",
+                "TestListNote"
+            );
+    }
+
+    @Test
     void testCrownFirmPddaListTemplate() throws IOException {
         Map<String, Object> language;
 
@@ -344,4 +384,44 @@ class CrownPddaListFileConverterTest {
 
         softly.assertAll();
     }
+
+    @Test
+    void testCrownFirmPddaListTableContents() throws IOException {
+        Map<String, Object> language;
+
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader().getResourceAsStream("templates/languages/en/crownFirmPddaList.json")) {
+            language = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(
+            Files.newInputStream(Paths.get(TEST_FILE_PATH, "crownFirmPddaList.json")),
+            writer, Charset.defaultCharset()
+        );
+        Map<String, String> metadataMap = new ConcurrentHashMap<>(COMMON_METADATA);
+        metadataMap.put(LANGUAGE, "ENGLISH");
+        metadataMap.put(LIST_TYPE, "CROWN_FIRM_PDDA_LIST");
+
+        JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
+        CrownPddaListFileConverter crownFirmPddaListConverter = new CrownPddaListFileConverter(CROWN_FIRM_PDDA_LIST);
+
+        String outputHtml = crownFirmPddaListConverter.convert(inputJson, metadataMap, language);
+        Document document = Jsoup.parse(outputHtml);
+
+        assertThat(document.getElementsByTag("td"))
+            .as("Table contents does not match")
+            .extracting(Element::text)
+            .containsSequence(
+                "T00112233",
+                "TestMaskedName, Mr TestDefendantForename TestDefendantSurname TestDefendantSuffix",
+                "TestHearingDescription",
+                "TestSolicitorRequestedName",
+                "Crown Prosecution Service",
+                "TestListNote"
+            );
+    }
+
 }

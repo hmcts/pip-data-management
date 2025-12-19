@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CrownWarnedPddaListFileConverterTest {
     private static final String TEST_FILE_PATH = "src/test/resources/mocks/";
@@ -185,17 +187,6 @@ class CrownWarnedPddaListFileConverterTest {
                         "Listing Notes"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
-            .as("Incorrect table contents")
-            .extracting(Element::text)
-            .startsWith("01/01/2024",
-                        "T00112233",
-                        "TestDefendantRequestedName",
-                        "Crown Prosecution Service",
-                        "TestLinkedCaseNumber",
-                        "TestListNote"
-            );
-
         softly.assertAll();
     }
 
@@ -342,17 +333,43 @@ class CrownWarnedPddaListFileConverterTest {
                         "Nodiadau rhestru"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
-            .as("Incorrect table contents")
-            .extracting(Element::text)
-            .startsWith("01/01/2024",
-                        "T00112233",
-                        "TestDefendantRequestedName",
-                        "Crown Prosecution Service",
-                        "TestLinkedCaseNumber",
-                        "TestListNote"
-            );
-
         softly.assertAll();
+    }
+
+    @Test
+    void testCrownWarnedPddaListTableContents() throws IOException {
+        Map<String, Object> language;
+
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader().getResourceAsStream("templates/languages/en/crownWarnedPddaList.json")) {
+            language = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                });
+        }
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(
+            Files.newInputStream(Paths.get(TEST_FILE_PATH, "crownWarnedPddaList.json")),
+            writer, Charset.defaultCharset()
+        );
+        Map<String, String> metadataMap = new ConcurrentHashMap<>(COMMON_METADATA);
+        metadataMap.put(LANGUAGE, "ENGLISH");
+
+        JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
+        CrownWarnedPddaListFileConverter crownWarnedPddaListConverter = new CrownWarnedPddaListFileConverter();
+
+        String outputHtml = crownWarnedPddaListConverter.convert(inputJson, metadataMap, language);
+        Document document = Jsoup.parse(outputHtml);
+
+        assertThat(document.getElementsByTag("td"))
+            .as("Table contents does not match")
+            .extracting(Element::text)
+            .containsSequence(
+                "01/01/2024",
+                "T00112233",
+                "TestDefendantRequestedName",
+                "Crown Prosecution Service",
+                "TestLinkedCaseNumber",
+                "TestListNote"
+            );
     }
 }

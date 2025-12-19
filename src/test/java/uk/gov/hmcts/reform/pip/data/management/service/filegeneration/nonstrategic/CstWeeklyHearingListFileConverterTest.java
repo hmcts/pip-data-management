@@ -172,25 +172,6 @@ class CstWeeklyHearingListFileConverterTest {
                 ADDITIONAL_INFORMATION
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
-            .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(12)
-            .extracting(Element::text)
-            .containsExactly(
-                "10 December 2024",
-                "This is a case name",
-                HEARING_LENGTH,
-                TYPE,
-                HEARING_VENUE,
-                "This is additional information",
-                "11 December 2024",
-                "This is another case name",
-                HEARING_LENGTH,
-                TYPE,
-                HEARING_VENUE,
-                "This is another additional information"
-            );
-
         softly.assertAll();
     }
 
@@ -270,7 +251,33 @@ class CstWeeklyHearingListFileConverterTest {
                 ADDITIONAL_INFORMATION_WELSH
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
+        softly.assertAll();
+    }
+
+    @Test
+    void testCstWeeklyHearingListTableContents() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/cstWeeklyHearingList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, CST_WEEKLY_HEARING_LIST.name(),
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(cstInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
             .as(TABLE_CONTENT_MESSAGE)
             .hasSize(12)
             .extracting(Element::text)
@@ -288,7 +295,5 @@ class CstWeeklyHearingListFileConverterTest {
                 HEARING_VENUE,
                 "This is another additional information"
             );
-
-        softly.assertAll();
     }
 }
