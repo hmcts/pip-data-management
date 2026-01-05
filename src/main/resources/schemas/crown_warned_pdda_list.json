@@ -518,7 +518,7 @@
                       "pattern": "^[A-Z]{3}$"
                     },
                     "Fixture": {
-                      "type": "object",
+                      "type": "array",
                       "required": [
                         "Cases"
                       ],
