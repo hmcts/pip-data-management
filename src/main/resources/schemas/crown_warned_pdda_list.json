@@ -57,14 +57,10 @@
         "DocumentID": {
           "type": "object",
           "required": [
-            "DocumentName",
             "UniqueID",
             "DocumentType"
           ],
           "properties": {
-            "DocumentName": {
-              "type": "string"
-            },
             "UniqueID": {
               "type": "string"
             },
@@ -215,7 +211,7 @@
                       "pattern": "^[A-Z]{3}$"
                     },
                     "Fixture": {
-                      "type": "object",
+                      "type": "array",
                       "required": [
                         "Cases"
                       ],
