@@ -1,0 +1,15 @@
+spring:
+  cloud:
+    azure:
+      active-directory:
+        enabled: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ""
+
+# Provide dummy values for required properties
+TENANT_ID: dummy-tenant-id
+CLIENT_ID: dummy-client-id
+CLIENT_SECRET: dummy-client-secret
