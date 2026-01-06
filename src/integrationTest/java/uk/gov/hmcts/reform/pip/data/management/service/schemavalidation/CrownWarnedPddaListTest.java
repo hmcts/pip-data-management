@@ -684,8 +684,8 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
 
             JsonNode node = getJsonNode(text);
             ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
-                .get(0).get(CASES).get(0).get(DEFENDANTS).get(0).get("Counsel").get(0).get("Solicitor").get(0).get("Party")
-                .get("Organisation")).remove(ORGANISATION_NAME);
+                .get(0).get(CASES).get(0).get(DEFENDANTS).get(0).get("Counsel").get(0).get("Solicitor").get(0)
+                .get("Party").get("Organisation")).remove(ORGANISATION_NAME);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
