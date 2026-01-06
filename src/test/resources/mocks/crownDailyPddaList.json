@@ -12,7 +12,7 @@
     },
     "CrownCourt": {
       "CourtHouseType": "Crown Court",
-      "CourtHouseCode": "1234",
+      "CourtHouseCode": 1234,
       "CourtHouseName": "TestCourtHouseName",
       "CourtHouseAddress": {
         "Line": [
@@ -27,7 +27,7 @@
       {
         "CourtHouse": {
           "CourtHouseType": "Crown Court",
-          "CourtHouseCode": "1234",
+          "CourtHouseCode": 1234,
           "CourtHouseShortName": "TestShortName",
           "CourtHouseName": "TestCourtHouseName",
           "CourtHouseAddress": {
@@ -105,7 +105,7 @@
                 },
                 "CommittingCourt": {
                   "CourtHouseType": "Crown Court",
-                  "CourtHouseCode": "5678",
+                  "CourtHouseCode": 5678,
                   "CourtHouseShortName": "TestOriginShortName",
                   "CourtHouseName": "TestOriginName"
                 },
@@ -168,7 +168,7 @@
       {
         "CourtHouse": {
           "CourtHouseType": "Crown Court",
-          "CourtHouseCode": "1234",
+          "CourtHouseCode": 1234,
           "CourtHouseShortName": "TestShortName",
           "CourtHouseName": "TestCourtHouseName",
           "CourtHouseAddress": {
@@ -226,7 +226,7 @@
                 },
                 "CommittingCourt": {
                   "CourtHouseType": "Crown Court",
-                  "CourtHouseCode": "5678",
+                  "CourtHouseCode": 5678,
                   "CourtHouseShortName": "TestOriginShortName",
                   "CourtHouseName": "TestOriginName"
                 },
@@ -316,7 +316,7 @@
                 },
                 "CommittingCourt": {
                   "CourtHouseType": "Crown Court",
-                  "CourtHouseCode": "5678",
+                  "CourtHouseCode": 5678,
                   "CourtHouseShortName": "TestOriginShortName",
                   "CourtHouseName": "TestOriginName"
                 },
