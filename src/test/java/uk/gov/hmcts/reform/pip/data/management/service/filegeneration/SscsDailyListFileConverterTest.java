@@ -208,6 +208,28 @@ class SscsDailyListFileConverterTest {
 
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {"SSCS_DAILY_LIST", "SSCS_DAILY_LIST_ADDITIONAL_HEARINGS"})
+    void testSscsDailyListTableContents(ListType listType) throws IOException {
+        Map<String, Object> language = TestUtils.getLanguageResources(listType, "en");
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(
+            Files.newInputStream(Paths.get("src/test/resources/mocks/", "sscsDailyList.json")),
+            writer, Charset.defaultCharset()
+        );
+        Map<String, String> metadataMap = Map.of(
+            CONTENT_DATE, Instant.now().toString(),
+            PROVENANCE, PROVENANCE,
+            "locationName", "Livingston",
+            "language", "ENGLISH",
+            "listType", listType.name()
+        );
+        JsonNode inputJson = OBJECT_MAPPER.readTree(writer.toString());
+        String outputHtml = listConversionFactory.getFileConverter(listType)
+            .get().convert(inputJson, metadataMap, language);
+        Document document = Jsoup.parse(outputHtml);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"SSCS_DAILY_LIST", "SSCS_DAILY_LIST_ADDITIONAL_HEARINGS"})
     void testConvertToExcelReturnsDefault(ListType listType) throws IOException {
         StringWriter writer = new StringWriter();
         JsonNode inputJson = OBJECT_MAPPER.readTree(writer.toString());
@@ -217,4 +239,5 @@ class SscsDailyListFileConverterTest {
                      "byte array wasn't empty"
         );
     }
+
 }
