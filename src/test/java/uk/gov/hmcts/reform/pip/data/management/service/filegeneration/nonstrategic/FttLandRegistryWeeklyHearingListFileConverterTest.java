@@ -168,25 +168,6 @@ class FttLandRegistryWeeklyHearingListFileConverterTest {
                 "Venue/Platform"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
-            .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(12)
-            .extracting(Element::text)
-            .containsExactly(
-                HEARING_DATE,
-                "10:15am",
-                "This is a case name",
-                "1234",
-                "Judge A",
-                HEARING_VENUE,
-                HEARING_DATE,
-                "10:30am",
-                "This is another case name",
-                "1235",
-                "Judge B",
-                HEARING_VENUE
-            );
-
         softly.assertAll();
     }
 
@@ -272,7 +253,33 @@ class FttLandRegistryWeeklyHearingListFileConverterTest {
                 "Lleoliad/Platfform"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
+        softly.assertAll();
+    }
+
+    @Test
+    void testLandRegistryWeeklyHearingListTableContents() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/fttLrWeeklyHearingList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, LIST_NAME,
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(listInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
             .as(TABLE_CONTENT_MESSAGE)
             .hasSize(12)
             .extracting(Element::text)
@@ -290,7 +297,5 @@ class FttLandRegistryWeeklyHearingListFileConverterTest {
                 "Judge B",
                 HEARING_VENUE
             );
-
-        softly.assertAll();
     }
 }
