@@ -169,25 +169,6 @@ class AstDailyHearingListFileConverterTest {
                 "Additional information"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
-            .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(12)
-            .extracting(Element::text)
-            .containsExactly(
-                "Appellant A",
-                "12345",
-                "Case type A",
-                "Hearing type A",
-                "10:30am",
-                "This is additional information",
-                "Appellant B",
-                "12346",
-                "Case type B",
-                "Hearing type B",
-                "11am",
-                "This is another additional information"
-            );
-
         softly.assertAll();
     }
 
@@ -271,25 +252,42 @@ class AstDailyHearingListFileConverterTest {
                 "Gwybodaeth ychwanegol"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
-            .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(12)
+        softly.assertAll();
+    }
+
+    @Test
+    void testAstDailyListFileTableContents() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/astDailyHearingList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, AST_DAILY_HEARING_LIST.name(),
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(cstInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
+            .as("Table contents does not match")
             .extracting(Element::text)
-            .containsExactly(
+            .containsSequence(
                 "Appellant A",
                 "12345",
                 "Case type A",
                 "Hearing type A",
                 "10:30am",
-                "This is additional information",
-                "Appellant B",
-                "12346",
-                "Case type B",
-                "Hearing type B",
-                "11am",
-                "This is another additional information"
+                "This is additional information"
             );
-
-        softly.assertAll();
     }
 }

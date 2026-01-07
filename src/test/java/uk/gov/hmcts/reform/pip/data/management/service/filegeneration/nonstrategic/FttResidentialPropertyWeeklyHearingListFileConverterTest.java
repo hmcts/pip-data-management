@@ -203,31 +203,6 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
                 "Additional information"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
-            .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(18)
-            .extracting(Element::text)
-            .containsExactly(
-                HEARING_DATE,
-                "10:15am",
-                HEARING_VENUE,
-                HEARING_CASE_1234,
-                HEARING_CASE_1234,
-                "Judge A",
-                "Member A",
-                "Hearing Method A",
-                "This is additional information",
-                HEARING_DATE,
-                "10:30am",
-                HEARING_VENUE,
-                HEARING_CASE_1235,
-                HEARING_CASE_1235,
-                "Judge B",
-                "Member B",
-                "Hearing Method B",
-                "This is another additional information"
-            );
-
         softly.assertAll();
     }
 
@@ -319,7 +294,35 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
                 "Gwybodaeth ychwanegol"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
+        softly.assertAll();
+    }
+
+    @ParameterizedTest
+    @MethodSource("parametersEnglish")
+    void testFttResidentialPropertyWeeklyHearingListTableContents(String listName, String languageFilename,
+                                                                  String listDisplayName) throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/" + languageFilename)) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, listName,
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(listInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
             .as(TABLE_CONTENT_MESSAGE)
             .hasSize(18)
             .extracting(Element::text)
@@ -343,7 +346,5 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
                 "Hearing Method B",
                 "This is another additional information"
             );
-
-        softly.assertAll();
     }
 }
