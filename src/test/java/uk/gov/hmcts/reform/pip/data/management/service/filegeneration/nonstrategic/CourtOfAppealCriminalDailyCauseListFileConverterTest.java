@@ -247,4 +247,41 @@ class CourtOfAppealCriminalDailyCauseListFileConverterTest {
 
         softly.assertAll();
     }
+
+    @Test
+    void testCourtOfAppealCriminalDailyCauseListTableContents() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/courtOfAppealCriminalDailyCauseList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST.name(),
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(cstInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
+            .as("Table contents does not match")
+            .extracting(Element::text)
+            .containsSequence(
+                "Venue A",
+                "Judge A",
+                "9am",
+                "12345",
+                "Case details A",
+                "Hearing type A",
+                "This is additional information"
+            );
+    }
 }

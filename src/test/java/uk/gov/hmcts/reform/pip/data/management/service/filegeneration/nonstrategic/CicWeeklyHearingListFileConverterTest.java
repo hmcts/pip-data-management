@@ -160,29 +160,6 @@ class CicWeeklyHearingListFileConverterTest {
                 "Additional information"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
-            .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(16)
-            .extracting(Element::text)
-            .containsExactly(
-                "26 June 2025",
-                "10am",
-                "1234",
-                "This is a case name",
-                "This is a venue name",
-                "Judge A",
-                "Member A",
-                "This is additional information",
-                "26 June 2025",
-                "10:30am",
-                "1235",
-                "This is another case name",
-                "This is another venue name",
-                "Judge B",
-                "Member B",
-                "This is another additional information"
-            );
-
         softly.assertAll();
     }
 
@@ -275,5 +252,52 @@ class CicWeeklyHearingListFileConverterTest {
             );
 
         softly.assertAll();
+    }
+
+    @Test
+    void testCicWeeklyHearingListTableContents() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/cicWeeklyHearingList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, CIC_WEEKLY_HEARING_LIST.name(),
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(cstInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
+            .as(TABLE_CONTENT_MESSAGE)
+            .hasSize(16)
+            .extracting(Element::text)
+            .containsExactly(
+                "26 June 2025",
+                "10am",
+                "1234",
+                "This is a case name",
+                "This is a venue name",
+                "Judge A",
+                "Member A",
+                "This is additional information",
+                "26 June 2025",
+                "10:30am",
+                "1235",
+                "This is another case name",
+                "This is another venue name",
+                "Judge B",
+                "Member B",
+                "This is another additional information"
+            );
     }
 }
