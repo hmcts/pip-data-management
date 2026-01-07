@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pip.data.management.contractTest;
+package uk.gov.hmcts.reform.pip.data.management;
 
 import au.com.dius.pact.provider.junit5.HttpTestTarget;
 import au.com.dius.pact.provider.junit5.PactVerificationContext;
@@ -101,10 +101,6 @@ public class PublicationJsonTest {
     }
 
     private Artefact createMockArtefact() {
-        LocalDateTime TODAY = LocalDateTime.now();
-        LocalDateTime TOMORROW = TODAY.plusDays(1);
-        LocalDateTime YESTERDAY = TODAY.minusDays(1);
-
         Artefact artefact = new Artefact();
         artefact.setArtefactId(UUID.randomUUID());
         artefact.setProvenance("MANUAL_UPLOAD");
@@ -115,8 +111,8 @@ public class PublicationJsonTest {
         artefact.setContentDate(LocalDateTime.now());
         artefact.setListType(ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST);
         artefact.setSourceArtefactId("test-source-id");
-        artefact.setDisplayFrom(YESTERDAY);
-        artefact.setDisplayTo(TOMORROW);
+        artefact.setDisplayFrom(LocalDateTime.now().minusDays(1));
+        artefact.setDisplayTo(LocalDateTime.now().plusDays(1));
 
         return artefact;
     }
