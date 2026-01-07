@@ -214,21 +214,6 @@ class UtAdministrativeAppealsChamberDailyHearingListFileConverterTest {
                 "Additional information"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
-            .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(8)
-            .extracting(Element::text)
-            .containsExactly(
-                "10:15am",
-                "Appellant 1",
-                "12345",
-                "Judge A",
-                "Member A",
-                "Mode of hearing 1",
-                "Venue 1",
-                "Additional information 1"
-            );
-
         softly.assertAll();
     }
 
@@ -357,7 +342,34 @@ class UtAdministrativeAppealsChamberDailyHearingListFileConverterTest {
                 "Gwybodaeth ychwanegol"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
+        softly.assertAll();
+    }
+
+    @Test
+    void testAdministrativeAppealsChamberDailyHearingListTableContents() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/"
+                                     + "utAacDailyHearingList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, LIST_NAME,
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(listInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
             .as(TABLE_CONTENT_MESSAGE)
             .hasSize(8)
             .extracting(Element::text)
@@ -371,7 +383,5 @@ class UtAdministrativeAppealsChamberDailyHearingListFileConverterTest {
                 "Venue 1",
                 "Additional information 1"
             );
-
-        softly.assertAll();
     }
 }
