@@ -261,4 +261,54 @@ class CourtOfAppealCivilDailyCauseListTest {
 
         softly.assertAll();
     }
+
+    @Test
+    void testCourtOfAppealCivilDailyCauseListTableContents() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/courtOfAppealCivilDailyCauseList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST.name(),
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(cstInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
+            .as("Table contents for hearing list does not match")
+            .extracting(Element::text)
+            .containsSequence(
+                "Venue A",
+                "Judge A",
+                "9am",
+                "12345",
+                "Case details A",
+                "Hearing type A",
+                "Additional information A"
+            );
+
+        assertThat(document.getElementsByTag("td"))
+            .as("Table contents for future judgements does not match")
+            .extracting(Element::text)
+            .containsSequence(
+                "Venue C",
+                "Judge C",
+                "10:30am",
+                "12347",
+                "Case details C",
+                "Hearing type C",
+                "Additional information C"
+            );
+    }
 }

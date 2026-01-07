@@ -192,20 +192,6 @@ class SiacWeeklyHearingListFileConverterTest {
                 ADDITIONAL_INFORMATION
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
-            .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(7)
-            .extracting(Element::text)
-            .containsExactly(
-                "11 December 2024",
-                "10:15am",
-                "Appellant 1",
-                "1234",
-                "Type of Hearing 1",
-                "Courtroom 1",
-                "Additional Information 1"
-            );
-
         softly.assertAll();
     }
 
@@ -293,7 +279,35 @@ class SiacWeeklyHearingListFileConverterTest {
                 "Gwybodaeth ychwanegol"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
+        softly.assertAll();
+    }
+
+    @ParameterizedTest
+    @MethodSource("parametersEnglish")
+    void testSiacWeeklyHearingListTableContents(String listName, String languageFilename,
+                                                String listDisplayName) throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/" + languageFilename)) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, listName,
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(siacInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
             .as(TABLE_CONTENT_MESSAGE)
             .hasSize(7)
             .extracting(Element::text)
@@ -307,6 +321,5 @@ class SiacWeeklyHearingListFileConverterTest {
                 "Additional Information 1"
             );
 
-        softly.assertAll();
     }
 }
