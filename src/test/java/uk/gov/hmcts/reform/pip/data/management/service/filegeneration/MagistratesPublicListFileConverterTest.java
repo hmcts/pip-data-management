@@ -20,6 +20,8 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class MagistratesPublicListFileConverterTest {
 
     private final MagistratesPublicListFileConverter magistratesPublicListFileConverter
@@ -120,12 +122,6 @@ class MagistratesPublicListFileConverterTest {
                 "Duration"
             );
 
-        softly.assertThat(document.getElementsByClass("govuk-table__body").get(0)
-                              .getElementsByTag("td"))
-            .as("Incorrect 'Sitting at' time")
-            .extracting(Element::text)
-            .contains("10:40am", "8am");
-
         softly.assertAll();
     }
 
@@ -216,5 +212,55 @@ class MagistratesPublicListFileConverterTest {
             );
 
         softly.assertAll();
+    }
+
+    @Test
+    void testMagistratesPublicListTableContents() throws IOException {
+        Map<String, Object> language;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader().getResourceAsStream("templates/languages/en/magistratesPublicList.json")) {
+            language = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(
+            Files.newInputStream(Paths.get(
+                "src/test/resources/mocks/",
+                "magistratesPublicList.json"
+            )), writer,
+            Charset.defaultCharset()
+        );
+        Map<String, String> metadataMap = Map.of(
+            "contentDate", Instant.now().toString(),
+            PROVENANCE, PROVENANCE,
+            "locationName", "location",
+            "language", "ENGLISH",
+            "listType", "MAGISTRATES_PUBLIC_LIST"
+        );
+
+        JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
+        String outputHtml = magistratesPublicListFileConverter.convert(inputJson, metadataMap, language);
+        Document document = Jsoup.parse(outputHtml);
+
+        assertThat(document.getElementsByClass("govuk-table__body").get(0)
+                       .getElementsByTag("td"))
+            .as("Incorrect 'Sitting at' time")
+            .extracting(Element::text)
+            .contains("10:40am", "8am");
+
+        assertThat(document.getElementsByTag("td"))
+            .as("Table contents does not match")
+            .extracting(Element::text)
+            .containsSequence(
+                "10:40am",
+                "12345678",
+                "Surname 1, Forename 1",
+                "FHDRA1 (First Hearing and Dispute Resolution Appointment)",
+                "Pro_Auth",
+                "1 hour 5 mins [2 of 3]",
+                "Case Details: Listing details text"
+            );
     }
 }
