@@ -58,12 +58,10 @@
         "DocumentID": {
           "type": "object",
           "required": [
-            "DocumentName",
             "UniqueID",
             "DocumentType"
           ],
           "properties": {
-            "DocumentName": { "type": "string" },
             "UniqueID": { "type": "string" },
             "DocumentType": { "type": "string" },
             "TimeStamp": { "type": "string", "format": "date-time" },
