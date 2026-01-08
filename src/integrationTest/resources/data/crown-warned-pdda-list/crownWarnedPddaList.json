@@ -47,7 +47,7 @@
                   "CaseNumberCaTH": "T00112233",
                   "CaseArrivedFrom": {
                     "OriginatingCourt": {
-                      "CourtHouseCode": "5678",
+                      "CourtHouseCode": 5678,
                       "CourtHouseShortName": "TestOriginShortName",
                       "CourtHouseName": "TestOriginName"
                     }
