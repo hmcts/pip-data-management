@@ -318,9 +318,6 @@
                                     "type": "object",
                                     "description": "Hearing details of the case and associated details for the sitting",
                                     "title": "Hearing",
-                                    "required": [
-                                      "case"
-                                    ],
                                     "properties": {
                                       "hearingType": {
                                         "description": "Type of hearing being presented",

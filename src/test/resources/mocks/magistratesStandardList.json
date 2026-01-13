@@ -181,7 +181,7 @@
                             "party": [
                               {
                                 "partyRole": "DEFENDANT",
-                                "subject": "true",
+                                "subject": true,
                                 "individualDetails": {
                                   "individualForenames": "Forename1",
                                   "individualMiddleName": "MiddleName",
@@ -403,7 +403,7 @@
                             "party": [
                               {
                                 "partyRole": "DEFENDANT",
-                                "subject": "false",
+                                "subject": false,
                                 "individualDetails": {
                                   "individualForenames": "Forename1",
                                   "individualMiddleName": "MiddleName",
