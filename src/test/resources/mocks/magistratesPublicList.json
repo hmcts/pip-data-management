@@ -37,7 +37,7 @@
                         "hearingType": "FHDRA1 (First Hearing and Dispute Resolution Appointment)",
                         "case": [
                           {
-                            "caseNumber": "12345678"
+                            "caseNumber": "12345678",
                             "party": [
                               {
                                 "partyRole": "PROSECUTING_AUTHORITY",
@@ -69,6 +69,56 @@
                                 "individualDetails":{
                                   "individualForenames":"Forename 2",
                                   "individualSurname":"Surname 2"
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        "application": [
+                          {
+                            "applicationReference": "12345678",
+                            "applicationType": "Application Type 1",
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "subject": "true",
+                                "individualDetails": {
+                                  "individualForenames": "Forename1",
+                                  "individualMiddleName": "MiddleName",
+                                  "individualSurname": "Surname1",
+                                  "dateOfBirth": "01/01/1983",
+                                  "age": 39,
+                                  "address": {
+                                    "county": "County A",
+                                    "town": "Town A",
+                                    "postCode": "AA1 AA1",
+                                    "line": [
+                                      "Address Line 1",
+                                      "Address Line 2"
+                                    ]
+                                  },
+                                  "gender": "male"
+                                },
+                                "offence": [
+                                  {
+                                    "offenceCode": "dd01-01",
+                                    "offenceTitle": "drink driving",
+                                    "offenceWording": "driving whilst under the influence of alcohol",
+                                    "offenceMaxPen": "100yrs",
+                                    "reportingRestriction": true,
+                                    "plea": "NOT_GUILTY"
+                                  },
+                                  {
+                                    "offenceCode": "dd01-01",
+                                    "offenceTitle": "Assault by beating",
+                                    "offenceWording": "Assault by beating",
+                                    "offenceMaxPen": "100yrs",
+                                    "reportingRestriction": true,
+                                    "plea": "NOT_GUILTY"
+                                  }
+                                ],
+                                "organisationDetails": {
+                                  "organisationName": "Pro_Auth"
                                 }
                               }
                             ]
@@ -134,7 +184,7 @@
                         "hearingType": "FHDRA1 (First Hearing and Dispute Resolution Appointment)",
                         "case": [
                           {
-                            "caseNumber": "12345678"
+                            "caseNumber": "12345678",
                             "party":[
                               {
                                 "partyRole": "PROSECUTING_AUTHORITY",
@@ -163,6 +213,56 @@
                                 "partyRole":"DEFENDANT",
                                 "individualDetails":{
                                   "individualSurname":"Surname 4"
+                                }
+                              }
+                            ]
+                          }
+                        ],
+                        "application": [
+                          {
+                            "applicationReference": "789456123",
+                            "applicationType": "Application Type 2",
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "subject": "false",
+                                "individualDetails": {
+                                  "individualForenames": "Forename1",
+                                  "individualMiddleName": "MiddleName",
+                                  "individualSurname": "Surname1",
+                                  "dateOfBirth": "01/01/1983",
+                                  "age": 39,
+                                  "address": {
+                                    "county": "County A",
+                                    "town": "Town A",
+                                    "postCode": "AA1 AA1",
+                                    "line": [
+                                      "Address Line 1",
+                                      "Address Line 2"
+                                    ]
+                                  },
+                                  "gender": "male"
+                                },
+                                "offence": [
+                                  {
+                                    "offenceCode": "dd01-01",
+                                    "offenceTitle": "drink driving",
+                                    "offenceWording": "driving whilst under the influence of alcohol",
+                                    "offenceMaxPen": "100yrs",
+                                    "reportingRestriction": true,
+                                    "plea": "NOT_GUILTY"
+                                  },
+                                  {
+                                    "offenceCode": "dd01-01",
+                                    "offenceTitle": "Assault by beating",
+                                    "offenceWording": "Assault by beating",
+                                    "offenceMaxPen": "100yrs",
+                                    "reportingRestriction": true,
+                                    "plea": "NOT_GUILTY"
+                                  }
+                                ],
+                                "organisationDetails": {
+                                  "organisationName": "Pro_Auth"
                                 }
                               }
                             ]
