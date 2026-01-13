@@ -56,23 +56,27 @@ public final class CrownWarnedPddaListHelper {
 
     private static void formatFixture(JsonNode fixtureDate, Map<String,
         List<CrownWarnedPddaList>> groupedData, boolean isWithoutFixedDate) {
-        JsonNode fixture = fixtureDate.get("Fixture");
-        String fixedDate = GeneralHelper.findAndReturnNodeText(fixture, "FixedDate");
+        JsonNode fixtures = fixtureDate.get("Fixture");
 
-        Optional.ofNullable(fixture.get("Cases"))
-            .filter(JsonNode::isArray)
-            .ifPresent(cases -> cases.forEach(hearingCase -> {
-                Optional.ofNullable(hearingCase.get("Hearing"))
-                    .filter(JsonNode::isArray)
-                    .ifPresent(hearings -> hearings.forEach(hearing -> {
-                        String hearingDescription = isWithoutFixedDate
-                            ? "To be allocated"
-                            : GeneralHelper.findAndReturnNodeText(hearing, "HearingDescription");
+        fixtures.forEach(fixture -> {
+            String fixedDate = GeneralHelper.findAndReturnNodeText(fixture, "FixedDate");
 
-                        groupedData.computeIfAbsent(hearingDescription, k -> new ArrayList<>())
-                            .add(formatCaseInformation(fixedDate, hearing, hearingCase));
-                    }));
-            }));
+            Optional.ofNullable(fixture.get("Cases"))
+                .filter(JsonNode::isArray)
+                .ifPresent(cases -> cases.forEach(hearingCase -> {
+                    Optional.ofNullable(hearingCase.get("Hearing"))
+                        .filter(JsonNode::isArray)
+                        .ifPresent(hearings -> hearings.forEach(hearing -> {
+                            String hearingDescription = isWithoutFixedDate
+                                ? "To be allocated"
+                                : GeneralHelper.findAndReturnNodeText(hearing, "HearingDescription");
+
+                            groupedData.computeIfAbsent(hearingDescription, k -> new ArrayList<>())
+                                .add(formatCaseInformation(fixedDate, hearing, hearingCase));
+                        }));
+                }));
+        });
+
     }
 
     private static CrownWarnedPddaList formatCaseInformation(String fixedDate, JsonNode hearing,
