@@ -1,10 +1,8 @@
 {
   "document": {
-    "publicationDate": "2023-12-01T23:30:52.123Z",
-    "version": "1.0"
+    "publicationDate": "2023-12-01T23:30:52.123Z"
   },
   "venue": {
-    "venueName": "Preston",
     "venueAddress": {
       "postCode": "AA1 AA1",
       "county": "Lancashire",
@@ -14,9 +12,6 @@
         "Address Line 2"
       ]
     }
-  },
-  "locationDetails": {
-    "jurisdiction": "Crime court"
   },
   "courtLists": [
     {
@@ -29,22 +24,17 @@
               {
                 "judiciary": [
                   {
-                    "johTitle": "Judge",
-                    "johNameSurname": "Test Name",
-                    "role": "JUDGE",
+                    "johKnownAs": "Test Name",
                     "isPresiding": true
                   },
                   {
-                    "johTitle": "Magistrate",
-                    "johNameSurname": "Test Name",
-                    "role": "MAGISTRATE",
+                    "johKnownAs": "Test Name",
                     "isPresiding": false
                   }
                 ],
                 "sittings": [
                   {
                     "sittingStart": "2023-12-13T13:30:52.123Z",
-                    "sittingEnd": "2023-12-13T16:00:52.123Z",
                     "hearing": [
                       {
                         "hearingType": "mda",
@@ -55,9 +45,7 @@
                             "party": [
                               {
                                 "partyRole": "DEFENDANT",
-                                "friendlyRoleName": "Accused",
                                 "individualDetails": {
-                                  "title": "Mr",
                                   "individualForenames": "Forename1",
                                   "individualMiddleName": "MiddleName",
                                   "individualSurname": "Surname1",
@@ -72,7 +60,6 @@
                                       "Address Line 2"
                                     ]
                                   },
-                                  "plea": "NOT_GUILTY",
                                   "gender": "male"
                                 },
                                 "offence": [
@@ -81,22 +68,25 @@
                                     "offenceTitle": "drink driving",
                                     "offenceWording": "driving whilst under the influence of alcohol",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "plea": "NOT_GUILTY"
                                   },
                                   {
                                     "offenceCode": "dd01-01",
                                     "offenceTitle": "Assault by beating",
                                     "offenceWording": "Assault by beating",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "plea": "NOT_GUILTY"
                                   }
-                                ]
+                                ],
+                                "organisationDetails": {
+                                  "organisationName": "Pro_Auth"
+                                }
                               },
                               {
                                 "partyRole": "DEFENDANT",
-                                "friendlyRoleName": "Accused",
                                 "individualDetails": {
-                                  "title": "Mr",
                                   "individualForenames": "Forename2",
                                   "individualMiddleName": "MiddleName2",
                                   "individualSurname": "Surname2",
@@ -112,7 +102,6 @@
                                     ]
                                   },
                                   "inCustody": true,
-                                  "plea": "NOT_GUILTY",
                                   "gender": "male"
                                 },
                                 "offence": [
@@ -121,22 +110,25 @@
                                     "offenceTitle": "drink driving",
                                     "offenceWording": "driving whilst under the influence of alcohol",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "plea": "NOT_GUILTY"
                                   },
                                   {
                                     "offenceCode": "dd01-01",
                                     "offenceTitle": "Assault by beating",
                                     "offenceWording": "Assault by beating",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "plea": "NOT_GUILTY"
                                   }
-                                ]
+                                ],
+                                "organisationDetails": {
+                                  "organisationName": "Pro_Auth"
+                                }
                               },
                               {
                                 "partyRole": "DEFENDANT",
-                                "friendlyRoleName": "Accused",
                                 "individualDetails": {
-                                  "title": "Mr",
                                   "individualForenames": "Forename3",
                                   "individualMiddleName": "MiddleName",
                                   "individualSurname": "Surname3",
@@ -151,7 +143,6 @@
                                     ]
                                   },
                                   "inCustody": true,
-                                  "plea": "NOT_GUILTY",
                                   "gender": "male"
                                 },
                                 "offence": [
@@ -160,39 +151,38 @@
                                     "offenceTitle": "drink driving",
                                     "offenceWording": "driving whilst under the influence of alcohol",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "convictionDate": "2023-12-13T23:30:52.123Z",
+                                    "adjournedDate": "2023-12-13T23:30:52.123Z",
+                                    "plea": "NOT_GUILTY",
+                                    "pleaDate": "2023-12-13T23:30:52.123Z"
                                   },
                                   {
                                     "offenceCode": "dd01-01",
                                     "offenceTitle": "Assault by beating",
                                     "offenceWording": "Assault by beating",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "convictionDate": "2023-12-13T23:30:52.123Z",
+                                    "adjournedDate": "2023-12-13T23:30:52.123Z",
+                                    "plea": "NOT_GUILTY",
+                                    "pleaDate": "2023-12-13T23:30:52.123Z"
                                   }
                                 ]
                               }
                             ],
-                            "informant": {
-                              "prosecutionAuthorityRef": "Test",
-                              "prosecutionAuthorityId": "1234",
-                              "prosecutionAuthorityCode": "Test1234",
-                              "prosecutionAuthorityName": "Test"
-                            },
-                            "hearingNumber": "12",
-                            "convictionDate": "2023-12-13T23:30:52.123Z",
-                            "adjournedDate": "2023-12-13T23:30:52.123Z",
-                            "panel": "ADULT"
+                            "hearingNumber": "12"
                           }
+                        ],
+                        "panel": "ADULT",
+                        "channel": [
+                          "VIDEO HEARING"
                         ]
                       }
-                    ],
-                    "judiciary": [
-                    ],
-                    "channel": [
-                      "VIDEO HEARING"
                     ]
                   }
-                ]
+                ],
+                "ljs": "Area name 1"
               }
             ]
           },
@@ -200,13 +190,9 @@
             "courtRoomName": "Courtroom 2",
             "session": [
               {
-                "judiciary": [
-                  {}
-                ],
                 "sittings": [
                   {
                     "sittingStart": "2023-12-13T13:30:52.123Z",
-                    "sittingEnd": "2023-12-13T16:00:52.123Z",
                     "hearing": [
                       {
                         "hearingType": "mda",
@@ -217,9 +203,7 @@
                             "party": [
                               {
                                 "partyRole": "DEFENDANT",
-                                "friendlyRoleName": "Accused",
                                 "individualDetails": {
-                                  "title": "Mr",
                                   "individualForenames": "Forename4",
                                   "individualMiddleName": "MiddleName",
                                   "individualSurname": "Surname4",
@@ -235,8 +219,8 @@
                                     ]
                                   },
                                   "inCustody": true,
-                                  "plea": "NOT_GUILTY",
-                                  "gender": "male"
+                                  "gender": "male",
+                                  "asn": "A1234567"
                                 },
                                 "offence": [
                                   {
@@ -244,22 +228,33 @@
                                     "offenceTitle": "drink driving",
                                     "offenceWording": "driving whilst under the influence of alcohol",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "convictionDate": "2023-12-13T23:30:52.123Z",
+                                    "adjournedDate": "2023-12-13T23:30:52.123Z",
+                                    "plea": "NOT_GUILTY",
+                                    "pleaDate": "2023-12-13T23:30:52.123Z",
+                                    "offenceLegislation": "Road Traffic Act 1988"
                                   },
                                   {
                                     "offenceCode": "dd01-01",
                                     "offenceTitle": "Assault by beating",
                                     "offenceWording": "Assault by beating",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "convictionDate": "2023-12-13T23:30:52.123Z",
+                                    "adjournedDate": "2023-12-13T23:30:52.123Z",
+                                    "plea": "NOT_GUILTY",
+                                    "pleaDate": "2023-12-13T23:30:52.123Z",
+                                    "offenceLegislation": "Road Traffic Act 1988"
                                   }
-                                ]
+                                ],
+                                "organisationDetails": {
+                                  "organisationName": "Pro_Auth"
+                                }
                               },
                               {
                                 "partyRole": "DEFENDANT",
-                                "friendlyRoleName": "Accused",
                                 "individualDetails": {
-                                  "title": "Mr",
                                   "individualForenames": "Forename5",
                                   "individualMiddleName": "MiddleName",
                                   "individualSurname": "Surname5",
@@ -275,7 +270,6 @@
                                     ]
                                   },
                                   "inCustody": true,
-                                  "plea": "NOT_GUILTY",
                                   "gender": "male"
                                 },
                                 "offence": [
@@ -284,22 +278,28 @@
                                     "offenceTitle": "drink driving",
                                     "offenceWording": "driving whilst under the influence of alcohol",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "convictionDate": "2023-12-13T23:30:52.123Z",
+                                    "adjournedDate": "2023-12-13T23:30:52.123Z",
+                                    "plea": "NOT_GUILTY",
+                                    "pleaDate": "2023-12-13T23:30:52.123Z"
                                   },
                                   {
                                     "offenceCode": "dd01-01",
                                     "offenceTitle": "Assault by beating",
                                     "offenceWording": "Assault by beating",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "convictionDate": "2023-12-13T23:30:52.123Z",
+                                    "adjournedDate": "2023-12-13T23:30:52.123Z",
+                                    "plea": "NOT_GUILTY",
+                                    "pleaDate": "2023-12-13T23:30:52.123Z"
                                   }
                                 ]
                               },
                               {
                                 "partyRole": "DEFENDANT",
-                                "friendlyRoleName": "Accused",
                                 "individualDetails": {
-                                  "title": "Mr",
                                   "individualForenames": "Forename6",
                                   "individualMiddleName": "MiddleName",
                                   "individualSurname": "Surname6",
@@ -315,7 +315,6 @@
                                     ]
                                   },
                                   "inCustody": true,
-                                  "plea": "NOT_GUILTY",
                                   "gender": "male"
                                 },
                                 "offence": [
@@ -324,29 +323,32 @@
                                     "offenceTitle": "drink driving",
                                     "offenceWording": "driving whilst under the influence of alcohol",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "convictionDate": "2023-12-13T23:30:52.123Z",
+                                    "adjournedDate": "2023-12-13T23:30:52.123Z",
+                                    "plea": "NOT_GUILTY",
+                                    "pleaDate": "2023-12-13T23:30:52.123Z"
                                   },
                                   {
                                     "offenceCode": "dd01-01",
                                     "offenceTitle": "Assault by beating",
                                     "offenceWording": "Assault by beating",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "convictionDate": "2023-12-13T23:30:52.123Z",
+                                    "adjournedDate": "2023-12-13T23:30:52.123Z",
+                                    "plea": "NOT_GUILTY",
+                                    "pleaDate": "2023-12-13T23:30:52.123Z"
                                   }
                                 ]
                               }
                             ],
-                            "informant": {
-                              "prosecutionAuthorityRef": "Test",
-                              "prosecutionAuthorityId": "1234",
-                              "prosecutionAuthorityCode": "Test1234",
-                              "prosecutionAuthorityName": "Test"
-                            },
-                            "hearingNumber": "12",
-                            "convictionDate": "2023-12-13T23:30:52.123Z",
-                            "adjournedDate": "2023-12-13T23:30:52.123Z",
-                            "panel": "ADULT"
+                            "hearingNumber": "12"
                           }
+                        ],
+                        "panel": "ADULT",
+                        "channel": [
+                          "VIDEO HEARING"
                         ]
                       },
                       {
@@ -357,9 +359,7 @@
                             "party": [
                               {
                                 "partyRole": "DEFENDANT",
-                                "friendlyRoleName": "Accused",
                                 "individualDetails": {
-                                  "title": "Mr",
                                   "individualForenames": "Forename4",
                                   "individualSurname": "Surname4",
                                   "age": 39,
@@ -371,7 +371,6 @@
                                     ]
                                   },
                                   "inCustody": true,
-                                  "plea": "NOT_GUILTY",
                                   "gender": "male"
                                 },
                                 "offence": [
@@ -380,28 +379,36 @@
                                     "offenceTitle": "Offence title 1",
                                     "offenceWording": "Offence wording 1",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "convictionDate": "2023-12-13T23:30:52.123Z",
+                                    "adjournedDate": "2023-12-13T23:30:52.123Z",
+                                    "plea": "NOT_GUILTY",
+                                    "pleaDate": "2023-12-13T23:30:52.123Z"
                                   },
                                   {
                                     "offenceCode": "dd01-01",
                                     "offenceTitle": "Offence title 2",
                                     "offenceWording": "Offence wording 2",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "convictionDate": "2023-12-13T23:30:52.123Z",
+                                    "adjournedDate": "2023-12-13T23:30:52.123Z",
+                                    "plea": "NOT_GUILTY",
+                                    "pleaDate": "2023-12-13T23:30:52.123Z"
                                   }
-                                ]
+                                ],
+                                "organisationDetails": {
+                                  "organisationName": "Pro_Auth"
+                                }
                               },
                               {
                                 "partyRole": "DEFENDANT",
-                                "friendlyRoleName": "Accused",
                                 "individualDetails": {
-                                  "title": "Mr",
                                   "individualForenames": "Forename5",
                                   "individualMiddleName": "MiddleName",
                                   "individualSurname": "Surname5",
                                   "dateOfBirth": "01/01/1983",
-                                  "inCustody": false,
-                                  "plea": "NOT_GUILTY"
+                                  "inCustody": false
                                 },
                                 "offence": [
                                   {
@@ -409,71 +416,63 @@
                                     "offenceTitle": "Offence title 1",
                                     "offenceWording": "Offence wording 1",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "convictionDate": "2023-12-13T23:30:52.123Z",
+                                    "adjournedDate": "2023-12-13T23:30:52.123Z",
+                                    "plea": "NOT_GUILTY",
+                                    "pleaDate": "2023-12-13T23:30:52.123Z"
                                   },
                                   {
                                     "offenceCode": "dd01-01",
                                     "offenceTitle": "Offence title 2",
                                     "offenceWording": "Offence wording 2",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "convictionDate": "2023-12-13T23:30:52.123Z",
+                                    "adjournedDate": "2023-12-13T23:30:52.123Z",
+                                    "plea": "NOT_GUILTY",
+                                    "pleaDate": "2023-12-13T23:30:52.123Z"
                                   }
                                 ]
                               },
                               {
                                 "partyRole": "DEFENDANT",
-                                "friendlyRoleName": "Accused",
                                 "offence": [
                                   {
                                     "offenceCode": "dd01-01",
                                     "offenceTitle": "Offence title 1",
                                     "offenceWording": "Offence wording 1",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "convictionDate": "2023-12-13T23:30:52.123Z",
+                                    "adjournedDate": "2023-12-13T23:30:52.123Z",
+                                    "pleaDate": "2023-12-13T23:30:52.123Z"
                                   },
                                   {
                                     "offenceCode": "dd01-01",
                                     "offenceTitle": "Offence title 2",
                                     "offenceWording": "Offence wording 2",
                                     "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "convictionDate": "2023-12-13T23:30:52.123Z",
+                                    "adjournedDate": "2023-12-13T23:30:52.123Z",
+                                    "pleaDate": "2023-12-13T23:30:52.123Z"
                                   }
                                 ]
                               }
                             ],
-                            "informant": {
-                              "prosecutionAuthorityRef": "Test",
-                              "prosecutionAuthorityId": "1234",
-                              "prosecutionAuthorityCode": "Test1234",
-                              "prosecutionAuthorityName": "Test"
-                            },
-                            "hearingNumber": "12",
-                            "convictionDate": "2023-12-13T23:30:52.123Z",
-                            "adjournedDate": "2023-12-13T23:30:52.123Z",
-                            "panel": "ADULT"
+                            "hearingNumber": "12"
                           }
+                        ],
+                        "panel": "ADULT",
+                        "channel": [
+                          "VIDEO HEARING"
                         ]
                       }
-                    ],
-                    "judiciary": [
-                      {
-                        "johTitle": "Judge",
-                        "johNameSurname": "Test Name 2",
-                        "role": "JUDGE",
-                        "isPresiding": true
-                      },
-                      {
-                        "johTitle": "Magistrate",
-                        "johNameSurname": "Test Name 2",
-                        "role": "MAGISTRATE",
-                        "isPresiding": false
-                      }
-                    ],
-                    "channel": [
-                      "VIDEO HEARING"
                     ]
                   }
-                ]
+                ],
+                "ljs": "Area name 2"
               }
             ]
           }
