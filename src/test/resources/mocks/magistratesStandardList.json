@@ -17,6 +17,7 @@
     {
       "courtHouse": {
         "courtHouseName": "PRESTON",
+        "lja": "Area name",
         "courtRoom": [
           {
             "courtRoomName": "Courtroom 1",
@@ -170,8 +171,7 @@
                                   }
                                 ]
                               }
-                            ],
-                            "hearingNumber": "12"
+                            ]
                           }
                         ],
                         "application": [
@@ -231,8 +231,7 @@
                       }
                     ]
                   }
-                ],
-                "ljs": "Area name 1"
+                ]
               }
             ]
           },
@@ -248,7 +247,7 @@
                         "hearingType": "mda",
                         "case": [
                           {
-                            "caseNumber": "45684548",
+                            "caseUrn": "45684548",
                             "caseSequenceIndicator": "2 of 3",
                             "party": [
                               {
@@ -392,8 +391,7 @@
                                   }
                                 ]
                               }
-                            ],
-                            "hearingNumber": "12"
+                            ]
                           }
                         ],
                         "application": [
@@ -455,7 +453,7 @@
                         "hearingType": "mda",
                         "case": [
                           {
-                            "caseNumber": "12345678",
+                            "caseUrn": "12345678",
                             "party": [
                               {
                                 "partyRole": "DEFENDANT",
@@ -560,8 +558,7 @@
                                   }
                                 ]
                               }
-                            ],
-                            "hearingNumber": "12"
+                            ]
                           }
                         ],
                         "panel": "ADULT",
@@ -571,8 +568,7 @@
                       }
                     ]
                   }
-                ],
-                "ljs": "Area name 2"
+                ]
               }
             ]
           }

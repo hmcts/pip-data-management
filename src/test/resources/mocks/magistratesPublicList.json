@@ -1,6 +1,5 @@
 {
   "document": {
-    "version": "",
     "publicationDate":"2020-09-13T23:30:00Z"
   },
   "venue": {
@@ -16,6 +15,7 @@
   "courtLists": [
     {
       "courtHouse": {
+        "courtHouseName": "PRESTON",
         "courtRoom": [
           {
             "courtRoomName": "1",
@@ -55,7 +55,7 @@
                             ]
                           },
                           {
-                            "caseNumber": "112233445",
+                            "caseUrn": "112233445",
                             "party": [
                               {
                                 "partyRole": "PROSECUTING_AUTHORITY",
@@ -84,42 +84,16 @@
                                 "subject": true,
                                 "individualDetails": {
                                   "individualForenames": "Forename1",
-                                  "individualMiddleName": "MiddleName",
-                                  "individualSurname": "Surname1",
-                                  "dateOfBirth": "01/01/1983",
-                                  "age": 39,
-                                  "address": {
-                                    "county": "County A",
-                                    "town": "Town A",
-                                    "postCode": "AA1 AA1",
-                                    "line": [
-                                      "Address Line 1",
-                                      "Address Line 2"
-                                    ]
-                                  },
-                                  "gender": "male"
+                                  "individualSurname": "Surname1"
                                 },
                                 "offence": [
                                   {
-                                    "offenceCode": "dd01-01",
-                                    "offenceTitle": "drink driving",
-                                    "offenceWording": "driving whilst under the influence of alcohol",
-                                    "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true,
-                                    "plea": "NOT_GUILTY"
+                                    "offenceTitle": "drink driving"
                                   },
                                   {
-                                    "offenceCode": "dd01-01",
-                                    "offenceTitle": "Assault by beating",
-                                    "offenceWording": "Assault by beating",
-                                    "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true,
-                                    "plea": "NOT_GUILTY"
+                                    "offenceTitle": "Assault by beating"
                                   }
-                                ],
-                                "organisationDetails": {
-                                  "organisationName": "Pro_Auth"
-                                }
+                                ]
                               }
                             ]
                           }
@@ -129,7 +103,7 @@
                         "hearingType": "FHDRA1 (First Hearing and Dispute Resolution Appointment)",
                         "case": [
                           {
-                            "caseNumber": "112233445"
+                            "caseUrn": "112233445"
                           }
                         ],
                         "channel": [
@@ -146,7 +120,7 @@
                         "hearingType": "FHDRA1 (First Hearing and Dispute Resolution Appointment)",
                         "case": [
                           {
-                            "caseNumber": "12345678"
+                            "caseUrn": "12345678"
                           }
                         ]
                       },
@@ -154,7 +128,7 @@
                         "hearingType": "FHDRA1 (First Hearing and Dispute Resolution Appointment)",
                         "case": [
                           {
-                            "caseNumber": "112233445"
+                            "caseUrn": "112233445"
                           }
                         ]
                       }
@@ -184,7 +158,7 @@
                         "hearingType": "FHDRA1 (First Hearing and Dispute Resolution Appointment)",
                         "case": [
                           {
-                            "caseNumber": "12345678",
+                            "caseUrn": "12345678",
                             "party":[
                               {
                                 "partyRole": "PROSECUTING_AUTHORITY",
@@ -201,7 +175,7 @@
                             ]
                           },
                           {
-                            "caseNumber": "112233445",
+                            "caseUrn": "112233445",
                             "party":[
                               {
                                 "partyRole": "PROSECUTING_AUTHORITY",
@@ -228,42 +202,16 @@
                                 "subject": false,
                                 "individualDetails": {
                                   "individualForenames": "Forename1",
-                                  "individualMiddleName": "MiddleName",
-                                  "individualSurname": "Surname1",
-                                  "dateOfBirth": "01/01/1983",
-                                  "age": 39,
-                                  "address": {
-                                    "county": "County A",
-                                    "town": "Town A",
-                                    "postCode": "AA1 AA1",
-                                    "line": [
-                                      "Address Line 1",
-                                      "Address Line 2"
-                                    ]
-                                  },
-                                  "gender": "male"
+                                  "individualSurname": "Surname1"
                                 },
                                 "offence": [
                                   {
-                                    "offenceCode": "dd01-01",
-                                    "offenceTitle": "drink driving",
-                                    "offenceWording": "driving whilst under the influence of alcohol",
-                                    "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true,
-                                    "plea": "NOT_GUILTY"
+                                    "offenceTitle": "drink driving"
                                   },
                                   {
-                                    "offenceCode": "dd01-01",
-                                    "offenceTitle": "Assault by beating",
-                                    "offenceWording": "Assault by beating",
-                                    "offenceMaxPen": "100yrs",
-                                    "reportingRestriction": true,
-                                    "plea": "NOT_GUILTY"
+                                    "offenceTitle": "Assault by beating"
                                   }
-                                ],
-                                "organisationDetails": {
-                                  "organisationName": "Pro_Auth"
-                                }
+                                ]
                               }
                             ]
                           }
@@ -273,7 +221,7 @@
                         "hearingType": "FHDRA1 (First Hearing and Dispute Resolution Appointment)",
                         "case": [
                           {
-                            "caseNumber": "112233445"
+                            "caseUrn": "112233445"
                           }
                         ],
                         "channel": [
@@ -290,7 +238,7 @@
                         "hearingType": "FHDRA1 (First Hearing and Dispute Resolution Appointment)",
                         "case": [
                           {
-                            "caseNumber": "12345678"
+                            "caseUrn": "12345678"
                           }
                         ]
                       },
@@ -298,7 +246,7 @@
                         "hearingType": "FHDRA1 (First Hearing and Dispute Resolution Appointment)",
                         "case": [
                           {
-                            "caseNumber": "112233445"
+                            "caseUrn": "112233445"
                           }
                         ]
                       }
@@ -326,7 +274,7 @@
                         "hearingType": "FHDRA1 (First Hearing and Dispute Resolution Appointment)",
                         "case": [
                           {
-                            "caseNumber": "12345678"
+                            "caseUrn": "12345678"
                           }
                         ],
                         "channel": [
@@ -363,7 +311,7 @@
                         "hearingType": "FHDRA1 (First Hearing and Dispute Resolution Appointment)",
                         "case": [
                           {
-                            "caseNumber": "12345678"
+                            "caseUrn": "12345678"
                           }
                         ],
                         "channel": [
@@ -401,7 +349,7 @@
                         "hearingType": "FHDRA1 (First Hearing and Dispute Resolution Appointment)",
                         "case": [
                           {
-                            "caseNumber": "12345678",
+                            "caseUrn": "12345678",
                             "caseSequenceIndicator": "2 of 3"
                           }
                         ],

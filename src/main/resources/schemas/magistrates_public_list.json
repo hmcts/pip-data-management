@@ -7,11 +7,9 @@
         "line": {
           "title": "Address Line",
           "type": "array",
-          "default": [],
           "items":{
             "title": "Items",
             "type": "string",
-            "default": "",
             "examples": [
               "THE LAW COURTS"
             ],
@@ -22,7 +20,6 @@
           "title": "Town",
           "description": "The town for the address",
           "type": "string",
-          "default": "",
           "examples": [
             "Cambridge"
           ],
@@ -32,7 +29,6 @@
           "title": "County",
           "description": "The county for the address",
           "type": "string",
-          "default": "",
           "examples": [
             "Cambridgeshire"
           ],
@@ -41,35 +37,8 @@
         "postCode": {
           "title": "Address Postcode",
           "type": "string",
-          "default": "",
           "examples": [
             "PR1 2LL"
-          ],
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-        }
-      }
-    },
-    "venueContact": {
-      "title": "Contact Details for a venue",
-      "type": "object",
-      "properties": {
-        "venueTelephone": {
-          "description": "Telephone number for the venue",
-          "title": "Venue Telephone",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "01772 844700"
-          ],
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-        },
-        "venueEmail": {
-          "description": "Email for the venue",
-          "title": "Venue Email",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "court1@moj.gov.uk"
           ],
           "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
@@ -87,7 +56,6 @@
           "examples": [
             true
           ],
-          "default": "",
           "pattern": "^(?!.*<[^>]+>).*$"
         },
         "johKnownAs": {
@@ -97,7 +65,6 @@
           "examples": [
             "judge"
           ],
-          "default": "",
           "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
@@ -117,7 +84,6 @@
             "APPLICANT",
             "RESPONDENT"
           ],
-          "default": "",
           "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "individualDetails": {
@@ -132,7 +98,6 @@
               "examples": [
                 "John Smith"
               ],
-              "default": "",
               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
             },
             "individualSurname": {
@@ -142,7 +107,6 @@
               "examples": [
                 "Surname"
               ],
-              "default": "",
               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
             }
           }
@@ -158,7 +122,6 @@
                 "description": "Short description of offence",
                 "title": "Offence title",
                 "type": "string",
-                "default": "",
                 "examples": [
                   "drink driving"
                 ],
@@ -182,13 +145,7 @@
               "examples": [
                 "A & B Solicitors"
               ],
-              "default": "",
               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-            },
-            "organisationAddress": {
-              "title": "Organisation Address",
-              "description": "Party Address",
-              "$ref": "#/$defs/address"
             }
           }
         },
@@ -196,7 +153,6 @@
           "title": "Subject Restriction",
           "description": "Party is subject of the application/case",
           "type": "boolean",
-          "default": "",
           "examples": [
             "true"
           ],
@@ -223,15 +179,6 @@
             "2016-09-13T23:30:52.123Z"
           ],
           "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z$"
-        },
-        "version": {
-          "title": "Version",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "1.0"
-          ],
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
     },
@@ -273,7 +220,6 @@
                       "description": "Name for the court room",
                       "title": "Court Room Name",
                       "type": "string",
-                      "default": "",
                       "examples": [
                         "Room 1"
                       ],
@@ -298,8 +244,7 @@
                           },
                           "sittings": {
                             "title": "Sittings",
-                            "type": "array",
-                            "default": [],
+                            "type": "array", ,
                             "items":{
                               "type": "object",
                               "required": ["sittingStart", "hearing"],
@@ -308,7 +253,6 @@
                                   "description": "Sitting Start Time",
                                   "title": "Sitting Start",
                                   "type": "string",
-                                  "default": "",
                                   "examples": [],
                                   "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z$"
                                 },
@@ -326,7 +270,6 @@
                                         "examples": [
                                           "mda"
                                         ],
-                                        "default": "",
                                         "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                       },
                                       "case": {
@@ -336,14 +279,13 @@
                                           "title": "Case",
                                           "description": "Case Details",
                                           "required": [
-                                            "caseNumber"
+                                            "caseUrn"
                                           ],
                                           "properties": {
-                                            "caseNumber": {
-                                              "title": "Case Number",
-                                              "description": "A number identifying a case",
+                                            "caseUrn": {
+                                              "title": "Case Urn",
+                                              "description": "A unique identifier for a case",
                                               "type": "string",
-                                              "default": "",
                                               "examples": [
                                                 "45684548"
                                               ],
@@ -374,7 +316,6 @@
                                             "examples": [
                                               "VIDEO HEARING"
                                             ],
-                                            "default": "",
                                             "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                           }
                                         }
@@ -393,7 +334,6 @@
                                               "title": "Application Reference",
                                               "description": "application reference",
                                               "type": "string",
-                                              "default": "",
                                               "examples": [
                                                 "ABC1234567D"
                                               ],
@@ -425,7 +365,6 @@
                                           "examples": [
                                             "VIDEO HEARING"
                                           ],
-                                          "default": "",
                                           "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                         }
                                       }

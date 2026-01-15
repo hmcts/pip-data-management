@@ -7,11 +7,9 @@
         "line": {
           "title": "Address Line",
           "type": "array",
-          "default": [],
           "items": {
             "title": "Items",
             "type": "string",
-            "default": "",
             "examples": [
               "THE LAW COURTS"
             ],
@@ -22,7 +20,6 @@
           "title": "Town",
           "description": "The town for the address",
           "type": "string",
-          "default": "",
           "examples": [
             "Cambridge"
           ],
@@ -32,7 +29,6 @@
           "title": "County",
           "description": "The county for the address",
           "type": "string",
-          "default": "",
           "examples": [
             "Cambridgeshire"
           ],
@@ -41,7 +37,6 @@
         "postCode": {
           "title": "Address Postcode",
           "type": "string",
-          "default": "",
           "examples": [
             "PR1 2LL"
           ],
@@ -61,7 +56,6 @@
           "examples": [
             "judge"
           ],
-          "default": "",
           "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "isPresiding": {
@@ -71,7 +65,6 @@
           "examples": [
             true
           ],
-          "default": "",
           "pattern": "^(?!.*<[^>]+>).*$"
         }
       }
@@ -91,7 +84,6 @@
             "APPLICANT",
             "RESPONDENT"
           ],
-          "default": "",
           "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "individualDetails": {
@@ -106,7 +98,6 @@
               "examples": [
                 "John Smith"
               ],
-              "default": "",
               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
             },
             "individualMiddleName": {
@@ -116,7 +107,6 @@
               "examples": [
                 "MiddleName"
               ],
-              "default": "",
               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
             },
             "individualSurname": {
@@ -126,7 +116,6 @@
               "examples": [
                 "Surname"
               ],
-              "default": "",
               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
             },
             "dateOfBirth": {
@@ -136,7 +125,6 @@
               "examples": [
                 "01-01-1901"
               ],
-              "default": "",
               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
             },
             "age": {
@@ -145,8 +133,7 @@
               "type": "integer",
               "examples": [
                 1
-              ],
-              "default": ""
+              ]
             },
             "address": {
               "title": "Address",
@@ -159,8 +146,7 @@
               "type": "boolean",
               "examples": [
                 "true"
-              ],
-              "default": ""
+              ]
             },
             "gender": {
               "description": "Party Gender",
@@ -169,7 +155,6 @@
               "examples": [
                 "male"
               ],
-              "default": "",
               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
             },
             "asn": {
@@ -179,7 +164,6 @@
               "examples": [
                 "ABC1234567D"
               ],
-              "default": "",
               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
             }
           }
@@ -195,7 +179,6 @@
                 "description": "Offence unique code",
                 "title": "Offence code",
                 "type": "string",
-                "default": "",
                 "examples": [
                   "dd01-01"
                 ],
@@ -205,7 +188,6 @@
                 "description": "Short description of offence",
                 "title": "Offence title",
                 "type": "string",
-                "default": "",
                 "examples": [
                   "drink driving"
                 ],
@@ -215,7 +197,6 @@
                 "description": "Long description of offence",
                 "title": "Offence wording",
                 "type": "string",
-                "default": "",
                 "examples": [
                   "driving whilst under the influence of alcohol"
                 ],
@@ -225,7 +206,6 @@
                 "description": "Maximum penalty if found guilty",
                 "title": "Offence Max Penalty",
                 "type": "string",
-                "default": "",
                 "examples": [
                   "10yrs"
                 ],
@@ -235,7 +215,6 @@
                 "title": "Reporting Restriction",
                 "description": "Any reporting restrictions posed to the offence",
                 "type": "boolean",
-                "default": "",
                 "examples": [
                   "true"
                 ],
@@ -282,7 +261,6 @@
                 "description": "Legislation associated with the offence",
                 "title": "Offence Legislation",
                 "type": "string",
-                "default": "",
                 "examples": [
                   "Road Traffic Act 1988"
                 ],
@@ -306,7 +284,6 @@
               "examples": [
                 "A & B Solicitors"
               ],
-              "default": "",
               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
             },
             "organisationAddress": {
@@ -320,22 +297,11 @@
           "title": "Subject Restriction",
           "description": "Party is subject of the application/case",
           "type": "boolean",
-          "default": "",
           "examples": [
             "true"
           ],
           "pattern": "^(?!.*<[^>]+>).*$"
         }
-      },
-      "hearingNumber": {
-        "title": "Hearing number",
-        "description": "This is also known as informant number",
-        "type": "string",
-        "default": "",
-        "examples": [
-          "12"
-        ],
-        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
       }
     }
   },
@@ -398,10 +364,15 @@
                 "description": "Name of the court house",
                 "title": "Court House Name",
                 "type": "string",
-                "default": "",
                 "examples": [
                   "PRESTON"
                 ],
+                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+              },
+              "lja": {
+                "title": "Local justice area name",
+                "type": "string",
+                "maxLength": 100,
                 "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
               },
               "courtRoom": {
@@ -442,7 +413,6 @@
                           "sittings": {
                             "title": "Sittings",
                             "type": "array",
-                            "default": [],
                             "items": {
                               "type": "object",
                               "required": [
@@ -454,7 +424,6 @@
                                   "description": "Sitting Start Time",
                                   "title": "Sitting Start",
                                   "type": "string",
-                                  "default": "",
                                   "examples": [],
                                   "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z$"
                                 },
@@ -472,7 +441,6 @@
                                         "examples": [
                                           "mda"
                                         ],
-                                        "default": "",
                                         "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                       },
                                       "case": {
@@ -481,17 +449,16 @@
                                           "type": "object",
                                           "title": "Case",
                                           "required": [
-                                            "caseNumber"
+                                            "caseUrn"
                                           ],
                                           "description": "Case Details",
                                           "properties": {
-                                            "caseNumber": {
-                                              "title": "Case Number",
+                                            "caseUrn": {
+                                              "title": "Case unique identifier",
                                               "description": "A number identifying a case",
                                               "type": "string",
-                                              "default": "",
                                               "examples": [
-                                                "45684548"
+                                                "ABC45684548"
                                               ],
                                               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
@@ -504,7 +471,6 @@
                                               "title": "Case Sequence Indicator",
                                               "description": "The case sequence indicator",
                                               "type": "string",
-                                              "default": "",
                                               "examples": [
                                                 "2 of 3"
                                               ],
@@ -525,7 +491,6 @@
                                           "title": "Panel",
                                           "description": "Information about the panel",
                                           "type": "string",
-                                          "default": "",
                                           "examples": [
                                             "CHILD or ADULT"
                                           ],
@@ -540,7 +505,6 @@
                                             "examples": [
                                               "VIDEO HEARING"
                                             ],
-                                            "default": "",
                                             "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                           }
                                         }
@@ -569,7 +533,6 @@
                                               "title": "Application Reference",
                                               "description": "application reference",
                                               "type": "string",
-                                              "default": "",
                                               "examples": [
                                                 "ABC1234567D"
                                               ],
@@ -579,7 +542,6 @@
                                               "title": "Application Type",
                                               "description": "application type",
                                               "type": "string",
-                                              "default": "",
                                               "examples": [
                                                 "application type example"
                                               ],
@@ -593,12 +555,6 @@
                                 }
                               }
                             }
-                          },
-                          "lja": {
-                            "title": "Local justice area name",
-                            "type": "string",
-                            "maxLength": 100,
-                            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                           }
                         }
                       }
