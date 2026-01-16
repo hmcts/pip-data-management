@@ -306,18 +306,6 @@
                                               }
                                             }
                                           }
-                                        },
-                                        "channel": {
-                                          "type": "array",
-                                          "items": {
-                                            "description": "Channel if different from in court",
-                                            "title": "Sitting Channel",
-                                            "type": "string",
-                                            "examples": [
-                                              "VIDEO HEARING"
-                                            ],
-                                            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                          }
                                         }
                                       },
                                       "application": {
