@@ -486,27 +486,27 @@
                                               }
                                             }
                                           }
-                                        },
-                                        "panel": {
-                                          "title": "Panel",
-                                          "description": "Information about the panel",
+                                        }
+                                      },
+                                      "panel": {
+                                        "title": "Panel",
+                                        "description": "Information about the panel",
+                                        "type": "string",
+                                        "examples": [
+                                          "CHILD or ADULT"
+                                        ],
+                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                      },
+                                      "channel": {
+                                        "type": "array",
+                                        "items": {
                                           "type": "string",
+                                          "description": "Channel if different from in court",
+                                          "title": "Sitting Channel",
                                           "examples": [
-                                            "CHILD or ADULT"
+                                            "VIDEO HEARING"
                                           ],
                                           "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                        },
-                                        "channel": {
-                                          "type": "array",
-                                          "items": {
-                                            "type": "string",
-                                            "description": "Channel if different from in court",
-                                            "title": "Sitting Channel",
-                                            "examples": [
-                                              "VIDEO HEARING"
-                                            ],
-                                            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                          }
                                         }
                                       },
                                       "application": {
