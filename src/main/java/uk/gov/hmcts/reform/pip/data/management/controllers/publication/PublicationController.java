@@ -240,11 +240,15 @@ public class PublicationController {
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
         Artefact artefact = createPublicationMetadataFromHeaders(headers, file.getSize(), true);
 
-        if (type.equals(ArtefactType.LCSU) && !enableLcsu) {
-            throw new LcsuArtefactNotSupportedException("LCSU artefact type is not supported.");
-        }
-
         if (type.equals(ArtefactType.LCSU)) {
+            String filename = file.getOriginalFilename();
+            boolean isHtmlFile = filename != null &&
+                (filename.toLowerCase().endsWith(".html") || filename.toLowerCase().endsWith(".htm"));
+
+            if (!enableLcsu || !isHtmlFile) {
+                throw new LcsuArtefactNotSupportedException("LCSU artefact type is not supported.");
+            }
+
             publicationServicesService.uploadHtmlFileToAwsS3Bucket(file);
             return ResponseEntity.status(HttpStatus.CREATED)
                 .body(artefact);
