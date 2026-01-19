@@ -76,6 +76,7 @@ class PublicationControllerTest {
     private static final String PAYLOAD = "payload";
     private static final Float PAYLOAD_SIZE = (float) PAYLOAD.getBytes().length / 1024;
     private static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
+    private static final MultipartFile HTML_FILE = new MockMultipartFile("file", "test.html", null, new byte[0]);
     private static final String PAYLOAD_URL = "This is a test payload";
     private static final String TEST_STRING = "test";
     private static final String VALIDATION_EXPECTED_MESSAGE =
@@ -448,7 +449,7 @@ class PublicationControllerTest {
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE_LCSU,
-            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, FILE
+            SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, HTML_FILE
         );
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
@@ -468,7 +469,7 @@ class PublicationControllerTest {
         try {
             publicationController.uploadPublication(
                 PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LCSU,
-                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, FILE
+                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, HTML_FILE
             );
             fail("Expected RuntimeException not thrown");
         } catch (RuntimeException ex) {
@@ -476,6 +477,7 @@ class PublicationControllerTest {
                        "Exception message does not match expected message");
         }
     }
+
 
     @Test
     void testDeleteArtefactReturnsOk() {
@@ -535,6 +537,26 @@ class PublicationControllerTest {
         when(validationService.validateHeaders(any())).thenReturn(lcsuHeaders);
 
         ReflectionTestUtils.setField(publicationController, "enableLcsu", false);
+
+        LcsuArtefactNotSupportedException exception = assertThrows(
+            LcsuArtefactNotSupportedException.class,
+            () -> publicationController.uploadPublication(
+                PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LCSU,
+                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, FILE
+            ),
+            "Expected LcsuArtefactNotSupportedException to be thrown"
+        );
+
+        // Validate that the exception contains the correct message
+        assertEquals("LCSU artefact type is not supported.", exception.getMessage(),
+                     "Exception message does not match expected");
+    }
+
+    @Test
+    void testInvalidLcsuFileTypeForProdEnvironmentSendsBadRequest() {
+        when(validationService.validateHeaders(any())).thenReturn(lcsuHeaders);
+
+        ReflectionTestUtils.setField(publicationController, "enableLcsu", true);
 
         LcsuArtefactNotSupportedException exception = assertThrows(
             LcsuArtefactNotSupportedException.class,
