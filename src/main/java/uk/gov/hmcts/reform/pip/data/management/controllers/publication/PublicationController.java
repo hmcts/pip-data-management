@@ -242,8 +242,8 @@ public class PublicationController {
 
         if (type.equals(ArtefactType.LCSU)) {
             String filename = file.getOriginalFilename();
-            boolean isHtmlFile = filename != null &&
-                (filename.toLowerCase().endsWith(".html") || filename.toLowerCase().endsWith(".htm"));
+            boolean isHtmlFile = filename != null
+                && (filename.toLowerCase().endsWith(".html") || filename.toLowerCase().endsWith(".htm"));
 
             if (!enableLcsu || !isHtmlFile) {
                 throw new LcsuArtefactNotSupportedException("LCSU artefact type is not supported.");

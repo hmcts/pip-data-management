@@ -468,8 +468,8 @@ class PublicationControllerTest {
 
         try {
             publicationController.uploadPublication(
-                PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LCSU,
-                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, HTML_FILE
+                PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LCSU, SENSITIVITY,
+                LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, HTML_FILE
             );
             fail("Expected RuntimeException not thrown");
         } catch (RuntimeException ex) {
