@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileFormatNotSupportedException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LcsuArtefactNotSupportedException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
@@ -558,17 +559,17 @@ class PublicationControllerTest {
 
         ReflectionTestUtils.setField(publicationController, "enableLcsu", true);
 
-        LcsuArtefactNotSupportedException exception = assertThrows(
-            LcsuArtefactNotSupportedException.class,
+        FileFormatNotSupportedException exception = assertThrows(
+            FileFormatNotSupportedException.class,
             () -> publicationController.uploadPublication(
                 PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LCSU,
                 SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, FILE
             ),
-            "Expected LcsuArtefactNotSupportedException to be thrown"
+            "Expected FileFormatNotSupportedException to be thrown"
         );
 
         // Validate that the exception contains the correct message
-        assertEquals("LCSU artefact type is not supported.", exception.getMessage(),
+        assertEquals("File format is not supported for LCSU.", exception.getMessage(),
                      "Exception message does not match expected");
     }
 }
