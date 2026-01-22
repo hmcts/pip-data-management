@@ -31,13 +31,7 @@ public class MagistratesAdultCourtListFileConverter implements FileConverter {
         context.setVariable("publicationDate",
                             DateHelper.convertDateFormat(publicationDate, "dd/MM/yyyy"));
 
-        if (payloadDocument.has("info") && payloadDocument.get("info").has("start_time")) {
-            String publicationTime = payloadDocument.get("info").get("start_time").asText();
-            context.setVariable("publicationTime",
-                                DateHelper.convertTimeFormat(publicationTime, "HH:mm:ss"));
-        } else {
-            context.setVariable("publicationTime", "");
-        }
+        context.setVariable("publicationTime", "");
 
         Language language = Language.valueOf(metadata.get("language"));
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));

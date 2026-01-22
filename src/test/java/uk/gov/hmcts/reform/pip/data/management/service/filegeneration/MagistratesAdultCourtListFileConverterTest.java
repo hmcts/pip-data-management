@@ -159,7 +159,7 @@ class MagistratesAdultCourtListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(2).text())
             .as(BODY_MESSAGE)
-            .isEqualTo("Last updated 31 July 2025 at 9:05am");
+            .isEqualTo("Last updated 31 July 2025");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
             .as(BODY_MESSAGE)
@@ -206,7 +206,7 @@ class MagistratesAdultCourtListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(2).text())
             .as(BODY_MESSAGE)
-            .isEqualTo("Last updated 31 July 2025 at 9:05am");
+            .isEqualTo("Last updated 31 July 2025");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
             .as(BODY_MESSAGE)
@@ -253,7 +253,7 @@ class MagistratesAdultCourtListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(2).text())
             .as(BODY_MESSAGE)
-            .isEqualTo("Diweddarwyd diwethaf 31 July 2025 am 9:05am");
+            .isEqualTo("Diweddarwyd diwethaf 31 July 2025");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
             .as(BODY_MESSAGE)
@@ -300,7 +300,7 @@ class MagistratesAdultCourtListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(2).text())
             .as(BODY_MESSAGE)
-            .isEqualTo("Diweddarwyd diwethaf 31 July 2025 am 9:05am");
+            .isEqualTo("Diweddarwyd diwethaf 31 July 2025");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
             .as(BODY_MESSAGE)

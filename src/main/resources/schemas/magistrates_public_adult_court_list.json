@@ -13,13 +13,7 @@
         "info": {
           "title": "Document information",
           "type": "object",
-          "properties": {
-            "start_time": {
-              "title": "Run start time in the format hh:mm:ss",
-              "type": "string",
-              "pattern": "^\\d{2}:\\d{2}:\\d{2}$"
-            }
-          }
+          "properties": {}
         },
         "data": {
           "title": "Document data",
