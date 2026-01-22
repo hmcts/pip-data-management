@@ -6,8 +6,8 @@ locals {
 
   apim_name_prefix = "sds-api-mgmt"
   apim_name        = "${local.apim_name_prefix}-${local.env}"
-  apim_rg       = "ss-${local.env}-network-rg"
-  env_long_name = var.env == "sbox" ? "sandbox" : var.env == "stg" ? "staging" : var.env
+  apim_rg          = "ss-${local.env}-network-rg"
+  env_long_name    = var.env == "sbox" ? "sandbox" : var.env == "stg" ? "staging" : var.env
 
   deploy_apim = local.env == "stg" || local.env == "demo" || local.env == "test" || local.env == "sbox" || local.env == "prod" ? 1 : 0
 
