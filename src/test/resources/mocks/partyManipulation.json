@@ -9,7 +9,15 @@
         "individualMiddleName": "Applicant Middlename",
         "individualSurname": "Applicant Surname",
         "title": "Applicant Title"
-      }
+      },
+      "offence": [
+        {
+          "offenceTitle": "Test offence 1"
+        },
+        {
+          "offenceTitle": "Test offence 2"
+        }
+      ]
     },
     {
       "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
