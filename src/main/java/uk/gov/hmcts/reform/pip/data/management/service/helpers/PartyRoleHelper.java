@@ -29,6 +29,7 @@ public final class PartyRoleHelper {
     private static final String INDIVIDUAL_SURNAME = "individualSurname";
     private static final String TITLE = "title";
     private static final String ORGANISATION_DETAILS = "organisationDetails";
+    private static final String OFFENCE = "offence";
 
     private PartyRoleHelper() {
     }
@@ -161,5 +162,21 @@ public final class PartyRoleHelper {
             return GeneralHelper.findAndReturnNodeText(organisationDetails, "organisationName");
         }
         return "";
+    }
+
+    public static void handlePartyOffences(JsonNode node) {
+        List<String> offences = new ArrayList<>();
+
+        if (node.has(PARTY)) {
+            node.get(PARTY).forEach(party -> {
+                if (party.has(OFFENCE)) {
+                    party.get(OFFENCE).forEach(offence -> {
+                        offences.add(GeneralHelper.findAndReturnNodeText(offence, "offenceTitle"));
+                    });
+                }
+            });
+        }
+        ObjectNode nodeObj = (ObjectNode) node;
+        nodeObj.put(OFFENCE, String.join(DELIMITER, offences));
     }
 }
