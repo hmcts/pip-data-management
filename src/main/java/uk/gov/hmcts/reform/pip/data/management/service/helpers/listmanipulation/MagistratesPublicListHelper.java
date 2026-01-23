@@ -29,14 +29,14 @@ public final class MagistratesPublicListHelper {
                     StringBuilder formattedJudiciary = new StringBuilder();
                     formattedJudiciary.append(JudiciaryHelper.findAndManipulateJudiciary(session));
                     session.get("sittings").forEach(sitting -> {
-                        DateHelper.calculateDuration(sitting, language);
                         DateHelper.formatStartTime(sitting, "h:mma");
                         sitting.get("hearing").forEach(hearing -> {
                             formatCaseInformation(hearing);
                             formatCaseHtmlTable(hearing);
-                            hearing.get("case").forEach(
-                                PartyRoleHelper::handleParties
-                            );
+                            hearing.get("case").forEach(hearingCase -> {
+                                PartyRoleHelper.handleParties(hearingCase);
+                                PartyRoleHelper.handlePartyOffences(hearingCase);
+                            });
                         });
                     });
                     LocationHelper.formattedCourtRoomName(courtRoom, session, formattedJudiciary);
