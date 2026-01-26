@@ -19,7 +19,7 @@
           "1 Main Road",
           "London"
         ],
-        "Postcode": "A1 1AA"
+        "PostCode": "A1 1AA"
       },
       "CourtHouseTelephone": "02071234567"
     },
@@ -35,7 +35,7 @@
               "1 Main Road",
               "London"
             ],
-            "Postcode": "A1 1AA"
+            "PostCode": "A1 1AA"
           },
           "CourtHouseTelephone": "02071234568"
         },
@@ -130,7 +130,7 @@
                       "Sex": "male",
                       "Address": {
                         "Line": ["TestDefendantAddress"],
-                        "Postcode": "TestDefendantPostcode"
+                        "PostCode": "TestDefendantPostcode"
                       },
                       "Nationality": "TestNationality"
                     },
@@ -176,7 +176,7 @@
               "1 High Road",
               "London"
             ],
-            "Postcode": "B1 1BB"
+            "PostCode": "B1 1BB"
           },
           "CourtHouseTelephone": "02071234568"
         },
@@ -251,7 +251,7 @@
                       "Sex": "male",
                       "Address": {
                         "Line": ["TestDefendantAddress"],
-                        "Postcode": "TestDefendantPostcode"
+                        "PostCode": "TestDefendantPostcode"
                       },
                       "Nationality": "TestNationality"
                     },

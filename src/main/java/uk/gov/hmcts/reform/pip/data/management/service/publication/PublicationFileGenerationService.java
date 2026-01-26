@@ -37,6 +37,7 @@ public class PublicationFileGenerationService {
     private static final int MAX_FILE_SIZE = 2_000_000;
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final String SNL = "SNL";
+    private static final String PDDA = "PDDA";
     private static final String MANUAL_UPLOAD = "MANUAL_UPLOAD";
 
     private final PublicationRetrievalService publicationRetrievalService;
@@ -57,12 +58,18 @@ public class PublicationFileGenerationService {
     }
 
     public static String convertDataSourceName(String provenance, Language language) {
-        if (SNL.equals(provenance)) {
-            return "ListAssist";
-        } else if (MANUAL_UPLOAD.equals(provenance) && language == Language.WELSH) {
-            return "Lanlwytho â Llaw";
-        }
-        return  WordUtils.capitalizeFully(provenance.replaceAll("_", " "));
+        return switch (provenance) {
+            case SNL -> "ListAssist";
+            case PDDA -> PDDA;
+            case MANUAL_UPLOAD -> {
+                if (language == Language.WELSH) {
+                    yield  "Lanlwytho â Llaw";
+                } else {
+                    yield "Manual Upload";
+                }
+            }
+            default -> WordUtils.capitalizeFully(provenance.replaceAll("_", " "));
+        };
     }
 
     /**

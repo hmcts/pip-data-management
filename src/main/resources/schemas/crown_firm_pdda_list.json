@@ -37,7 +37,7 @@
           "maxItems": 5,
           "items": { "type": "string" }
         },
-        "Postcode": { "type": "string" }
+        "PostCode": { "type": "string" }
       }
     }
   },
