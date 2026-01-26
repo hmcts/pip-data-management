@@ -39,7 +39,6 @@ public class MagistratesPublicListFileConverter implements FileConverter {
         context.setVariable("locationName", metadata.get("locationName"));
         context.setVariable("provenance", metadata.get("provenance"));
         context.setVariable("venueAddress", LocationHelper.formatFullVenueAddress(artefact));
-        context.setVariable("version", artefact.get("document").get("version").asText());
         context.setVariable("artefact", artefact);
 
         MagistratesPublicListHelper.manipulatedMagistratesPublicListData(artefact, language);

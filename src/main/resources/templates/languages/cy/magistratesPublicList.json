@@ -7,10 +7,6 @@
   "listDate": "Rhestr ar gyfer ",
   "listUpdated": "Diweddarwyd diwethaf ",
   "at": " am ",
-  "draft": "Drafft: ",
-  "versionText": "Fersiwn",
-  "email": "E-bost: ",
-  "telephone": "Rhif ffôn: ",
   "restrictionInformationHeading": "Cyfyngiadau ar gyhoeddi neu ysgrifennu am yr achosion hyn.",
   "restrictionInformationP1": "Rhaid i chi wirio a oes unrhyw gyfyngiadau riportio yn berthnasol cyn cyhoeddi manylion am unrhyw un o'r achosion a restrir yma, naill ai'n ysgrifenedig, mewn darllediad neu ar y rhyngrwyd, gan gynnwys y cyfryngau cymdeithasol.",
   "restrictionInformationBoldText": "Byddwch yn euog o ddirmyg llys os byddwch yn cyhoeddi unrhyw wybodaeth sydd wedi'i diogelu gan gyfyngiad riportio. Gallwch gael dirwy, eich dedfrydu i garchar, neu'r ddau.",
@@ -28,13 +24,12 @@
     "Yn eistedd yn"
   ],
   "headerValuesWrap": [
-    "Cyfeirnod yr Achos",
-    "Enw'r Diffynnydd(Diffynyddion)",
+    "URN",
+    "Enw",
     "Math o Wrandawiad",
-    "Yr Awdurdod sy'n Erlyn",
-    "Hyd"
+    "Yr Awdurdod sy'n Erlyn"
   ],
-  "listingNotes": "Manylion yr achos: ",
+  "offenceDetails": "Manylion yr Trosedd: ",
   "dataSource": "Ffynhonnell Data: ",
   "thanks": "Diolch am ddarllen y ddogfen hon yn fanwl.",
   "bottomLegal1": "Noder bod y ddogfen hon yn cynnwys Data Categori Arbennig fel y’i diffinnir yn Neddf Gwarchod Data 2018, a elwid gynt yn Ddata Personol Sensitif, a dylid ei drin yn y ffordd briodol.",

@@ -70,7 +70,7 @@ class MagistratesPublicListSummaryDataTest {
 
         softly.assertThat(keys.get(0))
             .as(SUMMARY_FIELD_KEY_MESSAGE)
-            .isEqualTo("Defendant");
+            .isEqualTo("Name");
 
         softly.assertThat(keys.get(1))
             .as(SUMMARY_FIELD_KEY_MESSAGE)
@@ -78,7 +78,7 @@ class MagistratesPublicListSummaryDataTest {
 
         softly.assertThat(keys.get(2))
             .as(SUMMARY_FIELD_KEY_MESSAGE)
-            .isEqualTo("Case reference");
+            .isEqualTo("URN");
 
         softly.assertThat(keys.get(3))
             .as(SUMMARY_FIELD_KEY_MESSAGE)

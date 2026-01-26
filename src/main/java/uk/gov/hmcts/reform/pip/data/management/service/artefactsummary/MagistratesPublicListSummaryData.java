@@ -27,12 +27,12 @@ public class MagistratesPublicListSummaryData implements ArtefactSummaryData {
                         sitting -> sitting.get("hearing").forEach(
                             hearing -> hearing.get("case").forEach(hearingCase -> {
                                 Map<String, String> fields = ImmutableMap.of(
-                                    "Defendant",
+                                    "Name",
                                     GeneralHelper.findAndReturnNodeText(hearingCase, "defendant"),
                                     "Prosecuting authority",
                                     GeneralHelper.findAndReturnNodeText(hearingCase, "prosecutingAuthority"),
-                                    "Case reference",
-                                    GeneralHelper.findAndReturnNodeText(hearingCase, "caseNumber"),
+                                    "URN",
+                                    GeneralHelper.findAndReturnNodeText(hearingCase, "caseUrn"),
                                     "Hearing type",
                                     GeneralHelper.findAndReturnNodeText(hearing, "hearingType")
                                 );

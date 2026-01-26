@@ -21,6 +21,7 @@ class PartyRoleHelperTest {
     private static final String PARTY = "party";
 
     private static final String PARTY_NAME_MESSAGE = "Party names do not match";
+    private static final String PARTY_OFFENCE_MESSAGE = "Party offences do not match";
 
     private static JsonNode inputJson;
 
@@ -200,5 +201,11 @@ class PartyRoleHelperTest {
             .isEqualTo("Prosecuting authority name");
     }
 
-
+    @Test
+    void testHandlePartyOffences() {
+        PartyRoleHelper.handlePartyOffences(inputJson);
+        assertThat(inputJson.get("offence").asText())
+            .as(PARTY_OFFENCE_MESSAGE)
+            .isEqualTo("Test offence 1, Test offence 2");
+    }
 }
