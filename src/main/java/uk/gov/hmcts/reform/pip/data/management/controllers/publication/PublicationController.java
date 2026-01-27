@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileFormatNotSupportedException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LcsuArtefactNotSupportedException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
@@ -240,11 +241,18 @@ public class PublicationController {
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
         Artefact artefact = createPublicationMetadataFromHeaders(headers, file.getSize(), true);
 
-        if (type.equals(ArtefactType.LCSU) && !enableLcsu) {
-            throw new LcsuArtefactNotSupportedException("LCSU artefact type is not supported.");
-        }
-
         if (type.equals(ArtefactType.LCSU)) {
+            if (!enableLcsu) {
+                throw new LcsuArtefactNotSupportedException("LCSU artefact type is not supported.");
+            }
+
+            String filename = file.getOriginalFilename();
+            boolean isHtmlFile = filename != null
+                && (filename.toLowerCase().endsWith(".html") || filename.toLowerCase().endsWith(".htm"));
+            if (!isHtmlFile) {
+                throw new FileFormatNotSupportedException("File format is not supported for LCSU.");
+            }
+
             publicationServicesService.uploadHtmlFileToAwsS3Bucket(file);
             return ResponseEntity.status(HttpStatus.CREATED)
                 .body(artefact);
