@@ -253,7 +253,8 @@
                         </tr>
                         <tr class="govuk-table__row">
                           <td class="govuk-table__cell no-border-bottom"><span class="row-heading" th:text="${i18n.adjournedFrom}" /></td>
-                          <td class="govuk-table__cell no-border-bottom" th:text="${offence.adjournedDate + ' - ' + i18n.adjournedText}" />
+                          <td class="govuk-table__cell no-border-bottom" th:if="${!#strings.isEmpty(offence.adjournedDate)}" th:text="${offence.adjournedDate + ' - ' + i18n.adjournedText}" />
+                          <td class="govuk-table__cell no-border-bottom" th:if="${#strings.isEmpty(offence.adjournedDate)}" />
                         </tr>
                       </tbody>
                     </table>

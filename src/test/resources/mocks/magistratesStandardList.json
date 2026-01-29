@@ -90,7 +90,6 @@
                                     "plea": "GUILTY",
                                     "pleaDate": "2026-01-27T10:00:00.123Z",
                                     "convictionDate": "2026-05-01T11:00:00.123Z",
-                                    "adjournedDate": "2026-05-02T11:00:00.123Z",
                                     "offenceLegislation": "This is a legislation"
                                   }
                                 ]

@@ -406,6 +406,20 @@ class MagistratesStandardListFileConverterTest {
     }
 
     @Test
+    void testAdjournedFromIsEmptyWhenNotSet() throws IOException {
+        String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
+        Document document = Jsoup.parse(result);
+        SoftAssertions softly = new SoftAssertions();
+
+        Elements tableCell = document.getElementsByClass("govuk-table__cell");
+        softly.assertThat(tableCell.get(25).text())
+            .as(OFFENCE_MESSAGE)
+            .isEmpty();
+
+        softly.assertAll();
+    }
+
+    @Test
     void testDataSource() throws IOException {
         String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(result);
