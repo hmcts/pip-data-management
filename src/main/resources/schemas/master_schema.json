@@ -587,7 +587,7 @@
                                               "type": "array",
                                               "items": {
                                                 "title": "Party",
-                                                "type": "#/$defs/party"
+                                                "$ref": "#/$defs/party"
 
                                               }
                                             },
@@ -705,7 +705,7 @@
                                         "type": "array",
                                         "items": {
                                           "title": "Party",
-                                          "type": "#/$defs/party"
+                                          "$ref": "#/$defs/party"
 
                                         }
                                       },
