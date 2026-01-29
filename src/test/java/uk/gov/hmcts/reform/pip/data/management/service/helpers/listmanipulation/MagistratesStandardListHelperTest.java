@@ -6,12 +6,12 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.CaseInfo;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.CaseSitting;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.DefendantInfo;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.MagistratesStandardList;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.CourtRoom;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.GroupedPartyMatters;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.Matter;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.MatterMetadata;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.Offence;
-import uk.gov.hmcts.reform.pip.model.publication.Language;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.PartyInfo;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -26,13 +26,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 class MagistratesStandardListHelperTest {
-    private static final String COURT_ROOM1 = "Courtroom 1: Judge Test Name, Magistrate Test Name";
-    private static final String COURT_ROOM2 = "Courtroom 2: Judge Test Name 2, Magistrate Test Name 2";
+    private static final String COURT_ROOM1 = "Courtroom 1: Test Name, Test NamePRESTON";
+    private static final String COURT_ROOM2 = "Courtroom 2: PRESTON";
 
     private static final String COURT_ROOM_MESSAGE = "Court room and judiciary does not match";
-    private static final String CASE_SITTING_MESSAGE = "Case sitting does not match";
-    private static final String DEFENDANT_INFO_MESSAGE = "Defendant info does not match";
-    private static final String CASE_INFO_MESSAGE = "Case info does not match";
+    private static final String MATTER_MESSAGE = "Matter does not match";
+    private static final String SUBJECT_PARTY_MESSAGE = "Subject GroupedPartyMatters info does not match";
+    private static final String MATTER_INFO_MESSAGE = "Case info does not match";
     private static final String OFFENCE_MESSAGE = "Offence does not match";
 
     private static JsonNode inputJson;
@@ -49,10 +49,8 @@ class MagistratesStandardListHelperTest {
     }
 
     @Test
-    void testCourtRoomAndJudiciary() {
-        Map<String, List<MagistratesStandardList>> result = MagistratesStandardListHelper.processRawListData(
-            inputJson, Language.ENGLISH
-        );
+    void testCourtRoomAndJudiciaryKey() {
+        Map<String, CourtRoom> result = MagistratesStandardListHelper.processRawListData(inputJson);
 
         assertThat(result)
             .as(COURT_ROOM_MESSAGE)
@@ -62,124 +60,170 @@ class MagistratesStandardListHelperTest {
     }
 
     @Test
-    void testDefendantHeading() {
-        Map<String, List<MagistratesStandardList>> result = MagistratesStandardListHelper.processRawListData(
-            inputJson, Language.ENGLISH
-        );
+    void testPartyHeading() {
+        Map<String, CourtRoom> result = MagistratesStandardListHelper.processRawListData(inputJson);
 
-        assertThat(result.get(COURT_ROOM1))
-            .hasSize(3)
-            .extracting(MagistratesStandardList::getDefendantHeading)
-            .containsExactly("Surname1, Forename1 (male)",
-                             "Surname2, Forename2 (male)*",
-                             "Surname3, Forename3 (male)*");
+        assertThat(result.get(COURT_ROOM1).getGroupedPartyMatters())
+            .hasSize(1)
+            .extracting(GroupedPartyMatters::getPartyHeading)
+            .containsExactly("Surname A, Forename A (male)");
 
-        assertThat(result.get(COURT_ROOM2))
+        assertThat(result.get(COURT_ROOM2).getGroupedPartyMatters())
             .hasSize(4)
-            .extracting(MagistratesStandardList::getDefendantHeading)
-            .containsExactly("Surname4, Forename4 (male)*",
-                             "Surname5, Forename5 (male)*",
-                             "Surname6, Forename6 (male)*",
-                             "Surname5, Forename5");
+            .extracting(GroupedPartyMatters::getPartyHeading)
+            .containsExactly("Surname B, Forename B (male)*",
+                             "Surname D, Forename D (female)*",
+                             "This is an organisation",
+                             "Surname E, Forename E (female)*");
     }
 
     @Test
-    void testCaseSittings() {
-        Map<String, List<MagistratesStandardList>> result = MagistratesStandardListHelper.processRawListData(
-            inputJson, Language.ENGLISH
-        );
+    void testCourtRoomObject() {
+        Map<String, CourtRoom> result = MagistratesStandardListHelper.processRawListData(inputJson);
 
-        List<CaseSitting> caseSittings1 = result
-            .get(COURT_ROOM1).get(0)
-            .getCaseSittings();
+        CourtRoom courtRoom = result.get(COURT_ROOM1);
 
-        assertThat(caseSittings1)
-            .as(CASE_SITTING_MESSAGE)
+        assertThat(courtRoom)
+            .as(COURT_ROOM_MESSAGE)
+            .extracting(CourtRoom::getCourtRoomName,
+                        CourtRoom::getCourtHouseName,
+                        CourtRoom::getLja)
+            .containsExactly(
+                "Courtroom 1: Test Name, Test Name",
+                "PRESTON",
+                "Local Justice Area A");
+
+        CourtRoom courtRoom2 = result.get(COURT_ROOM2);
+        assertThat(courtRoom2)
+            .as(COURT_ROOM_MESSAGE)
+            .extracting(CourtRoom::getCourtRoomName,
+                        CourtRoom::getCourtHouseName,
+                        CourtRoom::getLja)
+            .containsExactly(
+                "Courtroom 2: ",
+                "PRESTON",
+                "Local Justice Area A");
+    }
+
+    @Test
+    void testMatterObject() {
+        Map<String, CourtRoom> result = MagistratesStandardListHelper.processRawListData(inputJson);
+
+        List<Matter> matters = result
+            .get(COURT_ROOM1).getGroupedPartyMatters().get(0)
+            .getMatters();
+
+        assertThat(matters)
+            .as(MATTER_MESSAGE)
             .hasSize(1)
             .first()
-            .extracting(CaseSitting::getSittingStartTime,
-                        CaseSitting::getSittingDuration)
-            .containsExactly("1:30pm",
-                             "2 hours 30 mins");
+            .extracting(Matter::getSittingStartTime)
+            .isEqualTo("1:30pm");
 
-        List<CaseSitting> caseSittings2 = result
-            .get(COURT_ROOM2).get(0)
-            .getCaseSittings();
+        List<Matter> sittings2 = result
+            .get(COURT_ROOM2).getGroupedPartyMatters().get(0)
+            .getMatters();
 
-        assertThat(caseSittings2)
-            .as(CASE_SITTING_MESSAGE)
+        assertThat(sittings2)
+            .as(MATTER_MESSAGE)
             .hasSize(2);
     }
 
     @Test
-    void testDefendantInfo() {
-        Map<String, List<MagistratesStandardList>> result = MagistratesStandardListHelper.processRawListData(
-            inputJson, Language.ENGLISH
-        );
+    void testPartyInfo() {
+        Map<String, CourtRoom> result = MagistratesStandardListHelper.processRawListData(inputJson);
 
-        DefendantInfo defendantInfo = result
-            .get(COURT_ROOM1).get(0)
-            .getCaseSittings().get(0)
-            .getDefendantInfo();
+        PartyInfo partyInfo = result
+            .get(COURT_ROOM1).getGroupedPartyMatters().get(0)
+            .getMatters().get(0)
+            .getPartyInfo();
 
-        assertThat(defendantInfo)
-            .as(DEFENDANT_INFO_MESSAGE)
-            .extracting(DefendantInfo::getDob,
-                        DefendantInfo::getAge,
-                        DefendantInfo::getAddress,
-                        DefendantInfo::getPlea,
-                        DefendantInfo::getPleaDate)
-            .containsExactly("01/01/1983",
-                             "39",
-                             "Address Line 1, Address Line 2, Town A, County A, AA1 AA1",
-                             "NOT_GUILTY",
-                             "Need to confirm");
+        assertThat(partyInfo)
+            .as(SUBJECT_PARTY_MESSAGE)
+            .extracting(
+                PartyInfo::getName,
+                PartyInfo::getDob,
+                PartyInfo::getAge,
+                PartyInfo::getAddress,
+                PartyInfo::getAsn)
+            .containsExactly(
+                     "Surname A, Forename A",
+                             "01/01/1950",
+                             "20",
+                             "Address Line 1A, Address Line 2A, Town A, County A, AA1 AA1",
+                             "ABC1234");
     }
 
     @Test
-    void testCaseInfo() {
-        Map<String, List<MagistratesStandardList>> result = MagistratesStandardListHelper.processRawListData(
-            inputJson, Language.ENGLISH
-        );
+    void testPartyInfoWhenOrganisation() {
+        Map<String, CourtRoom> result = MagistratesStandardListHelper.processRawListData(inputJson);
 
-        CaseInfo caseInfo = result
-            .get(COURT_ROOM1).get(0)
-            .getCaseSittings().get(0)
-            .getCaseInfo();
+        PartyInfo partyInfo = result
+            .get(COURT_ROOM2).getGroupedPartyMatters().get(2)
+            .getMatters().get(0)
+            .getPartyInfo();
 
-        assertThat(caseInfo)
-            .as(CASE_INFO_MESSAGE)
-            .extracting(CaseInfo::getProsecutingAuthorityCode,
-                        CaseInfo::getHearingNumber,
-                        CaseInfo::getAttendanceMethod,
-                        CaseInfo::getCaseNumber,
-                        CaseInfo::getCaseSequenceIndicator,
-                        CaseInfo::getAsn,
-                        CaseInfo::getHearingType,
-                        CaseInfo::getPanel,
-                        CaseInfo::getConvictionDate,
-                        CaseInfo::getAdjournedDate)
-            .containsExactly("Test1234",
-                             "12",
-                             "VIDEO HEARING",
+        assertThat(partyInfo)
+            .as(SUBJECT_PARTY_MESSAGE)
+            .extracting(
+                PartyInfo::getName,
+                PartyInfo::getAddress)
+            .containsExactly(
+                "This is an organisation",
+                "Address Line 1E, Address Line 2E, Town E, This is a postcode");
+    }
+
+    @Test
+    void testMatterInfo() {
+        Map<String, CourtRoom> result = MagistratesStandardListHelper.processRawListData(inputJson);
+
+        MatterMetadata matterMetadata = result
+            .get(COURT_ROOM1).getGroupedPartyMatters().get(0)
+            .getMatters().get(0)
+            .getMatterMetadata();
+
+        assertThat(matterMetadata)
+            .as(MATTER_INFO_MESSAGE)
+            .extracting(
+                MatterMetadata::getProsecutingAuthority,
+                MatterMetadata::getAttendanceMethod,
+                MatterMetadata::getReference,
+                MatterMetadata::getCaseSequenceIndicator,
+                MatterMetadata::getHearingType,
+                MatterMetadata::getPanel)
+            .containsExactly("Prosecuting Authority Name",
+                             "VIDEO HEARING A",
                              "45684548",
                              "2 of 3",
-                             "Need to confirm",
-                             "mda",
-                             "ADULT",
-                             "13/12/2023",
-                             "13/12/2023");
+                             "Hearing Type A",
+                             "ADULT");
+    }
+
+    @Test
+    void testMatterInfoWhenApplication() {
+        Map<String, CourtRoom> result = MagistratesStandardListHelper.processRawListData(inputJson);
+
+        MatterMetadata matterMetadata = result
+            .get(COURT_ROOM2).getGroupedPartyMatters().get(3)
+            .getMatters().get(0)
+            .getMatterMetadata();
+
+        assertThat(matterMetadata)
+            .as(MATTER_INFO_MESSAGE)
+            .extracting(
+                MatterMetadata::getReference,
+                MatterMetadata::getApplicationType)
+            .containsExactly("AppRefC",
+                             "Application Type 3");
     }
 
     @Test
     void testOffences() {
-        Map<String, List<MagistratesStandardList>> result = MagistratesStandardListHelper.processRawListData(
-            inputJson, Language.ENGLISH
-        );
+        Map<String, CourtRoom> result = MagistratesStandardListHelper.processRawListData(inputJson);
 
         List<Offence> offences = result
-            .get(COURT_ROOM1).get(0)
-            .getCaseSittings().get(0)
+            .get(COURT_ROOM1).getGroupedPartyMatters().get(0)
+            .getMatters().get(0)
             .getOffences();
 
         assertThat(offences)
@@ -189,15 +233,22 @@ class MagistratesStandardListHelperTest {
         assertThat(offences.get(0))
             .as(OFFENCE_MESSAGE)
             .extracting(Offence::getOffenceTitle,
-                        Offence::getOffenceWording)
+                        Offence::getOffenceWording,
+                        Offence::getOffenceCode,
+                        Offence::getOffenceLegislation,
+                        Offence::getOffenceMaxPenalty,
+                        Offence::getAdjournedDate,
+                        Offence::getConvictionDate,
+                        Offence::getPleaDate,
+                        Offence::getPlea)
             .containsExactly("drink driving",
-                             "driving whilst under the influence of alcohol");
-
-        assertThat(offences.get(1))
-            .as(OFFENCE_MESSAGE)
-            .extracting(Offence::getOffenceTitle,
-                        Offence::getOffenceWording)
-            .containsExactly("Assault by beating",
-                             "Assault by beating");
+                             "driving whilst under the influence of alcohol",
+                             "dd01-01",
+                             "This is a legislation",
+                             "100yrs",
+                             "02/05/2026",
+                             "01/05/2026",
+                             "27/06/2026",
+                             "NOT_GUILTY");
     }
 }
