@@ -79,7 +79,7 @@ class MagistratesStandardListSummaryDataTest {
 
         softly.assertThat(values.get(0))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)
-            .isEqualTo("Surname A, Forename A");
+            .isEqualTo("Surname A, Forename A MiddleName A");
 
         softly.assertThat(values.get(1))
             .as(SUMMARY_FIELD_VALUE_MESSAGE)

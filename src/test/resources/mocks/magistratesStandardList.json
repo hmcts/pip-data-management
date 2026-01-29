@@ -201,6 +201,7 @@
                                 "subject": true,
                                 "individualDetails": {
                                   "individualForenames": "Forename B",
+                                  "individualMiddleName": "MiddleName B",
                                   "individualSurname": "Surname B",
                                   "age": 21,
                                   "address": {

@@ -66,12 +66,12 @@ class MagistratesStandardListHelperTest {
         assertThat(result.get(COURT_ROOM1).getGroupedPartyMatters())
             .hasSize(1)
             .extracting(GroupedPartyMatters::getPartyHeading)
-            .containsExactly("Surname A, Forename A (male)");
+            .containsExactly("Surname A, Forename A MiddleName A (male)");
 
         assertThat(result.get(COURT_ROOM2).getGroupedPartyMatters())
             .hasSize(4)
             .extracting(GroupedPartyMatters::getPartyHeading)
-            .containsExactly("Surname B, Forename B (male)*",
+            .containsExactly("Surname B, Forename B MiddleName B (male)*",
                              "Surname D, Forename D (female)*",
                              "This is an organisation",
                              "Surname E, Forename E (female)*");
@@ -147,7 +147,7 @@ class MagistratesStandardListHelperTest {
                 PartyInfo::getAddress,
                 PartyInfo::getAsn)
             .containsExactly(
-                     "Surname A, Forename A",
+                     "Surname A, Forename A MiddleName A",
                              "01/01/1950",
                              "20",
                              "Address Line 1A, Address Line 2A, Town A, County A, AA1 AA1",

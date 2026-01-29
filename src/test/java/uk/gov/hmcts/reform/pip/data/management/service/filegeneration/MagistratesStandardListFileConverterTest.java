@@ -202,11 +202,11 @@ class MagistratesStandardListFileConverterTest {
 
         softly.assertThat(heading.get(0).text())
             .as(PARTY_HEADING_MESSAGE)
-            .contains("Name: Surname A, Forename A (male)");
+            .contains("Name: Surname A, Forename A MiddleName A (male)");
 
         softly.assertThat(heading.get(1).text())
             .as(PARTY_HEADING_MESSAGE)
-            .contains("Name: Surname B, Forename B (male)*");
+            .contains("Name: Surname B, Forename B MiddleName B (male)*");
 
         softly.assertThat(heading.get(2).text())
             .as(PARTY_HEADING_MESSAGE)
