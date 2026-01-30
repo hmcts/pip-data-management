@@ -286,10 +286,10 @@ public final class MagistratesStandardListHelper {
                                               Matter matter) {
         // Check if a case / application with the same party heading has already been stored.
         // If so append the new case to it, or else create a new case and add to the list of cases
-        Optional<GroupedPartyMatters> commonCase = fetchCommonPartyCaseOrApplication(cases, partyHeading);
+        Optional<GroupedPartyMatters> commonMatter = fetchCommonMatter(cases, partyHeading);
 
-        if (commonCase.isPresent()) {
-            commonCase.get().getMatters().add(matter);
+        if (commonMatter.isPresent()) {
+            commonMatter.get().getMatters().add(matter);
         } else {
             List<Matter> matters = new ArrayList<>();
             matters.add(matter);
@@ -297,11 +297,11 @@ public final class MagistratesStandardListHelper {
         }
     }
 
-    private static Optional<GroupedPartyMatters> fetchCommonPartyCaseOrApplication(List<GroupedPartyMatters> courtRooms,
+    private static Optional<GroupedPartyMatters> fetchCommonMatter(List<GroupedPartyMatters> existingMatters,
                                                                                    String partyHeading) {
-        for (GroupedPartyMatters c : courtRooms) {
-            if (c.getPartyHeading().equals(partyHeading)) {
-                return Optional.of(c);
+        for (GroupedPartyMatters matter : existingMatters) {
+            if (matter.getPartyHeading().equals(partyHeading)) {
+                return Optional.of(matter);
             }
         }
         return Optional.empty();
