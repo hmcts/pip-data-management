@@ -21,7 +21,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_STA
 @ActiveProfiles("test")
 class MagistratesStandardListSummaryDataTest {
     private static final String SUMMARY_SECTIONS_MESSAGE = "Summary sections count does not match";
-    private static final String SUMMARY_CASES_MESSAGE = "Summary cases count does not match";
+    private static final String SUMMARY_MATTERS_MESSAGE = "Summary matters count does not match";
     private static final String SUMMARY_FIELDS_MESSAGE = "Summary fields count does not match";
     private static final String SUMMARY_FIELD_KEY_MESSAGE = "Summary field key does not match";
     private static final String SUMMARY_FIELD_VALUE_MESSAGE = "Summary field value does not match";
@@ -52,12 +52,12 @@ class MagistratesStandardListSummaryDataTest {
             .as(SUMMARY_SECTIONS_MESSAGE)
             .hasSize(1);
 
-        List<Map<String, String>> summaryCases = output.get(null);
-        softly.assertThat(summaryCases)
-            .as(SUMMARY_CASES_MESSAGE)
-            .hasSize(6);
+        List<Map<String, String>> summaryMatters = output.get(null);
+        softly.assertThat(summaryMatters)
+            .as(SUMMARY_MATTERS_MESSAGE)
+            .hasSize(7);
 
-        Map<String, String> summaryFieldsForCase = summaryCases.get(0);
+        Map<String, String> summaryFieldsForCase = summaryMatters.get(0);
         softly.assertThat(summaryFieldsForCase)
             .as(SUMMARY_FIELDS_MESSAGE)
             .hasSize(5);
@@ -104,7 +104,7 @@ class MagistratesStandardListSummaryDataTest {
     void testMagistratesStandardListSummaryForApplication() throws IOException {
         Map<String, List<Map<String, String>>> output = getSummary();
         SoftAssertions softly = new SoftAssertions();
-        Map<String, String> summaryFieldsForApplication = output.get(null).get(3);
+        Map<String, String> summaryFieldsForApplication = output.get(null).get(4);
 
         assertSummaryFieldKeys(softly, summaryFieldsForApplication);
 

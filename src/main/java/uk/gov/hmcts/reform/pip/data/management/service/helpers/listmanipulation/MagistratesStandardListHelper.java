@@ -87,46 +87,62 @@ public final class MagistratesStandardListHelper {
 
         jsonData.get(COURT_LISTS).forEach(
             courtList -> courtList.get(COURT_HOUSE).get(COURT_ROOM).forEach(
-                courtRoom -> courtRoom.get(SESSION).forEach(
-                    session -> session.get(SITTINGS).forEach(sitting -> {
-                        processSittingInfo(courtRoom, session, sitting);
-                        List<GroupedPartyMatters> groupedPartyMatters = new ArrayList<>();
-                        sitting.get(HEARING).forEach(hearing -> {
-                            if (hearing.has(CASE)) {
-                                hearing.get(CASE).forEach(caseObject -> {
-                                    if (caseObject.has(PARTY)) {
-                                        MatterMetadata matterMetadata = buildMatter(caseObject, hearing, false);
-                                        caseObject.get(PARTY).forEach(
-                                            party -> processParty(party, sitting,
-                                                                  matterMetadata, groupedPartyMatters)
-                                        );
+                courtRoom ->
+                    courtRoom.get(SESSION).forEach(
+                        session -> {
+                            List<GroupedPartyMatters> groupedPartyMatters = new ArrayList<>();
+                            session.get(SITTINGS).forEach(sitting -> {
+                                processSittingInfo(courtRoom, session, sitting);
+                                sitting.get(HEARING).forEach(hearing -> {
+                                    if (hearing.has(CASE)) {
+                                        hearing.get(CASE).forEach(caseObject -> {
+                                            if (caseObject.has(PARTY)) {
+                                                MatterMetadata matterMetadata = buildMatter(caseObject, hearing, false);
+                                                caseObject.get(PARTY).forEach(
+                                                    party -> processParty(
+                                                        party, sitting,
+                                                        matterMetadata, groupedPartyMatters
+                                                    )
+                                                );
+                                            }
+                                        });
                                     }
-                                });
-                            }
 
-                            if (hearing.has(APPLICATION)) {
-                                hearing.get(APPLICATION).forEach(applicationObject -> {
-                                    if (applicationObject.has(PARTY)) {
-                                        MatterMetadata applicationInfo = buildMatter(applicationObject, hearing, true);
-                                        applicationObject.get(PARTY).forEach(
-                                            party -> processParty(party, sitting, applicationInfo, groupedPartyMatters)
-                                        );
+                                    if (hearing.has(APPLICATION)) {
+                                        hearing.get(APPLICATION).forEach(applicationObject -> {
+                                            if (applicationObject.has(PARTY)) {
+                                                MatterMetadata applicationInfo = buildMatter(
+                                                    applicationObject,
+                                                    hearing, true
+                                                );
+                                                applicationObject.get(PARTY).forEach(
+                                                    party -> processParty(
+                                                        party, sitting,
+                                                        applicationInfo, groupedPartyMatters
+                                                    )
+                                                );
+                                            }
+                                        });
                                     }
                                 });
-                            }
-                        });
-                        listData.computeIfAbsent(session.get(FORMATTED_COURT_ROOM).asText()
-                                                     + courtList.get(COURT_HOUSE).get(COURT_HOUSE_NAME).asText(),
-                             x -> {
-                                CourtRoom metadata = new CourtRoom();
-                                metadata.setCourtRoomName(session.get(FORMATTED_COURT_ROOM).asText());
-                                metadata.setLja(GeneralHelper.findAndReturnNodeText(courtList.get(COURT_HOUSE), LJA));
-                                metadata.setCourtHouseName(
-                                    GeneralHelper.findAndReturnNodeText(courtList.get(COURT_HOUSE), COURT_HOUSE_NAME));
-                                return metadata;
-                            }).getGroupedPartyMatters().addAll(groupedPartyMatters);
-                    })
-                )
+                            });
+
+                            listData.computeIfAbsent(
+                                session.get(FORMATTED_COURT_ROOM).asText()
+                                    + courtList.get(COURT_HOUSE).get(COURT_HOUSE_NAME).asText(),
+                                x -> {
+                                    CourtRoom metadata = new CourtRoom();
+                                    metadata.setCourtRoomName(session.get(FORMATTED_COURT_ROOM).asText());
+                                    metadata.setLja(GeneralHelper.findAndReturnNodeText(
+                                        courtList.get(COURT_HOUSE), LJA));
+                                    metadata.setCourtHouseName(
+                                        GeneralHelper.findAndReturnNodeText(
+                                            courtList.get(COURT_HOUSE), COURT_HOUSE_NAME));
+                                    return metadata;
+                                }
+                            ).getGroupedPartyMatters().addAll(groupedPartyMatters);
+                        }
+                    )
             )
         );
         return listData;

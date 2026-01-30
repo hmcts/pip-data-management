@@ -105,6 +105,78 @@
                         ]
                       }
                     ]
+                  },
+                  {
+                    "sittingStart": "2023-12-13T16:30:52.123Z",
+                    "hearing": [
+                      {
+                        "hearingType": "Hearing Type A",
+                        "panel": "ADULT",
+                        "channel": [
+                          "VIDEO HEARING A"
+                        ],
+                        "case": [
+                          {
+                            "caseUrn": "45684548",
+                            "caseSequenceIndicator": "2 of 3",
+                            "reportingRestriction": true,
+                            "party": [
+                              {
+                                "partyRole": "DEFENDANT",
+                                "subject": true,
+                                "individualDetails": {
+                                  "individualForenames": "Forename A",
+                                  "individualMiddleName": "MiddleName A",
+                                  "individualSurname": "Surname A",
+                                  "dateOfBirth": "01/01/1950",
+                                  "age": 20,
+                                  "address": {
+                                    "county": "County A",
+                                    "town": "Town A",
+                                    "postCode": "AA1 AA1",
+                                    "line": [
+                                      "Address Line 1A",
+                                      "Address Line 2A"
+                                    ]
+                                  },
+                                  "gender": "male",
+                                  "asn": "ABC1234"
+                                },
+                                "offence": [
+                                  {
+                                    "offenceCode": "dd01-01",
+                                    "offenceTitle": "drink driving",
+                                    "offenceWording": "driving whilst under the influence of alcohol",
+                                    "offenceMaxPen": "100yrs",
+                                    "plea": "NOT_GUILTY",
+                                    "pleaDate": "2026-06-27T10:00:00.123Z",
+                                    "convictionDate": "2026-05-01T11:00:00.123Z",
+                                    "adjournedDate": "2026-05-02T11:00:00.123Z",
+                                    "offenceLegislation": "This is a legislation"
+                                  },
+                                  {
+                                    "offenceCode": "dd01-01",
+                                    "offenceTitle": "Assault by beating",
+                                    "offenceWording": "Assault by beating",
+                                    "offenceMaxPen": "100yrs",
+                                    "plea": "GUILTY",
+                                    "pleaDate": "2026-01-27T10:00:00.123Z",
+                                    "convictionDate": "2026-05-01T11:00:00.123Z",
+                                    "offenceLegislation": "This is a legislation"
+                                  }
+                                ]
+                              },
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "organisationDetails": {
+                                  "organisationName": "Prosecuting Authority Name"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }

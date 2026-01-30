@@ -270,13 +270,27 @@ class MagistratesStandardListFileConverterTest {
     }
 
     @Test
+    void testMatterWhenSecondSittingExists() throws IOException {
+        String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
+        Document document = Jsoup.parse(result);
+        Elements body = document.getElementsByClass(BODY_CLASS);
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(body.get(18).text())
+            .as(MATTER_INFO_MESSAGE)
+            .contains("Sitting at 4:30pm [2 of 3]");
+
+        softly.assertAll();
+    }
+
+    @Test
     void testMatterInfoHeaderWhenApplication() throws IOException {
         String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(result);
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(body.get(42).text())
+        softly.assertThat(body.get(51).text())
             .as(MATTER_INFO_MESSAGE)
             .contains("Application Type");
 
@@ -332,7 +346,7 @@ class MagistratesStandardListFileConverterTest {
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(body.get(42).text())
+        softly.assertThat(body.get(51).text())
             .as(MATTER_INFO_MESSAGE)
             .contains("Application Type 1");
 
@@ -426,7 +440,7 @@ class MagistratesStandardListFileConverterTest {
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(body.get(65).text())
+        softly.assertThat(body.get(74).text())
             .as(PROVENANCE_MESSAGE)
             .contains("Data Source: provenance");
 

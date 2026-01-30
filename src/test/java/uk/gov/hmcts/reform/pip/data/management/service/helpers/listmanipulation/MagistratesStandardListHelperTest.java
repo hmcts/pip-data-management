@@ -115,10 +115,9 @@ class MagistratesStandardListHelperTest {
 
         assertThat(matters)
             .as(MATTER_MESSAGE)
-            .hasSize(1)
-            .first()
+            .hasSize(2)
             .extracting(Matter::getSittingStartTime)
-            .isEqualTo("1:30pm");
+            .containsExactly("1:30pm", "4:30pm");
 
         List<Matter> sittings2 = result
             .get(COURT_ROOM2).getGroupedPartyMatters().get(0)
