@@ -241,18 +241,15 @@ public class PublicationController {
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
         Artefact artefact = createPublicationMetadataFromHeaders(headers, file.getSize(), true);
 
+        if (type.equals(ArtefactType.LCSU) && !enableLcsu) {
+            throw new LcsuArtefactNotSupportedException("LCSU artefact type is not supported.");
+        }
+
+        if (type.equals(ArtefactType.LCSU) && !validateLcsuUploadFile(file)) {
+            throw new FileFormatNotSupportedException("File format is not supported for LCSU.");
+        }
+
         if (type.equals(ArtefactType.LCSU)) {
-            if (!enableLcsu) {
-                throw new LcsuArtefactNotSupportedException("LCSU artefact type is not supported.");
-            }
-
-            String filename = file.getOriginalFilename();
-            boolean isHtmlFile = filename != null
-                && (filename.toLowerCase().endsWith(".html") || filename.toLowerCase().endsWith(".htm"));
-            if (!isHtmlFile) {
-                throw new FileFormatNotSupportedException("File format is not supported for LCSU.");
-            }
-
             publicationServicesService.uploadHtmlFileToAwsS3Bucket(file);
             return ResponseEntity.status(HttpStatus.CREATED)
                 .body(artefact);
@@ -476,5 +473,11 @@ public class PublicationController {
             || listType.equals(ListType.CROWN_DAILY_PDDA_LIST)
             || listType.equals(ListType.CROWN_FIRM_PDDA_LIST)
             || listType.equals(ListType.CROWN_WARNED_PDDA_LIST));
+    }
+
+    private boolean validateLcsuUploadFile(MultipartFile file) {
+        String filename = file.getOriginalFilename();
+        return filename != null
+            && (filename.toLowerCase().endsWith(".html") || filename.toLowerCase().endsWith(".htm"));
     }
 }
