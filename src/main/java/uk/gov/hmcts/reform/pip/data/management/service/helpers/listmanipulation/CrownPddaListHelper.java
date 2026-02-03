@@ -80,7 +80,7 @@ public final class CrownPddaListHelper {
             });
         }
 
-        String postcode = GeneralHelper.findAndReturnNodeText(address, "Postcode");
+        String postcode = GeneralHelper.findAndReturnNodeText(address, "PostCode");
         if (!postcode.isEmpty()) {
             addressLines.add(postcode);
         }
