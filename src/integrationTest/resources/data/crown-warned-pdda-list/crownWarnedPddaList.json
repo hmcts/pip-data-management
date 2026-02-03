@@ -16,7 +16,7 @@
       "CourtHouseName": "TestCourtHouseName",
       "CourtHouseAddress": {
         "Line": ["TestAddressLine1", "TestAddressLine2"],
-        "Postcode": "TestPostcode"
+        "PostCode": "TestPostcode"
       },
       "CourtHouseTelephone": "TestTelephone"
     },
@@ -30,7 +30,7 @@
           "CourtHouseName": "TestCourtHouseName",
           "CourtHouseAddress": {
             "Line": ["TestAddressLine1"],
-            "Postcode": "TestPostcode"
+            "PostCode": "TestPostcode"
           },
           "CourtHouseTelephone": "TestTelephone"
         },
@@ -81,7 +81,7 @@
                         "Sex": "male",
                         "Address": {
                           "Line": ["TestDefendantAddress"],
-                          "Postcode": "TestDefendantPostcode"
+                          "PostCode": "TestDefendantPostcode"
                         },
                         "Nationality": "TestNationality"
                       },
@@ -173,7 +173,7 @@
                         "Sex": "female",
                         "Address": {
                           "Line": ["TestDefendantAddress2"],
-                          "Postcode": "TestDefendantPostcode2"
+                          "PostCode": "TestDefendantPostcode2"
                         },
                         "Nationality": "TestNationality2"
                       },
