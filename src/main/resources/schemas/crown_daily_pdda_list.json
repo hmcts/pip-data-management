@@ -66,15 +66,7 @@
           ]
         },
         "Address": {
-          "type": "object",
-          "properties": {
-            "Line": {
-              "type": "array",
-              "maxItems": 5,
-              "items": { "type": "string" }
-            },
-            "Postcode": { "type": "string" }
-          }
+          "$ref": "#/$defs/Address"
         },
         "Nationality": { "type": "string" }
       }
@@ -87,7 +79,7 @@
           "maxItems": 5,
           "items": { "type": "string" }
         },
-        "Postcode": { "type": "string" }
+        "PostCode": { "type": "string" }
       }
     }
   },
