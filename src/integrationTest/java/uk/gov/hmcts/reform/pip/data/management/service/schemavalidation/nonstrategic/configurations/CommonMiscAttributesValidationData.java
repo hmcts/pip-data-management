@@ -23,6 +23,7 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.MODE_OF_HEARING;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.NAME_TO_BE_DISPLAYED;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.OPEN_JUSTICE_DETAILS_NODE;
+import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.PANEL;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.REPRESENTATIVE;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.RESPONDENT;
 import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.NonStrategicListTestConstants.SEND_DAILY_HEARING_LIST_JSON_FILE_PATH;
@@ -261,14 +262,23 @@ public final class CommonMiscAttributesValidationData {
 
     public static Stream<Arguments> panelMandatoryAttribute() {
         Map<ListType, String> listTypeJsonFile = Map.ofEntries(
+            ListTypeEntries.WPAFCC_WEEKLY_HEARING_LIST_ENTRY
+        );
+
+        AbstractSchemaValidationTestDataProvider attributeValidationProvider =
+            new CommonAttributesSchemaValidationTestDataProvider(listTypeJsonFile, PANEL);
+        return attributeValidationProvider.attributeValidationTestInputs();
+    }
+
+    public static Stream<Arguments> tribunalMandatoryAttribute() {
+        Map<ListType, String> listTypeJsonFile = Map.ofEntries(
             ListTypeEntries.SSCS_LONDON_DAILY_HEARING_LIST_ENTRY,
             ListTypeEntries.SSCS_MIDLANDS_DAILY_HEARING_LIST_ENTRY,
             ListTypeEntries.SSCS_NORTH_EAST_DAILY_HEARING_LIST_ENTRY,
             ListTypeEntries.SSCS_NORTH_WEST_DAILY_HEARING_LIST_ENTRY,
             ListTypeEntries.SSCS_SCOTLAND_DAILY_HEARING_LIST_ENTRY,
             ListTypeEntries.SSCS_SOUTH_EAST_DAILY_HEARING_LIST_ENTRY,
-            ListTypeEntries.SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST_ENTRY,
-            ListTypeEntries.WPAFCC_WEEKLY_HEARING_LIST_ENTRY
+            ListTypeEntries.SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST_ENTRY
         );
 
         AbstractSchemaValidationTestDataProvider attributeValidationProvider =
