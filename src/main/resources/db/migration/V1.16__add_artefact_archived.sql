@@ -16,5 +16,5 @@ CREATE TABLE IF NOT EXISTS artefact_archived (
       last_received_date TIMESTAMP,
       superseded_count INTEGER,
       archived_date TIMESTAMP,
-      is_manually_deleted BOOLEAN DEFAULT FALSE
+      is_manually_deleted BOOLEAN
 );
