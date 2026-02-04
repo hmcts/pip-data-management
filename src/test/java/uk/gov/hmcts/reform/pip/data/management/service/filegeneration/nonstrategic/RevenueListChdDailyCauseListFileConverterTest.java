@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.REVENUE_LIST_CHD_DAILY_CAUSE_LIST;
 
 @ActiveProfiles("test")
@@ -45,6 +46,9 @@ class RevenueListChdDailyCauseListFileConverterTest {
     private static final String LAST_UPDATED_DATE_ELEMENT = "last-updated-date";
     private static final String SUMMARY_TITLE_CLASS = "govuk-details__summary-text";
     private static final String SUMMARY_TEXT_CLASS = "govuk-details__text";
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
+    private static final String BODY_CLASS = "govuk-body";
 
     private static final String TITLE_MESSAGE = "Title does not match";
     private static final String HEADER_MESSAGE = "Header does not match";
@@ -53,6 +57,7 @@ class RevenueListChdDailyCauseListFileConverterTest {
     private static final String LAST_UPDATED_DATE_MESSAGE = "Last updated date does not match";
     private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information heading does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
+    private static final String LINK_MESSAGE = "Link does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -97,6 +102,17 @@ class RevenueListChdDailyCauseListFileConverterTest {
         softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
             .isEqualTo("Revenue List (Chancery Division) Daily Cause List");
+
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
 
         softly.assertThat(document.getElementById(VENUE_NAME_ELEMENT).text())
             .as(VENUE_MESSAGE)
@@ -176,6 +192,17 @@ class RevenueListChdDailyCauseListFileConverterTest {
             .as(HEADER_MESSAGE)
             .isEqualTo("Rhestr Achosion Dyddiol Refeniw (Adran Siawnsri)");
 
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
+                           + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
+
         softly.assertThat(document.getElementById(VENUE_NAME_ELEMENT).text())
             .as(VENUE_MESSAGE)
             .isEqualTo("Adeilad Rolls");
@@ -221,5 +248,42 @@ class RevenueListChdDailyCauseListFileConverterTest {
             );
 
         softly.assertAll();
+    }
+
+    @Test
+    void testRevenueListChdDailyCauseListTableContents() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/revenueListChdDailyCauseList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH, LIST_TYPE_METADATA,
+            REVENUE_LIST_CHD_DAILY_CAUSE_LIST.name(),
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(cstInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
+            .as("Table contents does not match")
+            .extracting(Element::text)
+            .containsSequence(
+                "Judge A",
+                "9am",
+                "Venue A",
+                "Type A",
+                "12345",
+                "Case name A",
+                "This is additional information"
+            );
     }
 }

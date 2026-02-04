@@ -6,8 +6,8 @@
   "lastUpdated": "Diweddarwyd ddiwethaf ",
   "inThe": "Yn y ",
   "listFor": "Rhestr ar gyfer ",
-  "courtOfProtection": "Llys Gwarchod ",
-  "regionalLeadJudge": "Barnwr Arweiniol Rhanbarthol: ",
+  "courtOfProtection": "Llys Gwarchod",
+  "regionalLeadJudge": "Barnwr Arweiniol Rhanbarthol ",
   "sittingAt": "Yn eistedd yn ",
   "at": " am ",
   "importantInfo": "Gwybodaeth bwysig",
@@ -16,6 +16,7 @@
     "Amser dechrau",
     "Cyfeirnod achos",
     "Manylion yr achos",
+    "Math o achos",
     "Math o wrandawiad",
     "Amcangyfrif o'r amser",
     "Sianel y Gwrandawiad"

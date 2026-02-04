@@ -30,6 +30,11 @@ class CivilAndFamilyCauseListFileConverterTest {
     private static final String PROVENANCE = "provenance";
     private static final String HEADER_TEXT = "Incorrect Header Text";
     private static final String TITLE_TEXT = "Incorrect Title Text";
+    private static final String LINK_MESSAGE = "Link does not match";
+
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
+    private static final String BODY_CLASS = "govuk-body";
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final Map<String, String> METADATA = Map.of(
@@ -37,6 +42,14 @@ class CivilAndFamilyCauseListFileConverterTest {
         PROVENANCE, PROVENANCE,
         "locationName", "location",
         "language", "ENGLISH",
+        "listType", "CIVIL_AND_FAMILY_DAILY_CAUSE_LIST"
+    );
+
+    private static final Map<String, String> WELSH_METADATA = Map.of(
+        "contentDate", Instant.now().toString(),
+        PROVENANCE, PROVENANCE,
+        "locationName", "location",
+        "language", "WELSH",
         "listType", "CIVIL_AND_FAMILY_DAILY_CAUSE_LIST"
     );
 
@@ -61,12 +74,23 @@ class CivilAndFamilyCauseListFileConverterTest {
                        .get(0).text())
             .as(HEADER_TEXT).isEqualTo("Civil and Family Daily Cause List for location");
 
-        assertThat(document.getElementsByClass("govuk-body")
-                       .get(2).text())
+        assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
+
+        assertThat(document.getElementsByClass(BODY_CLASS)
+                       .get(3).text())
             .as(HEADER_TEXT).contains("Last updated 21 July 2022");
 
         assertThat(document.getElementsByTag("a")
-                       .get(0).attr("title"))
+                       .get(1).attr("title"))
             .as(TITLE_TEXT).contains("How to observe a court or tribunal hearing");
 
         assertThat(document.getElementsByClass("govuk-accordion__section-heading"))
@@ -88,7 +112,7 @@ class CivilAndFamilyCauseListFileConverterTest {
                 });
         }
         JsonNode inputJson = getInputJson();
-        String outputHtml = civilAndFamilyDailyCauseListConverter.convert(inputJson, METADATA, language);
+        String outputHtml = civilAndFamilyDailyCauseListConverter.convert(inputJson, WELSH_METADATA, language);
         Document document = Jsoup.parse(outputHtml);
         assertThat(outputHtml).as("No html found").isNotEmpty();
 
@@ -99,12 +123,23 @@ class CivilAndFamilyCauseListFileConverterTest {
                        .get(0).text())
             .as(HEADER_TEXT).isEqualTo("Rhestr Achosion Dyddiol Sifil a Theuluolt gyfer location");
 
-        assertThat(document.getElementsByClass("govuk-body")
-                       .get(2).text())
+        assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
+                           + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
+
+        assertThat(document.getElementsByClass(BODY_CLASS)
+                       .get(3).text())
             .as(HEADER_TEXT).contains("Diweddarwyd ddiwethaf 21 July 2022 am 3:01pm");
 
         assertThat(document.getElementsByTag("a")
-                       .get(0).attr("title"))
+                       .get(1).attr("title"))
             .as(TITLE_TEXT).contains("Sut i arsylwi gwrandawiad llys neu dribiwnlys");
 
         assertThat(document.getElementsByClass("govuk-accordion__section-heading"))

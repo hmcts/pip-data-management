@@ -34,10 +34,11 @@ class MagistratesAdultCourtListFileConverterTest {
     private static final String LOCATION_NAME = "locationName";
     private static final String LANGUAGE = "language";
     private static final String LIST_TYPE = "listType";
+    private static final String FACT_LINK = "https://www.find-court-tribunal.service.gov.uk/";
 
     private static final String HTML_MESSAGE = "No html found";
     private static final String TITLE_MESSAGE = "Incorrect title found";
-    private static final String GOVUK_HEADING_L = "govuk-heading-l";
+    private static final String LINK_MESSAGE = "Link does not match";
     private static final String HEADER_MESSAGE = "Incorrect header text";
     private static final String BODY_MESSAGE = "Incorrect body text";
     private static final String COURT_ROOM_HEADING_MESSAGE = "Court room heading does not match";
@@ -47,7 +48,10 @@ class MagistratesAdultCourtListFileConverterTest {
     private static final String MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE =
         "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE";
 
+    private static final String GOVUK_HEADING_L = "govuk-heading-l";
     private static final String BODY_CLASS = "govuk-body";
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
 
     private final MagistratesAdultCourtListFileConverter standardConverter =
         new MagistratesAdultCourtListFileConverter(true);
@@ -138,15 +142,26 @@ class MagistratesAdultCourtListFileConverterTest {
             .as(HEADER_MESSAGE)
             .contains("Magistrates Standard List for location");
 
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo(FACT_LINK);
+
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
-            .as(BODY_MESSAGE)
-            .isEqualTo("List for 1 August 2025");
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(1).text())
             .as(BODY_MESSAGE)
-            .isEqualTo("Last updated 31 July 2025 at 9:05am");
+            .isEqualTo("List for 1 August 2025");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(2).text())
+            .as(BODY_MESSAGE)
+            .isEqualTo("Last updated 31 July 2025 at 9:05am");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
             .as(BODY_MESSAGE)
             .contains("Restrictions on publishing or writing about these cases");
 
@@ -174,15 +189,26 @@ class MagistratesAdultCourtListFileConverterTest {
             .as(HEADER_MESSAGE)
             .contains("Magistrates Public List for location");
 
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo(FACT_LINK);
+
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
-            .as(BODY_MESSAGE)
-            .isEqualTo("List for 1 August 2025");
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(1).text())
             .as(BODY_MESSAGE)
-            .isEqualTo("Last updated 31 July 2025 at 9:05am");
+            .isEqualTo("List for 1 August 2025");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(2).text())
+            .as(BODY_MESSAGE)
+            .isEqualTo("Last updated 31 July 2025 at 9:05am");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
             .as(BODY_MESSAGE)
             .contains("Restrictions on publishing or writing about these cases");
 
@@ -210,15 +236,26 @@ class MagistratesAdultCourtListFileConverterTest {
             .as(HEADER_MESSAGE)
             .contains("Rhestr Safonol y Llys Ynadon ar gyfer location");
 
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo(FACT_LINK);
+
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
-            .as(BODY_MESSAGE)
-            .isEqualTo("Rhestr ar gyfer 1 August 2025");
+            .as(LINK_MESSAGE)
+            .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
+                           + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(1).text())
             .as(BODY_MESSAGE)
-            .isEqualTo("Diweddarwyd diwethaf 31 July 2025 am 9:05am");
+            .isEqualTo("Rhestr ar gyfer 1 August 2025");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(2).text())
+            .as(BODY_MESSAGE)
+            .isEqualTo("Diweddarwyd diwethaf 31 July 2025 am 9:05am");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
             .as(BODY_MESSAGE)
             .contains("Cyfyngiadau ar gyhoeddi neu ysgrifennu am yr achosion hyn");
 
@@ -246,15 +283,26 @@ class MagistratesAdultCourtListFileConverterTest {
             .as(HEADER_MESSAGE)
             .contains("Rhestr Gyhoeddus y Llys Ynadon ar gyfer location");
 
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo(FACT_LINK);
+
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
-            .as(BODY_MESSAGE)
-            .isEqualTo("Rhestr ar gyfer 1 August 2025");
+            .as(LINK_MESSAGE)
+            .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
+                           + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(1).text())
             .as(BODY_MESSAGE)
-            .isEqualTo("Diweddarwyd diwethaf 31 July 2025 am 9:05am");
+            .isEqualTo("Rhestr ar gyfer 1 August 2025");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(2).text())
+            .as(BODY_MESSAGE)
+            .isEqualTo("Diweddarwyd diwethaf 31 July 2025 am 9:05am");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
             .as(BODY_MESSAGE)
             .contains("Cyfyngiadau ar gyhoeddi neu ysgrifennu am yr achosion hyn");
 
@@ -267,7 +315,7 @@ class MagistratesAdultCourtListFileConverterTest {
     void testStandardSessionHeadings(ListType listType) throws IOException {
         Map<String, String> metadata = createMetaDataMap(listType, Language.ENGLISH);
         String result = standardConverter.convert(standardInputJson, metadata, standardEnglishLanguageResource);
-        assertSessionHeadings(Jsoup.parse(result));
+        assertSessionHeadings(Jsoup.parse(result), 8);
     }
 
     @ParameterizedTest
@@ -276,15 +324,15 @@ class MagistratesAdultCourtListFileConverterTest {
     void testPublicSessionHeadings(ListType listType) throws IOException {
         Map<String, String> metadata = createMetaDataMap(listType, Language.ENGLISH);
         String result = publicConverter.convert(publicInputJson, metadata, publicEnglishLanguageResource);
-        assertSessionHeadings(Jsoup.parse(result));
+        assertSessionHeadings(Jsoup.parse(result), 6);
     }
 
-    private void assertSessionHeadings(Document document) {
+    private void assertSessionHeadings(Document document, int expectedSessions) {
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(document.getElementsByClass("site-header"))
             .as("Session heading count does not match")
-            .hasSize(2);
+            .hasSize(expectedSessions);
 
         String firstSessionHeading = document.getElementsByClass("site-header").get(0).text();
         softly.assertThat(firstSessionHeading)

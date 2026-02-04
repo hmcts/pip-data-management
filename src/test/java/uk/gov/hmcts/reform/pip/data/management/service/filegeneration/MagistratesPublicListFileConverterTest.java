@@ -20,14 +20,21 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class MagistratesPublicListFileConverterTest {
 
     private final MagistratesPublicListFileConverter magistratesPublicListFileConverter
         = new MagistratesPublicListFileConverter();
 
     private static final String HEADER_TEXT = "Incorrect header text";
+    private static final String LINK_MESSAGE = "Link does not match";
+
     private static final String PROVENANCE = "provenance";
+
     private static final String BODY_CLASS = "govuk-body";
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
 
     @Test
     void testMagistratesPublicListTemplate() throws IOException {
@@ -66,23 +73,34 @@ class MagistratesPublicListFileConverterTest {
             .as(HEADER_TEXT)
             .isEqualTo("Magistrates Public List for location");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS)
-                              .get(1).text())
-            .as(HEADER_TEXT)
-            .isEqualTo("Last updated 14 September 2020 at 12:30am");
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS)
                               .get(2).text())
             .as(HEADER_TEXT)
+            .isEqualTo("Last updated 14 September 2020 at 12:30am");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS)
+                              .get(3).text())
+            .as(HEADER_TEXT)
             .isEqualTo("Draft: Version");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS)
-                              .get(4).text())
+                              .get(5).text())
             .as(HEADER_TEXT)
             .isEqualTo("Telephone: 01772 844700");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS)
-                              .get(5).text())
+                              .get(6).text())
             .as(HEADER_TEXT)
             .isEqualTo("Email: court1@moj.gov.uk");
 
@@ -103,12 +121,6 @@ class MagistratesPublicListFileConverterTest {
                 "Prosecuting Authority",
                 "Duration"
             );
-
-        softly.assertThat(document.getElementsByClass("govuk-table__body").get(0)
-                              .getElementsByTag("td"))
-            .as("Incorrect 'Sitting at' time")
-            .extracting(Element::text)
-            .contains("10:40am", "8am");
 
         softly.assertAll();
     }
@@ -150,23 +162,34 @@ class MagistratesPublicListFileConverterTest {
             .as(HEADER_TEXT)
             .isEqualTo("Rhestr Gyhoeddus y Llys Ynadon ar gyfer location");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS)
-                              .get(1).text())
-            .as(HEADER_TEXT)
-            .isEqualTo("Diweddarwyd diwethaf 14 September 2020 am 12:30am");
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
+                           + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS)
                               .get(2).text())
             .as(HEADER_TEXT)
+            .isEqualTo("Diweddarwyd diwethaf 14 September 2020 am 12:30am");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS)
+                              .get(3).text())
+            .as(HEADER_TEXT)
             .isEqualTo("Drafft: Fersiwn");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS)
-                              .get(4).text())
+                              .get(5).text())
             .as(HEADER_TEXT)
             .isEqualTo("Rhif ffôn: 01772 844700");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS)
-                              .get(5).text())
+                              .get(6).text())
             .as(HEADER_TEXT)
             .isEqualTo("E-bost: court1@moj.gov.uk");
 
@@ -189,5 +212,55 @@ class MagistratesPublicListFileConverterTest {
             );
 
         softly.assertAll();
+    }
+
+    @Test
+    void testMagistratesPublicListTableContents() throws IOException {
+        Map<String, Object> language;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader().getResourceAsStream("templates/languages/en/magistratesPublicList.json")) {
+            language = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(
+            Files.newInputStream(Paths.get(
+                "src/test/resources/mocks/",
+                "magistratesPublicList.json"
+            )), writer,
+            Charset.defaultCharset()
+        );
+        Map<String, String> metadataMap = Map.of(
+            "contentDate", Instant.now().toString(),
+            PROVENANCE, PROVENANCE,
+            "locationName", "location",
+            "language", "ENGLISH",
+            "listType", "MAGISTRATES_PUBLIC_LIST"
+        );
+
+        JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
+        String outputHtml = magistratesPublicListFileConverter.convert(inputJson, metadataMap, language);
+        Document document = Jsoup.parse(outputHtml);
+
+        assertThat(document.getElementsByClass("govuk-table__body").get(0)
+                       .getElementsByTag("td"))
+            .as("Incorrect 'Sitting at' time")
+            .extracting(Element::text)
+            .contains("10:40am", "8am");
+
+        assertThat(document.getElementsByTag("td"))
+            .as("Table contents does not match")
+            .extracting(Element::text)
+            .containsSequence(
+                "10:40am",
+                "12345678",
+                "Surname 1, Forename 1",
+                "FHDRA1 (First Hearing and Dispute Resolution Appointment)",
+                "Pro_Auth",
+                "1 hour 5 mins [2 of 3]",
+                "Case Details: Listing details text"
+            );
     }
 }

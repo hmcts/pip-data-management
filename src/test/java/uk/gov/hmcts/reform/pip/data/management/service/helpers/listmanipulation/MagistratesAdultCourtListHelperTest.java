@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -38,12 +39,13 @@ class MagistratesAdultCourtListHelperTest {
 
         standardInputJson = OBJECT_MAPPER.readTree(magistratesWriter.toString());
 
+        StringWriter publicMagistratesWriter = new StringWriter();
         IOUtils.copy(
             Files.newInputStream(Paths.get("src/test/resources/mocks/magistratesPublicAdultCourtList.json")),
-            magistratesWriter, Charset.defaultCharset()
+            publicMagistratesWriter, Charset.defaultCharset()
         );
 
-        publicInputJson = OBJECT_MAPPER.readTree(magistratesWriter.toString());
+        publicInputJson = OBJECT_MAPPER.readTree(publicMagistratesWriter.toString());
     }
 
     @ParameterizedTest
@@ -57,7 +59,7 @@ class MagistratesAdultCourtListHelperTest {
 
         softly.assertThat(results)
             .as("Magistrates Adult Court List result count does not match")
-            .hasSize(2);
+            .hasSize(isStandardList ? 8 : 6);
 
 
         softly.assertThat(results.get(0).getCases())
@@ -186,6 +188,48 @@ class MagistratesAdultCourtListHelperTest {
         softly.assertThat(offence.getOffenceSummary())
             .as("Magistrates Adult Court List offence summary does not match")
             .isEqualTo("Welsh offence summary 1");
+
+        softly.assertAll();
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void testCorrectHandlingWhenNoSessionsObjectExists(boolean isStandardList) {
+        JsonNode originalPayload = isStandardList ? standardInputJson : publicInputJson;
+        JsonNode copyOfInputJson = originalPayload.deepCopy();
+
+        ((ObjectNode) copyOfInputJson.get("document")
+            .get("data").get("job")).remove("sessions");
+
+        List<MagistratesAdultCourtList> results = MagistratesAdultCourtListHelper.processPayload(
+            copyOfInputJson, Language.ENGLISH, isStandardList);
+
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(results)
+            .as("Magistrates Adult Court List result count does not match")
+            .hasSize(0);
+
+        softly.assertAll();
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void testCorrectHandlingWhenNoSessionArrayExist(boolean isStandardList) {
+        JsonNode originalPayload = isStandardList ? standardInputJson : publicInputJson;
+        JsonNode copyOfInputJson = originalPayload.deepCopy();
+
+        ((ObjectNode) copyOfInputJson.get("document")
+            .get("data").get("job").get("sessions")).remove("session");
+
+        List<MagistratesAdultCourtList> results = MagistratesAdultCourtListHelper.processPayload(
+            copyOfInputJson, Language.ENGLISH, isStandardList);
+
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(results)
+            .as("Magistrates Adult Court List result count does not match")
+            .hasSize(0);
 
         softly.assertAll();
     }

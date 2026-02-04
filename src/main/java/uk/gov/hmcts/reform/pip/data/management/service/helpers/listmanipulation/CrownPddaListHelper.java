@@ -80,7 +80,7 @@ public final class CrownPddaListHelper {
             });
         }
 
-        String postcode = GeneralHelper.findAndReturnNodeText(address, "Postcode");
+        String postcode = GeneralHelper.findAndReturnNodeText(address, "PostCode");
         if (!postcode.isEmpty()) {
             addressLines.add(postcode);
         }
@@ -106,27 +106,29 @@ public final class CrownPddaListHelper {
 
     private static List<HearingInfo> processHearingInfo(JsonNode sitting, boolean isDailyList) {
         List<HearingInfo> hearings = new ArrayList<>();
-
-        sitting.get(HEARINGS).forEach(hearing -> {
-            HearingInfo hearingInfo = new HearingInfo();
-            hearingInfo.setCaseNumber(hearing.get(CASE_NUMBER_CATH).asText());
-            hearingInfo.setDefendantName(hearing.has(DEFENDANTS) ? formatDefendantName(hearing.get(DEFENDANTS)) : "");
-            hearingInfo.setHearingType(hearing.get(HEARING_DETAILS).get(HEARING_DESCRIPTION).asText());
-            if (!isDailyList) {
-                hearingInfo.setRepresentativeName(hearing.has(DEFENDANTS)
-                                                      ? formatRepresentativeName(hearing.get(DEFENDANTS)) : "");
-            }
-            hearingInfo.setProsecutingAuthority(hearing.has(PROSECUTION)
-                                                    ? GeneralHelper.findAndReturnNodeText(hearing.get(PROSECUTION),
-                                                                                          PROSECUTING_AUTHORITY)
-                                                    : "");
-            hearingInfo.setListNote(GeneralHelper.findAndReturnNodeText(hearing, LIST_NOTE));
-
-            hearings.add(hearingInfo);
-        });
-
+        JsonNode hearingsNode = sitting.get(HEARINGS);
+        if (hearingsNode != null && hearingsNode.isArray()) {
+            hearingsNode.forEach(hearing -> hearings.add(buildHearingInfo(hearing, isDailyList)));
+        }
         return hearings;
     }
+
+    private static HearingInfo buildHearingInfo(JsonNode hearing, boolean isDailyList) {
+        HearingInfo hearingInfo = new HearingInfo();
+        hearingInfo.setCaseNumber(hearing.get(CASE_NUMBER_CATH).asText());
+        hearingInfo.setDefendantName(hearing.has(DEFENDANTS) ? formatDefendantName(hearing.get(DEFENDANTS)) : "");
+        hearingInfo.setHearingType(hearing.get(HEARING_DETAILS).get(HEARING_DESCRIPTION).asText());
+        if (!isDailyList) {
+            hearingInfo.setRepresentativeName(hearing.has(DEFENDANTS)
+                                                  ? formatRepresentativeName(hearing.get(DEFENDANTS)) : "");
+        }
+        hearingInfo.setProsecutingAuthority(hearing.has(PROSECUTION)
+                                                ? GeneralHelper.findAndReturnNodeText(
+                                                    hearing.get(PROSECUTION), PROSECUTING_AUTHORITY) : "");
+        hearingInfo.setListNote(GeneralHelper.findAndReturnNodeText(hearing, LIST_NOTE));
+        return hearingInfo;
+    }
+
 
     private static List<String> processCourtAddress(JsonNode courtList) {
         JsonNode courtHouse = courtList.get(COURT_HOUSE);
@@ -205,7 +207,11 @@ public final class CrownPddaListHelper {
     private static String formatNameParts(JsonNode individual) {
         List<String> nameParts = new ArrayList<>();
         nameParts.add(GeneralHelper.findAndReturnNodeText(individual, "CitizenNameTitle"));
-        nameParts.add(GeneralHelper.findAndReturnNodeText(individual, "CitizenNameForename"));
+        if (individual.has("CitizenNameForename")) {
+            JsonNode forenames = individual.get("CitizenNameForename");
+            forenames.forEach(forenameNode -> nameParts.add(forenameNode.asText()));
+
+        }
         nameParts.add(GeneralHelper.findAndReturnNodeText(individual, "CitizenNameSurname"));
         nameParts.add(GeneralHelper.findAndReturnNodeText(individual, "CitizenNameSuffix"));
 

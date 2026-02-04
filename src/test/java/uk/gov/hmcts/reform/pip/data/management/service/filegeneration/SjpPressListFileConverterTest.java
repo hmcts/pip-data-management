@@ -25,8 +25,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@SuppressWarnings("PMD.LooseCoupling")
 class SjpPressListFileConverterTest {
+
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
+    private static final String BODY_CLASS = "govuk-body";
+
+    private static final String LINK_MESSAGE = "Link does not match";
 
     private final SjpPressListFileConverter sjpPressListConverter = new SjpPressListFileConverter();
 
@@ -71,7 +76,18 @@ class SjpPressListFileConverterTest {
             .as("incorrect header text")
             .isEqualTo(expectedTitle);
 
-        softly.assertThat(document.getElementsByTag("a"))
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
+
+        softly.assertThat(document.getElementsByTag("a").get(1))
             .as("Incorrect anchor title")
             .hasSize(1)
             .extracting(element -> element.attr("title"))

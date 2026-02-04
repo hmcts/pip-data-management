@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
 
 @ActiveProfiles("test")
@@ -68,6 +69,9 @@ class WpafccWeeklyHearingListFileConverterTest {
     private static final String OBSERVE_HEARING_ELEMENT = "observe-hearing";
     private static final String JOIN_HEARING_MESSAGE_ELEMENT = "join-hearing-message";
     private static final String SUMMARY_TEXT_CLASS = "govuk-details__summary-text";
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
+    private static final String BODY_CLASS = "govuk-body";
 
     private static final String TITLE_MESSAGE = "Title does not match";
     private static final String HEADER_MESSAGE = "Header does not match";
@@ -77,6 +81,7 @@ class WpafccWeeklyHearingListFileConverterTest {
     private static final String BODY_MESSAGE = "Body does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
     private static final String TABLE_CONTENT_MESSAGE = "Table content does not match";
+    private static final String LINK_MESSAGE = "Link does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -122,6 +127,17 @@ class WpafccWeeklyHearingListFileConverterTest {
             .as(HEADER_MESSAGE)
             .isEqualTo("First-tier Tribunal (War Pensions and Armed Forces Compensation) Weekly Hearing List");
 
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
+
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
             .isEqualTo(LIST_DATE_ENGLISH);
@@ -160,29 +176,6 @@ class WpafccWeeklyHearingListFileConverterTest {
                 ADDITIONAL_INFORMATION
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
-            .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(16)
-            .extracting(Element::text)
-            .containsExactly(
-                HEARING_DATE,
-                "10:15am",
-                "1234",
-                "This is a case name",
-                "Judge A, Member A",
-                "Case Management Hearing",
-                HEARING_VENUE,
-                "This is additional information",
-                HEARING_DATE,
-                "10:30am",
-                "1235",
-                "This is another case name",
-                "Judge B, Member B",
-                "Oral Hearing",
-                HEARING_VENUE,
-                "This is another additional information"
-            );
-
         softly.assertAll();
     }
 
@@ -218,6 +211,17 @@ class WpafccWeeklyHearingListFileConverterTest {
             .as(HEADER_MESSAGE)
             .isEqualTo("Tribiwnlys Haen Gyntaf (Iawndal Pensiynau Rhyfel a’r Lluoedd Arfog) - Rhestr o "
                            + "Wrandawiadau Wythnosol");
+
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
+                           + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
@@ -255,7 +259,33 @@ class WpafccWeeklyHearingListFileConverterTest {
                 ADDITIONAL_INFORMATION_WELSH
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
+        softly.assertAll();
+    }
+
+    @Test
+    void testWpafccWeeklyHearingListTableContents() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/wpafccWeeklyHearingList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, WPAFCC_WEEKLY_HEARING_LIST.name(),
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(wpafccInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
             .as(TABLE_CONTENT_MESSAGE)
             .hasSize(16)
             .extracting(Element::text)
@@ -277,7 +307,5 @@ class WpafccWeeklyHearingListFileConverterTest {
                 HEARING_VENUE,
                 "This is another additional information"
             );
-
-        softly.assertAll();
     }
 }

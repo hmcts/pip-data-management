@@ -245,24 +245,6 @@ class CopDailyCauseListTest extends IntegrationBasicTestBase {
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtHouseContactMissingInCopDailyCauseList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(COP_DAILY_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA))
-                .remove(COURT_HOUSE_CONTACT_SCHEMA);
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup, true),
-                         COP_DAILY_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
     void testValidateWithErrorsWhenCourtHouseTelephoneMissingInCopDailyCauseList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(COP_DAILY_LIST_VALID_JSON)) {

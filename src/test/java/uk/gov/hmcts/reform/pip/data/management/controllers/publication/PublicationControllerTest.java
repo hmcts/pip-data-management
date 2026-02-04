@@ -57,7 +57,6 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.MESSAGES_MATCH;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.STATUS_CODE_MATCH;
 
-@SuppressWarnings({"PMD.UseConcurrentHashMap", "PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 class PublicationControllerTest {
@@ -212,7 +211,7 @@ class PublicationControllerTest {
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {
         "MAGISTRATES_ADULT_COURT_LIST_DAILY",
-        "MAGISTRATES_ADULT_COURT_LIST_FUTURE", 
+        "MAGISTRATES_ADULT_COURT_LIST_FUTURE",
         "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY",
         "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE",
         "CROWN_DAILY_PDDA_LIST",

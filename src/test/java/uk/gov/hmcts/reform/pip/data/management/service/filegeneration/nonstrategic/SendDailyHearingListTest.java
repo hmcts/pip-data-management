@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SEND_DAILY_HEARING_LIST;
 
 @ActiveProfiles("test")
@@ -43,6 +44,9 @@ class SendDailyHearingListTest {
     private static final String SUMMARY_TITLE_CLASS = "govuk-details__summary-text";
     private static final String SUMMARY_TEXT_CLASS = "govuk-details__text";
     private static final String TABLE_CELL_CLASS = "govuk-table__cell";
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
+    private static final String BODY_CLASS = "govuk-body";
 
     private static final String TITLE_MESSAGE = "Title does not match";
     private static final String HEADER_MESSAGE = "Header does not match";
@@ -50,8 +54,7 @@ class SendDailyHearingListTest {
     private static final String LAST_UPDATED_DATE_MESSAGE = "Last updated date does not match";
     private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information heading does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
-    private static final String TABLE_CELL_MESSAGE = "Table cell does not match";
-
+    private static final String LINK_MESSAGE = "Link does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -97,6 +100,16 @@ class SendDailyHearingListTest {
             .as(HEADER_MESSAGE)
             .isEqualTo("First-tier Tribunal (Special Educational Needs and Disability) Daily Hearing List");
 
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
@@ -140,30 +153,6 @@ class SendDailyHearingListTest {
 
             );
 
-        softly.assertThat(document.getElementsByClass(TABLE_CELL_CLASS).get(0).text())
-            .as(TABLE_CELL_MESSAGE)
-            .contains("10am");
-
-        softly.assertThat(document.getElementsByClass(TABLE_CELL_CLASS).get(1).text())
-            .as(TABLE_CELL_MESSAGE)
-            .contains("1234");
-
-        softly.assertThat(document.getElementsByClass(TABLE_CELL_CLASS).get(2).text())
-            .as(TABLE_CELL_MESSAGE)
-            .contains("Respondent A");
-
-        softly.assertThat(document.getElementsByClass(TABLE_CELL_CLASS).get(3).text())
-            .as(TABLE_CELL_MESSAGE)
-            .contains("Hearing Type A");
-
-        softly.assertThat(document.getElementsByClass(TABLE_CELL_CLASS).get(4).text())
-            .as(TABLE_CELL_MESSAGE)
-            .contains("Venue A");
-
-        softly.assertThat(document.getElementsByClass(TABLE_CELL_CLASS).get(5).text())
-            .as(TABLE_CELL_MESSAGE)
-            .contains("2hrs");
-
         softly.assertAll();
     }
 
@@ -199,6 +188,17 @@ class SendDailyHearingListTest {
             .as(HEADER_MESSAGE)
             .isEqualTo("Rhestr o Wrandawiadau Dyddiol y Tribiwnlys Haen Gyntaf "
                            + "(Anghenion Addysgol Arbennig ac Anabledd)");
+
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
+                           + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
@@ -243,5 +243,41 @@ class SendDailyHearingListTest {
             );
 
         softly.assertAll();
+    }
+
+    @Test
+    void testSendDailyHearingListTableContents() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/sendDailyHearingList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, SEND_DAILY_HEARING_LIST.name(),
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(cstInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
+            .as("Table contents does not match")
+            .extracting(Element::text)
+            .containsSequence(
+                "10am",
+                "1234",
+                "Respondent A",
+                "Hearing Type A",
+                "Venue A",
+                "2hrs"
+            );
     }
 }

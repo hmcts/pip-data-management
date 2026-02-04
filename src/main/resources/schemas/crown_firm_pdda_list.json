@@ -9,9 +9,8 @@
           "maxLength": 35
         },
         "CitizenNameForename": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 35
+          "type": "array",
+          "items": { "type": "string" }
         },
         "CitizenNameSurname": {
           "type": "string",
@@ -38,7 +37,7 @@
           "maxItems": 5,
           "items": { "type": "string" }
         },
-        "Postcode": { "type": "string" }
+        "PostCode": { "type": "string" }
       }
     }
   },
@@ -59,12 +58,10 @@
         "DocumentID": {
           "type": "object",
           "required": [
-            "DocumentName",
             "UniqueID",
             "DocumentType"
           ],
           "properties": {
-            "DocumentName": { "type": "string" },
             "UniqueID": { "type": "string" },
             "DocumentType": { "type": "string" },
             "TimeStamp": { "type": "string", "format": "date-time" },
@@ -102,7 +99,7 @@
                 "Youth Court"
               ]
             },
-            "CourtHouseCode": { "type": "string", "pattern": "^[0-9]{3,4}$" },
+            "CourtHouseCode": { "type": "integer" },
             "CourtHouseName": { "type": "string" },
             "CourtHouseAddress": {
               "$ref": "#/$defs/Address"
@@ -137,7 +134,7 @@
                       "Youth Court"
                     ]
                   },
-                  "CourtHouseCode": { "type": "string", "pattern": "^[0-9]{3,4}$" },
+                  "CourtHouseCode": { "type": "integer" },
                   "CourtHouseShortName": { "type": "string" },
                   "CourtHouseName": { "type": "string" },
                   "CourtHouseAddress": {
@@ -152,12 +149,10 @@
                   "type": "object",
                   "required": [
                     "CourtRoomNumber",
-                    "SittingSequenceNo",
                     "Judiciary"
                   ],
                   "properties": {
                     "CourtRoomNumber": { "type": "integer" },
-                    "SittingSequenceNo": { "type": "string" },
                     "SittingAt": { "type": "string", "format": "time" },
                     "SittingPriority": {
                       "type": "string",
@@ -208,8 +203,8 @@
                             }
                           },
                           "TimeMarkingNote": { "type": "string" },
-                          "CaseNumber": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
-                          "CaseNumberCaTH": { "type": "string", "pattern": "^[A-Z][0-9]{8}$" },
+                          "CaseNumber": { "type": "string" },
+                          "CaseNumberCaTH": { "type": "string" },
                           "Prosecution": {
                             "type": "object",
                             "properties": {
@@ -266,7 +261,7 @@
                                   "Youth Court"
                                 ]
                               },
-                              "CourtHouseCode": { "type": "string", "pattern": "^[0-9]{3,4}$" },
+                              "CourtHouseCode": { "type": "integer" },
                               "CourtHouseShortName": { "type": "string" },
                               "CourtHouseName": { "type": "string" }
                             }
@@ -513,7 +508,7 @@
                       "Youth Court"
                     ]
                   },
-                  "CourtHouseCode": { "type": "string", "pattern": "^[0-9]{3,4}$" },
+                  "CourtHouseCode": { "type": "integer" },
                   "CourtHouseShortName": { "type": "string" },
                   "CourtHouseName": { "type": "string" }
                 }

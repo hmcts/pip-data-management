@@ -6,8 +6,8 @@
   "lastUpdated": "Last updated ",
   "inThe": "In the ",
   "listFor": "List for ",
-  "courtOfProtection": "Court of Protection ",
-  "regionalLeadJudge": "Regional Lead Judge: ",
+  "courtOfProtection": "Court of Protection",
+  "regionalLeadJudge": "Regional Lead Judge ",
   "sittingAt": "Sitting at ",
   "at": " at ",
   "importantInfo": "Important Information",
@@ -16,6 +16,7 @@
     "Start Time",
     "Case Ref",
     "Case Details",
+    "Case Type",
     "Hearing Type",
     "Time Estimate",
     "Hearing Channel"
