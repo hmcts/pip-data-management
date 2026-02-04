@@ -99,4 +99,11 @@ class CustomExceptionsTest {
         LocationNameValidationException exception = new LocationNameValidationException(TEST_MESSAGE);
         assertEquals(TEST_MESSAGE, exception.getMessage(), ASSERTION_MESSAGE);
     }
+
+    @Test
+    void testCreationOfFileFormatNotSupportedException() {
+        FileFormatNotSupportedException fileFormatNotSupportedException
+            = new FileFormatNotSupportedException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, fileFormatNotSupportedException.getMessage(), ASSERTION_MESSAGE);
+    }
 }
