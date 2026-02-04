@@ -523,7 +523,7 @@ class PublicationControllerTest {
         UUID issuerId = UUID.randomUUID();
         String artefactId = UUID.randomUUID().toString();
 
-        doNothing().when(publicationRemovalService).archiveArtefactById(artefactId, issuerId);
+        doNothing().when(publicationRemovalService).archiveArtefactById(artefactId, issuerId, true);
 
         ResponseEntity<String> response = publicationController.archiveArtefact(issuerId, artefactId);
 

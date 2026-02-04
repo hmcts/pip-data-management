@@ -433,7 +433,7 @@ public class PublicationController {
     @PreAuthorize("@authorisationService.userCanArchivePublications(#requesterId)")
     public ResponseEntity<String> archiveArtefact(@RequestHeader(REQUESTER_ID_HEADER) UUID requesterId,
                                                   @PathVariable String id) {
-        publicationRemovalService.archiveArtefactById(id, requesterId);
+        publicationRemovalService.archiveArtefactById(id, requesterId, Boolean.TRUE);
         return ResponseEntity.ok(String.format("Artefact of ID %s has been archived", id));
     }
 
