@@ -52,7 +52,7 @@ def configureSourceSet(String name) {
   }
 }
 
-['smokeTest', 'integrationTest', 'functionalTest'].each { configureSourceSet(it) }
+['smokeTest', 'integrationTest', 'functionalTest', 'contractTest'].each { configureSourceSet(it) }
 
 tasks.withType(JavaCompile) {
   options.compilerArgs << "-Xlint:unchecked" << "-Werror"
@@ -95,6 +95,13 @@ tasks.register('smoke', Test) {
   classpath = sourceSets.smokeTest.runtimeClasspath
 }
 
+tasks.register('contract', Test) {
+  description = "Runs Contract Tests"
+  group = "Verification"
+  testClassesDirs = sourceSets.contractTest.output.classesDirs
+  classpath = sourceSets.contractTest.runtimeClasspath
+}
+
 checkstyle {
   toolVersion = '12.1.1'
 }
@@ -109,6 +116,9 @@ configurations {
   smokeTestImplementation.extendsFrom functionalTestImplementation
   smokeTestRuntimeOnly.extendsFrom runtimeOnly
 
+  contractTestImplementation.extendsFrom testImplementation
+  contractTestRuntimeOnly.extendsFrom runtimeOnly
+
   all {
     exclude group: 'commons-logging', module: 'commons-logging'
   }
@@ -119,7 +129,7 @@ jacoco {
 }
 
 jacocoTestReport {
-  executionData(test, integration)
+  executionData(test, integration, contract)
   reports {
     xml.required = true
     csv.required = false
@@ -227,6 +237,8 @@ dependencies {
   testImplementation 'com.github.hmcts:fortify-client:1.4.10:all'
   testImplementation 'org.jsoup:jsoup:1.21.2'
   testImplementation 'com.google.code.gson:gson:2.13.2'
+  testImplementation 'au.com.dius.pact.provider:junit5:4.6.3'
+  testImplementation 'au.com.dius.pact.provider:junit5spring:4.6.3'
 
   functionalTestImplementation 'io.rest-assured:rest-assured'
 }
@@ -258,6 +270,11 @@ rootProject.tasks.named("processFunctionalTestResources") {
 rootProject.tasks.named("processIntegrationTestResources") {
   duplicatesStrategy = 'include'
 }
+
+rootProject.tasks.named("processContractTestResources") {
+  duplicatesStrategy = 'include'
+}
+
 
 wrapper {
   distributionType = Wrapper.DistributionType.ALL
