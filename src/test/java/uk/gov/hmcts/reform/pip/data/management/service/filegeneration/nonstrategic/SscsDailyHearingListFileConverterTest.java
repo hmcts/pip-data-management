@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SscsDailyHearingListFileConverterTest {
@@ -53,6 +55,9 @@ class SscsDailyHearingListFileConverterTest {
     private static final String OPEN_JUSTICE_ELEMENT = "open-justice-message";
     private static final String OBSERVE_HEARING_ELEMENT =  "observe-hearing";
     private static final String SUMMARY_TEXT_CLASS = "govuk-details__summary-text";
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
+    private static final String BODY_CLASS = "govuk-body";
 
     private static final String TITLE_MESSAGE = "Title does not match";
     private static final String HEADER_MESSAGE = "Header does not match";
@@ -62,6 +67,7 @@ class SscsDailyHearingListFileConverterTest {
     private static final String BODY_MESSAGE = "Body does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
     private static final String TABLE_CONTENT_MESSAGE = "Table content does not match";
+    private static final String LINK_MESSAGE = "Link does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -166,6 +172,17 @@ class SscsDailyHearingListFileConverterTest {
             .as(HEADER_MESSAGE)
             .isEqualTo(listDisplayName);
 
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
+
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
             .isEqualTo(LIST_DATE_ENGLISH);
@@ -219,22 +236,6 @@ class SscsDailyHearingListFileConverterTest {
                 "Additional information"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
-            .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(9)
-            .extracting(Element::text)
-            .containsExactly(
-                "Venue 1",
-                "1234567",
-                "Directions",
-                "Appellant 1",
-                "Courtroom 1",
-                "10:30am",
-                "Panel 1",
-                "Respondent 1",
-                "Additional information 1"
-            );
-
         softly.assertAll();
     }
 
@@ -270,6 +271,17 @@ class SscsDailyHearingListFileConverterTest {
         softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
             .isEqualTo(listDisplayName);
+
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
+                           + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
@@ -323,7 +335,35 @@ class SscsDailyHearingListFileConverterTest {
                 "Gwybodaeth ychwanegol"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
+        softly.assertAll();
+    }
+
+    @ParameterizedTest
+    @MethodSource("parametersEnglish")
+    void testSscsDailyHearingListTableContents(String listName, String languageFilename, String listDisplayName,
+                                               String contactEmail) throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/" + languageFilename)) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, listName,
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(listInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
             .as(TABLE_CONTENT_MESSAGE)
             .hasSize(9)
             .extracting(Element::text)
@@ -338,7 +378,5 @@ class SscsDailyHearingListFileConverterTest {
                 "Respondent 1",
                 "Additional information 1"
             );
-
-        softly.assertAll();
     }
 }

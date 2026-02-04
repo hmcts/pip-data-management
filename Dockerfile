@@ -7,5 +7,7 @@ COPY lib/applicationinsights.json /opt/app/
 COPY lib/openSans.ttf /opt/app/
 COPY build/libs/$APP /opt/app/
 
+USER 65532:65532
+
 EXPOSE 8090
 CMD [ "pip-data-management.jar" ]

@@ -30,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-@SuppressWarnings("PMD.TooManyMethods")
 class SjpPressListTest extends IntegrationBasicTestBase {
     @Autowired
     ValidationService validationService;

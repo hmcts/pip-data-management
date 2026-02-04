@@ -34,10 +34,11 @@
 </head>
 <body>
 <div class="header">
-  <h2 id="page-heading" class="govuk-heading-l"
-      th:text="${i18n.inThe + i18n.courtOfProtection + artefact.get('regionName').asText()}"/>
-  <h2 class="govuk-heading-l" th:text="${i18n.regionalLeadJudge + artefact.get('regionalJoh').asText()}"/>
+  <h2 class="govuk-heading-l" id="page-heading" th:if="${!#strings.isEmpty(artefact.get('regionName').asText())}" th:text="${i18n.inThe + i18n.courtOfProtection + ': ' + artefact.get('regionName').asText()}"/>
+  <h2 class="govuk-heading-l" id="page-heading" th:unless="${!#strings.isEmpty(artefact.get('regionName').asText())}" th:text="${i18n.inThe + i18n.courtOfProtection}"/>
+  <h2 class="govuk-heading-l" th:if="${!#strings.isEmpty(artefact.get('regionalJoh').asText())}" th:text="${i18n.regionalLeadJudge + artefact.get('regionalJoh').asText()}"/>
   <h2 class="govuk-heading-l" th:text="${i18n.sittingAt + locationName}"/>
+  <p class="govuk-body"> <a class="govuk-link" th:href="${i18n.factLink}" th:text="${i18n.factLinkText1}"></a><span th:text="${i18n.factLinkText2}"></span></p>
   <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" th:text="${i18n.listFor + contentDate}"/>
   <p class="govuk-body" th:text="${i18n.lastUpdated + publicationDate + i18n.at + publicationTime}"/>
   <details class="govuk-details" data-module="govuk-details" open="">
@@ -85,7 +86,9 @@
                           <tr class="govuk-table__row">
                             <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${sitting.get('time').asText()}"/>
                             <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${case.get('caseNumber').asText()}"/>
-                            <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${case.get('caseSuppressionName').asText()}"/>
+                            <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${case.get('caseName') == null || #strings.isEmpty(case.get('caseName').asText()) ? '' : case.get('caseName').asText()}"/>
+                            <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${case.get('caseType') == null || #strings.isEmpty(case.get('caseType').asText()) ? '' : case.get('caseType').asText()}"/>
+
                             <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${hearing.get('hearingType').asText()}"/>
                             <th:block th:if="${case.get('caseIndicator') != null}">
                               <td class="govuk-table__cell" th:classappend="${noBorder}"
@@ -98,8 +101,8 @@
                             <td class="govuk-table__cell" th:classappend="${noBorder}" th:text="${sitting.get('caseHearingChannel').asText()}"/>
                           </tr>
                           <tr class="govuk-table__row" th:if="${case.get('formattedReportingRestriction').asText() != ''}">
-                            <td class="govuk-table__cell" colspan="6">
-                              <span class="govuk-table__header" th:text="${i18n.reportingRestriction}" />
+                            <td class="govuk-table__cell" colspan="7">
+                              <span style="font-weight: 700" th:text="${i18n.reportingRestriction}" />
                               <span th:text="${case.get('formattedReportingRestriction').asText()}" />
                             </td>
                           </tr>

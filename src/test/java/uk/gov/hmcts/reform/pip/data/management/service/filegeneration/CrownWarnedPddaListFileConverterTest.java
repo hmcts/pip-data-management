@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CrownWarnedPddaListFileConverterTest {
     private static final String TEST_FILE_PATH = "src/test/resources/mocks/";
@@ -30,12 +32,15 @@ class CrownWarnedPddaListFileConverterTest {
     private static final String HEADING_CLASS = "govuk-heading-l";
     private static final String BODY_CLASS = "govuk-body";
     private static final String CONTACT_LIST_CLASS = "govuk-list govuk-list--bullet";
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
 
     private static final String CONTENT_DATE = "18 July 2024";
     private static final String ADDRESS = "TestAddressLine1 TestAddressLine2 TestPostcode";
     private static final String HEADING_MESSAGE = "Heading does not match";
     private static final String BODY_MESSAGE = "Body does not match";
     private static final String CONTACT_MESSAGE = "Contact information does not match";
+    private static final String LINK_MESSAGE = "Link does not match";
 
     private static final Map<String, String> COMMON_METADATA = Map.of("contentDate", CONTENT_DATE,
                                                                       "provenance", "MANUAL_UPLOAD",
@@ -81,36 +86,47 @@ class CrownWarnedPddaListFileConverterTest {
             .as(HEADING_MESSAGE)
             .contains("Crown Warned List for location");
 
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
-            .as(BODY_MESSAGE)
-            .contains("01 January 2024 to 02 January 2024");
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(1).text())
             .as(BODY_MESSAGE)
-            .contains("Last updated 01 January 2024 at 10am");
+            .contains("01 January 2024 to 02 January 2024");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(2).text())
             .as(BODY_MESSAGE)
-            .contains("Version TestVersion");
+            .contains("Last updated 01 January 2024 at 10am");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
             .as(BODY_MESSAGE)
-            .contains(ADDRESS);
+            .contains("Version TestVersion");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(4).text())
             .as(BODY_MESSAGE)
-            .contains("The undermentioned cases are warned for the hearing period of week commencing 15 July 2024");
+            .contains(ADDRESS);
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(5).text())
+            .as(BODY_MESSAGE)
+            .contains("The undermentioned cases are warned for the hearing period of week commencing 15 July 2024");
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(6).text())
             .as(BODY_MESSAGE)
             .contains("Any representation about the listing of a case should be "
                           + "made to the Listing Officer immediately");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(6).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(7).text())
             .as(BODY_MESSAGE)
             .contains("The prosecuting authority is the Crown Prosecution Service unless otherwise stated");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(7).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(8).text())
             .as(BODY_MESSAGE)
             .contains("*denotes a defendant in custody");
 
@@ -118,7 +134,7 @@ class CrownWarnedPddaListFileConverterTest {
             .as("Incorrect restriction heading")
             .anyMatch(e -> e.text().contains("Restrictions on publishing or writing about these cases"));
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(8).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(9).text())
             .as(BODY_MESSAGE)
             .contains("You must check if any reporting restrictions apply before publishing details on any of"
                           + " the cases listed here either in writing, in a broadcast or by internet, "
@@ -130,16 +146,16 @@ class CrownWarnedPddaListFileConverterTest {
                                                  + "any information which is protected by a reporting restriction. "
                                                  + "You could get a fine, prison sentence or both."));
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(10).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(11).text())
             .as(BODY_MESSAGE)
             .contains("Specific restrictions ordered by the court will be mentioned on the cases listed here.");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(11).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(12).text())
             .as(BODY_MESSAGE)
             .contains("However, restrictions are not always listed. Some apply automatically. "
                           + "For example, anonymity given to the victims of certain sexual offences.");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(12).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(13).text())
             .as(BODY_MESSAGE)
             .contains("To find out which reporting restrictions apply on a specific case, contact:");
 
@@ -169,17 +185,6 @@ class CrownWarnedPddaListFileConverterTest {
                         "Prosecuting Authority",
                         "Linked Cases",
                         "Listing Notes"
-            );
-
-        softly.assertThat(document.getElementsByTag("td"))
-            .as("Incorrect table contents")
-            .extracting(Element::text)
-            .startsWith("01/01/2024",
-                        "T00112233",
-                        "TestDefendantRequestedName",
-                        "Crown Prosecution Service",
-                        "TestLinkedCaseNumber",
-                        "TestListNote"
             );
 
         softly.assertAll();
@@ -223,36 +228,47 @@ class CrownWarnedPddaListFileConverterTest {
             .as(HEADING_MESSAGE)
             .contains("Rhestr Rybuddio Llys y Goron ar gyfer location");
 
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
-            .as(BODY_MESSAGE)
-            .contains("01 January 2024 i 02 January 2024");
+            .as(LINK_MESSAGE)
+            .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
+                           + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(1).text())
             .as(BODY_MESSAGE)
-            .contains("Diweddarwyd diwethaf 01 January 2024 am 10am");
+            .contains("01 January 2024 i 02 January 2024");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(2).text())
             .as(BODY_MESSAGE)
-            .contains("Fersiwn TestVersion");
+            .contains("Diweddarwyd diwethaf 01 January 2024 am 10am");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
             .as(BODY_MESSAGE)
-            .contains(ADDRESS);
+            .contains("Fersiwn TestVersion");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(4).text())
+            .as(BODY_MESSAGE)
+            .contains(ADDRESS);
+
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(5).text())
             .as(BODY_MESSAGE)
             .contains("Rhoir rhybudd yng nghyswllt yr achosion isod am gyfnod gwrandawiad "
                           + "o'r wythnos yn dechrau 15 Gorffennaf 2024");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(5).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(6).text())
             .as(BODY_MESSAGE)
             .contains("Dylid cyflwyno unrhyw sylwadau am restru achos i’r Swyddog Rhestru yn ddi-oed");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(6).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(7).text())
             .as(BODY_MESSAGE)
             .contains("Yr awdurdod erlyn yw Gwasanaeth Erlyn y Goron oni nodir yn wahanol");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(7).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(8).text())
             .as(BODY_MESSAGE)
             .contains("Mae (*) yn dynodi diffynnydd a gedwir yn y ddalfa");
 
@@ -260,7 +276,7 @@ class CrownWarnedPddaListFileConverterTest {
             .as("Incorrect restriction heading")
             .anyMatch(e -> e.text().contains("Cyfyngiadau ar gyhoeddi neu ysgrifennu am yr achosion hyn."));
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(8).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(9).text())
             .as(BODY_MESSAGE)
             .contains("Rhaid i chi wirio a oes unrhyw gyfyngiadau riportio yn berthnasol cyn "
                           + "cyhoeddi manylion am unrhyw un o'r achosion a restrir yma, "
@@ -274,18 +290,18 @@ class CrownWarnedPddaListFileConverterTest {
                                                  + "gyfyngiad riportio. Gallwch gael dirwy, eich dedfrydu "
                                                  + "i garchar, neu'r ddau."));
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(10).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(11).text())
             .as(BODY_MESSAGE)
             .contains("Bydd cyfyngiadau penodol a orchmynnir gan y llys yn cael eu "
                           + "crybwyll ar yr achosion a restrir yma.");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(11).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(12).text())
             .as(BODY_MESSAGE)
             .contains("Fodd bynnag, nid yw'r cyfyngiadau bob amser yn cael eu rhestru. "
                           + "Mae rhai yn berthnasol yn awtomatig. Er enghraifft, anhysbysrwydd "
                           + "a roddir i ddioddefwyr rhai troseddau rhywiol.");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(12).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(13).text())
             .as(BODY_MESSAGE)
             .contains("I ganfod pa gyfyngiadau riportio sy'n berthnasol ar achos penodol, cysylltwch â'r:");
 
@@ -317,17 +333,43 @@ class CrownWarnedPddaListFileConverterTest {
                         "Nodiadau rhestru"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
-            .as("Incorrect table contents")
-            .extracting(Element::text)
-            .startsWith("01/01/2024",
-                        "T00112233",
-                        "TestDefendantRequestedName",
-                        "Crown Prosecution Service",
-                        "TestLinkedCaseNumber",
-                        "TestListNote"
-            );
-
         softly.assertAll();
+    }
+
+    @Test
+    void testCrownWarnedPddaListTableContents() throws IOException {
+        Map<String, Object> language;
+
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader().getResourceAsStream("templates/languages/en/crownWarnedPddaList.json")) {
+            language = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                });
+        }
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(
+            Files.newInputStream(Paths.get(TEST_FILE_PATH, "crownWarnedPddaList.json")),
+            writer, Charset.defaultCharset()
+        );
+        Map<String, String> metadataMap = new ConcurrentHashMap<>(COMMON_METADATA);
+        metadataMap.put(LANGUAGE, "ENGLISH");
+
+        JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
+        CrownWarnedPddaListFileConverter crownWarnedPddaListConverter = new CrownWarnedPddaListFileConverter();
+
+        String outputHtml = crownWarnedPddaListConverter.convert(inputJson, metadataMap, language);
+        Document document = Jsoup.parse(outputHtml);
+
+        assertThat(document.getElementsByTag("td"))
+            .as("Table contents does not match")
+            .extracting(Element::text)
+            .containsSequence(
+                "01/01/2024",
+                "T00112233",
+                "TestDefendantRequestedName",
+                "Crown Prosecution Service",
+                "TestLinkedCaseNumber",
+                "TestListNote"
+            );
     }
 }

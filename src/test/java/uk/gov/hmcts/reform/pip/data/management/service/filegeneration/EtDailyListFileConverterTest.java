@@ -16,10 +16,17 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class EtDailyListFileConverterTest {
     private static final String CONTENT_DATE = "20 October 2022";
     private static final String ENGLISH = "ENGLISH";
     private static final String REGION_NAME = "Test region";
+    private static final String LINK_MESSAGE = "Link does not match";
+
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
+    private static final String BODY_CLASS = "govuk-body";
 
     private final EtDailyListFileConverter converter = new EtDailyListFileConverter();
 
@@ -46,6 +53,17 @@ class EtDailyListFileConverterTest {
                 "Venue: Leicester Crown Court",
                 "Venue: Nottingham Justice Centre"
             );
+
+        softly.assertThat(doc.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        softly.assertThat(doc.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
 
         softly.assertThat(doc.getElementsByTag("h3"))
             .as("Incorrect h3 element")
@@ -78,7 +96,23 @@ class EtDailyListFileConverterTest {
                         "Hearing Platform"
             );
 
-        softly.assertThat(doc.getElementsByTag("td"))
+        softly.assertAll();
+    }
+
+    @Test
+    void testEtDailyListTableContents() throws IOException {
+        Map<String, String> metaData = Map.of("contentDate", CONTENT_DATE,
+                                              "language", ENGLISH,
+                                              "region", REGION_NAME,
+                                              "listType", "ET_DAILY_LIST"
+        );
+        Map<String, Object> language = handleLanguage();
+        JsonNode input = getInput("/mocks/etDailyList.json");
+
+        String result = converter.convert(input, metaData, language);
+        Document doc = Jsoup.parse(result);
+
+        assertThat(doc.getElementsByTag("td"))
             .as("Incorrect table contents")
             .hasSize(35)
             .extracting(Element::text)
@@ -90,19 +124,6 @@ class EtDailyListFileConverterTest {
                         "This is a hearing type",
                         "This is a sitting channel"
             );
-
-        softly.assertThat(doc.getElementsByClass("govuk-table__body").get(1).getElementsByTag("td"))
-            .as("Incorrect table contents for organisation details")
-            .hasSize(14)
-            .extracting(Element::text)
-            .startsWith("9:30am",
-                      "3 mins",
-                      "12341234",
-                      "Organisation Name",
-                      "Organisation Name",
-                      "Hearing Type 1");
-
-        softly.assertAll();
     }
 
     private JsonNode getInput(String resourcePath) throws IOException {

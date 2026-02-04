@@ -22,3 +22,6 @@ variable "aks_subscription_id" {
   default = ""
 }
 variable "jenkins_AAD_objectId" {}
+variable "sampling_percentage" {
+  default = "100"
+}

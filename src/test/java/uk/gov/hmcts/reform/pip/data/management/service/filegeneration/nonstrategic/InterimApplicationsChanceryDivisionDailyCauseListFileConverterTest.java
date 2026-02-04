@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST;
 
 @ActiveProfiles("test")
@@ -44,6 +45,9 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
     private static final String LIST_DATE_ELEMENT = "list-date";
     private static final String LAST_UPDATED_DATE_ELEMENT = "last-updated-date";
     private static final String SUMMARY_TEXT_CLASS = "govuk-details__summary-text";
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
+    private static final String BODY_CLASS = "govuk-body";
 
     private static final String HEARING_TIME = "10:30am";
     private static final String HEARING_VENUE = "This is a venue name";
@@ -58,6 +62,7 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
     private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information heading does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
     private static final String TABLE_CONTENT_MESSAGE = "Table content does not match";
+    private static final String LINK_MESSAGE = "Link does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -104,6 +109,17 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
             .as(HEADER_MESSAGE)
             .isEqualTo("Interim Applications List (Chancery Division) Daily Cause List");
 
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
+
         softly.assertThat(document.getElementById(VENUE_LINE1_ELEMENT).text())
             .as(VENUE_MESSAGE)
             .isEqualTo("Rolls Building");
@@ -142,34 +158,6 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
                 "Additional information"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
-            .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(21)
-            .extracting(Element::text)
-            .containsExactly(
-                "Judge A",
-                HEARING_TIME,
-                HEARING_VENUE,
-                "Case type A",
-                "1234",
-                CASE_NAME,
-                ADDITIONAL_INFORMATION,
-                "Judge B",
-                HEARING_TIME,
-                HEARING_VENUE,
-                "Case type B",
-                "3456",
-                CASE_NAME,
-                ADDITIONAL_INFORMATION,
-                "Judge C",
-                HEARING_TIME,
-                HEARING_VENUE,
-                "Case type C",
-                "5678",
-                CASE_NAME,
-                ADDITIONAL_INFORMATION
-            );
-
         softly.assertAll();
     }
 
@@ -203,6 +191,17 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
         softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
             .isEqualTo("Rhestr Achosion Dyddiol Ceisiadau Interim (Adran Siawnsri)");
+
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
+                           + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
 
         softly.assertThat(document.getElementById(VENUE_LINE1_ELEMENT).text())
             .as(VENUE_MESSAGE)
@@ -242,7 +241,34 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
                 "Gwybodaeth ychwanegol"
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
+        softly.assertAll();
+    }
+
+    @Test
+    void testInterimApplicationsDailyListTableContents() throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream(
+                "templates/languages/en/non-strategic/interimApplicationsChdDailyCauseList.json")) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST.name(),
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(cstInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
             .as(TABLE_CONTENT_MESSAGE)
             .hasSize(21)
             .extracting(Element::text)
@@ -269,7 +295,5 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
                 CASE_NAME,
                 ADDITIONAL_INFORMATION
             );
-
-        softly.assertAll();
     }
 }

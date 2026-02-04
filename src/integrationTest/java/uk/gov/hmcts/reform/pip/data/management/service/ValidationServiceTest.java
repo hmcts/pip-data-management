@@ -45,7 +45,6 @@ import static org.mockito.Mockito.verify;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-@SuppressWarnings("PMD.ExcessiveImports")
 class ValidationServiceTest extends IntegrationBasicTestBase {
 
     @MockitoBean
@@ -352,12 +351,6 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          "data/sjp-press-list/sjpPressList.json"),
             Arguments.of(ListType.SJP_DELTA_PRESS_LIST,
                          "data/sjp-press-list/sjpPressList.json"),
-            Arguments.of(ListType.CROWN_DAILY_LIST,
-                         "data/crown-daily-list/crownDailyList.json"),
-            Arguments.of(ListType.CROWN_FIRM_LIST,
-                         "data/crown-firm-list/crownFirmList.json"),
-            Arguments.of(ListType.CROWN_WARNED_LIST,
-                         "data/crown-warned-list/crownWarnedList.json"),
             Arguments.of(ListType.MAGISTRATES_PUBLIC_LIST,
                          "data/magistrates-public-list/magistratesPublicList.json"),
             Arguments.of(ListType.MAGISTRATES_STANDARD_LIST,

@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-@SuppressWarnings("PMD.TooManyMethods")
 class CrownFirmPddaListTest extends IntegrationBasicTestBase {
 
     @Autowired

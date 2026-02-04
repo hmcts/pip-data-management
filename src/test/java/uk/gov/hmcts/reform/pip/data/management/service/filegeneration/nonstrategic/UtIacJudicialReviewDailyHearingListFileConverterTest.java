@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -71,6 +73,9 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
     private static final String OBSERVE_HEARING_ELEMENT =  "observe-hearing";
     private static final String LIST_UPDATE_MESSAGE_ELEMENT = "list-update-message";
     private static final String SUMMARY_TEXT_CLASS = "govuk-details__summary-text";
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
+    private static final String BODY_CLASS = "govuk-body";
 
     private static final String TITLE_MESSAGE = "Title does not match";
     private static final String HEADER_MESSAGE = "Header does not match";
@@ -80,6 +85,7 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
     private static final String BODY_MESSAGE = "Body does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
     private static final String TABLE_CONTENT_MESSAGE = "Table content does not match";
+    private static final String LINK_MESSAGE = "Link does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -155,6 +161,17 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
             .as(HEADER_MESSAGE)
             .isEqualTo(listDisplayName);
 
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
+
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
             .isEqualTo(LIST_DATE_ENGLISH);
@@ -188,27 +205,6 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
                 CASE_TITLE,
                 HEARING_TYPE,
                 ADDITIONAL_INFORMATION
-            );
-
-        softly.assertThat(document.getElementsByTag("td"))
-            .as(TABLE_CONTENT_MESSAGE)
-            .hasSize(14)
-            .extracting(Element::text)
-            .containsExactly(
-                HEARING_VENUE,
-                "Judge A",
-                "10:30am",
-                "1234",
-                "Case A",
-                "Hearing type A",
-                HEARING_ADDITIONAL_INFORMATION,
-                HEARING_VENUE,
-                "Judge B",
-                "11am",
-                "5678",
-                "Case B",
-                "Hearing type B",
-                HEARING_ADDITIONAL_INFORMATION
             );
 
         softly.assertAll();
@@ -247,6 +243,17 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
             .as(HEADER_MESSAGE)
             .isEqualTo(listDisplayName);
 
+        softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
+                           + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
+
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
             .isEqualTo(LIST_DATE_WELSH);
@@ -283,7 +290,35 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
                 ADDITIONAL_INFORMATION_WELSH
             );
 
-        softly.assertThat(document.getElementsByTag("td"))
+        softly.assertAll();
+    }
+
+    @ParameterizedTest
+    @MethodSource("parametersEnglish")
+    void testUtIacJudicialReviewDailyHearingListTableContents(String listName, String languageFilename,
+                                                              String listDisplayName) throws IOException {
+        Map<String, Object> languageResource;
+        try (InputStream languageFile = Thread.currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("templates/languages/en/non-strategic/" + languageFilename)) {
+            languageResource = new ObjectMapper().readValue(
+                Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
+                }
+            );
+        }
+
+        Map<String, String> metadata = Map.of(
+            CONTENT_DATE_METADATA, CONTENT_DATE,
+            PROVENANCE_METADATA, PROVENANCE,
+            LANGUAGE_METADATA, ENGLISH,
+            LIST_TYPE_METADATA, listName,
+            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+        );
+
+        String result = converter.convert(utIacJudicialReviewInputJson, metadata, languageResource);
+        Document document = Jsoup.parse(result);
+
+        assertThat(document.getElementsByTag("td"))
             .as(TABLE_CONTENT_MESSAGE)
             .hasSize(14)
             .extracting(Element::text)
@@ -303,7 +338,5 @@ class UtIacJudicialReviewDailyHearingListFileConverterTest {
                 "Hearing type B",
                 HEARING_ADDITIONAL_INFORMATION
             );
-
-        softly.assertAll();
     }
 }

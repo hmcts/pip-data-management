@@ -36,32 +36,8 @@ public final class PublicationSummaryTestCases {
                 ListType.COP_DAILY_CAUSE_LIST,
                 "data/cop-daily-cause-list/copDailyCauseList.json",
                 List.of(CASE_REFERENCE_FIELD,
-                "Case details - ThisIsACaseSuppressionName",
+                "Case details - ThisIsACaseName",
                 "Hearing type - Criminal")
-            ),
-            PublicationSummaryTestInput.withoutExcel(
-                ListType.CROWN_DAILY_LIST,
-                "data/crown-daily-list/crownDailyList.json",
-                List.of("Defendant - Surname 1, Forename 1",
-                "Prosecuting authority - Pro_Auth",
-                "Case reference - 1234",
-                HEARING_TYPE_FIELD)
-            ),
-            PublicationSummaryTestInput.withoutExcel(
-                ListType.CROWN_FIRM_LIST,
-                "data/crown-firm-list/crownFirmList.json",
-                List.of("Defendant - Surname 1, Forename 1",
-                "Prosecuting authority - Prosecutor org",
-                "Case reference - 1234",
-                HEARING_TYPE_FIELD)
-            ),
-            PublicationSummaryTestInput.withoutExcel(
-                ListType.CROWN_WARNED_LIST,
-                "data/crown-warned-list/crownWarnedList.json",
-                List.of("Defendant - Surname, Forenames",
-                "Prosecuting authority - OrganisationName2",
-                CASE_REFERENCE_FIELD,
-                "Hearing date - 21/07/2024")
             ),
             PublicationSummaryTestInput.withoutExcel(
                 ListType.ET_DAILY_LIST,

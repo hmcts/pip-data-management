@@ -28,7 +28,12 @@ class SscsDailyListFileConverterTest {
     private static final String PROVENANCE = "provenance";
     private static final String CONTENT_DATE = "contentDate";
 
+    private static final String LINK_CLASS = "govuk-link";
+    private static final String HREF = "href";
+    private static final String BODY_CLASS = "govuk-body";
+
     private static final String TITLE_TEXT = "Incorrect Title Text";
+    private static final String LINK_MESSAGE = "Link does not match";
 
     private final ListConversionFactory listConversionFactory = new ListConversionFactory();
 
@@ -67,13 +72,24 @@ class SscsDailyListFileConverterTest {
             .as("incorrect header text")
             .isEqualTo("Social Security and Child Support");
 
+        assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Find contact details and other information about courts and tribunals in England "
+                           + "and Wales, and some non-devolved tribunals in Scotland.");
+
         assertThat(document.getElementsByClass("govuk-warning-text__text").get(0).text())
             .as("incorrect warning text")
             .isEqualTo("Please note: There may be 2 hearing lists available for this date. Please make sure "
                            + "you look at both lists to see all hearings happening on this date for this location.");
 
         assertThat(document.getElementsByTag("a")
-                       .get(0).attr("title"))
+                       .get(1).attr("title"))
             .as(TITLE_TEXT).contains("How to observe a court or tribunal hearing");
 
         assertThat(document.getElementsByTag("h2").get(1).text())
@@ -82,7 +98,7 @@ class SscsDailyListFileConverterTest {
 
         assertThat(document.getElementsByTag("p"))
             .as("data is missing")
-            .hasSize(8)
+            .hasSize(9)
             .extracting(Element::text)
             .containsSequence("Thank you for reading this document thoroughly.");
 
@@ -146,8 +162,20 @@ class SscsDailyListFileConverterTest {
                        .select(".mainHeaderText > h1:nth-child(1)").text())
             .as("incorrect header text").isEqualTo("Nawdd Cymdeithasol a Chynnal Plant");
 
+
+        assertThat(document.getElementsByClass(LINK_CLASS).get(0)
+                              .getElementsByTag("a").get(0)
+                              .attr(HREF))
+            .as(LINK_MESSAGE)
+            .isEqualTo("https://www.find-court-tribunal.service.gov.uk/");
+
+        assertThat(document.getElementsByClass(BODY_CLASS).get(0).text())
+            .as(LINK_MESSAGE)
+            .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
+                           + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
+
         assertThat(document.getElementsByTag("a")
-                       .get(0).attr("title"))
+                       .get(1).attr("title"))
             .as(TITLE_TEXT).contains("Sut i arsylwi gwrandawiad llys neu dribiwnlys");
 
         assertThat(document.getElementsByTag("h2").get(1).text())
@@ -156,7 +184,7 @@ class SscsDailyListFileConverterTest {
 
         assertThat(document.getElementsByTag("p"))
             .as("data is missing")
-            .hasSize(8)
+            .hasSize(9)
             .extracting(Element::text)
             .containsSequence("Ffynhonnell y Data: provenance");
 
@@ -180,6 +208,28 @@ class SscsDailyListFileConverterTest {
 
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {"SSCS_DAILY_LIST", "SSCS_DAILY_LIST_ADDITIONAL_HEARINGS"})
+    void testSscsDailyListTableContents(ListType listType) throws IOException {
+        Map<String, Object> language = TestUtils.getLanguageResources(listType, "en");
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(
+            Files.newInputStream(Paths.get("src/test/resources/mocks/", "sscsDailyList.json")),
+            writer, Charset.defaultCharset()
+        );
+        Map<String, String> metadataMap = Map.of(
+            CONTENT_DATE, Instant.now().toString(),
+            PROVENANCE, PROVENANCE,
+            "locationName", "Livingston",
+            "language", "ENGLISH",
+            "listType", listType.name()
+        );
+        JsonNode inputJson = OBJECT_MAPPER.readTree(writer.toString());
+        String outputHtml = listConversionFactory.getFileConverter(listType)
+            .get().convert(inputJson, metadataMap, language);
+        Document document = Jsoup.parse(outputHtml);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"SSCS_DAILY_LIST", "SSCS_DAILY_LIST_ADDITIONAL_HEARINGS"})
     void testConvertToExcelReturnsDefault(ListType listType) throws IOException {
         StringWriter writer = new StringWriter();
         JsonNode inputJson = OBJECT_MAPPER.readTree(writer.toString());
@@ -189,4 +239,5 @@ class SscsDailyListFileConverterTest {
                      "byte array wasn't empty"
         );
     }
+
 }
