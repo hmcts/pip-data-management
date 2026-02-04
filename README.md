@@ -1,7 +1,7 @@
 # pip-data-management
 ![alt-text](./hmctsLogo.png)
 
-## Table of Contents
+## Table of Contents 
 
 - [Overview](#overview)
 - [Features and Functionality](#features-and-functionality)
