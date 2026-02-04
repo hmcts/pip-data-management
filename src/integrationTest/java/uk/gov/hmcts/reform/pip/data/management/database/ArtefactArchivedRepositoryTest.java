@@ -55,7 +55,6 @@ class ArtefactArchivedRepositoryTest {
         artefact1.setDisplayTo(TOMORROW);
         artefact1.setSensitivity(Sensitivity.PUBLIC);
         artefact1.setSupersededCount(1);
-        artefact1.setIsManuallyDeleted(false);
 
         ArtefactArchived savedArtefactArchived =
             artefactArchivedRepository.save(artefact1);
@@ -74,7 +73,6 @@ class ArtefactArchivedRepositoryTest {
         artefact2.setDisplayTo(TOMORROW);
         artefact2.setSensitivity(Sensitivity.PUBLIC);
         artefact2.setSupersededCount(1);
-        artefact2.setIsManuallyDeleted(false);
 
         artefactArchivedRepository.save(artefact2);
     }
