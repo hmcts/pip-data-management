@@ -49,6 +49,7 @@ public final class NonStrategicListTestConstants {
     public static final String RESPONDENT = "respondent";
     public static final String TIME_ESTIMATE = "timeEstimate";
     public static final String PANEL = "panel";
+    public static final String TRIBUNAL = "tribunal";
     public static final String FTA_RESPONDENT = "fta/respondent";
     public static final String CASE_TITLE = "caseTitle";
     public static final String REPRESENTATIVE = "representative";

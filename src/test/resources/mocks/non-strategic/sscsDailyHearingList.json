@@ -6,7 +6,7 @@
     "appellant" : "Appellant 1",
     "courtroom" : "Courtroom 1",
     "hearingTime" : "10.30am",
-    "panel" : "Panel 1",
+    "tribunal" : "Tribunal member 1\r\nTribunal member 2\r\nTribunal member 3",
     "fta/respondent" : "Respondent 1",
     "additionalInformation" : "Additional information 1"
   }
