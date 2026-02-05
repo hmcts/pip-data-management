@@ -60,6 +60,7 @@ class MagistratesStandardListTest extends IntegrationBasicTestBase {
     private static final ListType LIST_TYPE = ListType.MAGISTRATES_STANDARD_LIST;
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String PUBLICATION_DATE_REGEX = "\"publicationDate\":\"[^\"]+\"";
+    private static final String DATE_OF_BIRTH_REGEX = "\"dateOfBirth\":\"[^\"]+\"";
 
     private HeaderGroup headerGroup;
 
@@ -299,6 +300,27 @@ class MagistratesStandardListTest extends IntegrationBasicTestBase {
 
             String listJson = node.toString()
                 .replaceAll(PUBLICATION_DATE_REGEX, String.format("\"publicationDate\":\"%s\"", publicationDate));
+            assertThrows(PayloadValidationException.class,
+                         () -> validationService.validateBody(listJson, headerGroup, true),
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "01/01/1950",
+        "2026-02-29",
+    })
+    void testValidateWithErrorWhenInvalidDateOfBirthFormat(String dateOfBirth) throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readValue(text, JsonNode.class);
+
+            String listJson = node.toString()
+                .replaceAll(DATE_OF_BIRTH_REGEX, String.format("\"dateOfBirth\":\"%s\"", dateOfBirth));
             assertThrows(PayloadValidationException.class,
                          () -> validationService.validateBody(listJson, headerGroup, true),
                          MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);

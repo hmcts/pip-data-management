@@ -61,11 +61,7 @@
         "isPresiding": {
           "description": "A flag to indicate whether a judiciary is presiding",
           "title": "Is Presiding",
-          "type": "boolean",
-          "examples": [
-            true
-          ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "type": "boolean"
         }
       }
     },
@@ -125,7 +121,7 @@
               "examples": [
                 "01-01-1901"
               ],
-              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+              "pattern": "^((([\\+-]?\\d{4}(?!\\d{2}\\b))\\-(0[13578]|1[02])\\-(0[1-9]|[12]\\d|3[01]))|(([\\+-]?\\d{4}(?!\\d{2}\\b))\\-(0[13456789]|1[012])\\-(0[1-9]|[12]\\d|30))|(([\\+-]?\\d{4}(?!\\d{2}\\b))\\-02\\-(0[1-9]|1\\d|2[0-8]))|(((1[6-9]|[2-9]\\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))\\-02\\-29))$"
             },
             "age": {
               "description": "Age of the individual",
@@ -143,10 +139,7 @@
             "inCustody": {
               "description": "If party is in custody or not",
               "title": "In Custody",
-              "type": "boolean",
-              "examples": [
-                "true"
-              ]
+              "type": "boolean"
             },
             "gender": {
               "description": "Party Gender",
@@ -214,11 +207,7 @@
               "reportingRestriction": {
                 "title": "Reporting Restriction",
                 "description": "Any reporting restrictions posed to the offence",
-                "type": "boolean",
-                "examples": [
-                  "true"
-                ],
-                "pattern": "^(?!.*<[^>]+>).*$"
+                "type": "boolean"
               },
               "convictionDate": {
                 "title": "Conviction Date",
@@ -296,11 +285,7 @@
         "subject": {
           "title": "Subject Restriction",
           "description": "Party is subject of the application/case",
-          "type": "boolean",
-          "examples": [
-            "true"
-          ],
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "type": "boolean"
         }
       }
     }
@@ -464,8 +449,7 @@
                                             },
                                             "reportingRestriction": {
                                               "title": "Reporting Restriction",
-                                              "type": "boolean",
-                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                              "type": "boolean"
                                             },
                                             "caseSequenceIndicator": {
                                               "title": "Case Sequence Indicator",

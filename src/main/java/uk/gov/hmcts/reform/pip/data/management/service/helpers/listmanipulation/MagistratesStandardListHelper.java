@@ -197,6 +197,12 @@ public final class MagistratesStandardListHelper {
             : DateHelper.formatTimeStampToBst(dateStr, Language.ENGLISH, false, false, DATE_FORMAT);
     }
 
+    private static String formatDate(String dateStr, String inboundFormat) {
+        return StringUtils.isBlank(dateStr)
+            ? ""
+            : DateHelper.convertDateFormat(dateStr, inboundFormat, DATE_FORMAT);
+    }
+
     private static void processParty(JsonNode party, JsonNode sittingJson, MatterMetadata matterMetadata,
                                      List<GroupedPartyMatters> groupedPartyMatters) {
         if (party.has(SUBJECT) && party.get(SUBJECT).asBoolean()) {
@@ -229,7 +235,7 @@ public final class MagistratesStandardListHelper {
         partyInfo.setName(PartyRoleHelper.createIndividualDetails(party));
 
         JsonNode individualDetails = party.get(INDIVIDUAL_DETAILS);
-        partyInfo.setDob(GeneralHelper.findAndReturnNodeText(individualDetails, DOB));
+        partyInfo.setDob(formatDate(GeneralHelper.findAndReturnNodeText(individualDetails, DOB), "yyyy-MM-dd"));
         partyInfo.setAge(GeneralHelper.findAndReturnNodeText(individualDetails, AGE));
         partyInfo.setAddress(individualDetails.has(ADDRESS)
                                         ? CrimeListHelper.formatAddress(individualDetails.get(ADDRESS))

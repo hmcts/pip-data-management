@@ -56,7 +56,7 @@
                                   "individualForenames": "Forename A",
                                   "individualMiddleName": "MiddleName A",
                                   "individualSurname": "Surname A",
-                                  "dateOfBirth": "01/01/1950",
+                                  "dateOfBirth": "1950-01-01",
                                   "age": 20,
                                   "address": {
                                     "county": "County A",
@@ -128,7 +128,7 @@
                                   "individualForenames": "Forename A",
                                   "individualMiddleName": "MiddleName A",
                                   "individualSurname": "Surname A",
-                                  "dateOfBirth": "01/01/1950",
+                                  "dateOfBirth": "1950-01-01",
                                   "age": 20,
                                   "address": {
                                     "county": "County A",
@@ -206,7 +206,7 @@
                                   "individualForenames": "Forename B",
                                   "individualMiddleName": "MiddleName B",
                                   "individualSurname": "Surname B",
-                                  "dateOfBirth": "01/01/1951",
+                                  "dateOfBirth": "1951-01-01",
                                   "age": 21,
                                   "address": {
                                     "county": "County B",

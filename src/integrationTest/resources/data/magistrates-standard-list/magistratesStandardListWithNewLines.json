@@ -56,7 +56,7 @@
                                   "individualForenames": "Forena\r\nme A",
                                   "individualMiddleName": "MiddleN\r\name A",
                                   "individualSurname": "Surna\r\nme A",
-                                  "dateOfBirth": "01/01/1950\r\n",
+                                  "dateOfBirth": "1950-01-01",
                                   "age": 20,
                                   "address": {
                                     "county": "County A\r\n",
@@ -116,7 +116,7 @@
                                   "individualForenames": "Forena\r\nme B",
                                   "individualMiddleName": "MiddleN\r\name B",
                                   "individualSurname": "Surna\r\nme B",
-                                  "dateOfBirth": "01/01/1950\r\n",
+                                  "dateOfBirth": "1950-01-01",
                                   "age": 21,
                                   "address": {
                                     "county": "County B\r\n",

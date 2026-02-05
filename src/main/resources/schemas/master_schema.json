@@ -87,8 +87,7 @@
         },
         "isPresiding": {
           "title": "Is Presiding",
-          "type": "boolean",
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          "type": "boolean"
         }
       }
     },
@@ -103,8 +102,7 @@
         },
         "subject": {
           "title": "Party is subject of the application/case",
-          "type": "boolean",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "type": "boolean"
         },
         "friendlyRoleName": {
           "title": "Friendly Role Name",
@@ -301,8 +299,7 @@
         },
         "reportingRestriction": {
           "title": "Reporting Restriction",
-          "type": "boolean",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "type": "boolean"
         },
         "reportingRestrictionDetail": {
           "title": "Reporting Restrictions Detail",
@@ -556,8 +553,7 @@
                                             },
                                             "reportingRestriction": {
                                               "title": "Reporting Restriction",
-                                              "type": "boolean",
-                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                              "type": "boolean"
                                             },
                                             "reportingRestrictionDetail": {
                                               "title": "Reporting Restrictions Detail",

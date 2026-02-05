@@ -56,7 +56,7 @@
                                   "individualForenames": "Forename A",
                                   "individualMiddleName": "MiddleName A",
                                   "individualSurname": "Surname A",
-                                  "dateOfBirth": "01/01/1950",
+                                  "dateOfBirth": "1950-01-01",
                                   "age": 20,
                                   "address": {
                                     "county": "County A",
