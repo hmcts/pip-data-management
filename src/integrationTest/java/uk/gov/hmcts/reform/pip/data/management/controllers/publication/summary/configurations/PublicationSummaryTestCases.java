@@ -91,10 +91,10 @@ public final class PublicationSummaryTestCases {
             PublicationSummaryTestInput.withoutExcel(
                 ListType.MAGISTRATES_STANDARD_LIST,
                 "data/magistrates-standard-list/magistratesStandardList.json",
-                List.of("Defendant - Surname1, Forename1",
-                "Prosecuting authority - Test1234",
-                "Case reference - 45684548",
-                "Hearing type - mda",
+                List.of("Name - Surname A, Forename A",
+                "Prosecuting authority - Prosecuting Authority Name",
+                "Reference - 45684548",
+                "Hearing type - Hearing Type A",
                 "Offence - drink driving, Assault by beating")
             ),
             PublicationSummaryTestInput.withoutExcel(

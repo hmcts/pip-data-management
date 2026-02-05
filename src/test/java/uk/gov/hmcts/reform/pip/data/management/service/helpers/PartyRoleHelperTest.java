@@ -163,6 +163,20 @@ class PartyRoleHelperTest {
     }
 
     @Test
+    void testCreateIndividualDetailsWithoutInitialised() {
+        assertThat(PartyRoleHelper.createIndividualDetails(inputJson.get(PARTY).get(0)))
+            .as("Individual details incorrect")
+            .isEqualTo("Applicant Surname, Applicant Forename Applicant Middlename");
+    }
+
+    @Test
+    void testCreateIndividualDetailsWithoutInitialisedAndWithoutMiddleName() {
+        assertThat(PartyRoleHelper.createIndividualDetails(inputJson.get(PARTY).get(6)))
+            .as("Individual details incorrect")
+            .isEqualTo("SurnameA, ForenamesA");
+    }
+
+    @Test
     void testCreateOrganisationDetails() {
         assertThat(PartyRoleHelper.createOrganisationDetails(inputJson.get(PARTY).get(8)))
             .as("Organisation details incorrect")

@@ -24,11 +24,10 @@ public class MagistratesStandardListFileConverter implements FileConverter {
 
         context.setVariable("contentDate", metadata.get("contentDate"));
         context.setVariable("provenance", metadata.get("provenance"));
-        context.setVariable("version", artefact.get("document").get("version").asText());
 
         context.setVariable("locationName", metadata.get("locationName"));
         context.setVariable("venueAddress", LocationHelper.formatFullVenueAddress(artefact));
-        context.setVariable("cases", MagistratesStandardListHelper.processRawListData(artefact, language));
+        context.setVariable("courtRooms", MagistratesStandardListHelper.processRawListData(artefact));
 
         return TemplateEngine.processTemplate(metadata.get("listType"), context);
     }

@@ -7,11 +7,9 @@
         "line": {
           "title": "Address Line",
           "type": "array",
-          "default": [],
           "items": {
             "title": "Items",
             "type": "string",
-            "default": "",
             "examples": [
               "THE LAW COURTS"
             ],
@@ -22,7 +20,6 @@
           "title": "Town",
           "description": "The town for the address",
           "type": "string",
-          "default": "",
           "examples": [
             "Cambridge"
           ],
@@ -32,7 +29,6 @@
           "title": "County",
           "description": "The county for the address",
           "type": "string",
-          "default": "",
           "examples": [
             "Cambridgeshire"
           ],
@@ -41,7 +37,6 @@
         "postCode": {
           "title": "Address Postcode",
           "type": "string",
-          "default": "",
           "examples": [
             "PR1 2LL"
           ],
@@ -54,35 +49,6 @@
       "description": "An array of judiciary",
       "type": "object",
       "properties": {
-        "johTitle": {
-          "description": "The title for the judiciary",
-          "title": "Judiciary Title",
-          "type": "string",
-          "default": "",
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-        },
-        "johNameSurname": {
-          "description": "First and Surname of the JOH",
-          "title": "JOH Name",
-          "type": "string",
-          "examples": [
-            "John Smith"
-          ],
-          "default": "",
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-        },
-        "role": {
-          "description": "Role of the judiciary",
-          "title": "Role",
-          "type": "string",
-          "enum": [
-            "JUDGE",
-            "MAGISTRATE",
-            "CLERK"
-          ],
-          "default": "",
-          "pattern": "^(?!.*<[^>]+>).*$"
-        },
         "johKnownAs": {
           "description": "Name and salutations, titles to be presented on publications",
           "title": "JOH Known As",
@@ -90,18 +56,236 @@
           "examples": [
             "judge"
           ],
-          "default": "",
           "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         },
         "isPresiding": {
           "description": "A flag to indicate whether a judiciary is presiding",
           "title": "Is Presiding",
-          "type": "boolean",
+          "type": "boolean"
+        }
+      }
+    },
+    "party": {
+      "title": "Party",
+      "description": "A party",
+      "type": "object",
+      "properties": {
+        "partyRole": {
+          "description": "Role of the party, selectable list of roles, i.e. prosecution, solicitor defence etc",
+          "title": "Party Role",
+          "type": "string",
           "examples": [
-            true
+            "DEFENDANT",
+            "PROSECUTING_AUTHORITY",
+            "APPLICANT",
+            "RESPONDENT"
           ],
-          "default": "",
-          "pattern": "^(?!.*<[^>]+>).*$"
+          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+        },
+        "individualDetails": {
+          "title": "Individual Details",
+          "description": "Individual Details",
+          "type": "object",
+          "properties": {
+            "individualForenames": {
+              "description": "Forename of party",
+              "title": "Individual Forenames",
+              "type": "string",
+              "examples": [
+                "John Smith"
+              ],
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+            },
+            "individualMiddleName": {
+              "description": "Middle name of the individual",
+              "title": "Individual Middle Name",
+              "type": "string",
+              "examples": [
+                "MiddleName"
+              ],
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+            },
+            "individualSurname": {
+              "description": "Surname of party",
+              "title": "Individual Surname",
+              "type": "string",
+              "examples": [
+                "Surname"
+              ],
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+            },
+            "dateOfBirth": {
+              "description": "Date of birth of the individual",
+              "title": "Date Of Birth",
+              "type": "string",
+              "examples": [
+                "1901-01-01"
+              ],
+              "pattern": "^((([\\+-]?\\d{4}(?!\\d{2}\\b))\\-(0[13578]|1[02])\\-(0[1-9]|[12]\\d|3[01]))|(([\\+-]?\\d{4}(?!\\d{2}\\b))\\-(0[13456789]|1[012])\\-(0[1-9]|[12]\\d|30))|(([\\+-]?\\d{4}(?!\\d{2}\\b))\\-02\\-(0[1-9]|1\\d|2[0-8]))|(((1[6-9]|[2-9]\\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))\\-02\\-29))$"
+            },
+            "age": {
+              "description": "Age of the individual",
+              "title": "Age",
+              "type": "integer",
+              "examples": [
+                1
+              ]
+            },
+            "address": {
+              "title": "Address",
+              "description": "Party Address",
+              "$ref": "#/$defs/address"
+            },
+            "inCustody": {
+              "description": "If party is in custody or not",
+              "title": "In Custody",
+              "type": "boolean"
+            },
+            "gender": {
+              "description": "Party Gender",
+              "title": "Gender",
+              "type": "string",
+              "examples": [
+                "male"
+              ],
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+            },
+            "asn": {
+              "description": "ASN Number",
+              "title": "ASN",
+              "type": "string",
+              "examples": [
+                "ABC1234567D"
+              ],
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+            }
+          }
+        },
+        "offence": {
+          "title": "offence",
+          "description": "The offence and details of offences associated with the case. It is also known as charges.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "offenceCode": {
+                "description": "Offence unique code",
+                "title": "Offence code",
+                "type": "string",
+                "examples": [
+                  "dd01-01"
+                ],
+                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+              },
+              "offenceTitle": {
+                "description": "Short description of offence",
+                "title": "Offence title",
+                "type": "string",
+                "examples": [
+                  "drink driving"
+                ],
+                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+              },
+              "offenceWording": {
+                "description": "Long description of offence",
+                "title": "Offence wording",
+                "type": "string",
+                "examples": [
+                  "driving whilst under the influence of alcohol"
+                ],
+                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+              },
+              "offenceMaxPen": {
+                "description": "Maximum penalty if found guilty",
+                "title": "Offence Max Penalty",
+                "type": "string",
+                "examples": [
+                  "10yrs"
+                ],
+                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+              },
+              "reportingRestriction": {
+                "title": "Reporting Restriction",
+                "description": "Any reporting restrictions posed to the offence",
+                "type": "boolean"
+              },
+              "convictionDate": {
+                "title": "Conviction Date",
+                "description": "",
+                "type": "string",
+                "examples": [
+                  "2016-09-13T23:30:52.123Z"
+                ],
+                "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
+              },
+              "adjournedDate": {
+                "title": "Adjourned Date",
+                "description": "",
+                "type": "string",
+                "examples": [
+                  "2016-09-13T23:30:52.123Z"
+                ],
+                "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
+              },
+              "plea": {
+                "description": "If a plea has been received",
+                "title": "Plea",
+                "type": "string",
+                "enum": [
+                  "GUILTY",
+                  "NOT_GUILTY",
+                  "NONE"
+                ]
+              },
+              "pleaDate": {
+                "title": "Plea Date",
+                "description": "",
+                "type": "string",
+                "examples": [
+                  "2016-09-13T23:30:52.123Z"
+                ],
+                "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
+              },
+              "offenceLegislation": {
+                "description": "Legislation associated with the offence",
+                "title": "Offence Legislation",
+                "type": "string",
+                "examples": [
+                  "Road Traffic Act 1988"
+                ],
+                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+              }
+            }
+          }
+        },
+        "organisationDetails": {
+          "title": "Organisation Details",
+          "description": "Organisation Details",
+          "type": "object",
+          "required": [
+            "organisationName"
+          ],
+          "properties": {
+            "organisationName": {
+              "description": "Party name of organisation",
+              "title": "Organisation Name",
+              "type": "string",
+              "examples": [
+                "A & B Solicitors"
+              ],
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+            },
+            "organisationAddress": {
+              "title": "Organisation Address",
+              "description": "Party Address",
+              "$ref": "#/$defs/address"
+            }
+          }
+        },
+        "subject": {
+          "title": "Subject Restriction",
+          "description": "Party is subject of the application/case",
+          "type": "boolean"
         }
       }
     }
@@ -130,54 +314,16 @@
             "2016-09-13T23:30:52.123Z"
           ],
           "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z$"
-        },
-        "version": {
-          "title": "Version",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "1.0"
-          ],
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
     },
     "venue": {
       "title": "venue",
       "type": "object",
-      "required": [
-        "venueName"
-      ],
       "properties": {
-        "venueName": {
-          "description": "Full venue name",
-          "title": "Venue Name",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "Preston"
-          ],
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-        },
         "venueAddress": {
           "description": "Full venue address",
           "$ref": "#/$defs/address"
-        }
-      }
-    },
-    "locationDetails": {
-      "title": "Location Details",
-      "type": "object",
-      "properties": {
-        "jurisdiction": {
-          "description": "Jurisdiction",
-          "title": "Jurisdiction",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "Family court"
-          ],
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
         }
       }
     },
@@ -195,7 +341,6 @@
             "title": "Court House",
             "description": "The court house that owns the court rooms",
             "required": [
-              "courtHouseName",
               "courtRoom"
             ],
             "type": "object",
@@ -204,10 +349,15 @@
                 "description": "Name of the court house",
                 "title": "Court House Name",
                 "type": "string",
-                "default": "",
                 "examples": [
                   "PRESTON"
                 ],
+                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+              },
+              "lja": {
+                "title": "Local justice area name",
+                "type": "string",
+                "maxLength": 100,
                 "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
               },
               "courtRoom": {
@@ -217,9 +367,15 @@
                   "description": "The court room that owns the court rooms",
                   "type": "object",
                   "required": [
+                    "courtRoomName",
                     "session"
                   ],
                   "properties": {
+                    "courtRoomName": {
+                      "title": "Court Room Name",
+                      "type": "string",
+                      "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                    },
                     "session": {
                       "type": "array",
                       "items": {
@@ -242,12 +398,10 @@
                           "sittings": {
                             "title": "Sittings",
                             "type": "array",
-                            "default": [],
                             "items": {
                               "type": "object",
                               "required": [
                                 "sittingStart",
-                                "sittingEnd",
                                 "hearing"
                               ],
                               "properties": {
@@ -255,15 +409,6 @@
                                   "description": "Sitting Start Time",
                                   "title": "Sitting Start",
                                   "type": "string",
-                                  "default": "",
-                                  "examples": [],
-                                  "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z$"
-                                },
-                                "sittingEnd": {
-                                  "description": "Sitting End Time",
-                                  "title": "Sitting End",
-                                  "type": "string",
-                                  "default": "",
                                   "examples": [],
                                   "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z$"
                                 },
@@ -273,9 +418,6 @@
                                     "type": "object",
                                     "description": "Hearing details of the case and associated details for the sitting",
                                     "title": "Hearing",
-                                    "required": [
-                                      "case"
-                                    ],
                                     "properties": {
                                       "hearingType": {
                                         "description": "Type of hearing being presented",
@@ -284,7 +426,6 @@
                                         "examples": [
                                           "mda"
                                         ],
-                                        "default": "",
                                         "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                       },
                                       "case": {
@@ -293,326 +434,100 @@
                                           "type": "object",
                                           "title": "Case",
                                           "required": [
-                                            "caseNumber"
+                                            "caseUrn"
                                           ],
                                           "description": "Case Details",
                                           "properties": {
-                                            "caseNumber": {
-                                              "title": "Case Number",
+                                            "caseUrn": {
+                                              "title": "Case unique identifier",
                                               "description": "A number identifying a case",
                                               "type": "string",
-                                              "default": "",
                                               "examples": [
-                                                "45684548"
+                                                "ABC45684548"
                                               ],
                                               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
-                                            "reportingRestrictionDetail": {
-                                              "title": "Reporting Restrictions Detail",
-                                              "description": "The detail / wording of any reporting restrictions attached to the offence",
-                                              "type": "array",
-                                              "items": {
-                                                "type": "string",
-                                                "default": "",
-                                                "examples": [
-                                                  "This is a reporting restrictions detail"
-                                                ],
-                                                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                              }
+                                            "reportingRestriction": {
+                                              "title": "Reporting Restriction",
+                                              "type": "boolean"
                                             },
                                             "caseSequenceIndicator": {
                                               "title": "Case Sequence Indicator",
                                               "description": "The case sequence indicator",
                                               "type": "string",
-                                              "default": "",
                                               "examples": [
                                                 "2 of 3"
                                               ],
                                               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
                                             "party": {
-                                              "title": "Party",
-                                              "description": "Parties involved in the case (defence, prosecution)",
                                               "type": "array",
+                                              "description": "party for the case",
+                                              "title": "Party",
                                               "items": {
-                                                "title": "Party",
-                                                "description": "A party",
                                                 "type": "object",
-                                                "properties": {
-                                                  "partyRole": {
-                                                    "description": "Role of the party, selectable list of roles, i.e. prosecution, solicitor defence etc",
-                                                    "title": "Party Role",
-                                                    "type": "string",
-                                                    "examples": [
-                                                      "DEFENDANT"
-                                                    ],
-                                                    "default": "",
-                                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                  },
-                                                  "friendlyRoleName": {
-                                                    "description": "The descriptive version of the role. E.g a party role of APPLICANT_REPRESENTATIVE",
-                                                    "title": "Friendly Role Name",
-                                                    "type": "string",
-                                                    "examples": [
-                                                      "Legal Advisor"
-                                                    ],
-                                                    "default": "",
-                                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                  },
-                                                  "individualDetails": {
-                                                    "title": "Individual Details",
-                                                    "description": "Individual Details",
-                                                    "type": "object",
-                                                    "properties": {
-                                                      "title": {
-                                                        "description": "Title of individual",
-                                                        "title": "Title",
-                                                        "type": "string",
-                                                        "examples": [
-                                                          "Mr"
-                                                        ],
-                                                        "default": "",
-                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                      },
-                                                      "individualForenames": {
-                                                        "description": "Forename of party",
-                                                        "title": "Individual Forenames",
-                                                        "type": "string",
-                                                        "examples": [
-                                                          "John Smith"
-                                                        ],
-                                                        "default": "",
-                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                      },
-                                                      "individualMiddleName": {
-                                                        "description": "Middle name of the individual",
-                                                        "title": "Individual Middle Name",
-                                                        "type": "string",
-                                                        "examples": [
-                                                          "MiddleName"
-                                                        ],
-                                                        "default": "",
-                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                      },
-                                                      "individualSurname": {
-                                                        "description": "Surname of party",
-                                                        "title": "Individual Surname",
-                                                        "type": "string",
-                                                        "examples": [
-                                                          "Surname"
-                                                        ],
-                                                        "default": "",
-                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                      },
-                                                      "dateOfBirth": {
-                                                        "description": "Date of birth of the individual",
-                                                        "title": "Date Of Birth",
-                                                        "type": "string",
-                                                        "examples": [
-                                                          "01-01-1901"
-                                                        ],
-                                                        "default": "",
-                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                      },
-                                                      "age": {
-                                                        "description": "Age of the individual",
-                                                        "title": "Age",
-                                                        "type": "integer",
-                                                        "examples": [
-                                                          1
-                                                        ],
-                                                        "default": ""
-                                                      },
-                                                      "address": {
-                                                        "title": "Address",
-                                                        "description": "Party Address",
-                                                        "$ref": "#/$defs/address"
-                                                      },
-                                                      "inCustody": {
-                                                        "description": "If party is in custody or not",
-                                                        "title": "In Custody",
-                                                        "type": "boolean",
-                                                        "examples": [
-                                                          "true"
-                                                        ],
-                                                        "default": ""
-                                                      },
-                                                      "plea": {
-                                                        "description": "If a plea has been received",
-                                                        "title": "Plea",
-                                                        "type": "string",
-                                                        "enum": [
-                                                          "GUILTY",
-                                                          "NOT_GUILTY",
-                                                          "NONE"
-                                                        ]
-                                                      },
-                                                      "gender": {
-                                                        "description": "Party Gender",
-                                                        "title": "Gender",
-                                                        "type": "string",
-                                                        "examples": [
-                                                          "male"
-                                                        ],
-                                                        "default": "",
-                                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                      }
-                                                    }
-                                                  },
-                                                  "offence": {
-                                                    "title": "offence",
-                                                    "description": "The offence and details of offences associated with the case. It is also known as charges.",
-                                                    "type": "array",
-                                                    "items": {
-                                                      "type": "object",
-                                                      "properties": {
-                                                        "offenceCode": {
-                                                          "description": "Offence unique code",
-                                                          "title": "Offence code",
-                                                          "type": "string",
-                                                          "default": "",
-                                                          "examples": [
-                                                            "dd01-01"
-                                                          ],
-                                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                        },
-                                                        "offenceTitle": {
-                                                          "description": "Short description of offence",
-                                                          "title": "Offence title",
-                                                          "type": "string",
-                                                          "default": "",
-                                                          "examples": [
-                                                            "drink driving"
-                                                          ],
-                                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                        },
-                                                        "offenceWording": {
-                                                          "description": "Long description of offence",
-                                                          "title": "Offence wording",
-                                                          "type": "string",
-                                                          "default": "",
-                                                          "examples": [
-                                                            "driving whilst under the influence of alcohol"
-                                                          ],
-                                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                        },
-                                                        "offenceMaxPen": {
-                                                          "description": "Maximum penalty if found guilty",
-                                                          "title": "Offence Max Penalty",
-                                                          "type": "string",
-                                                          "default": "",
-                                                          "examples": [
-                                                            "10yrs"
-                                                          ],
-                                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                        },
-                                                        "reportingRestriction": {
-                                                          "title": "Reporting Restriction",
-                                                          "description": "Any reporting restrictions posed to the offence",
-                                                          "type": "boolean",
-                                                          "default": "",
-                                                          "examples": [
-                                                            "true"
-                                                          ],
-                                                          "pattern": "^(?!.*<[^>]+>).*$"
-                                                        },
-                                                        "reportingRestrictionDetail": {
-                                                          "title": "Reporting Restrictions Detail",
-                                                          "description": "The detail / wording of any reporting restrictions attached to the offence",
-                                                          "type": "array",
-                                                          "items": {
-                                                            "type": "string",
-                                                            "default": "",
-                                                            "examples": [
-                                                              "This is a reporting restrictions detail"
-                                                            ],
-                                                            "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                          }
-                                                        }
-                                                      }
-                                                    }
-                                                  }
-                                                }
+                                                "$ref": "#/$defs/party"
+                                              }
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "panel": {
+                                        "title": "Panel",
+                                        "description": "Information about the panel",
+                                        "type": "string",
+                                        "examples": [
+                                          "CHILD or ADULT"
+                                        ],
+                                        "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                      },
+                                      "channel": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string",
+                                          "description": "Channel if different from in court",
+                                          "title": "Sitting Channel",
+                                          "examples": [
+                                            "VIDEO HEARING"
+                                          ],
+                                          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                        }
+                                      },
+                                      "application": {
+                                        "title": "Application",
+                                        "description": "Application associated with the case",
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "title": "Application",
+                                          "required": [
+                                            "applicationReference"
+                                          ],
+                                          "properties": {
+                                            "party": {
+                                              "type": "array",
+                                              "description": "party for the case",
+                                              "title": "Party",
+                                              "items": {
+                                                "type": "object",
+                                                "$ref": "#/$defs/party"
                                               }
                                             },
-                                            "informant": {
-                                              "description": "Object representing an informant",
-                                              "title": "Informant",
-                                              "type": "object",
-                                              "properties": {
-                                                "prosecutionAuthorityRef": {
-                                                  "title": "Prosecution Authority Ref",
-                                                  "type": "string",
-                                                  "default": "",
-                                                  "examples": [
-                                                    ""
-                                                  ],
-                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                },
-                                                "prosecutionAuthorityId": {
-                                                  "title": "Prosecution Authority Id",
-                                                  "type": "string",
-                                                  "default": "",
-                                                  "examples": [
-                                                    ""
-                                                  ],
-                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                },
-                                                "prosecutionAuthorityCode": {
-                                                  "title": "Prosecution Authority Code",
-                                                  "type": "string",
-                                                  "default": "",
-                                                  "examples": [
-                                                    ""
-                                                  ],
-                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                },
-                                                "prosecutionAuthorityName": {
-                                                  "title": "Prosecution Authority Name",
-                                                  "type": "string",
-                                                  "default": "",
-                                                  "examples": [
-                                                    ""
-                                                  ],
-                                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                                }
-                                              }
-                                            },
-                                            "hearingNumber": {
-                                              "title": "Hearing number",
-                                              "description": "This is also known as informant number",
+                                            "applicationReference": {
+                                              "title": "Application Reference",
+                                              "description": "application reference",
                                               "type": "string",
-                                              "default": "",
                                               "examples": [
-                                                "12"
+                                                "ABC1234567D"
                                               ],
                                               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
-                                            "convictionDate": {
-                                              "title": "Conviction Date",
-                                              "description": "",
+                                            "applicationType": {
+                                              "title": "Application Type",
+                                              "description": "application type",
                                               "type": "string",
                                               "examples": [
-                                                "2016-09-13T23:30:52.123Z"
-                                              ],
-                                              "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
-                                            },
-                                            "adjournedDate": {
-                                              "title": "Adjourned Date",
-                                              "description": "",
-                                              "type": "string",
-                                              "examples": [
-                                                "2016-09-13T23:30:52.123Z"
-                                              ],
-                                              "pattern": "^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}([.]\\d{1,9})?Z)?$"
-                                            },
-                                            "panel": {
-                                              "title": "Panel",
-                                              "description": "Information about the panel",
-                                              "type": "string",
-                                              "default": "",
-                                              "examples": [
-                                                "CHILD or ADULT"
+                                                "application type example"
                                               ],
                                               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             }
@@ -620,28 +535,6 @@
                                         }
                                       }
                                     }
-                                  }
-                                },
-                                "judiciary": {
-                                  "type": "array",
-                                  "title": "Judiciary",
-                                  "description": "An array of judiciary",
-                                  "items": {
-                                    "type": "object",
-                                    "$ref": "#/$defs/judiciary"
-                                  }
-                                },
-                                "channel": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "string",
-                                    "description": "Channel if different from in court",
-                                    "title": "Sitting Channel",
-                                    "examples": [
-                                      "VIDEO HEARING"
-                                    ],
-                                    "default": "",
-                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                   }
                                 }
                               }
