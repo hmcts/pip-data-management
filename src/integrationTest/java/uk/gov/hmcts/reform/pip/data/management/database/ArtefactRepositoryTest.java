@@ -17,8 +17,6 @@ import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,7 +55,6 @@ class ArtefactRepositoryTest {
         Artefact artefact1 = new Artefact();
         artefact1.setLocationId(LOCATION_ID);
         artefact1.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
-        artefact1.setIsArchived(false);
         artefact1.setLastReceivedDate(publicationReceivedDateTime.minusDays(5));
         setCommonArtefactProperties(artefact1);
 
@@ -67,7 +64,6 @@ class ArtefactRepositoryTest {
         Artefact artefact2 = new Artefact();
         artefact2.setLocationId(LOCATION_ID);
         artefact2.setListType(ListType.FAMILY_DAILY_CAUSE_LIST);
-        artefact2.setIsArchived(false);
         artefact2.setLastReceivedDate(publicationReceivedDateTime.minusDays(10));
         setCommonArtefactProperties(artefact2);
 
@@ -77,7 +73,6 @@ class ArtefactRepositoryTest {
         Artefact artefact3 = new Artefact();
         artefact3.setLocationId(LOCATION_ID);
         artefact3.setListType(ListType.SJP_PUBLIC_LIST);
-        artefact3.setIsArchived(false);
         artefact3.setLastReceivedDate(publicationReceivedDateTime.minusDays(15));
         setCommonArtefactProperties(artefact3);
 
@@ -87,9 +82,11 @@ class ArtefactRepositoryTest {
         Artefact artefact4 = new Artefact();
         artefact4.setLocationId(LOCATION_ID);
         artefact4.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
-        artefact4.setIsArchived(true);
-        artefact4.setLastReceivedDate(publicationReceivedDateTime.minusDays(20));
+        artefact4.setLastReceivedDate(publicationReceivedDateTime.minusDays(1));
         setCommonArtefactProperties(artefact4);
+        artefact4.setDisplayFrom(YESTERDAY.minusDays(2));
+        artefact4.setDisplayTo(TODAY);
+        artefact4.setLastReceivedDate(publicationReceivedDateTime.minusDays(10));
 
         savedArtefact = artefactRepository.save(artefact4);
         artefactId4 = savedArtefact.getArtefactId();
@@ -97,7 +94,6 @@ class ArtefactRepositoryTest {
         Artefact artefact5 = new Artefact();
         artefact5.setLocationId(NO_MATCH_LOCATION_ID);
         artefact5.setListType(ListType.SJP_PUBLIC_LIST);
-        artefact5.setIsArchived(false);
         artefact5.setLastReceivedDate(publicationReceivedDateTime.minusDays(40));
         setCommonArtefactProperties(artefact5);
 
@@ -171,7 +167,7 @@ class ArtefactRepositoryTest {
 
     @Test
     void shouldCountArtefactsByLocationExcludingUnmatchedLocationAndArchivedArtefacts() {
-        List<Object[]> results = artefactRepository.countArtefactsByLocation();
+        List<Object[]> results = artefactRepository.countArtefactsByLocation(TODAY);
         assertThat(results)
             .as(RESULT_MATCHED_MESSAGE)
             .hasSize(1);
@@ -187,7 +183,7 @@ class ArtefactRepositoryTest {
 
     @Test
     void shouldFindArtefactsByLocationIdAdmin() {
-        assertThat(artefactRepository.findArtefactsByLocationIdAdmin(LOCATION_ID))
+        assertThat(artefactRepository.findArtefactsByLocationIdAdmin(LOCATION_ID, TODAY))
             .as(ARTEFACT_MATCHED_MESSAGE)
             .hasSize(3)
             .extracting(Artefact::getArtefactId)
@@ -196,14 +192,14 @@ class ArtefactRepositoryTest {
 
     @Test
     void shouldNotFindArtefactsByLocationIdAdminIfInvalid() {
-        assertThat(artefactRepository.findArtefactsByLocationIdAdmin(INVALID_LOCATION_ID))
+        assertThat(artefactRepository.findArtefactsByLocationIdAdmin(INVALID_LOCATION_ID, TODAY))
             .as(ARTEFACT_EMPTY_MESSAGE)
             .isEmpty();
     }
 
     @Test
     void shouldFindArtefactByArtefactId() {
-        assertThat(artefactRepository.findArtefactByArtefactId(artefactId4.toString()))
+        assertThat(artefactRepository.findArtefactByArtefactId(artefactId3.toString()))
             .as(ARTEFACT_MATCHED_MESSAGE)
             .isPresent()
             .hasValueSatisfying(a -> a.getArtefactId().equals(4));
@@ -218,7 +214,7 @@ class ArtefactRepositoryTest {
 
     @Test
     void shouldFindArtefactsByDisplayFrom() {
-        assertThat(artefactRepository.findArtefactsByDisplayFrom(YESTERDAY.toLocalDate()))
+        assertThat(artefactRepository.findArtefactsByDisplayFrom(YESTERDAY.toLocalDate(), YESTERDAY))
             .as(ARTEFACT_MATCHED_MESSAGE)
             .hasSize(4)
             .extracting(Artefact::getArtefactId)
@@ -227,7 +223,7 @@ class ArtefactRepositoryTest {
 
     @Test
     void shouldNotFindArtefactsByDisplayFrom() {
-        assertThat(artefactRepository.findArtefactsByDisplayFrom(TODAY.toLocalDate()))
+        assertThat(artefactRepository.findArtefactsByDisplayFrom(TODAY.toLocalDate(), TODAY))
             .as(ARTEFACT_EMPTY_MESSAGE)
             .isEmpty();
     }
@@ -236,14 +232,14 @@ class ArtefactRepositoryTest {
     void shouldFindOutdatedArtefacts() {
         assertThat(artefactRepository.findOutdatedArtefacts(LocalDateTime.now().plusDays(2)))
             .as(ARTEFACT_MATCHED_MESSAGE)
-            .hasSize(4)
+            .hasSize(5)
             .extracting(Artefact::getArtefactId)
-            .containsExactlyInAnyOrder(artefactId1, artefactId2, artefactId3, artefactId5);
+            .containsExactlyInAnyOrder(artefactId1, artefactId2, artefactId3, artefactId4, artefactId5);
     }
 
     @Test
     void shouldNotFindOutdatedArtefacts() {
-        assertThat(artefactRepository.findOutdatedArtefacts(TOMORROW))
+        assertThat(artefactRepository.findOutdatedArtefacts(TOMORROW.minusDays(2)))
             .as(ARTEFACT_EMPTY_MESSAGE)
             .isEmpty();
     }
@@ -259,7 +255,7 @@ class ArtefactRepositoryTest {
 
     @Test
     void shouldCountNoMatchArtefacts() {
-        assertThat(artefactRepository.countNoMatchArtefacts())
+        assertThat(artefactRepository.countNoMatchArtefacts(YESTERDAY))
             .as(ARTEFACT_MATCHED_MESSAGE)
             .isEqualTo(1);
     }
@@ -279,30 +275,6 @@ class ArtefactRepositoryTest {
                                                                      INVALID_LOCATION_ID))
             .as(ARTEFACT_EMPTY_MESSAGE)
             .isEmpty();
-    }
-
-    @Test
-    void shouldArchiveArtefact() {
-        Artefact artefact = new Artefact();
-        artefact.setPayload("Test payload");
-        artefact.setSourceArtefactId("123");
-        artefact.setSearch(Map.of("1", List.of("Test")));
-        artefact.setIsArchived(false);
-        Artefact savedArtefact = artefactRepository.save(artefact);
-
-        artefactRepository.archiveArtefact(savedArtefact.getArtefactId().toString());
-
-        Optional<Artefact> updatedArtefact = artefactRepository.findArtefactByArtefactId(
-            savedArtefact.getArtefactId().toString()
-        );
-
-        assertThat(updatedArtefact)
-            .as(ARTEFACT_MATCHED_MESSAGE)
-            .isPresent()
-            .hasValueSatisfying(a -> a.getPayload().isEmpty())
-            .hasValueSatisfying(a -> a.getSourceArtefactId().isEmpty())
-            .hasValueSatisfying(a -> a.getSearch().isEmpty())
-            .hasValueSatisfying(Artefact::getIsArchived);
     }
 
     @Test
@@ -328,7 +300,7 @@ class ArtefactRepositoryTest {
         assertThat(miData.getSensitivity()).isEqualTo(Sensitivity.PUBLIC);
         assertThat(miData.getSupersededCount()).isEqualTo(1);
 
-        //artefactId1has last lastReceivedDate 5 days old, so it will pick only that one.
+        //artefactId1 has last lastReceivedDate 5 days old, so it will pick only that one.
         publicationReceivedDate = LocalDate.now()
             .minusDays(5)
             .atStartOfDay();
