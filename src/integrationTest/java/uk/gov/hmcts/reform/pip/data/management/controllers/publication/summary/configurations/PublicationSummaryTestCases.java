@@ -83,7 +83,7 @@ public final class PublicationSummaryTestCases {
             PublicationSummaryTestInput.withoutExcel(
                 ListType.MAGISTRATES_PUBLIC_LIST,
                 "data/magistrates-public-list/magistratesPublicList.json",
-                List.of("Defendant - Surname 1, Forename 1",
+                List.of("Name - Surname 1, Forename 1",
                 "Prosecuting authority - Pro_Auth",
                 CASE_REFERENCE_FIELD,
                 HEARING_TYPE_FIELD)
