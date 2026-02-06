@@ -132,6 +132,21 @@
                           </td>
                         </tr>
                       </th:block>
+                      <th:block th:each="application : ${hearing.get('application')}">
+                        <tr class="govuk-table__row">
+                          <td class="govuk-table__cell no-wrap" th:classappend="${application.get('bottomBorder').asText()}" th:text="${sitting.get('time').asText()}"/>
+                          <td class="govuk-table__cell" th:classappend="${application.get('bottomBorder').asText()}" th:text="${application.get('applicationReference').asText()}"/>
+                          <td class="govuk-table__cell" th:classappend="${application.get('bottomBorder').asText()}" th:text="${application.get('defendant').asText()}"/>
+                          <td class="govuk-table__cell no-wrap" th:classappend="${application.get('bottomBorder').asText()}"/>
+                          <td class="govuk-table__cell" th:classappend="${application.get('bottomBorder').asText()}" th:text="${application.get('prosecutingAuthority').asText()}"/>
+                        </tr>
+                        <tr class="govuk-table__row" th:if="${application.get('offence').asText() != ''}">
+                          <td class="govuk-table__cell no-wrap" colspan="6">
+                            <span class="linked-cases-heading" th:text="${i18n.offenceDetails}" />
+                            <span th:text="${application.get('offence').asText()}" />
+                          </td>
+                        </tr>
+                      </th:block>
                     </th:block>
                   </th:block>
                   </tbody>
