@@ -50,7 +50,7 @@ class MagistratesPublicListSummaryDataTest {
         List<Map<String, String>> summaryCases = output.get(null);
         softly.assertThat(summaryCases)
             .as(SUMMARY_CASES_MESSAGE)
-            .hasSize(13);
+            .hasSize(14);
 
         Map<String, String> summaryFields = summaryCases.get(0);
         softly.assertThat(summaryFields)
