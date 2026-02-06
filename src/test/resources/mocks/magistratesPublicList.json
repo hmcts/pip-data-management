@@ -17,7 +17,7 @@
       "courtHouse": {
         "courtRoom": [
           {
-            "courtRoomName": "1",
+            "courtRoomName": "CourtRoom 1",
             "session": [
               {
                 "judiciary": [
@@ -50,12 +50,10 @@
                                   "individualSurname":"Surname 1"
                                 },
                                 "partyRole": "DEFENDANT",
+                                "subject": true,
                                 "offence": [
                                   {
                                     "offenceTitle": "Test offence 1"
-                                  },
-                                  {
-                                    "offenceTitle": "Test offence 2"
                                   }
                                 ]
                               }
@@ -66,10 +64,11 @@
                             "caseUrn": "112233445",
                             "party": [
                               {
-                                "organisationDetails": {
-                                  "organisationName": "Pro_Auth"
-                                },
-                                "partyRole": "PROSECUTING_AUTHORITY"
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "individualDetails": {
+                                  "individualForenames": "Test Forename",
+                                  "individualSurname": "Test Surname"
+                                }
                               },
                               {
                                 "individualDetails":{
@@ -77,6 +76,7 @@
                                   "individualSurname":"Surname 2"
                                 },
                                 "partyRole": "DEFENDANT",
+                                "subject": true,
                                 "offence": [
                                   {
                                     "offenceTitle": "Test offence 1"
@@ -99,13 +99,33 @@
                         ],
                         "application": [
                           {
-                            "applicationReference": "Test Application Reference",
+                            "applicationReference": "12341234",
                             "applicationType": "Test Application Type",
                             "party": [
                               {
+                                "partyRole": "DEFENDANT",
+                                "subject": true,
                                 "individualDetails": {
                                   "individualForenames": "Test Applicant Forename",
                                   "individualSurname": "Test Applicant Surname"
+                                },
+                                "offence": [
+                                  {
+                                    "offenceTitle": "Test offence 1"
+                                  },
+                                  {
+                                    "offenceTitle": "Test offence 2"
+                                  },
+                                  {
+                                    "offenceTitle": "Test offence 3"
+                                  }
+                                ]
+                              },
+                              {
+                                "partyRole": "PROSECUTING_AUTHORITY",
+                                "individualDetails": {
+                                  "individualForenames": "Test Forename",
+                                  "individualSurname": "Test Surname"
                                 }
                               }
                             ]
@@ -249,7 +269,7 @@
       "courtHouse": {
         "courtRoom": [
           {
-            "courtRoomName": "CourtRoom 1",
+            "courtRoomName": "CourtRoom 2",
             "session": [
               {
                 "sittings": [
@@ -281,7 +301,7 @@
       "courtHouse": {
         "courtRoom": [
           {
-            "courtRoomName": "1",
+            "courtRoomName": "CourtRoom 2",
             "session": [
               {
                 "judiciary": [
@@ -318,7 +338,7 @@
       "courtHouse": {
         "courtRoom": [
           {
-            "courtRoomName": "1",
+            "courtRoomName": "CourtRoom 3",
             "session": [
               {
                 "judiciary": [

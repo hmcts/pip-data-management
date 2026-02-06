@@ -10,6 +10,7 @@
         "individualSurname": "Applicant Surname",
         "title": "Applicant Title"
       },
+      "subject": true,
       "offence": [
         {
           "offenceTitle": "Test offence 1"

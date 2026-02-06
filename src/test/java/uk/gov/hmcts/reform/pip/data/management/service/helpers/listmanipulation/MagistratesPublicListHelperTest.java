@@ -6,7 +6,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.model.publication.Language;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -46,8 +45,7 @@ class MagistratesPublicListHelperTest {
 
     @Test
     void testManipulatedMagistratesPublicListDataMethod() {
-        MagistratesPublicListHelper.manipulatedMagistratesPublicListData(inputJsonMagistratesPublicList,
-                                                                         Language.ENGLISH);
+        MagistratesPublicListHelper.manipulatedMagistratesPublicListData(inputJsonMagistratesPublicList);
 
         assertEquals("10:40am", inputJsonMagistratesPublicList.get(COURT_LISTS).get(0).get(COURT_HOUSE)
                          .get(COURT_ROOM).get(0).get(SESSION).get(0).get(SITTINGS).get(0).get(TIME).asText(),
@@ -72,10 +70,9 @@ class MagistratesPublicListHelperTest {
 
     @Test
     void testFormattedCourtRoomNameMethodMagistratesPublicList() {
-        MagistratesPublicListHelper.manipulatedMagistratesPublicListData(inputJsonMagistratesPublicList,
-                                                                         Language.ENGLISH);
+        MagistratesPublicListHelper.manipulatedMagistratesPublicListData(inputJsonMagistratesPublicList);
 
-        assertEquals("1: Judge KnownAs, Judge KnownAs 2", inputJsonMagistratesPublicList
+        assertEquals("CourtRoom 1: Judge KnownAs, Judge KnownAs 2", inputJsonMagistratesPublicList
                          .get(COURT_LISTS).get(0).get(COURT_HOUSE).get(COURT_ROOM).get(0).get(SESSION).get(0)
                          .get(FORMATTED_SESSION_COURT_ROOM).asText(),
                      "Unable to find formatted courtroom name");
@@ -84,7 +81,7 @@ class MagistratesPublicListHelperTest {
                          .get(COURT_ROOM).get(1).get(SESSION).get(0).get(FORMATTED_SESSION_COURT_ROOM).asText(),
                      "Unable to find unallocated formatted courtroom name");
 
-        assertEquals("CourtRoom 1", inputJsonMagistratesPublicList.get(COURT_LISTS).get(1).get(COURT_HOUSE)
+        assertEquals("CourtRoom 2", inputJsonMagistratesPublicList.get(COURT_LISTS).get(1).get(COURT_HOUSE)
                          .get(COURT_ROOM).get(0).get(SESSION).get(0).get(FORMATTED_SESSION_COURT_ROOM).asText(),
                      "Unable to find formatted courtroom name without judge");
     }

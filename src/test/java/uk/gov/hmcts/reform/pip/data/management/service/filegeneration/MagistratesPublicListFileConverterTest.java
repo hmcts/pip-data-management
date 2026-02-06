@@ -227,7 +227,7 @@ class MagistratesPublicListFileConverterTest {
                 "Surname 1, Forename 1",
                 "FHDRA1 (First Hearing and Dispute Resolution Appointment)",
                 "Pro_Auth",
-                "Offence Details: Test offence 1, Test offence 2"
+                "Offence Details: Test offence 1"
             );
     }
 }
