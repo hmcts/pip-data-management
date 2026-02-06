@@ -60,3 +60,4 @@ public class MagistratesPublicListSummaryData implements ArtefactSummaryData {
         return Collections.singletonMap(null, summaryCases);
     }
 }
+
