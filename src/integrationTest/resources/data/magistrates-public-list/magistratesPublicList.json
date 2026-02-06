@@ -33,10 +33,10 @@
                     "sittingStart": "2022-07-27T09:40:00Z",
                     "hearing": [
                       {
-                        "hearingType": "FHDRA1 (First Hearing and Dispute Resolution Appointment)",
+                        "hearingType": "Directions",
                         "case": [
                           {
-                            "caseUrn": "12345678",
+                            "caseUrn": "12341234",
                             "party": [
                               {
                                 "organisationDetails": {
