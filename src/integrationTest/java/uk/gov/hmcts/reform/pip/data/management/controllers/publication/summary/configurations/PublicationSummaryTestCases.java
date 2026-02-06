@@ -83,9 +83,9 @@ public final class PublicationSummaryTestCases {
             PublicationSummaryTestInput.withoutExcel(
                 ListType.MAGISTRATES_PUBLIC_LIST,
                 "data/magistrates-public-list/magistratesPublicList.json",
-                List.of("Defendant - Surname, Forename",
-                "Prosecuting authority - Authority org name",
-                CASE_REFERENCE_FIELD,
+                List.of("Name - Surname 1, Forename 1",
+                "Prosecuting authority - Pro_Auth",
+                "URN - 12341234",
                 HEARING_TYPE_FIELD)
             ),
             PublicationSummaryTestInput.withoutExcel(

@@ -142,23 +142,6 @@ class MagistratesPublicListTest extends IntegrationBasicTestBase {
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueNameMissingInMagistratesPublicList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(VENUE_SCHEMA)).remove("venueName");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup, true),
-                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
     void testValidateWithErrorsWhenVenueAddressMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
@@ -210,57 +193,6 @@ class MagistratesPublicListTest extends IntegrationBasicTestBase {
     }
 
     @Test
-    void testValidateWithErrorsWhenVenueContactMissingInMagistratesPublicList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(VENUE_SCHEMA)).remove(VENUE_CONTACT_SCHEMA);
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup, true),
-                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenVenueTelephoneMissingInMagistratesPublicList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(VENUE_SCHEMA).get(VENUE_CONTACT_SCHEMA)).remove("venueTelephone");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup, true),
-                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenVenueEmailMissingInMagistratesPublicList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(VENUE_SCHEMA).get(VENUE_CONTACT_SCHEMA)).remove("venueEmail");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup, true),
-                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
     void testValidateWithErrorsWhenCourtHouseMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
@@ -269,23 +201,6 @@ class MagistratesPublicListTest extends IntegrationBasicTestBase {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readValue(text, JsonNode.class);
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)).remove(COURT_HOUSE_SCHEMA);
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup, true),
-                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
-    void testValidateWithErrorsWhenCourtHouseNameMissingInMagistratesPublicList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0).get(COURT_HOUSE_SCHEMA)).remove("courtHouseName");
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -387,25 +302,6 @@ class MagistratesPublicListTest extends IntegrationBasicTestBase {
     }
 
     @Test
-    void testValidateWithErrorsWhenSittingEndMissingInMagistratesPublicList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
-                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)).remove("sittingEnd");
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup, true),
-                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
     void testValidateWithErrorsWhenHearingMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
@@ -425,26 +321,6 @@ class MagistratesPublicListTest extends IntegrationBasicTestBase {
     }
 
     @Test
-    void testValidateWithErrorsWhenCaseMissingInMagistratesPublicList() throws IOException {
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
-                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
-                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
-                .get(HEARING_SCHEMA).get(0)).remove(CASE_SCHEMA);
-
-            String listJson = node.toString();
-            assertThrows(PayloadValidationException.class, () ->
-                             validationService.validateBody(listJson, headerGroup, true),
-                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
-        }
-    }
-
-    @Test
     void testValidateWithErrorsWhenCaseNumberMissingInMagistratesPublicList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
             .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_VALID_JSON)) {
@@ -455,7 +331,7 @@ class MagistratesPublicListTest extends IntegrationBasicTestBase {
             ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
                 .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
                 .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
-                .get(HEARING_SCHEMA).get(0).get(CASE_SCHEMA).get(0)).remove("caseNumber");
+                .get(HEARING_SCHEMA).get(0).get(CASE_SCHEMA).get(0)).remove("caseUrn");
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->

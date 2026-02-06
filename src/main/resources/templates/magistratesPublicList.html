@@ -64,14 +64,11 @@
     <p class="govuk-body"> <a class="govuk-link" th:href="${i18n.factLink}" th:text="${i18n.factLinkText1}"></a><span th:text="${i18n.factLinkText2}"></span></p>
     <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" th:text="${i18n.listDate + contentDate}"/>
     <p class="govuk-body" th:text="${i18n.listUpdated + publicationDate + i18n.at + publicationTime}"/>
-    <p class="govuk-body" th:text="${i18n.draft + i18n.versionText + version}"/>
     <p class="govuk-body">
       <span th:each="address : ${venueAddress}">
         <td th:text="${address}"/>
       </span>
     </p>
-    <p class="govuk-body govuk-!-margin-bottom-1" th:text="${i18n.telephone + artefact.get('venue').get('venueContact').get('venueTelephone').asText()}"/>
-    <p class="govuk-body" th:text="${i18n.email + artefact.get('venue').get('venueContact').get('venueEmail').asText()}"/>
     <div class="govuk-grid restriction-list-section">
       <div class="govuk-body">
         <h3 th:text="${i18n.restrictionInformationHeading}" />
@@ -97,7 +94,7 @@
   <div aria-label="Court Lists" class="landscape">
     <div class="site-header" aria-label="Court Details" th:each="courtList : ${artefact.get('courtLists')}">
         <h1 class="site-address" tabindex="0"
-            th:text="${i18n.sittingAtCourt + courtList.get('courtHouse').get('courtHouseName').asText()}"/>
+            th:text="${i18n.sittingAtCourt + locationName}"/>
       <div class="govuk-accordion" id="accordion-default" th:each="courtRoom : ${courtList.get('courtHouse').get('courtRoom')}">
         <div th:if="${courtRoom.has('exclude') != true}">
           <div th:each="session : ${courtRoom.get('session')}">
@@ -123,23 +120,30 @@
                       <th:block th:each="case : ${hearing.get('case')}">
                         <tr class="govuk-table__row">
                           <td class="govuk-table__cell no-wrap" th:classappend="${case.get('bottomBorder').asText()}" th:text="${sitting.get('time').asText()}"/>
-                          <td class="govuk-table__cell" th:classappend="${case.get('bottomBorder').asText()}" th:text="${case.get('caseNumber').asText()}"/>
+                          <td class="govuk-table__cell" th:classappend="${case.get('bottomBorder').asText()}" th:text="${case.get('caseUrn').asText()}"/>
                           <td class="govuk-table__cell" th:classappend="${case.get('bottomBorder').asText()}" th:text="${case.get('defendant').asText()}"/>
                           <td class="govuk-table__cell no-wrap" th:classappend="${case.get('bottomBorder').asText()}" th:text="${hearing.get('hearingType').asText()}"/>
                           <td class="govuk-table__cell" th:classappend="${case.get('bottomBorder').asText()}" th:text="${case.get('prosecutingAuthority').asText()}"/>
-                          <th:block th:if="${case.get('caseSequenceIndicator').asText() != ''}">
-                            <td class="govuk-table__cell no-wrap" th:classappend="${case.get('bottomBorder').asText()}"
-                              th:text="${sitting.get('formattedDuration').asText() + ' [' + case.get('caseSequenceIndicator').asText() + ']'}"/>
-                          </th:block>
-                          <th:block th:if="${case.get('caseSequenceIndicator').asText() == ''}">
-                            <td class="govuk-table__cell no-wrap" th:classappend="${case.get('bottomBorder').asText()}"
-                              th:text="${sitting.get('formattedDuration').asText()}"/>
-                          </th:block>
                         </tr>
-                        <tr class="govuk-table__row" th:if="${hearing.get('listingNotes').asText() != ''}">
+                        <tr class="govuk-table__row" th:if="${case.get('offence').asText() != ''}">
                           <td class="govuk-table__cell no-wrap" colspan="6">
-                            <span class="linked-cases-heading" th:text="${i18n.listingNotes}" />
-                            <span th:text="${hearing.get('listingNotes').asText()}" />
+                            <span class="linked-cases-heading" th:text="${i18n.offenceDetails}" />
+                            <span th:text="${case.get('offence').asText()}" />
+                          </td>
+                        </tr>
+                      </th:block>
+                      <th:block th:each="application : ${hearing.get('application')}">
+                        <tr class="govuk-table__row">
+                          <td class="govuk-table__cell no-wrap" th:classappend="${application.get('bottomBorder').asText()}" th:text="${sitting.get('time').asText()}"/>
+                          <td class="govuk-table__cell" th:classappend="${application.get('bottomBorder').asText()}" th:text="${application.get('applicationReference').asText()}"/>
+                          <td class="govuk-table__cell" th:classappend="${application.get('bottomBorder').asText()}" th:text="${application.get('defendant').asText()}"/>
+                          <td class="govuk-table__cell no-wrap" th:classappend="${application.get('bottomBorder').asText()}"/>
+                          <td class="govuk-table__cell" th:classappend="${application.get('bottomBorder').asText()}" th:text="${application.get('prosecutingAuthority').asText()}"/>
+                        </tr>
+                        <tr class="govuk-table__row" th:if="${application.get('offence').asText() != ''}">
+                          <td class="govuk-table__cell no-wrap" colspan="6">
+                            <span class="linked-cases-heading" th:text="${i18n.offenceDetails}" />
+                            <span th:text="${application.get('offence').asText()}" />
                           </td>
                         </tr>
                       </th:block>
