@@ -102,7 +102,7 @@ class RegexValidationTest extends IntegrationTestBase {
             );
 
             assertEquals(
-                exceptionResponse.getMessage(), "$.document.documentName: does not match the regex"
+                exceptionResponse.getMessage(), "/document/documentName: does not match the regex"
                                                             + " pattern ^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$",
                 "Publication date is not displayed in the exception response"
             );
