@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.PROPERTY_TRUSTS_PROBATE_LIST_CHD_DAILY_CAUSE_LIST;
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -87,7 +87,7 @@ class PropertyTrustsProbateListChdDailyCauseListFileConverterTest {
         Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
                                               PROVENANCE_METADATA, PROVENANCE,
                                               LANGUAGE_METADATA, ENGLISH, LIST_TYPE_METADATA,
-                                              INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST.name(),
+                                              PROPERTY_TRUSTS_PROBATE_LIST_CHD_DAILY_CAUSE_LIST.name(),
                                               LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
         );
 
@@ -98,11 +98,11 @@ class PropertyTrustsProbateListChdDailyCauseListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Intellectual Property (Chancery Division) Daily Cause List");
+            .isEqualTo("Property, Trusts and Probate List (Chancery Division) Daily Cause List");
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .isEqualTo("Intellectual Property (Chancery Division) Daily Cause List");
+            .isEqualTo("Property, Trusts and Probate List (Chancery Division) Daily Cause List");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
                               .getElementsByTag("a").get(0)
@@ -141,9 +141,35 @@ class PropertyTrustsProbateListChdDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
+            .contains("Remote hearings before a High Court Judge");
+
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
             .contains("If a representative of the media or member of the public wishes to attend the hearing they "
                           + "should contact the listing office chanceryjudgeslisting@justice.gov.uk who will put "
                           + "them in touch with the relevant person.");
+
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .contains("Remote hearings before a Chancery Master");
+
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .contains("If a representative of the media or member of the public wishes to attend the remote hearing "
+                          + "they should contact chancery.mastersappointments@justice.gov.uk who will put them in "
+                          + "touch with the relevant person.");
+
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .contains("Remote judgments");
+
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .contains("Remote hand-down: This judgment will be handed down remotely by circulation to the parties "
+                          + "or their representatives by email and release to The National Archives. A copy of the "
+                          + "judgment in final form as handed down should be available on The National Archives "
+                          + "website shortly thereafter. Members of the media can obtain a copy on request by email "
+                          + "to the Judicial Office press.enquiries@judiciary.uk.");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
@@ -177,7 +203,7 @@ class PropertyTrustsProbateListChdDailyCauseListFileConverterTest {
         Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
                                               PROVENANCE_METADATA, PROVENANCE,
                                               LANGUAGE_METADATA, WELSH, LIST_TYPE_METADATA,
-                                              INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST.name(),
+                                              PROPERTY_TRUSTS_PROBATE_LIST_CHD_DAILY_CAUSE_LIST.name(),
                                               LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
         );
 
@@ -188,11 +214,11 @@ class PropertyTrustsProbateListChdDailyCauseListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Rhestr Achosion Dyddiol Eiddo Deallusol (Adran Siawnsri)");
+            .isEqualTo("Rhestr Achosion Dyddiol Eiddo, Ymddiriedolaethau a Phrofiant (Adran Siawnsri)");
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .isEqualTo("Rhestr Achosion Dyddiol Eiddo Deallusol (Adran Siawnsri)");
+            .isEqualTo("Rhestr Achosion Dyddiol Eiddo, Ymddiriedolaethau a Phrofiant (Adran Siawnsri)");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
                               .getElementsByTag("a").get(0)
@@ -231,9 +257,35 @@ class PropertyTrustsProbateListChdDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
+            .contains("Gwrandawiadau o bell gerbron Barnwr yr Uchel Lys");
+
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
             .contains("Os yw cynrychiolydd o'r cyfryngau neu aelod o'r cyhoedd yn dymuno mynychu'r gwrandawiad, "
                           + "dylent gysylltu â'r swyddfa restru yn chanceryjudgeslisting@justice.gov.uk a fydd yn "
                           + "eu rhoi mewn cysylltiad â'r unigolyn perthnasol.");
+
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .contains("Gwrandawiadau o bell gerbron Meistr y Siawnsri");
+
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .contains("Os yw cynrychiolydd o'r cyfryngau neu aelod o'r cyhoedd yn dymuno mynychu'r gwrandawiad o "
+                          + "bell, dylent gysylltu â chancery.mastersappointments@justice.gov.uk a fydd yn eu rhoi "
+                          + "mewn cysylltiad â'r unigolyn perthnasol.");
+
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .contains("Dyfarniadau o bell");
+
+        softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .contains("Traddodi o Bell: Bydd y dyfarniad hwn yn cael ei draddodi o bell trwy gylchrediad i'r "
+                          + "partïon neu eu cynrychiolwyr trwy e-bost a'i ryddhau i'r Archifau Cenedlaethol. Dylai "
+                          + "copi o'r dyfarniad ar ffurf derfynol fel y'i rhoddwyd fod ar gael ar wefan yr Archifau "
+                          + "Cenedlaethol yn fuan wedyn. Gall aelodau'r cyfryngau gael copi ar gais trwy e-bost i'r "
+                          + "Swyddfa Farnwrol press.enquiries@judiciary.uk.");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
@@ -269,7 +321,7 @@ class PropertyTrustsProbateListChdDailyCauseListFileConverterTest {
             CONTENT_DATE_METADATA, CONTENT_DATE,
             PROVENANCE_METADATA, PROVENANCE,
             LANGUAGE_METADATA, ENGLISH, LIST_TYPE_METADATA,
-            INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST.name(),
+            PROPERTY_TRUSTS_PROBATE_LIST_CHD_DAILY_CAUSE_LIST.name(),
             LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
         );
 
