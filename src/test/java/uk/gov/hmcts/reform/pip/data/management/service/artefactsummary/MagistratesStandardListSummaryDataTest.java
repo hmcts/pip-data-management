@@ -21,13 +21,13 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_STA
 @ActiveProfiles("test")
 class MagistratesStandardListSummaryDataTest {
     private static final String SUMMARY_SECTIONS_MESSAGE = "Summary sections count does not match";
-    private static final String SUMMARY_CASES_MESSAGE = "Summary cases count does not match";
+    private static final String SUMMARY_MATTERS_MESSAGE = "Summary matters count does not match";
     private static final String SUMMARY_FIELDS_MESSAGE = "Summary fields count does not match";
     private static final String SUMMARY_FIELD_KEY_MESSAGE = "Summary field key does not match";
     private static final String SUMMARY_FIELD_VALUE_MESSAGE = "Summary field value does not match";
 
-    @Test
-    void testMagistratesStandardListTemplate() throws IOException {
+
+    private Map<String, List<Map<String, String>>> getSummary() throws IOException {
         StringWriter writer = new StringWriter();
         IOUtils.copy(Files.newInputStream(Paths.get(
                          "src/test/resources/mocks/",
@@ -37,9 +37,14 @@ class MagistratesStandardListSummaryDataTest {
         );
 
         JsonNode payload = new ObjectMapper().readTree(writer.toString());
-        Map<String, List<Map<String, String>>> output = new ListConversionFactory()
+        return new ListConversionFactory()
             .getArtefactSummaryData(MAGISTRATES_STANDARD_LIST).get()
             .get(payload);
+    }
+
+    @Test
+    void testMagistratesStandardListSummaryMetadata() throws IOException {
+        Map<String, List<Map<String, String>>> output = getSummary();
 
         SoftAssertions softly = new SoftAssertions();
 
@@ -47,18 +52,85 @@ class MagistratesStandardListSummaryDataTest {
             .as(SUMMARY_SECTIONS_MESSAGE)
             .hasSize(1);
 
-        List<Map<String, String>> summaryCases = output.get(null);
-        softly.assertThat(summaryCases)
-            .as(SUMMARY_CASES_MESSAGE)
-            .hasSize(8);
+        List<Map<String, String>> summaryMatters = output.get(null);
+        softly.assertThat(summaryMatters)
+            .as(SUMMARY_MATTERS_MESSAGE)
+            .hasSize(7);
 
-        Map<String, String> summaryFields = summaryCases.get(0);
-        softly.assertThat(summaryFields)
+        Map<String, String> summaryFieldsForCase = summaryMatters.get(0);
+        softly.assertThat(summaryFieldsForCase)
             .as(SUMMARY_FIELDS_MESSAGE)
             .hasSize(5);
 
-        assertSummaryFieldKeys(softly, summaryFields);
-        assertSummaryFieldValues(softly, summaryFields);
+        softly.assertAll();
+    }
+
+    @Test
+    void testMagistratesStandardListSummaryForCase() throws IOException {
+        Map<String, List<Map<String, String>>> output = getSummary();
+        SoftAssertions softly = new SoftAssertions();
+        Map<String, String> summaryFieldsForCase = output.get(null).get(0);
+
+        assertSummaryFieldKeys(softly, summaryFieldsForCase);
+
+        List<String> values = summaryFieldsForCase.values()
+            .stream()
+            .toList();
+
+        softly.assertThat(values.get(0))
+            .as(SUMMARY_FIELD_VALUE_MESSAGE)
+            .isEqualTo("Surname A, Forename A MiddleName A");
+
+        softly.assertThat(values.get(1))
+            .as(SUMMARY_FIELD_VALUE_MESSAGE)
+            .isEqualTo("Prosecuting Authority Name");
+
+        softly.assertThat(values.get(2))
+            .as(SUMMARY_FIELD_VALUE_MESSAGE)
+            .isEqualTo("45684548");
+
+        softly.assertThat(values.get(3))
+            .as(SUMMARY_FIELD_VALUE_MESSAGE)
+            .isEqualTo("Hearing Type A");
+
+        softly.assertThat(values.get(4))
+            .as(SUMMARY_FIELD_VALUE_MESSAGE)
+            .isEqualTo("drink driving, Assault by beating");
+
+        softly.assertAll();
+    }
+
+    @Test
+    void testMagistratesStandardListSummaryForApplication() throws IOException {
+        Map<String, List<Map<String, String>>> output = getSummary();
+        SoftAssertions softly = new SoftAssertions();
+        Map<String, String> summaryFieldsForApplication = output.get(null).get(4);
+
+        assertSummaryFieldKeys(softly, summaryFieldsForApplication);
+
+        List<String> values = summaryFieldsForApplication.values()
+            .stream()
+            .toList();
+
+        softly.assertThat(values.get(0))
+            .as(SUMMARY_FIELD_VALUE_MESSAGE)
+            .isEqualTo("Surname D, Forename D");
+
+        softly.assertThat(values.get(1))
+            .as(SUMMARY_FIELD_VALUE_MESSAGE)
+            .isEqualTo("Prosecuting Authority Name B");
+
+        softly.assertThat(values.get(2))
+            .as(SUMMARY_FIELD_VALUE_MESSAGE)
+            .isEqualTo("AppRefA");
+
+        softly.assertThat(values.get(3))
+            .as(SUMMARY_FIELD_VALUE_MESSAGE)
+            .isEqualTo("Hearing Type B");
+
+        softly.assertThat(values.get(4))
+            .as(SUMMARY_FIELD_VALUE_MESSAGE)
+            .isEqualTo("Offence title 1, Offence title 2");
 
         softly.assertAll();
     }
@@ -70,7 +142,7 @@ class MagistratesStandardListSummaryDataTest {
 
         softly.assertThat(keys.get(0))
             .as(SUMMARY_FIELD_KEY_MESSAGE)
-            .isEqualTo("Defendant");
+            .isEqualTo("Name");
 
         softly.assertThat(keys.get(1))
             .as(SUMMARY_FIELD_KEY_MESSAGE)
@@ -78,7 +150,7 @@ class MagistratesStandardListSummaryDataTest {
 
         softly.assertThat(keys.get(2))
             .as(SUMMARY_FIELD_KEY_MESSAGE)
-            .isEqualTo("Case reference");
+            .isEqualTo("Reference");
 
         softly.assertThat(keys.get(3))
             .as(SUMMARY_FIELD_KEY_MESSAGE)
@@ -87,31 +159,5 @@ class MagistratesStandardListSummaryDataTest {
         softly.assertThat(keys.get(4))
             .as(SUMMARY_FIELD_KEY_MESSAGE)
             .isEqualTo("Offence");
-    }
-
-    private void assertSummaryFieldValues(SoftAssertions softly, Map<String, String> summaryFields) {
-        List<String> values = summaryFields.values()
-            .stream()
-            .toList();
-
-        softly.assertThat(values.get(0))
-            .as(SUMMARY_FIELD_VALUE_MESSAGE)
-            .isEqualTo("Surname1, Forename1");
-
-        softly.assertThat(values.get(1))
-            .as(SUMMARY_FIELD_VALUE_MESSAGE)
-            .isEqualTo("Test1234");
-
-        softly.assertThat(values.get(2))
-            .as(SUMMARY_FIELD_VALUE_MESSAGE)
-            .isEqualTo("45684548");
-
-        softly.assertThat(values.get(3))
-            .as(SUMMARY_FIELD_VALUE_MESSAGE)
-            .isEqualTo("mda");
-
-        softly.assertThat(values.get(4))
-            .as(SUMMARY_FIELD_VALUE_MESSAGE)
-            .isEqualTo("drink driving, Assault by beating");
     }
 }
