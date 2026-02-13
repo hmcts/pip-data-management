@@ -4,14 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DefendantInfo {
-    private String name;
-    private String dob;
-    private String age;
-    private String address;
-    private String plea;
-    private String pleaDate;
+public class GroupedPartyMatters {
+    private String partyHeading;
+    private List<Matter> matters;
 }

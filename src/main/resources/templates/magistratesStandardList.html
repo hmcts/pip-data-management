@@ -106,16 +106,6 @@
       color: grey !important;
     }
 
-    .govuk-details__summary-text {
-      text-decoration: underline;
-    }
-
-
-
-    .govuk-\!-margin-top-1 {
-      margin-top: 15px;
-    }
-
     .govuk-\!-margin-bottom-1 {
       margin-bottom: 5px;
     }
@@ -132,7 +122,6 @@
     <p class="govuk-body"> <a class="govuk-link" th:href="${i18n.factLink}" th:text="${i18n.factLinkText1}"></a><span th:text="${i18n.factLinkText2}"></span></p>
     <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" th:text="${i18n.listDate + contentDate}" />
     <p class="govuk-body" th:text="${i18n.listUpdated + publicationDate + i18n.at + publicationTime}" />
-    <p class="govuk-body" th:text="${i18n.draft + i18n.versionText + version}" />
     <p class="govuk-body">
         <span th:each="address : ${venueAddress}">
           <td th:text="${address}" />
@@ -160,99 +149,115 @@
     </div>
   </div>
   <div aria-label="Court Lists" class="landscape">
-    <div aria-label="List Details" th:each="entry: ${cases}">
-      <h1 class="govuk-heading-l site-address border-bottom" tabindex="0" th:text="${entry.key}" />
-      <th:block th:each="row: ${entry.value}">
+    <div aria-label="List Details" th:each="entry: ${courtRooms}">
+      <h1 class="govuk-heading-l site-address" tabindex="0" th:text="${entry.value.courtHouseName}" />
+      <h1 class="govuk-heading-l site-address" tabindex="0" th:text="${i18n.lja + ': ' + entry.value.lja}" />
+      <h1 class="govuk-heading-l site-address border-bottom" tabindex="0" th:text="${entry.value.courtRoomName}" />
+      <th:block th:each="row: ${entry.value.groupedPartyMatters}">
         <div>
-          <h2 class="govuk-heading-m site-address" th:text="${i18n.defendantNameHeading + row.defendantHeading}" />
+          <h2 class="govuk-heading-m site-address" th:text="${i18n.nameHeading + row.partyHeading}" />
         </div>
-        <th:block th:each="sitting, iStat: ${row.caseSittings}">
+        <th:block th:each="matter, iStat: ${row.matters}">
           <div class="parent-box overflow-table">
             <div class="govuk-grid-row">
               <div class="govuk-grid-column-two-thirds no_padding">
-                <div th:if="${sitting.caseInfo.caseSequenceIndicator != ''}">
-                  <p class="govuk-body row-heading" th:text="${iStat.count + '. ' + i18n.sittingAt + sitting.sittingStartTime + i18n.sittingFor + sitting.sittingDuration + ' [' + sitting.caseInfo.caseSequenceIndicator + ']'}" />
+                <div th:if="${matter.matterMetadata.caseSequenceIndicator != ''}">
+                  <p class="govuk-body row-heading" th:text="${i18n.sittingAt + matter.sittingStartTime + ' [' + matter.matterMetadata.caseSequenceIndicator + ']'}" />
                 </div>
-                <div th:if="${sitting.caseInfo.caseSequenceIndicator == ''}">
-                  <p class="govuk-body row-heading" th:text="${iStat.count + '. ' + i18n.sittingAt + sitting.sittingStartTime + i18n.sittingFor + sitting.sittingDuration}" />
+                <div th:if="${matter.matterMetadata.caseSequenceIndicator == ''}">
+                  <p class="govuk-body row-heading" th:text="${i18n.sittingAt + matter.sittingStartTime}" />
                 </div>
                 <br />
-                <div th:if="${sitting.defendantInfo.age != ''}">
+                <div th:if="${matter.partyInfo.age != '' && matter.partyInfo.age != null}">
                   <p class="govuk-body">
                     <span class="row-heading" th:text="${i18n.dobAndAge}" />
-                    <span th:text="${sitting.defendantInfo.dob + i18n.age + sitting.defendantInfo.age}" />
+                    <span th:text="${matter.partyInfo.dob + i18n.age + matter.partyInfo.age}" />
                   </p>
                 </div>
-                <div th:if="${sitting.defendantInfo.age == ''}">
+                <div th:if="${matter.partyInfo.age == '' && matter.partyInfo.dob != null}">
                   <p class="govuk-body">
                     <span class="row-heading" th:text="${i18n.dobAndAge}" />
-                    <span th:text="${sitting.defendantInfo.dob}" />
+                    <span th:text="${matter.partyInfo.dob}" />
                   </p>
                 </div>
                 <p class="govuk-body">
-                  <span class="row-heading" th:text="${i18n.defendantAddress}" />
-                  <span th:text="${sitting.defendantInfo.address}" />
+                  <span class="row-heading" th:text="${i18n.address}" />
+                  <span th:text="${matter.partyInfo.address}" />
                 </p>
                 <p class="govuk-body">
                   <span class="row-heading" th:text="${i18n.prosecutingAuthority}" />
-                  <span th:text="${sitting.caseInfo.prosecutingAuthorityCode}" />
-                </p>
-                <p class="govuk-body">
-                  <span class="row-heading" th:text="${i18n.hearingNumber}" />
-                  <span th:text="${sitting.caseInfo.hearingNumber}" />
+                  <span th:text="${matter.matterMetadata.prosecutingAuthority}" />
                 </p>
                 <p class="govuk-body">
                   <span class="row-heading" th:text="${i18n.attendanceMethod}" />
-                  <span th:text="${sitting.caseInfo.attendanceMethod}" />
+                  <span th:text="${matter.matterMetadata.attendanceMethod}" />
                 </p>
               </div>
               <div class="govuk-grid-column-one-third">
                 <p class="govuk-body">
-                  <span class="row-heading" th:text="${i18n.caseReference}" />
-                  <span th:text="${sitting.caseInfo.caseNumber}" />
+                  <span class="row-heading" th:text="${i18n.reference}" />
+                  <span th:text="${matter.matterMetadata.reference}" />
+                </p>
+                <p th:if="${!#strings.isEmpty(matter.matterMetadata.applicationType)}" class="govuk-body">
+                  <span class="row-heading" th:text="${i18n.applicationType}" />
+                  <span th:text="${matter.matterMetadata.applicationType}" />
                 </p>
                 <p class="govuk-body">
                   <span class="row-heading" th:text="${i18n.asn}" />
-                  <span th:text="${sitting.caseInfo.asn}" />
+                  <span th:text="${matter.partyInfo.asn}" />
                 </p>
                 <p class="govuk-body">
                   <span class="row-heading" th:text="${i18n.hearingType}" />
-                  <span th:text="${sitting.caseInfo.hearingType}" />
+                  <span th:text="${matter.matterMetadata.hearingType}" />
                 </p>
                 <p class="govuk-body">
                   <span class="row-heading" th:text="${i18n.panel}" />
-                  <span th:text="${sitting.caseInfo.panel}" />
+                  <span th:text="${matter.matterMetadata.panel}" />
                 </p>
               </div>
             </div>
             <div class="govuk-grid-row">
-              <div class="moj-timeline__description" th:each="offence, iStat : ${sitting.offences}">
+              <div class="moj-timeline__description" th:each="offence, iStat : ${matter.offences}">
                 <details class="govuk-details" data-module="govuk-details" open="">
                   <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text" th:text="${iStat.count + '. ' + offence.offenceTitle}" />
+                    <span th:text="${iStat.count + '. '}" />
+                    <span th:text="${offence.offenceCode}" />
+                    <span th:if="${offence.offenceCode != '' && offence.offenceTitle != ''}"> - </span>
+                    <span th:text="${offence.offenceTitle}" />
                   </summary>
                   <div class="govuk-details__text">
                     <table class="govuk-table">
                       <tbody class="govuk-table__body">
                         <tr class="govuk-table__row">
+                          <td class="govuk-table__cell no-border-bottom" th:text="${offence.offenceWording}" />
+                        </tr>
+                        <tr class="govuk-table__row">
+                          <td class="govuk-table__cell no-border-bottom"><span class="row-heading" th:text="${i18n.legislation}" /></td>
+                          <td class="govuk-table__cell no-border-bottom" th:text="${offence.offenceLegislation}" />
+                        </tr>
+                        <tr class="govuk-table__row">
+                          <td class="govuk-table__cell no-border-bottom"><span class="row-heading" th:text="${i18n.maxPenalty}" /></td>
+                          <td class="govuk-table__cell no-border-bottom" th:text="${offence.offenceMaxPenalty}" />
+                        </tr>
+                        <tr class="govuk-table__row">
                           <td class="govuk-table__cell no-border-bottom"><span class="row-heading" th:text="${i18n.plea}" /></td>
-                          <td class="govuk-table__cell no-border-bottom" th:text="${sitting.defendantInfo.plea}" />
+                          <td class="govuk-table__cell no-border-bottom" th:text="${offence.plea}" />
                         </tr>
                         <tr class="govuk-table__row">
                           <td class="govuk-table__cell no-border-bottom"><span class="row-heading" th:text="${i18n.dateOfPlea}" /></td>
-                          <td class="govuk-table__cell no-border-bottom" th:text="${sitting.defendantInfo.pleaDate}" />
+                          <td class="govuk-table__cell no-border-bottom" th:text="${offence.pleaDate}" />
                         </tr>
                         <tr class="govuk-table__row">
                           <td class="govuk-table__cell no-border-bottom"><span class="row-heading" th:text="${i18n.convictedOn}" /></td>
-                          <td class="govuk-table__cell no-border-bottom" th:text="${sitting.caseInfo.convictionDate}" />
+                          <td class="govuk-table__cell no-border-bottom" th:text="${offence.convictionDate}" />
                         </tr>
                         <tr class="govuk-table__row">
                           <td class="govuk-table__cell no-border-bottom"><span class="row-heading" th:text="${i18n.adjournedFrom}" /></td>
-                          <td class="govuk-table__cell no-border-bottom" th:text="${sitting.caseInfo.adjournedDate + ' - ' + i18n.adjournedText}" />
+                          <td class="govuk-table__cell no-border-bottom" th:if="${!#strings.isEmpty(offence.adjournedDate)}" th:text="${offence.adjournedDate + ' - ' + i18n.adjournedText}" />
+                          <td class="govuk-table__cell no-border-bottom" th:if="${#strings.isEmpty(offence.adjournedDate)}" />
                         </tr>
                       </tbody>
                     </table>
-                    <p class="govuk-body offence-wording govuk-!-margin-top-1" th:text="${offence.offenceWording}" />
                   </div>
                 </details>
               </div>
