@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +28,6 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -45,9 +43,7 @@ import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 @SpringBootTest(classes = {Application.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles("integration")
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PublicationLocationTest extends PublicationIntegrationTestBase {
@@ -62,17 +58,9 @@ class PublicationLocationTest extends PublicationIntegrationTestBase {
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay();
     private static final String ADMIN = "admin";
     private static final String REQUESTER_ID_HEADER = "x-requester-id";
-    private static final UUID SYSTEM_ADMIN_ID = UUID.randomUUID();
-
-    private static PiUser piUser;
 
     @BeforeAll
     void setup() throws Exception {
-        piUser = new PiUser();
-        piUser.setUserId(SYSTEM_ADMIN_ID.toString());
-        piUser.setEmail("test@justice.gov.uk");
-        piUser.setRoles(SYSTEM_ADMIN);
-
         try (InputStream csvInputStream = PublicationTest.class.getClassLoader()
             .getResourceAsStream("location/UpdatedCsv.csv")) {
             MockMultipartFile csvFile

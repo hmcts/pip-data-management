@@ -1,10 +1,12 @@
 package uk.gov.hmcts.reform.pip.data.management.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -28,6 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class PublicationIntegrationTestBase extends IntegrationTestBase {
     protected static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String PUBLICATION_URL = "/publication";
@@ -41,9 +45,9 @@ public class PublicationIntegrationTestBase extends IntegrationTestBase {
     private static final String COURT_ID = "1";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
         .truncatedTo(ChronoUnit.SECONDS);
-    private static final UUID SYSTEM_ADMIN_ID = UUID.randomUUID();
+    protected static final UUID SYSTEM_ADMIN_ID = UUID.randomUUID();
 
-    private static PiUser piUser;
+    protected static PiUser piUser;
 
     @Autowired
     protected MockMvc mockMvc;
@@ -52,7 +56,7 @@ public class PublicationIntegrationTestBase extends IntegrationTestBase {
     public void startup() {
         piUser = new PiUser();
         piUser.setUserId(SYSTEM_ADMIN_ID.toString());
-        piUser.setEmail("test@justice.gov.uk");
+        piUser.setEmail("TEST_EMAIL" + UUID.randomUUID() + "@justice.gov.uk");
         piUser.setRoles(SYSTEM_ADMIN);
 
         OBJECT_MAPPER.findAndRegisterModules();

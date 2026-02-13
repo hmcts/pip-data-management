@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers.publication.upload;
 
 import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUtils;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +53,6 @@ import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("integration")
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PublicationUploadTest extends PublicationIntegrationTestBase {
@@ -62,7 +60,6 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
     private static final String SEARCH_COURT_URL = PUBLICATION_URL + "/locationId";
     private static final ArtefactType ARTEFACT_TYPE = ArtefactType.LIST;
     private static final Sensitivity SENSITIVITY = Sensitivity.PUBLIC;
-    private static final String USER_ID = UUID.randomUUID().toString();
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static final String PAYLOAD_UNKNOWN = "Unknown-Payload";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
