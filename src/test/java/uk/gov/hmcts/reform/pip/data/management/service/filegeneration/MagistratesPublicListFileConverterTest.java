@@ -89,21 +89,6 @@ class MagistratesPublicListFileConverterTest {
             .as(HEADER_TEXT)
             .isEqualTo("Last updated 14 September 2020 at 12:30am");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS)
-                              .get(3).text())
-            .as(HEADER_TEXT)
-            .isEqualTo("Draft: Version");
-
-        softly.assertThat(document.getElementsByClass(BODY_CLASS)
-                              .get(5).text())
-            .as(HEADER_TEXT)
-            .isEqualTo("Telephone: 01772 844700");
-
-        softly.assertThat(document.getElementsByClass(BODY_CLASS)
-                              .get(6).text())
-            .as(HEADER_TEXT)
-            .isEqualTo("Email: court1@moj.gov.uk");
-
         softly.assertThat(outputHtml)
             .as("Before not shown")
             .doesNotContain("Before");
@@ -111,15 +96,14 @@ class MagistratesPublicListFileConverterTest {
         softly.assertThat(document.getElementsByClass("govuk-table__head").get(0)
                               .getElementsByTag("th"))
             .as("Incorrect table headers")
-            .hasSize(6)
+            .hasSize(5)
             .extracting(Element::text)
             .containsExactly(
                 "Sitting at",
-                "Case Reference",
-                "Defendant Name(s)",
+                "URN",
+                "Name",
                 "Hearing Type",
-                "Prosecuting Authority",
-                "Duration"
+                "Prosecuting Authority"
             );
 
         softly.assertAll();
@@ -178,21 +162,6 @@ class MagistratesPublicListFileConverterTest {
             .as(HEADER_TEXT)
             .isEqualTo("Diweddarwyd diwethaf 14 September 2020 am 12:30am");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS)
-                              .get(3).text())
-            .as(HEADER_TEXT)
-            .isEqualTo("Drafft: Fersiwn");
-
-        softly.assertThat(document.getElementsByClass(BODY_CLASS)
-                              .get(5).text())
-            .as(HEADER_TEXT)
-            .isEqualTo("Rhif ffôn: 01772 844700");
-
-        softly.assertThat(document.getElementsByClass(BODY_CLASS)
-                              .get(6).text())
-            .as(HEADER_TEXT)
-            .isEqualTo("E-bost: court1@moj.gov.uk");
-
         softly.assertThat(outputHtml)
             .as("Before translation not shown")
             .doesNotContain("Gerbron");
@@ -200,15 +169,14 @@ class MagistratesPublicListFileConverterTest {
         softly.assertThat(document.getElementsByClass("govuk-table__head").get(0)
                               .getElementsByTag("th"))
             .as("Incorrect Welsh table headers")
-            .hasSize(6)
+            .hasSize(5)
             .extracting(Element::text)
             .containsExactly(
                 "Yn eistedd yn",
-                "Cyfeirnod yr Achos",
-                "Enw'r Diffynnydd(Diffynyddion)",
+                "URN",
+                "Enw",
                 "Math o Wrandawiad",
-                "Yr Awdurdod sy'n Erlyn",
-                "Hyd"
+                "Yr Awdurdod sy'n Erlyn"
             );
 
         softly.assertAll();
@@ -259,8 +227,7 @@ class MagistratesPublicListFileConverterTest {
                 "Surname 1, Forename 1",
                 "FHDRA1 (First Hearing and Dispute Resolution Appointment)",
                 "Pro_Auth",
-                "1 hour 5 mins [2 of 3]",
-                "Case Details: Listing details text"
+                "Offence Details: Test offence 1"
             );
     }
 }
