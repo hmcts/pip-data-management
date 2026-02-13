@@ -9,7 +9,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MagistratesStandardList {
-    private String defendantHeading;
-    private List<CaseSitting> caseSittings;
+public class Matter {
+    private String sittingStartTime;
+    private PartyInfo partyInfo;
+    private MatterMetadata matterMetadata;
+    private List<Offence> offences;
 }

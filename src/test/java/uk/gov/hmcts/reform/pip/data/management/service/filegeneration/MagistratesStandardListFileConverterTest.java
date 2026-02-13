@@ -33,10 +33,11 @@ class MagistratesStandardListFileConverterTest {
     private static final String HEADER_MESSAGE = "Incorrect header text";
     private static final String BODY_MESSAGE = "Incorrect body text";
     private static final String COURT_ROOM_HEADING_MESSAGE = "Court room heading does not match";
-    private static final String DEFENDANT_HEADING_MESSAGE = "Defendant heading does not match";
-    private static final String CASE_INFO_MESSAGE = "Case info does not match";
+    private static final String PARTY_HEADING_MESSAGE = "Party heading does not match";
+    private static final String MATTER_INFO_MESSAGE = "Matter info does not match";
     private static final String OFFENCE_MESSAGE = "Offence info does not match";
     private static final String LINK_MESSAGE = "Link does not match";
+    private static final String PROVENANCE_MESSAGE = "Provenance does not match";
 
     private static final String HEADING_CLASS = "govuk-heading-l";
     private static final String LINK_CLASS = "govuk-link";
@@ -123,10 +124,6 @@ class MagistratesStandardListFileConverterTest {
             .as(BODY_MESSAGE)
             .isEqualTo("Last updated: 01 December 2023 at 11:30pm");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
-            .as(BODY_MESSAGE)
-            .contains("Draft: Version");
-
         softly.assertAll();
     }
 
@@ -159,10 +156,6 @@ class MagistratesStandardListFileConverterTest {
             .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
                            + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(3).text())
-            .as(BODY_MESSAGE)
-            .contains("Drafft: Fersiwn");
-
         softly.assertAll();
     }
 
@@ -175,153 +168,187 @@ class MagistratesStandardListFileConverterTest {
 
         softly.assertThat(heading)
             .as(COURT_ROOM_HEADING_MESSAGE)
-            .hasSize(3);
+            .hasSize(7);
 
         softly.assertThat(heading.get(1).text())
             .as(COURT_ROOM_HEADING_MESSAGE)
-            .contains("Courtroom 1: Judge Test Name, Magistrate Test Name");
+            .contains("PRESTON");
 
         softly.assertThat(heading.get(2).text())
             .as(COURT_ROOM_HEADING_MESSAGE)
-            .contains("Courtroom 2: Judge Test Name 2, Magistrate Test Name 2");
+            .contains("LJA: Local Justice Area A");
+
+        softly.assertThat(heading.get(3).text())
+            .as(COURT_ROOM_HEADING_MESSAGE)
+            .contains("Courtroom 1: Test Name, Test Name");
+
+        softly.assertThat(heading.get(6).text())
+            .as(COURT_ROOM_HEADING_MESSAGE)
+            .contains("Courtroom 2:");
 
         softly.assertAll();
     }
 
     @Test
-    void testDefendantHeading() throws IOException {
+    void testPartyHeading() throws IOException {
         String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(result);
         Elements heading = document.getElementsByClass("govuk-heading-m");
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(heading)
-            .as(DEFENDANT_HEADING_MESSAGE)
-            .hasSize(7);
+            .as(PARTY_HEADING_MESSAGE)
+            .hasSize(5);
 
         softly.assertThat(heading.get(0).text())
-            .as(DEFENDANT_HEADING_MESSAGE)
-            .contains("Defendant Name: Surname1, Forename1 (male)");
+            .as(PARTY_HEADING_MESSAGE)
+            .contains("Name: Surname A, Forename A MiddleName A (male)");
 
         softly.assertThat(heading.get(1).text())
-            .as(DEFENDANT_HEADING_MESSAGE)
-            .contains("Defendant Name: Surname2, Forename2 (male)*");
+            .as(PARTY_HEADING_MESSAGE)
+            .contains("Name: Surname B, Forename B MiddleName B (male)*");
 
         softly.assertThat(heading.get(2).text())
-            .as(DEFENDANT_HEADING_MESSAGE)
-            .contains("Defendant Name: Surname3, Forename3 (male)*");
+            .as(PARTY_HEADING_MESSAGE)
+            .contains("Name: Surname D, Forename D (female)*");
 
         softly.assertThat(heading.get(3).text())
-            .as(DEFENDANT_HEADING_MESSAGE)
-            .contains("Defendant Name: Surname4, Forename4 (male)*");
+            .as(PARTY_HEADING_MESSAGE)
+            .contains("Name: This is an organisation");
 
         softly.assertThat(heading.get(4).text())
-            .as(DEFENDANT_HEADING_MESSAGE)
-            .contains("Defendant Name: Surname5, Forename5 (male)*");
-
-        softly.assertThat(heading.get(5).text())
-            .as(DEFENDANT_HEADING_MESSAGE)
-            .contains("Defendant Name: Surname6, Forename6 (male)*");
-
-        softly.assertThat(heading.get(6).text())
-            .as(DEFENDANT_HEADING_MESSAGE)
-            .contains("Defendant Name: Surname5, Forename5");
+            .as(PARTY_HEADING_MESSAGE)
+            .contains("Name: Surname E, Forename E (female)*");
 
         softly.assertAll();
     }
 
     @Test
-    void testCaseInfoHeaders() throws IOException {
+    void testMatterInfoHeaders() throws IOException {
         String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(result);
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(body.get(10).text())
-            .as(CASE_INFO_MESSAGE)
-            .contains("1. Sitting at 1:30pm for 2 hours 30 mins [2 of 3]");
+        softly.assertThat(body.get(9).text())
+            .as(MATTER_INFO_MESSAGE)
+            .contains("Sitting at 1:30pm [2 of 3]");
 
-        softly.assertThat(body.get(11).text())
-            .as(CASE_INFO_MESSAGE)
+        softly.assertThat(body.get(10).text())
+            .as(MATTER_INFO_MESSAGE)
             .contains("DOB and Age:");
 
-        softly.assertThat(body.get(12).text())
-            .as(CASE_INFO_MESSAGE)
-            .contains("Defendant Address:");
+        softly.assertThat(body.get(11).text())
+            .as(MATTER_INFO_MESSAGE)
+            .contains("Address:");
 
-        softly.assertThat(body.get(13).text())
-            .as(CASE_INFO_MESSAGE)
+        softly.assertThat(body.get(12).text())
+            .as(MATTER_INFO_MESSAGE)
             .contains("Prosecuting Authority:");
 
-        softly.assertThat(body.get(14).text())
-            .as(CASE_INFO_MESSAGE)
-            .contains("Hearing Number:");
-
-        softly.assertThat(body.get(15).text())
-            .as(CASE_INFO_MESSAGE)
+        softly.assertThat(body.get(13).text())
+            .as(MATTER_INFO_MESSAGE)
             .contains("Attendance Method:");
 
-        softly.assertThat(body.get(16).text())
-            .as(CASE_INFO_MESSAGE)
-            .contains("Case Ref:");
+        softly.assertThat(body.get(14).text())
+            .as(MATTER_INFO_MESSAGE)
+            .contains("Reference:");
 
-        softly.assertThat(body.get(17).text())
-            .as(CASE_INFO_MESSAGE)
+        softly.assertThat(body.get(15).text())
+            .as(MATTER_INFO_MESSAGE)
             .contains("ASN:");
 
-        softly.assertThat(body.get(18).text())
-            .as(CASE_INFO_MESSAGE)
+        softly.assertThat(body.get(16).text())
+            .as(MATTER_INFO_MESSAGE)
             .contains("Hearing Type:");
 
-        softly.assertThat(body.get(19).text())
-            .as(CASE_INFO_MESSAGE)
+        softly.assertThat(body.get(17).text())
+            .as(MATTER_INFO_MESSAGE)
             .contains("Panel:");
 
         softly.assertAll();
     }
 
     @Test
-    void testCaseInfoValue() throws IOException {
+    void testMatterWhenSecondSittingExists() throws IOException {
         String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(result);
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
+        softly.assertThat(body.get(18).text())
+            .as(MATTER_INFO_MESSAGE)
+            .contains("Sitting at 4:30pm [2 of 3]");
+
+        softly.assertAll();
+    }
+
+    @Test
+    void testMatterInfoHeaderWhenApplication() throws IOException {
+        String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
+        Document document = Jsoup.parse(result);
+        Elements body = document.getElementsByClass(BODY_CLASS);
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(body.get(51).text())
+            .as(MATTER_INFO_MESSAGE)
+            .contains("Application Type");
+
+        softly.assertAll();
+    }
+
+    @Test
+    void testMatterInfoValue() throws IOException {
+        String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
+        Document document = Jsoup.parse(result);
+        Elements body = document.getElementsByClass(BODY_CLASS);
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(body.get(10).text())
+            .as(MATTER_INFO_MESSAGE)
+            .contains("01/01/1950 Age: 20");
+
         softly.assertThat(body.get(11).text())
-            .as(CASE_INFO_MESSAGE)
-            .contains("01/01/1983 Age: 39");
+            .as(MATTER_INFO_MESSAGE)
+            .contains("Address Line 1A, Address Line 2A, Town A, County A, AA1 AA1");
 
         softly.assertThat(body.get(12).text())
-            .as(CASE_INFO_MESSAGE)
-            .contains("Address Line 1, Address Line 2, Town A, County A, AA1 AA1");
+            .as(MATTER_INFO_MESSAGE)
+            .contains("Prosecuting Authority Name");
 
         softly.assertThat(body.get(13).text())
-            .as(CASE_INFO_MESSAGE)
-            .contains("Test1234");
+            .as(MATTER_INFO_MESSAGE)
+            .contains("VIDEO HEARING A");
 
         softly.assertThat(body.get(14).text())
-            .as(CASE_INFO_MESSAGE)
-            .contains("12");
-
-        softly.assertThat(body.get(15).text())
-            .as(CASE_INFO_MESSAGE)
-            .contains("VIDEO HEARING");
-
-        softly.assertThat(body.get(16).text())
-            .as(CASE_INFO_MESSAGE)
+            .as(MATTER_INFO_MESSAGE)
             .contains("45684548");
 
+        softly.assertThat(body.get(15).text())
+            .as(MATTER_INFO_MESSAGE)
+            .contains("ABC1234");
+
+        softly.assertThat(body.get(16).text())
+            .as(MATTER_INFO_MESSAGE)
+            .contains("Hearing Type A");
+
         softly.assertThat(body.get(17).text())
-            .as(CASE_INFO_MESSAGE)
-            .contains("Need to confirm");
-
-        softly.assertThat(body.get(18).text())
-            .as(CASE_INFO_MESSAGE)
-            .contains("mda");
-
-        softly.assertThat(body.get(19).text())
-            .as(CASE_INFO_MESSAGE)
+            .as(MATTER_INFO_MESSAGE)
             .contains("ADULT");
+
+        softly.assertAll();
+    }
+
+    @Test
+    void testMatterInfoValueWhenApplication() throws IOException {
+        String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
+        Document document = Jsoup.parse(result);
+        Elements body = document.getElementsByClass(BODY_CLASS);
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(body.get(51).text())
+            .as(MATTER_INFO_MESSAGE)
+            .contains("Application Type 1");
 
         softly.assertAll();
     }
@@ -332,51 +359,92 @@ class MagistratesStandardListFileConverterTest {
         Document document = Jsoup.parse(result);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(document.getElementsByClass("govuk-details__summary-text").get(0).text())
+        softly.assertThat(document.getElementsByClass("govuk-details__summary").get(0).html())
             .as(OFFENCE_MESSAGE)
-            .contains("1. drink driving");
-
-        softly.assertThat(document.getElementsByClass("govuk-details__summary-text").get(1).text())
-            .as(OFFENCE_MESSAGE)
-            .contains("Assault by beating");
+            .contains("1. ", "dd01-01", " - ", "drink driving");
 
         Elements tableCell = document.getElementsByClass("govuk-table__cell");
         softly.assertThat(tableCell.get(0).text())
             .as(OFFENCE_MESSAGE)
-            .contains("Plea");
+            .contains("driving whilst under the influence of alcohol");
 
         softly.assertThat(tableCell.get(1).text())
             .as(OFFENCE_MESSAGE)
-            .contains("NOT_GUILTY");
+            .contains("Legislation");
 
         softly.assertThat(tableCell.get(2).text())
             .as(OFFENCE_MESSAGE)
-            .contains("Date of Plea");
+            .contains("This is a legislation");
 
         softly.assertThat(tableCell.get(3).text())
             .as(OFFENCE_MESSAGE)
-            .contains("Need to confirm");
+            .contains("Max Penalty");
 
         softly.assertThat(tableCell.get(4).text())
             .as(OFFENCE_MESSAGE)
-            .contains("Convicted on");
+            .contains("100yrs");
 
         softly.assertThat(tableCell.get(5).text())
             .as(OFFENCE_MESSAGE)
-            .contains("13/12/2023");
+            .contains("Plea");
 
         softly.assertThat(tableCell.get(6).text())
             .as(OFFENCE_MESSAGE)
-            .contains("Adjourned from");
+            .contains("NOT_GUILTY");
 
         softly.assertThat(tableCell.get(7).text())
             .as(OFFENCE_MESSAGE)
-            .contains("13/12/2023 - For the trial");
+            .contains("Date of Plea");
 
-        softly.assertThat(document.getElementsByClass("offence-wording").get(0).text())
+        softly.assertThat(tableCell.get(8).text())
             .as(OFFENCE_MESSAGE)
-            .contains("driving whilst under the influence of alcohol");
+            .contains("27/06/2026");
+
+        softly.assertThat(tableCell.get(9).text())
+            .as(OFFENCE_MESSAGE)
+            .contains("Convicted on");
+
+        softly.assertThat(tableCell.get(10).text())
+            .as(OFFENCE_MESSAGE)
+            .contains("01/05/2026");
+
+        softly.assertThat(tableCell.get(11).text())
+            .as(OFFENCE_MESSAGE)
+            .contains("Adjourned from");
+
+        softly.assertThat(tableCell.get(12).text())
+            .as(OFFENCE_MESSAGE)
+            .contains("02/05/2026 - For the trial");
 
         softly.assertAll();
+    }
+
+    @Test
+    void testAdjournedFromIsEmptyWhenNotSet() throws IOException {
+        String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
+        Document document = Jsoup.parse(result);
+        SoftAssertions softly = new SoftAssertions();
+
+        Elements tableCell = document.getElementsByClass("govuk-table__cell");
+        softly.assertThat(tableCell.get(25).text())
+            .as(OFFENCE_MESSAGE)
+            .isEmpty();
+
+        softly.assertAll();
+    }
+
+    @Test
+    void testDataSource() throws IOException {
+        String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
+        Document document = Jsoup.parse(result);
+        Elements body = document.getElementsByClass(BODY_CLASS);
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(body.get(74).text())
+            .as(PROVENANCE_MESSAGE)
+            .contains("Data Source: provenance");
+
+        softly.assertAll();
+
     }
 }
