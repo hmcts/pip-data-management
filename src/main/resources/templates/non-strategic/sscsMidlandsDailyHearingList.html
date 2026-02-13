@@ -40,17 +40,17 @@
       </tr>
       </thead>
       <tbody class="govuk-table__body">
-      <tr th:each="hearing : ${data}">
-        <td class="govuk-table__cell" th:text="${hearing.get('venue')}"/>
-        <td class="govuk-table__cell" th:text="${hearing.get('appealReferenceNumber')}"/>
-        <td class="govuk-table__cell" th:text="${hearing.get('hearingType')}"/>
-        <td class="govuk-table__cell" th:text="${hearing.get('appellant')}"/>
-        <td class="govuk-table__cell" th:text="${hearing.get('courtroom')}"/>
-        <td class="govuk-table__cell" th:text="${hearing.get('hearingTime')}" />
-        <td class="govuk-table__cell" th:text="${hearing.get('panel')}" />
-        <td class="govuk-table__cell" th:text="${hearing.get('fta/respondent')}" />
-        <td class="govuk-table__cell" th:text="${hearing.get('additionalInformation')}" />
-      </tr>
+        <tr th:each="hearing : ${data}">
+          <td class="govuk-table__cell" th:text="${hearing.get('venue')}"/>
+          <td class="govuk-table__cell" th:text="${hearing.get('appealReferenceNumber')}"/>
+          <td class="govuk-table__cell" th:text="${hearing.get('hearingType')}"/>
+          <td class="govuk-table__cell" th:text="${hearing.get('appellant')}"/>
+          <td class="govuk-table__cell" th:text="${hearing.get('courtroom')}"/>
+          <td class="govuk-table__cell" th:text="${hearing.get('hearingTime')}" />
+          <td class="govuk-table__cell new-line-wrap" th:text="${hearing.get('tribunal')}" />
+          <td class="govuk-table__cell" th:text="${hearing.get('fta/respondent')}" />
+          <td class="govuk-table__cell" th:text="${hearing.get('additionalInformation')}" />
+        </tr>
       </tbody>
     </table>
   </div>
