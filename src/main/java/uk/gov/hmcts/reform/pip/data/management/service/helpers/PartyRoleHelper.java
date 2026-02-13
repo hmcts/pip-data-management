@@ -119,11 +119,17 @@ public final class PartyRoleHelper {
         if (party.has(INDIVIDUAL_DETAILS)) {
             JsonNode individualDetails = party.get(INDIVIDUAL_DETAILS);
             String forenames = GeneralHelper.findAndReturnNodeText(individualDetails, INDIVIDUAL_FORENAMES);
+            String middlenames = GeneralHelper.findAndReturnNodeText(individualDetails, INDIVIDUAL_MIDDLE_NAME);
             String surname = GeneralHelper.findAndReturnNodeText(individualDetails, INDIVIDUAL_SURNAME);
 
-            return Stream.of(surname, forenames)
+            String name =  Stream.of(surname, forenames)
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.joining(", "));
+
+            if (!middlenames.isBlank()) {
+                return name + " " + middlenames;
+            }
+            return name;
         }
         return "";
     }
