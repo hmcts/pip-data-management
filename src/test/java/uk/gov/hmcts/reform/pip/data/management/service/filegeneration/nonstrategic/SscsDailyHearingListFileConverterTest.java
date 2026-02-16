@@ -231,7 +231,7 @@ class SscsDailyHearingListFileConverterTest {
                 "Appellant",
                 "Courtroom",
                 "Hearing time",
-                "Panel",
+                "Tribunal",
                 "FTA/Respondent",
                 "Additional information"
             );
@@ -330,7 +330,7 @@ class SscsDailyHearingListFileConverterTest {
                 "Apelydd",
                 "Ystafell llys",
                 "Amser y gwrandawiad",
-                "Panel",
+                "Tribiwnlys",
                 "FTA/Atebydd",
                 "Gwybodaeth ychwanegol"
             );
@@ -374,7 +374,7 @@ class SscsDailyHearingListFileConverterTest {
                 "Appellant 1",
                 "Courtroom 1",
                 "10:30am",
-                "Panel 1",
+                "Tribunal member 1 Tribunal member 2 Tribunal member 3",
                 "Respondent 1",
                 "Additional information 1"
             );
