@@ -12,7 +12,7 @@
       "appellant",
       "courtroom",
       "hearingTime",
-      "panel",
+      "tribunal",
       "fta/respondent",
       "additionalInformation"
     ],
@@ -71,12 +71,12 @@
         ],
         "pattern": "^\\d{1,2}([:.]\\d{2})?[ap]m\\s*$"
       },
-      "panel": {
-        "title": "Panel",
+      "tribunal": {
+        "title": "Tribunal members",
         "type": "string",
         "default": "",
         "examples": [
-          "Panel 1"
+          "Member 1"
         ],
         "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
       },
