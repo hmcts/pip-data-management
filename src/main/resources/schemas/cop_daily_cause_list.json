@@ -366,15 +366,15 @@
                                               "type": "string",
                                               "examples": "This is a reporting restrictions detail",
                                               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                              }
                                             }
                                           }
                                         }
                                       }
                                     }
                                   }
-                                },
-                                "channel": {
+                                }
+                              },
+                              "channel": {
                                   "type": "array",
                                   "items": {
                                     "description": "Channel if different from in court",
@@ -387,7 +387,6 @@
                                     "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                   }
                                 }
-                              }
                             }
                           }
                         }
@@ -400,5 +399,6 @@
           }
         }
       }
+    }
   }
 }
