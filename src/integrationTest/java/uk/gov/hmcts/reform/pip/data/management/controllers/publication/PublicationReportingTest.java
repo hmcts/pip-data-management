@@ -1,48 +1,36 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PublicationIntegrationTestBase;
-import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 @SpringBootTest(classes = {Application.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles("integration")
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS, scripts = "classpath:add-test-location.sql")
 class PublicationReportingTest extends PublicationIntegrationTestBase {
     private static final String PUBLICATION_URL = "/publication";
     private static final String REPORT_NO_MATCH_ARTEFACTS_URL = PUBLICATION_URL + "/no-match/reporting";
@@ -51,27 +39,6 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
     private static final String ADMIN = "admin";
     private static final String VALIDATION_MI_REPORT = "Should successfully retrieve MI data";
     private static final String REQUESTER_ID_HEADER = "x-requester-id";
-    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
-
-    @BeforeAll
-    void setup() throws Exception {
-        PiUser piUser = new PiUser();
-        piUser.setUserId(SYSTEM_ADMIN_ID);
-        piUser.setEmail("test@justice.gov.uk");
-        piUser.setRoles(SYSTEM_ADMIN);
-
-        try (InputStream csvInputStream = PublicationTest.class.getClassLoader()
-            .getResourceAsStream("location/UpdatedCsv.csv")) {
-            MockMultipartFile csvFile
-                = new MockMultipartFile("locationList", csvInputStream);
-            when(accountManagementService.getUserById(any())).thenReturn(piUser);
-            mockMvc.perform(MockMvcRequestBuilders.multipart("/locations/upload").file(csvFile)
-                                .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
-                                .with(user(ADMIN)
-                                          .authorities(new SimpleGrantedAuthority("APPROLE_api.request.admin"))))
-                .andExpect(status().isOk()).andReturn();
-        }
-    }
 
     @Test
     void testGetMiDataSuccess() throws Exception {
@@ -91,7 +58,7 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
         assertTrue(miData.stream().anyMatch(data ->
                                                 data.getArtefactId().equals(artefact.getArtefactId())
                                                     && data.getLocationId().equals(artefact.getLocationId())
-                                                    && "Updated Location".equals(data.getLocationName())),
+                                                    && "Test Location".equals(data.getLocationName())),
                    VALIDATION_MI_REPORT);
     }
 
