@@ -7,10 +7,6 @@ spring:
     embedded-directory: build
     jpa:
       spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
-  jpa:
-    hibernate:
-      # Set to update for integration tests, so it creates the environment in H2
-      ddl-auto: update
   flyway:
     enabled: true
 payload:
