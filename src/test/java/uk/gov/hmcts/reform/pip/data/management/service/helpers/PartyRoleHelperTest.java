@@ -21,6 +21,7 @@ class PartyRoleHelperTest {
     private static final String PARTY = "party";
 
     private static final String PARTY_NAME_MESSAGE = "Party names do not match";
+    private static final String PARTY_OFFENCE_MESSAGE = "Party offences do not match";
 
     private static JsonNode inputJson;
 
@@ -163,6 +164,20 @@ class PartyRoleHelperTest {
     }
 
     @Test
+    void testCreateIndividualDetailsWithoutInitialised() {
+        assertThat(PartyRoleHelper.createIndividualDetails(inputJson.get(PARTY).get(0)))
+            .as("Individual details incorrect")
+            .isEqualTo("Applicant Surname, Applicant Forename Applicant Middlename");
+    }
+
+    @Test
+    void testCreateIndividualDetailsWithoutInitialisedAndWithoutMiddleName() {
+        assertThat(PartyRoleHelper.createIndividualDetails(inputJson.get(PARTY).get(6)))
+            .as("Individual details incorrect")
+            .isEqualTo("SurnameA, ForenamesA");
+    }
+
+    @Test
     void testCreateOrganisationDetails() {
         assertThat(PartyRoleHelper.createOrganisationDetails(inputJson.get(PARTY).get(8)))
             .as("Organisation details incorrect")
@@ -200,5 +215,11 @@ class PartyRoleHelperTest {
             .isEqualTo("Prosecuting authority name");
     }
 
-
+    @Test
+    void testHandlePartyOffences() {
+        PartyRoleHelper.handlePartyOffences(inputJson);
+        assertThat(inputJson.get("offence").asText())
+            .as(PARTY_OFFENCE_MESSAGE)
+            .isEqualTo("Test offence 1, Test offence 2");
+    }
 }

@@ -6,7 +6,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUtils;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -68,7 +67,6 @@ import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("integration")
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PublicationTest extends PublicationIntegrationTestBase {
@@ -91,12 +89,11 @@ class PublicationTest extends PublicationIntegrationTestBase {
     private static final String USER_ID_HEADER = "x-user-id";
 
     private static final String ADMIN_HEADER = "x-admin";
-    private static final String EMAIL = "test@email.com";
+    private static final String EMAIL = "TEST_EMAIL" + UUID.randomUUID() + "@justice.gov.uk";
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
     private static final String REQUESTER_ID_HEADER = "x-requester-id";
-    private static final UUID SYSTEM_ADMIN_ID = UUID.randomUUID();
 
     private static String payload = "payload";
     private static MockMultipartFile file;
@@ -106,15 +103,8 @@ class PublicationTest extends PublicationIntegrationTestBase {
     @Autowired
     private PublicationController publicationController; // Inject the controller to modify its environment field
 
-    private static PiUser piUser;
-
     @BeforeAll
     void setup() throws Exception {
-        piUser = new PiUser();
-        piUser.setUserId(SYSTEM_ADMIN_ID.toString());
-        piUser.setEmail("test@justice.gov.uk");
-        piUser.setRoles(SYSTEM_ADMIN);
-
         file = new MockMultipartFile("file", "test.pdf",
                                      MediaType.APPLICATION_PDF_VALUE, "test content".getBytes(
             StandardCharsets.UTF_8)
@@ -1346,4 +1336,36 @@ class PublicationTest extends PublicationIntegrationTestBase {
                 "Expected error message not found in response"
             ));
     }
+
+    @Test
+    void testIncorrecFileFormatForLcsuUploadThrowsCustomException() throws Exception {
+        ReflectionTestUtils.setField(publicationController, "enableLcsu", true);
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        when(accountManagementService.getIsAuthorised(any(), any(), any())).thenReturn(true);
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .multipart(PUBLICATION_URL)
+            .file(file);
+
+        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LCSU)
+            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE_PDDA)
+            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
+            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
+            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
+            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
+            .header(PublicationConfiguration.COURT_ID, COURT_ID)
+            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
+            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
+            .contentType(MediaType.MULTIPART_FORM_DATA);
+
+        mockMvc.perform(mockHttpServletRequestBuilder)
+            .andExpect(status().isBadRequest())
+            .andExpect(result -> assertTrue(
+                result.getResponse().getContentAsString().contains("File format is not supported for LCSU."),
+                "Expected error message not found in response"
+            ));
+    }
+
 }

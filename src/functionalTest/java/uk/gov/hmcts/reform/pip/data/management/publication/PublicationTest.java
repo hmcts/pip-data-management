@@ -35,6 +35,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static com.github.dockerjava.zerodep.shaded.org.apache.hc.core5.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -246,6 +247,33 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(returnedArtefact.getProvenance()).isEqualTo(PROVENANCE);
         assertThat(returnedArtefact.getLocationId()).contains(courtId);
         assertThat(returnedArtefact.getIsFlatFile()).isTrue();
+    }
+
+    @Test
+    void testPublicationEndpointWithHtmlError() throws Exception {
+        Map<String, String> headerMapUploadHtmlFile = getBaseHeaderMap();
+        headerMapUploadHtmlFile.put(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE_LCSU.toString());
+        headerMapUploadHtmlFile.put(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE);
+        headerMapUploadHtmlFile.put(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM.toString());
+        headerMapUploadHtmlFile.put(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_FROM.plusDays(1).toString());
+        headerMapUploadHtmlFile.put(PublicationConfiguration.COURT_ID, courtId);
+        headerMapUploadHtmlFile.put(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE.toString());
+        headerMapUploadHtmlFile.put(PublicationConfiguration.SENSITIVITY_HEADER, Sensitivity.PUBLIC.toString());
+        headerMapUploadHtmlFile.put(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE.toString());
+        headerMapUploadHtmlFile.put(PublicationConfiguration.REQUESTER_ID_HEADER, systemAdminUserId);
+        headerMapUploadHtmlFile.put("Content-Type", MediaType.MULTIPART_FORM_DATA_VALUE);
+
+        String filePath = this.getClass().getClassLoader().getResource("data/testFlatFile.pdf").getPath();
+        File htmlFile = new File(filePath);
+
+        final Response responseUploadHtmlFile = doPostRequestMultiPart(
+            PUBLICATION_URL,
+            headerMapUploadHtmlFile,
+            "",
+            htmlFile
+        );
+
+        assertThat(responseUploadHtmlFile.getStatusCode()).isEqualTo(BAD_REQUEST.value());
     }
 
     @Test

@@ -29,6 +29,8 @@ public final class PartyRoleHelper {
     private static final String INDIVIDUAL_SURNAME = "individualSurname";
     private static final String TITLE = "title";
     private static final String ORGANISATION_DETAILS = "organisationDetails";
+    private static final String OFFENCE = "offence";
+    private static final String SUBJECT = "subject";
 
     private PartyRoleHelper() {
     }
@@ -119,11 +121,17 @@ public final class PartyRoleHelper {
         if (party.has(INDIVIDUAL_DETAILS)) {
             JsonNode individualDetails = party.get(INDIVIDUAL_DETAILS);
             String forenames = GeneralHelper.findAndReturnNodeText(individualDetails, INDIVIDUAL_FORENAMES);
+            String middlenames = GeneralHelper.findAndReturnNodeText(individualDetails, INDIVIDUAL_MIDDLE_NAME);
             String surname = GeneralHelper.findAndReturnNodeText(individualDetails, INDIVIDUAL_SURNAME);
 
-            return Stream.of(surname, forenames)
+            String name =  Stream.of(surname, forenames)
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.joining(", "));
+
+            if (!middlenames.isBlank()) {
+                return name + " " + middlenames;
+            }
+            return name;
         }
         return "";
     }
@@ -155,11 +163,68 @@ public final class PartyRoleHelper {
         nodeObj.put(PROSECUTING_AUTHORITY, String.join(DELIMITER, prosecutingAuthorities));
     }
 
+    public static void findProsecutingAuthorities(JsonNode node) {
+        List<String> prosecutingAuthorities = new ArrayList<>();
+
+        if (node.has(PARTY)) {
+            node.get(PARTY).forEach(party -> {
+                if (!GeneralHelper.findAndReturnNodeText(party, PARTY_ROLE).isEmpty()
+                    && party.get(PARTY_ROLE).asText().equals("PROSECUTING_AUTHORITY")) {
+                    if (party.has(INDIVIDUAL_DETAILS)) {
+                        prosecutingAuthorities.add(createIndividualDetails(party));
+                    } else {
+                        prosecutingAuthorities.add(createOrganisationDetails(party));
+                    }
+                }
+            });
+        }
+
+        ObjectNode nodeObj = (ObjectNode) node;
+        nodeObj.put(PROSECUTING_AUTHORITY, String.join(DELIMITER, prosecutingAuthorities));
+    }
+
+    public static void findMainDefendantName(JsonNode node) {
+        String mainDefendant = "";
+
+        if (node.has(PARTY)) {
+            for (JsonNode party : node.get(PARTY)) {
+                if (party.has(SUBJECT) && party.get(SUBJECT).asBoolean()) {
+                    if (party.has(INDIVIDUAL_DETAILS)) {
+                        mainDefendant = createIndividualDetails(party);
+                    } else {
+                        mainDefendant = createOrganisationDetails(party);
+                    }
+                    break;
+                }
+            }
+        }
+
+        ObjectNode nodeObj = (ObjectNode) node;
+        nodeObj.put(DEFENDANT, mainDefendant);
+    }
+
     public static String createOrganisationDetails(JsonNode party) {
         if (party.has(ORGANISATION_DETAILS)) {
             JsonNode organisationDetails = party.get(ORGANISATION_DETAILS);
             return GeneralHelper.findAndReturnNodeText(organisationDetails, "organisationName");
         }
         return "";
+    }
+
+    public static void handlePartyOffences(JsonNode node) {
+        List<String> offences = new ArrayList<>();
+
+        if (node.has(PARTY)) {
+            for (JsonNode party : node.get(PARTY)) {
+                if (party.has(SUBJECT) && party.get(SUBJECT).asBoolean() && party.has(OFFENCE)) {
+                    party.get(OFFENCE).forEach(offence -> {
+                        offences.add(GeneralHelper.findAndReturnNodeText(offence, "offenceTitle"));
+                    });
+                }
+            }
+        }
+
+        ObjectNode nodeObj = (ObjectNode) node;
+        nodeObj.put(OFFENCE, String.join(DELIMITER, offences));
     }
 }
