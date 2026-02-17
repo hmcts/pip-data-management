@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
 import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUtils;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +22,6 @@ import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTest
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PublicationIntegrationTestBase;
-import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -34,20 +32,17 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 @SpringBootTest(classes = {Application.class, AzureBlobConfigurationTestConfiguration.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("integration")
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase {
@@ -66,21 +61,12 @@ class PublicationRetrievalSensitivityTest extends PublicationIntegrationTestBase
         .truncatedTo(ChronoUnit.SECONDS);
     private static final String VALIDATION_DISPLAY_FROM = "The expected Display From has not been returned";
     private static final String REQUESTER_ID_HEADER = "x-requester-id";
-    private static final String ADMIN_HEADER = "x-admin";
-    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
 
     private static String payload = "payload";
     private static MockMultipartFile file;
 
-    private static PiUser piUser;
-
     @BeforeAll
     void setup() throws Exception {
-        piUser = new PiUser();
-        piUser.setUserId(SYSTEM_ADMIN_ID);
-        piUser.setEmail("test@justice.gov.uk");
-        piUser.setRoles(SYSTEM_ADMIN);
-
         file = new MockMultipartFile("file", "test.pdf",
                                      MediaType.APPLICATION_PDF_VALUE, "test content".getBytes(
             StandardCharsets.UTF_8)
