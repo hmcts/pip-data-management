@@ -40,6 +40,8 @@ class ExcelConversionServiceTest {
     private static final String ROW3B = "Row3b";
     private static final String ROW3C = "Row3c";
     private static final String ROW3D = "Row3d";
+    private static final String ROW4A = "Row4a";
+    private static final String ROW4B = "Row4b";
 
     private final ExcelConversionService excelConversionService = new ExcelConversionService();
 
@@ -265,6 +267,67 @@ class ExcelConversionServiceTest {
             softly.assertThat(results.size())
                 .as(ROW_SIZE_MESSAGE)
                 .isEqualTo(2);
+
+            softly.assertAll();
+        }
+    }
+
+    @Test
+    void shouldSkipOverMissingRowInExcelFile() throws IOException {
+        try (InputStream inputStream = this.getClass()
+            .getClassLoader()
+            .getResourceAsStream("excel/tableWithMissingRow.xlsx")) {
+            MultipartFile file = new MockMultipartFile(FILE, FILE_NAME, FILE_TYPE, IOUtils.toByteArray(inputStream));
+
+            String json = excelConversionService.convert(file);
+            List<Map<String, String>> results = OBJECT_MAPPER.readValue(json, new TypeReference<>() {
+            });
+
+            SoftAssertions softly = new SoftAssertions();
+
+            Map<String, String> firstRow = results.getFirst();
+
+            softly.assertThat(firstRow.get(HEADER1))
+                .as(CELL_EMPTY_MESSAGE)
+                .isEqualTo(ROW1A);
+
+            softly.assertThat(firstRow.get(HEADER2))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo(ROW1B);
+
+            Map<String, String> secondRow = results.get(1);
+
+            softly.assertThat(secondRow.get(HEADER1))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo(ROW2A);
+
+            softly.assertThat(secondRow.get(HEADER2))
+                .as(CELL_EMPTY_MESSAGE)
+                .isEqualTo(ROW2B);
+
+            Map<String, String> thirdRow = results.get(2);
+
+            softly.assertThat(thirdRow.get(HEADER1))
+                .as(CELL_MATCH_MESSAGE)
+                .isEmpty();
+
+            softly.assertThat(thirdRow.get(HEADER2))
+                .as(CELL_EMPTY_MESSAGE)
+                .isEqualTo(ROW3B);
+
+            Map<String, String> fourthRow = results.get(3);
+
+            softly.assertThat(fourthRow.get(HEADER1))
+                .as(CELL_MATCH_MESSAGE)
+                .isEqualTo(ROW4A);
+
+            softly.assertThat(fourthRow.get(HEADER2))
+                .as(CELL_EMPTY_MESSAGE)
+                .isEqualTo(ROW4B);
+
+            softly.assertThat(results.size())
+                .as(ROW_SIZE_MESSAGE)
+                .isEqualTo(4);
 
             softly.assertAll();
         }
