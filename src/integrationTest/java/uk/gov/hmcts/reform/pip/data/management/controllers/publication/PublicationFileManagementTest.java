@@ -4,7 +4,6 @@ import com.azure.core.util.BinaryData;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -15,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -23,8 +23,6 @@ import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PublicationIntegrationTestBase;
-import uk.gov.hmcts.reform.pip.model.account.PiUser;
-import uk.gov.hmcts.reform.pip.model.account.Roles;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -55,8 +53,8 @@ import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"integration", "disable-async"})
 @AutoConfigureMockMvc
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS, scripts = "classpath:add-test-location.sql")
 class PublicationFileManagementTest extends PublicationIntegrationTestBase {
     private static final String ROOT_URL = "/publication";
     private static final String GET_FILE_URL = ROOT_URL + "/%s/%s";
@@ -85,21 +83,14 @@ class PublicationFileManagementTest extends PublicationIntegrationTestBase {
         .truncatedTo(ChronoUnit.SECONDS);
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static final String USER_ID = UUID.randomUUID().toString();
-    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
 
     private static final String SJP_MOCK = "data/sjp-public-list/sjpPublicList.json";
     private static final String SJP_PRESS_MOCK = "data/sjp-press-list/sjpPressList.json";
-    private static PiUser piUser;
 
     private static MockMultipartFile file;
 
     @BeforeAll
     void setup() {
-        piUser = new PiUser();
-        piUser.setUserId(UUID.randomUUID().toString());
-        piUser.setEmail("test@justice.gov.uk");
-        piUser.setRoles(Roles.SYSTEM_ADMIN);
-
         file = new MockMultipartFile("file", "test.pdf",
                                      MediaType.APPLICATION_PDF_VALUE, TEST_CONTENT.getBytes(
             StandardCharsets.UTF_8)
@@ -232,7 +223,7 @@ class PublicationFileManagementTest extends PublicationIntegrationTestBase {
     void testGetFileWithAuthorisedUser() throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
         when(accountManagementService.getIsAuthorised(
-            UUID.fromString(SYSTEM_ADMIN_ID), ListType.SJP_PRESS_LIST, Sensitivity.CLASSIFIED
+            SYSTEM_ADMIN_ID, ListType.SJP_PRESS_LIST, Sensitivity.CLASSIFIED
         )).thenReturn(true);
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(new String(file.getBytes())));
 
@@ -265,7 +256,7 @@ class PublicationFileManagementTest extends PublicationIntegrationTestBase {
     void testGetFileWithUnauthorisedUser() throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
         when(accountManagementService.getIsAuthorised(
-            UUID.fromString(SYSTEM_ADMIN_ID), ListType.SJP_PRESS_LIST, Sensitivity.CLASSIFIED
+            SYSTEM_ADMIN_ID, ListType.SJP_PRESS_LIST, Sensitivity.CLASSIFIED
         )).thenReturn(false);
 
         byte[] data = getTestData(SJP_PRESS_MOCK);

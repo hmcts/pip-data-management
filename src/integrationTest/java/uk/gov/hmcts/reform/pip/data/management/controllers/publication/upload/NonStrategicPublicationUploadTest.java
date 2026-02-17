@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers.publication.upload;
 
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -45,7 +44,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("integration")
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class NonStrategicPublicationUploadTest extends PublicationIntegrationTestBase {
