@@ -366,26 +366,25 @@
                                               "type": "string",
                                               "examples": "This is a reporting restrictions detail",
                                               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                              }
                                             }
                                           }
                                         }
                                       }
                                     }
                                   }
-                                },
-                                "channel": {
-                                  "type": "array",
-                                  "items": {
-                                    "description": "Channel if different from in court",
-                                    "title": "Sitting Channel",
-                                    "type": "string",
-                                    "examples": [
-                                      "VIDEO HEARING"
-                                    ],
-                                    "default": "",
-                                    "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                  }
+                                }
+                              },
+                              "channel": {
+                                "type": "array",
+                                "items": {
+                                  "description": "Channel if different from in court",
+                                  "title": "Sitting Channel",
+                                  "type": "string",
+                                  "examples": [
+                                    "VIDEO HEARING"
+                                  ],
+                                  "default": "",
+                                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                 }
                               }
                             }
