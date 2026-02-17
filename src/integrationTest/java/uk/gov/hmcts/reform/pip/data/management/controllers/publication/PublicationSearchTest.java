@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -41,9 +39,7 @@ import static uk.gov.hmcts.reform.pip.model.account.Roles.VERIFIED;
 @SpringBootTest(classes = {Application.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles("integration")
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
 class PublicationSearchTest extends PublicationIntegrationTestBase {
     private static final String PUBLICATION_URL = "/publication";
@@ -82,7 +78,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     public void setup() throws Exception {
         systemAdminUser = new PiUser();
         systemAdminUser.setUserId(SYSTEM_ADMIN_ID.toString());
-        systemAdminUser.setEmail("test@justice.gov.uk");
+        systemAdminUser.setEmail("TEST_EMAIL" + UUID.randomUUID() + "@justice.gov.uk");
         systemAdminUser.setRoles(SYSTEM_ADMIN);
 
         verifiedUser = new PiUser();

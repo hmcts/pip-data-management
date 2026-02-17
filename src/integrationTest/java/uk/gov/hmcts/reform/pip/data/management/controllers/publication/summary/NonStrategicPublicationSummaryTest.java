@@ -1,9 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary;
 
 import com.azure.core.util.BinaryData;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.apache.commons.math3.random.RandomDataGenerator;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import uk.gov.hmcts.reform.pip.data.management.Application;
@@ -19,7 +18,6 @@ import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary.configurations.PublicationSummaryTestInput;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.utils.PublicationIntegrationTestBase;
-import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -29,7 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -40,15 +37,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary.configurations.NonStrategicRcjListTestCases.provideRcjTestCases;
 import static uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary.configurations.NonStrategicTribunalListTestCases.provideTribunalTestCases;
-import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"integration", "disable-async"})
 @AutoConfigureMockMvc
-@AutoConfigureEmbeddedDatabase(type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 @WithMockUser(username = "admin", authorities = {"APPROLE_api.request.admin"})
+@Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS, scripts = "classpath:add-test-location.sql")
 class NonStrategicPublicationSummaryTest extends PublicationIntegrationTestBase {
-    private static PiUser piUser;
     private static final String ROOT_URL = "/publication";
     private static final String GET_ARTEFACT_SUMMARY = ROOT_URL + "/%s/summary";
     private static final String CONTENT_MISMATCH_ERROR = "Artefact summary content should match";
@@ -56,7 +51,6 @@ class NonStrategicPublicationSummaryTest extends PublicationIntegrationTestBase 
     private static final String NON_STRATEGIC_FILES_LOCATION = "data/non-strategic/";
 
     public static final String REQUESTER_ID_HEADER = "x-requester-id";
-    private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
 
     private static final LocalDateTime DISPLAY_TO =
         LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
@@ -73,15 +67,6 @@ class NonStrategicPublicationSummaryTest extends PublicationIntegrationTestBase 
             provideTribunalTestCases()
         );
     }
-
-    @BeforeAll
-    protected static void setup() {
-        piUser = new PiUser();
-        piUser.setUserId(SYSTEM_ADMIN_ID);
-        piUser.setEmail("test@justice.gov.uk");
-        piUser.setRoles(SYSTEM_ADMIN);
-    }
-
 
     @ParameterizedTest
     @MethodSource("nonStrategicPublicationSummaryTestCases")
