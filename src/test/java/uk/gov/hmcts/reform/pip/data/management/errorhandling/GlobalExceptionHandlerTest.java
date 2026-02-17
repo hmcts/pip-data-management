@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateAr
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ExcelConversionException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileFormatNotSupportedException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileSizeLimitException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
@@ -311,6 +312,19 @@ class GlobalExceptionHandlerTest {
     void testHandleLcsuArtefactNotSupportedException() {
         String errorMessage = "LCSU artefact type is not supported.";
         LcsuArtefactNotSupportedException exception = new LcsuArtefactNotSupportedException(errorMessage);
+
+        ResponseEntity<ExceptionResponse> response = globalExceptionHandler.handle(exception);
+
+        assertNotNull(response, ASSERTION_RESPONSE_BODY);
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value(), BAD_REQUEST_ASSERTION);
+        assertNotNull(response.getBody(), NOT_NULL_MESSAGE);
+        assertEquals(errorMessage, response.getBody().getMessage(), ASSERTION_MESSAGE);
+    }
+
+    @Test
+    void testHandleFileFormatNotSupportedException() {
+        String errorMessage = "File format is not supported for LCSU.";
+        FileFormatNotSupportedException exception = new FileFormatNotSupportedException(errorMessage);
 
         ResponseEntity<ExceptionResponse> response = globalExceptionHandler.handle(exception);
 
