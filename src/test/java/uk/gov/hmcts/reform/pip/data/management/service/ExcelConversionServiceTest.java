@@ -276,7 +276,7 @@ class ExcelConversionServiceTest {
     void shouldSkipOverMissingRowInExcelFile() throws IOException {
         try (InputStream inputStream = this.getClass()
             .getClassLoader()
-            .getResourceAsStream("excel/tableWithMissingRow.xlsx")) {
+            .getResourceAsStream("excel/tableWithMissingrow.xlsx")) {
             MultipartFile file = new MockMultipartFile(FILE, FILE_NAME, FILE_TYPE, IOUtils.toByteArray(inputStream));
 
             String json = excelConversionService.convert(file);
