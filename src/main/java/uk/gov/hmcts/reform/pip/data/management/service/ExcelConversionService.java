@@ -74,18 +74,19 @@ public class ExcelConversionService {
         List<Map<String, String>> data = new ArrayList<>();
 
         for (int rowNumber = headerRowNumber + 1; rowNumber <= sheet.getLastRowNum(); rowNumber++) {
-            if (sheet.getRow(rowNumber) == null) {
-                continue;
+            Row currentRow = sheet.getRow(rowNumber);
+
+            if (currentRow != null) {
+
+                List<String> row = getExcelRow(sheet, rowNumber, firstColumnNumber);
+                Map<String, String> rowMappings = buildRowMap(headers, row);
+
+                if (rowMappings.values().stream().allMatch(String::isBlank)) {
+                    break;
+                }
+
+                data.add(rowMappings);
             }
-
-            List<String> row = getExcelRow(sheet, rowNumber, firstColumnNumber);
-            Map<String, String> rowMappings = buildRowMap(headers, row);
-
-            if (rowMappings.values().stream().allMatch(String::isBlank)) {
-                break;
-            }
-
-            data.add(rowMappings);
         }
 
         return data;
