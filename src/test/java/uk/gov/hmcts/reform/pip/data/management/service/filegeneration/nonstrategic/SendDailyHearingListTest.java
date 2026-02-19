@@ -43,7 +43,6 @@ class SendDailyHearingListTest {
     private static final String LAST_UPDATED_DATE_ELEMENT = "last-updated-date";
     private static final String SUMMARY_TITLE_CLASS = "govuk-details__summary-text";
     private static final String SUMMARY_TEXT_CLASS = "govuk-details__text";
-    private static final String TABLE_CELL_CLASS = "govuk-table__cell";
     private static final String LINK_CLASS = "govuk-link";
     private static final String HREF = "href";
     private static final String BODY_CLASS = "govuk-body";
