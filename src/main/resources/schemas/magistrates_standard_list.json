@@ -209,6 +209,11 @@
                 "description": "Any reporting restrictions posed to the offence",
                 "type": "boolean"
               },
+              "reportingRestrictionDetails": {
+                "title": "Reporting Details",
+                "description": "Any details related to reporting restrictions",
+                "type": "boolean"
+              },
               "convictionDate": {
                 "title": "Conviction Date",
                 "description": "",
@@ -449,6 +454,11 @@
                                             },
                                             "reportingRestriction": {
                                               "title": "Reporting Restriction",
+                                              "type": "boolean"
+                                            },
+                                            "reportingRestrictionDetails": {
+                                              "title": "Reporting Details",
+                                              "description": "Any details related to reporting restrictions",
                                               "type": "boolean"
                                             },
                                             "caseSequenceIndicator": {
