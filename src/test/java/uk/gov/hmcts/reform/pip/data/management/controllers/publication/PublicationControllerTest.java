@@ -15,11 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileFormatNotSupportedException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LcsuArtefactNotSupportedException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
@@ -438,7 +436,6 @@ class PublicationControllerTest {
 
     @Test
     void testUploadHtmlFileToS3BucketSuccess() {
-        ReflectionTestUtils.setField(publicationController, "enableLcsu", true);
 
         artefactWithoutId.setSearch(null);
         artefactWithoutId.setIsFlatFile(true);
@@ -459,7 +456,6 @@ class PublicationControllerTest {
 
     @Test
     void testUploadHtmlFileToS3BucketFailWebClientException() {
-        ReflectionTestUtils.setField(publicationController, "enableLcsu", true);
         when(validationService.validateHeaders(any())).thenReturn(lcsuHeaders);
         WebClientResponseException webClientException =
             new WebClientResponseException("Failed to upload file",
@@ -534,30 +530,8 @@ class PublicationControllerTest {
     }
 
     @Test
-    void testInvalidLcsuArtefactTypeForProdEnvironmentSendsBadRequest() {
-        when(validationService.validateHeaders(any())).thenReturn(lcsuHeaders);
-
-        ReflectionTestUtils.setField(publicationController, "enableLcsu", false);
-
-        LcsuArtefactNotSupportedException exception = assertThrows(
-            LcsuArtefactNotSupportedException.class,
-            () -> publicationController.uploadPublication(
-                PROVENANCE, SOURCE_ARTEFACT_ID, ArtefactType.LCSU,
-                SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, FILE
-            ),
-            "Expected LcsuArtefactNotSupportedException to be thrown"
-        );
-
-        // Validate that the exception contains the correct message
-        assertEquals("LCSU artefact type is not supported.", exception.getMessage(),
-                     "Exception message does not match expected");
-    }
-
-    @Test
     void testInvalidLcsuFileTypeForProdEnvironmentSendsBadRequest() {
         when(validationService.validateHeaders(any())).thenReturn(lcsuHeaders);
-
-        ReflectionTestUtils.setField(publicationController, "enableLcsu", true);
 
         FileFormatNotSupportedException exception = assertThrows(
             FileFormatNotSupportedException.class,

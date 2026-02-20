@@ -23,7 +23,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -1244,7 +1243,6 @@ class PublicationTest extends PublicationIntegrationTestBase {
 
     @Test
     void uploadHtmlToS3Bucket() throws Exception {
-        ReflectionTestUtils.setField(publicationController, "enableLcsu", true);
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
         when(accountManagementService.getIsAuthorised(any(), any(), any())).thenReturn(true);
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
@@ -1307,39 +1305,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
     }
 
     @Test
-    void testLcsuArtefactTypeInProdEnvironmentThrowsCustomException() throws Exception {
-        ReflectionTestUtils.setField(publicationController, "enableLcsu", false);
-        when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        when(accountManagementService.getIsAuthorised(any(), any(), any())).thenReturn(true);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .multipart(PUBLICATION_URL)
-            .file(htmlFile);
-
-        mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LCSU)
-            .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
-            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE_PDDA)
-            .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-            .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO)
-            .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
-            .header(PublicationConfiguration.LIST_TYPE, LIST_TYPE)
-            .header(PublicationConfiguration.COURT_ID, COURT_ID)
-            .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
-            .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-            .contentType(MediaType.MULTIPART_FORM_DATA);
-
-        mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isBadRequest())
-            .andExpect(result -> assertTrue(
-                result.getResponse().getContentAsString().contains("LCSU artefact type is not supported."),
-                "Expected error message not found in response"
-            ));
-    }
-
-    @Test
     void testIncorrecFileFormatForLcsuUploadThrowsCustomException() throws Exception {
-        ReflectionTestUtils.setField(publicationController, "enableLcsu", true);
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
         when(accountManagementService.getIsAuthorised(any(), any(), any())).thenReturn(true);
 
