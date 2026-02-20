@@ -540,6 +540,15 @@
                                                 "application type example"
                                               ],
                                               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                            },
+                                            "applicationParticulars": {
+                                              "title": "Application Particulars",
+                                              "description": "application particulars",
+                                              "type": "string",
+                                              "examples": [
+                                                "Application Particulars example"
+                                              ],
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             }
                                           }
                                         }
