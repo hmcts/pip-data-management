@@ -212,7 +212,11 @@
               "reportingRestrictionDetails": {
                 "title": "Reporting Details",
                 "description": "Any details related to reporting restrictions",
-                "type": "boolean"
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                }
               },
               "convictionDate": {
                 "title": "Conviction Date",
@@ -459,7 +463,11 @@
                                             "reportingRestrictionDetails": {
                                               "title": "Reporting Details",
                                               "description": "Any details related to reporting restrictions",
-                                              "type": "boolean"
+                                              "type": "array",
+                                              "items": {
+                                                "type": "string",
+                                                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                              }
                                             },
                                             "caseSequenceIndicator": {
                                               "title": "Case Sequence Indicator",
