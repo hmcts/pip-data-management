@@ -18,7 +18,6 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileForm
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileSizeLimitException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LcsuArtefactNotSupportedException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNameValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
@@ -306,19 +305,6 @@ class GlobalExceptionHandlerTest {
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
         assertEquals(TEST_MESSAGE, responseEntity.getBody().getMessage(),
                      ASSERTION_MESSAGE);
-    }
-
-    @Test
-    void testHandleLcsuArtefactNotSupportedException() {
-        String errorMessage = "LCSU artefact type is not supported.";
-        LcsuArtefactNotSupportedException exception = new LcsuArtefactNotSupportedException(errorMessage);
-
-        ResponseEntity<ExceptionResponse> response = globalExceptionHandler.handle(exception);
-
-        assertNotNull(response, ASSERTION_RESPONSE_BODY);
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCode().value(), BAD_REQUEST_ASSERTION);
-        assertNotNull(response.getBody(), NOT_NULL_MESSAGE);
-        assertEquals(errorMessage, response.getBody().getMessage(), ASSERTION_MESSAGE);
     }
 
     @Test
