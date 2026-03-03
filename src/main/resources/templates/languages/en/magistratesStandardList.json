@@ -25,6 +25,8 @@
   "sittingAt": "Sitting at ",
   "reference": "Reference: ",
   "applicationType": "Application Type: ",
+  "applicationParticulars": "Application Particulars: ",
+  "reportingRestrictions": "Reporting Restrictions",
   "dobAndAge": "DOB and Age: ",
   "age": " Age: ",
   "asn": "ASN: ",

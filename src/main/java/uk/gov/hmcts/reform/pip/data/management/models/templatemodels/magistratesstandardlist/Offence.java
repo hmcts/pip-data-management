@@ -17,4 +17,5 @@ public class Offence {
     private String adjournedDate;
     private String offenceLegislation;
     private String offenceMaxPenalty;
+    private String reportingRestrictionDetails;
 }

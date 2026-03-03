@@ -209,6 +209,14 @@
                 "description": "Any reporting restrictions posed to the offence",
                 "type": "boolean"
               },
+              "reportingRestrictionDetails": {
+                "title": "Reporting Restrictions Detail",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                }
+              },
               "convictionDate": {
                 "title": "Conviction Date",
                 "description": "",
@@ -451,6 +459,14 @@
                                               "title": "Reporting Restriction",
                                               "type": "boolean"
                                             },
+                                            "reportingRestrictionDetails": {
+                                              "title": "Reporting Restrictions Detail",
+                                              "type": "array",
+                                              "items": {
+                                                "type": "string",
+                                                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                              }
+                                            },
                                             "caseSequenceIndicator": {
                                               "title": "Case Sequence Indicator",
                                               "description": "The case sequence indicator",
@@ -528,6 +544,15 @@
                                               "type": "string",
                                               "examples": [
                                                 "application type example"
+                                              ],
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                            },
+                                            "applicationParticulars": {
+                                              "title": "Application Particulars",
+                                              "description": "details of an application",
+                                              "type": "string",
+                                              "examples": [
+                                                "application particulars example"
                                               ],
                                               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             }
