@@ -278,6 +278,18 @@ class ArtefactRepositoryTest {
     }
 
     @Test
+    void shouldFindAllByListTypeIn() {
+        List<Artefact> artefacts = artefactRepository.findAllByListTypeIn(
+            List.of(ListType.CIVIL_DAILY_CAUSE_LIST, ListType.SJP_PUBLIC_LIST)
+        );
+        assertThat(artefacts)
+            .as(ARTEFACT_MATCHED_MESSAGE)
+            .hasSize(4)
+            .extracting(Artefact::getArtefactId)
+            .containsExactlyInAnyOrder(artefactId1, artefactId3, artefactId4, artefactId5);
+    }
+
+    @Test
     void shouldRetrieveArtefactsForMiData() {
         LocalDateTime publicationReceivedDate = LocalDate.now()
             .minusDays(31)
