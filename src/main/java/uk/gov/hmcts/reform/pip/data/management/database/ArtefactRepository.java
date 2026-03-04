@@ -130,6 +130,8 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
 
     List<Artefact> findAllByLocationIdIn(List<String> locationId);
 
+    List<Artefact> findAllByListTypeIn(List<ListType> listTypes);
+
     @Transactional
     @Modifying
     @Query(value = "REFRESH MATERIALIZED VIEW sdp_mat_view_artefact", nativeQuery = true)

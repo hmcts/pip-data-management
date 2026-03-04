@@ -174,6 +174,7 @@ public final class ArtefactConstantTestHelper {
             .search(SEARCH_VALUES)
             .displayFrom(LocalDateTime.now().minusDays(1))
             .displayTo(LocalDateTime.now().plusDays(1))
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .build();
     }
 
@@ -186,6 +187,7 @@ public final class ArtefactConstantTestHelper {
             .search(SEARCH_VALUES)
             .displayFrom(LocalDateTime.now())
             .displayTo(LocalDateTime.now().plusHours(3))
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .build();
     }
 
@@ -198,6 +200,7 @@ public final class ArtefactConstantTestHelper {
             .search(SEARCH_VALUES)
             .displayFrom(LocalDateTime.now())
             .displayTo(null)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .build();
     }
 
@@ -210,6 +213,7 @@ public final class ArtefactConstantTestHelper {
             .search(SEARCH_VALUES)
             .displayFrom(LocalDateTime.now())
             .displayTo(LocalDateTime.now())
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .build();
     }
 
@@ -222,6 +226,7 @@ public final class ArtefactConstantTestHelper {
             .search(SEARCH_VALUES)
             .displayFrom(LocalDateTime.now().plusDays(1))
             .displayTo(LocalDateTime.now().plusDays(2))
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .build();
     }
 
