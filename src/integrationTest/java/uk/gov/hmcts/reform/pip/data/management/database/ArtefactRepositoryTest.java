@@ -279,8 +279,9 @@ class ArtefactRepositoryTest {
 
     @Test
     void shouldFindAllByListTypeIn() {
-        List<Artefact> artefacts = artefactRepository.findAllByListTypeIn(List.of(ListType.CIVIL_DAILY_CAUSE_LIST,
-                                                                                 ListType.SJP_PUBLIC_LIST));
+        List<Artefact> artefacts = artefactRepository.findAllByListTypeIn(
+            List.of(ListType.CIVIL_DAILY_CAUSE_LIST, ListType.SJP_PUBLIC_LIST)
+        );
         assertThat(artefacts)
             .as(ARTEFACT_MATCHED_MESSAGE)
             .hasSize(4)
