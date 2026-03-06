@@ -149,6 +149,10 @@ class CrownPddaListHelperTest {
 
         SoftAssertions softly = new SoftAssertions();
 
+        softly.assertThat(result.getHearingTime())
+            .as(HEARING_INFO_MESSAGE)
+            .isEqualTo("TestTimeMarkingNote");
+
         softly.assertThat(result.getCaseNumber())
             .as(HEARING_INFO_MESSAGE)
             .isEqualTo("T00112233");
