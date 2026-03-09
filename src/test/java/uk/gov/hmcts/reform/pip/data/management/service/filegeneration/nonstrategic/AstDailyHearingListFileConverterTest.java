@@ -279,7 +279,7 @@ class AstDailyHearingListFileConverterTest {
         Document document = Jsoup.parse(result);
 
         assertThat(document.getElementsByTag("td"))
-            .as("Table contents does not match")
+            .as(TABLE_CONTENT_MESSAGE)
             .extracting(Element::text)
             .containsSequence(
                 "Appellant A",
