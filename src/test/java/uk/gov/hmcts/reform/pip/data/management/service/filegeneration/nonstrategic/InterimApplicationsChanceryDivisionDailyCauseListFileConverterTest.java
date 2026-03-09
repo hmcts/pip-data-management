@@ -166,7 +166,7 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/cy/non-strategic/astDailyHearingList.json")) {
+            .getResourceAsStream("templates/languages/cy/non-strategic/interimApplicationsChdDailyCauseList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
