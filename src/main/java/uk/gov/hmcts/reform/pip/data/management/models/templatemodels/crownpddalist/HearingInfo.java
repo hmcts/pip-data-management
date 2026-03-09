@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HearingInfo {
+    private String hearingTime;
     private String caseNumber;
     private String defendantName;
     private String hearingType;
