@@ -41,6 +41,7 @@ class CrownPddaListFileConverterTest {
     private static final String HEADING_MESSAGE = "Heading does not match";
     private static final String BODY_MESSAGE = "Body does not match";
     private static final String LINK_MESSAGE = "Link does not match";
+    private static final String TABLE_HEADERS_MESSAGE = "Table headers do not match";
 
     private static final Map<String, String> COMMON_METADATA = Map.of("contentDate", Instant.now().toString(),
                                                                       "provenance", "MANUAL_UPLOAD",
@@ -116,6 +117,19 @@ class CrownPddaListFileConverterTest {
             .as(HEADING_MESSAGE)
             .contains("TestCourtHouseName");
 
+        softly.assertThat(document.getElementsByTag("th"))
+            .as(TABLE_HEADERS_MESSAGE)
+            .hasSize(18)
+            .extracting(Element::text)
+            .containsSequence(
+                "Hearing Time",
+                "Case Reference",
+                "Defendant Name(s)",
+                "Hearing Type",
+                "Prosecuting Authority",
+                "Listing Notes"
+            );
+
         softly.assertAll();
     }
 
@@ -190,6 +204,8 @@ class CrownPddaListFileConverterTest {
             .contains("TestCourtHouseName");
 
         softly.assertAll();
+
+        softly.assertAll();
     }
 
     @Test
@@ -222,6 +238,7 @@ class CrownPddaListFileConverterTest {
             .as("Table contents does not match")
             .extracting(Element::text)
             .containsSequence(
+                "TestTimeMarkingNote",
                 "T00112233",
                 "TestMaskedName, Mr TestDefendantForename TestDefendantSurname TestDefendantSuffix",
                 "TestHearingDescription",
@@ -303,6 +320,20 @@ class CrownPddaListFileConverterTest {
         softly.assertThat(document.getElementsByClass(HEADING_CLASS).get(1).text())
             .as(HEADING_MESSAGE)
             .contains("Wednesday 10 September 2025");
+
+        softly.assertThat(document.getElementsByTag("th"))
+            .as(TABLE_HEADERS_MESSAGE)
+            .hasSize(21)
+            .extracting(Element::text)
+            .containsSequence(
+                "Hearing Time",
+                "Case Number",
+                "Defendant Name(s)",
+                "Hearing Type",
+                "Representative",
+                "Prosecuting Authority",
+                "Listing Notes"
+            );
 
         softly.assertAll();
     }
@@ -415,6 +446,7 @@ class CrownPddaListFileConverterTest {
             .as("Table contents does not match")
             .extracting(Element::text)
             .containsSequence(
+                "TestTimeMarkingNote",
                 "T00112233",
                 "TestMaskedName, Mr TestDefendantForename TestDefendantSurname TestDefendantSuffix",
                 "TestHearingDescription",

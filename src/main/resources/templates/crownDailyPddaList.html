@@ -232,6 +232,7 @@
               <tbody class="govuk-table__body">
               <th:block th:each="hearing : ${sitting.hearings}">
                 <tr class="govuk-table__row">
+                  <td class="govuk-table__cell" th:text="${hearing.hearingTime}"/>
                   <td class="govuk-table__cell no-wrap" th:text="${hearing.caseNumber}"/>
                   <td class="govuk-table__cell" th:text="${hearing.defendantName}"/>
                   <td class="govuk-table__cell" th:text="${hearing.hearingType}"/>
