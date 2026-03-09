@@ -29,6 +29,7 @@ public final class CrownPddaListHelper {
     private static final String JUDICIARY = "Judiciary";
     private static final String JUDGE = "Judge";
     private static final String JUSTICE = "Justice";
+    private static final String TIME_MARKING_NOTE = "TimeMarkingNote";
     private static final String CASE_NUMBER_CATH = "CaseNumberCaTH";
     private static final String HEARING_DETAILS = "HearingDetails";
     private static final String HEARING_DESCRIPTION = "HearingDescription";
@@ -115,6 +116,7 @@ public final class CrownPddaListHelper {
 
     private static HearingInfo buildHearingInfo(JsonNode hearing, boolean isDailyList) {
         HearingInfo hearingInfo = new HearingInfo();
+        hearingInfo.setHearingTime(hearing.get(TIME_MARKING_NOTE).asText());
         hearingInfo.setCaseNumber(hearing.get(CASE_NUMBER_CATH).asText());
         hearingInfo.setDefendantName(hearing.has(DEFENDANTS) ? formatDefendantName(hearing.get(DEFENDANTS)) : "");
         hearingInfo.setHearingType(hearing.get(HEARING_DETAILS).get(HEARING_DESCRIPTION).asText());
