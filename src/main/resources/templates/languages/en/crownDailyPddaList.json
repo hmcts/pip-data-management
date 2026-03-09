@@ -19,6 +19,7 @@
   "court": "COURT ",
   "sittingAt": "Sitting at ",
   "tableHeaders": [
+    "Hearing Time",
     "Case Reference",
     "Defendant Name(s)",
     "Hearing Type",
