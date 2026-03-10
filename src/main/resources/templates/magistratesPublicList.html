@@ -136,8 +136,11 @@
                           </td>
                         </tr>
                         <tr class="govuk-table__row" th:if="${hasReporting}">
-                          <td class="govuk-table__cell" colspan="5">
+                          <td class="govuk-table__cell" colspan="2">
                             <span th:text="${i18n.reportingRestrictions}"></span>
+                          </td>
+                          <td class="govuk-table__cell" colspan="3">
+                            <span th:text="${i18n.reportingRestrictionText}"></span>
                           </td>
                         </tr>
                       </th:block>
