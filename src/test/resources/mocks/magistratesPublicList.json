@@ -90,7 +90,7 @@
                                 ]
                               }
                             ],
-                            "reportingRestriction": false
+                            "reportingRestriction": true
                           }
                         ],
                         "channel": [
