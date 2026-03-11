@@ -18,4 +18,8 @@
     <notes>Temporarily suppressed - To be looked into separately</notes>
     <cve>CVE-2025-68161</cve>
   </suppress>
+  <suppress>
+    <notes>Vulnerability in jackson-databind</notes>
+    <cve>CVE-2026-29062</cve>
+  </suppress>
 </suppressions>
