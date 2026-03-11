@@ -168,6 +168,12 @@
                   <p class="govuk-body row-heading" th:text="${i18n.sittingAt + matter.sittingStartTime}" />
                 </div>
                 <br />
+                <div th:if="${matter.matterMetadata.applicationParticulars != '' && matter.matterMetadata.applicationParticulars != null}">
+                  <p class="govuk-body">
+                    <span class="row-heading" th:text="${i18n.applicationParticulars}" />
+                    <span th:text="${matter.matterMetadata.applicationParticulars}" />
+                  </p>
+                </div>
                 <div th:if="${matter.partyInfo.age != '' && matter.partyInfo.age != null}">
                   <p class="govuk-body">
                     <span class="row-heading" th:text="${i18n.dobAndAge}" />
@@ -192,6 +198,12 @@
                   <span class="row-heading" th:text="${i18n.attendanceMethod}" />
                   <span th:text="${matter.matterMetadata.attendanceMethod}" />
                 </p>
+                <div th:if="${matter.matterMetadata.reportingRestrictionDetails != '' && matter.matterMetadata.reportingRestrictionDetails != null}">
+                  <p class="govuk-body">
+                    <span class="row-heading" th:text="${i18n.reportingRestrictions + ':'}" />
+                    <span th:text="${matter.matterMetadata.reportingRestrictionDetails}" />
+                  </p>
+                </div>
               </div>
               <div class="govuk-grid-column-one-third">
                 <p class="govuk-body">
@@ -255,6 +267,11 @@
                           <td class="govuk-table__cell no-border-bottom"><span class="row-heading" th:text="${i18n.adjournedFrom}" /></td>
                           <td class="govuk-table__cell no-border-bottom" th:if="${!#strings.isEmpty(offence.adjournedDate)}" th:text="${offence.adjournedDate + ' - ' + i18n.adjournedText}" />
                           <td class="govuk-table__cell no-border-bottom" th:if="${#strings.isEmpty(offence.adjournedDate)}" />
+                        </tr>
+                        <tr class="govuk-table__row"
+                            th:if="${offence.reportingRestrictionDetails != null && !#strings.isEmpty(offence.reportingRestrictionDetails)}">
+                          <td class="govuk-table__cell no-border-bottom"><span class="row-heading" th:text="${i18n.reportingRestrictions}"></span></td>
+                          <td class="govuk-table__cell no-border-bottom" th:text="${offence.reportingRestrictionDetails}"></td>
                         </tr>
                       </tbody>
                     </table>
