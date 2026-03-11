@@ -252,17 +252,21 @@ class MagistratesStandardListFileConverterTest {
 
         softly.assertThat(body.get(14).text())
             .as(MATTER_INFO_MESSAGE)
-            .contains("Reference:");
+            .contains("Reporting Restrictions:");
 
         softly.assertThat(body.get(15).text())
             .as(MATTER_INFO_MESSAGE)
-            .contains("ASN:");
+            .contains("Reference:");
 
         softly.assertThat(body.get(16).text())
             .as(MATTER_INFO_MESSAGE)
-            .contains("Hearing Type:");
+            .contains("ASN:");
 
         softly.assertThat(body.get(17).text())
+            .as(MATTER_INFO_MESSAGE)
+            .contains("Hearing Type:");
+
+        softly.assertThat(body.get(18).text())
             .as(MATTER_INFO_MESSAGE)
             .contains("Panel:");
 
@@ -276,7 +280,7 @@ class MagistratesStandardListFileConverterTest {
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(body.get(18).text())
+        softly.assertThat(body.get(19).text())
             .as(MATTER_INFO_MESSAGE)
             .contains("Sitting at 4:30pm [2 of 3]");
 
@@ -290,7 +294,11 @@ class MagistratesStandardListFileConverterTest {
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(body.get(51).text())
+        softly.assertThat(body.get(47).text())
+            .as(MATTER_INFO_MESSAGE)
+            .contains("Application Particulars");
+
+        softly.assertThat(body.get(53).text())
             .as(MATTER_INFO_MESSAGE)
             .contains("Application Type");
 
@@ -322,17 +330,21 @@ class MagistratesStandardListFileConverterTest {
 
         softly.assertThat(body.get(14).text())
             .as(MATTER_INFO_MESSAGE)
-            .contains("45684548");
+            .contains("This is a case level reporting restriction details example");
 
         softly.assertThat(body.get(15).text())
             .as(MATTER_INFO_MESSAGE)
-            .contains("ABC1234");
+            .contains("45684548");
 
         softly.assertThat(body.get(16).text())
             .as(MATTER_INFO_MESSAGE)
-            .contains("Hearing Type A");
+            .contains("ABC1234");
 
         softly.assertThat(body.get(17).text())
+            .as(MATTER_INFO_MESSAGE)
+            .contains("Hearing Type A");
+
+        softly.assertThat(body.get(18).text())
             .as(MATTER_INFO_MESSAGE)
             .contains("ADULT");
 
@@ -346,7 +358,11 @@ class MagistratesStandardListFileConverterTest {
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(body.get(51).text())
+        softly.assertThat(body.get(47).text())
+            .as(MATTER_INFO_MESSAGE)
+            .contains("This is an application particulars example");
+
+        softly.assertThat(body.get(53).text())
             .as(MATTER_INFO_MESSAGE)
             .contains("Application Type 1");
 
@@ -416,6 +432,14 @@ class MagistratesStandardListFileConverterTest {
             .as(OFFENCE_MESSAGE)
             .contains("02/05/2026 - For the trial");
 
+        softly.assertThat(tableCell.get(13).text())
+            .as(OFFENCE_MESSAGE)
+            .contains("Reporting Restrictions");
+
+        softly.assertThat(tableCell.get(14).text())
+            .as(OFFENCE_MESSAGE)
+            .contains("This is an offence level reporting restriction details example");
+
         softly.assertAll();
     }
 
@@ -426,7 +450,7 @@ class MagistratesStandardListFileConverterTest {
         SoftAssertions softly = new SoftAssertions();
 
         Elements tableCell = document.getElementsByClass("govuk-table__cell");
-        softly.assertThat(tableCell.get(25).text())
+        softly.assertThat(tableCell.get(27).text())
             .as(OFFENCE_MESSAGE)
             .isEmpty();
 
@@ -440,7 +464,7 @@ class MagistratesStandardListFileConverterTest {
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(body.get(74).text())
+        softly.assertThat(body.get(76).text())
             .as(PROVENANCE_MESSAGE)
             .contains("Data Source: provenance");
 

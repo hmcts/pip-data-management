@@ -38,12 +38,14 @@ public final class MagistratesStandardListHelper {
     private static final String CASE_URN = "caseUrn";
     private static final String APPLICATION_REFERENCE = "applicationReference";
     private static final String APPLICATION_TYPE = "applicationType";
+    private static final String APPLICATION_PARTICULARS = "applicationParticulars";
     private static final String CASE_SEQUENCE_INDICATOR = "caseSequenceIndicator";
     private static final String HEARING_TYPE = "hearingType";
     private static final String PANEL = "panel";
     private static final String CONVICTION_DATE = "convictionDate";
     private static final String ADJOURNED_DATE = "adjournedDate";
     private static final String OFFENCE_LEGISLATION = "offenceLegislation";
+    private static final String REPORTING_RESTRICTION_DETAILS = "reportingRestrictionDetails";
 
     private static final String PARTY = "party";
     private static final String SUBJECT = "subject";
@@ -170,8 +172,12 @@ public final class MagistratesStandardListHelper {
         if (isApplication) {
             matterMetadata.setReference(GeneralHelper.findAndReturnNodeText(caseOrApplication, APPLICATION_REFERENCE));
             matterMetadata.setApplicationType(GeneralHelper.findAndReturnNodeText(caseOrApplication, APPLICATION_TYPE));
+            matterMetadata.setApplicationParticulars(GeneralHelper.findAndReturnNodeText(caseOrApplication,
+                                                                                         APPLICATION_PARTICULARS));
         } else {
             matterMetadata.setReference(GeneralHelper.findAndReturnNodeText(caseOrApplication, CASE_URN));
+            matterMetadata.setReportingRestrictionDetails(GeneralHelper.formatNodeArray(
+                caseOrApplication, REPORTING_RESTRICTION_DETAILS, ","));
         }
 
         matterMetadata.setCaseSequenceIndicator(GeneralHelper.findAndReturnNodeText(caseOrApplication,
@@ -282,6 +288,9 @@ public final class MagistratesStandardListHelper {
                 offence.setOffenceLegislation(GeneralHelper.findAndReturnNodeText(o, OFFENCE_LEGISLATION));
                 offence.setOffenceCode(GeneralHelper.findAndReturnNodeText(o, OFFENCE_CODE));
                 offence.setOffenceMaxPenalty(GeneralHelper.findAndReturnNodeText(o, OFFENCE_MAX_PENALTY));
+                offence.setReportingRestrictionDetails(GeneralHelper.formatNodeArray(
+                    o, REPORTING_RESTRICTION_DETAILS, ","
+                ));
                 offences.add(offence);
             });
         }

@@ -692,6 +692,15 @@
                                               "title": "Application Type",
                                               "type": "string",
                                               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                            },
+                                            "applicationParticulars": {
+                                              "title": "Application Particulars",
+                                              "description": "details of an application",
+                                              "type": "string",
+                                              "examples": [
+                                                "application particulars example"
+                                              ],
+                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             }
                                           }
                                         }
