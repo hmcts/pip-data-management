@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -27,9 +28,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ArtefactRepositoryTest {
-    private static final LocalDateTime TODAY = LocalDateTime.now();
-    private static final LocalDateTime TOMORROW = LocalDateTime.now().plusDays(1);
-    private static final LocalDateTime YESTERDAY = LocalDateTime.now().minusDays(1);
+    private static final LocalDateTime TODAY = LocalDateTime.now().with(LocalTime.MIN);
+    private static final LocalDateTime TOMORROW = LocalDateTime.now().plusDays(1).with(LocalTime.MIN);
+    private static final LocalDateTime YESTERDAY = LocalDateTime.now().minusDays(1).with(LocalTime.MIN);
     private static final String SOURCE_ARTEFACT_ID = "1234";
     private static final String LOCATION_ID = "1";
     private static final String NO_MATCH_LOCATION_ID = "NoMatch99";
@@ -283,7 +284,7 @@ class ArtefactRepositoryTest {
         List<Artefact> artefacts = artefactRepository.findActiveArtefactsByListTypeIn(
             Set.of(ListType.CIVIL_DAILY_CAUSE_LIST.name(), ListType.SJP_PUBLIC_LIST.name()),
             LocalDate.now(),
-            LocalDateTime.now().plusMinutes(1)
+            LocalDateTime.now()
         );
         assertThat(artefacts)
             .as(ARTEFACT_MATCHED_MESSAGE)
