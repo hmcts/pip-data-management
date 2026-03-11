@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.pip.model.report.PublicationMiData;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,9 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ArtefactRepositoryTest {
-    private static final LocalDateTime TODAY = LocalDateTime.of(2025, 2, 5, 1, 1, 2);
-    private static final LocalDateTime TOMORROW = LocalDateTime.of(2025, 2, 6, 1, 1, 2);
-    private static final LocalDateTime YESTERDAY = LocalDateTime.of(2025, 2, 4, 1, 1, 2);
+    private static final LocalDateTime TODAY = LocalDateTime.now();
+    private static final LocalDateTime TOMORROW = LocalDateTime.now().plusDays(1);
+    private static final LocalDateTime YESTERDAY = LocalDateTime.now().minusDays(1);
     private static final String SOURCE_ARTEFACT_ID = "1234";
     private static final String LOCATION_ID = "1";
     private static final String NO_MATCH_LOCATION_ID = "NoMatch99";
@@ -278,15 +279,17 @@ class ArtefactRepositoryTest {
     }
 
     @Test
-    void shouldFindAllByListTypeIn() {
-        List<Artefact> artefacts = artefactRepository.findAllByListTypeIn(
-            List.of(ListType.CIVIL_DAILY_CAUSE_LIST, ListType.SJP_PUBLIC_LIST)
+    void shouldFindActiveArtefactsByListTypeIn() {
+        List<Artefact> artefacts = artefactRepository.findActiveArtefactsByListTypeIn(
+            Set.of(ListType.CIVIL_DAILY_CAUSE_LIST.name(), ListType.SJP_PUBLIC_LIST.name()),
+            LocalDate.now(),
+            LocalDateTime.now().plusMinutes(1)
         );
         assertThat(artefacts)
             .as(ARTEFACT_MATCHED_MESSAGE)
-            .hasSize(4)
+            .hasSize(3)
             .extracting(Artefact::getArtefactId)
-            .containsExactlyInAnyOrder(artefactId1, artefactId3, artefactId4, artefactId5);
+            .containsExactlyInAnyOrder(artefactId1, artefactId3, artefactId5);
     }
 
     @Test

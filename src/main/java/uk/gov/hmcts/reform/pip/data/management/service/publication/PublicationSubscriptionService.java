@@ -13,11 +13,12 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -63,13 +64,14 @@ public class PublicationSubscriptionService {
     public void checkNewlyActiveArtefacts(boolean scheduledListType) {
         List<Artefact> artefacts;
         if (scheduledListType) {
-            List<ListType> listTypesToTrigger = new ArrayList<>();
+            Set<String> listTypesToTrigger = new HashSet<>();
             EnumSet.allOf(ListType.class).forEach(listType -> {
                 if (listType.isScheduledSubscription()) {
-                    listTypesToTrigger.add(listType);
+                    listTypesToTrigger.add(listType.name());
                 }
             });
-            artefacts = artefactRepository.findAllByListTypeIn(listTypesToTrigger);
+            artefacts = artefactRepository.findActiveArtefactsByListTypeIn(listTypesToTrigger, LocalDate.now(),
+                                                                           LocalDateTime.now());
         } else {
             artefacts = artefactRepository.findArtefactsByDisplayFrom(LocalDate.now(), LocalDateTime.now());
         }
