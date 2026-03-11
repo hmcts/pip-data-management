@@ -338,11 +338,6 @@
                                               ],
                                               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
                                             },
-                                            "reportingRestriction": {
-                                              "title": "Reporting Restriction",
-                                              "type": "boolean",
-                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
-                                            },
                                             "party": {
                                               "title": "Party",
                                               "description": "Parties involved in the application",
