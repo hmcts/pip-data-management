@@ -187,12 +187,14 @@ class MagistratesStandardListHelperTest {
                 MatterMetadata::getProsecutingAuthority,
                 MatterMetadata::getAttendanceMethod,
                 MatterMetadata::getReference,
+                MatterMetadata::getReportingRestrictionDetails,
                 MatterMetadata::getCaseSequenceIndicator,
                 MatterMetadata::getHearingType,
                 MatterMetadata::getPanel)
             .containsExactly("Prosecuting Authority Name",
                              "VIDEO HEARING A",
                              "45684548",
+                             "This is a case level reporting restriction details example",
                              "2 of 3",
                              "Hearing Type A",
                              "ADULT");
@@ -203,7 +205,7 @@ class MagistratesStandardListHelperTest {
         Map<String, CourtRoom> result = MagistratesStandardListHelper.processRawListData(inputJson);
 
         MatterMetadata matterMetadata = result
-            .get(COURT_ROOM2).getGroupedPartyMatters().get(3)
+            .get(COURT_ROOM2).getGroupedPartyMatters().get(1)
             .getMatters().get(0)
             .getMatterMetadata();
 
@@ -211,9 +213,11 @@ class MagistratesStandardListHelperTest {
             .as(MATTER_INFO_MESSAGE)
             .extracting(
                 MatterMetadata::getReference,
-                MatterMetadata::getApplicationType)
-            .containsExactly("AppRefC",
-                             "Application Type 3");
+                MatterMetadata::getApplicationType,
+                MatterMetadata::getApplicationParticulars)
+            .containsExactly("AppRefA",
+                             "Application Type 1",
+                             "This is an application particulars example");
     }
 
     @Test
@@ -239,7 +243,8 @@ class MagistratesStandardListHelperTest {
                         Offence::getAdjournedDate,
                         Offence::getConvictionDate,
                         Offence::getPleaDate,
-                        Offence::getPlea)
+                        Offence::getPlea,
+                        Offence::getReportingRestrictionDetails)
             .containsExactly("drink driving",
                              "driving whilst under the influence of alcohol",
                              "dd01-01",
@@ -248,6 +253,7 @@ class MagistratesStandardListHelperTest {
                              "02/05/2026",
                              "01/05/2026",
                              "27/06/2026",
-                             "NOT_GUILTY");
+                             "NOT_GUILTY",
+                             "This is an offence level reporting restriction details example");
     }
 }

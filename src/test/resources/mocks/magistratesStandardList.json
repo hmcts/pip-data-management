@@ -48,6 +48,9 @@
                             "caseUrn": "45684548",
                             "caseSequenceIndicator": "2 of 3",
                             "reportingRestriction": true,
+                            "reportingRestrictionDetails": [
+                              "This is a case level reporting restriction details example"
+                            ],
                             "party": [
                               {
                                 "partyRole": "DEFENDANT",
@@ -80,7 +83,11 @@
                                     "pleaDate": "2026-06-27T10:00:00.123Z",
                                     "convictionDate": "2026-05-01T11:00:00.123Z",
                                     "adjournedDate": "2026-05-02T11:00:00.123Z",
-                                    "offenceLegislation": "This is a legislation"
+                                    "offenceLegislation": "This is a legislation",
+                                    "reportingRestriction": true,
+                                    "reportingRestrictionDetails": [
+                                      "This is an offence level reporting restriction details example"
+                                    ]
                                   },
                                   {
                                     "offenceCode": "dd01-01",
@@ -232,7 +239,10 @@
                                     "convictionDate": "2026-05-01T11:00:00.123Z",
                                     "adjournedDate": "2026-05-02T11:00:00.123Z",
                                     "offenceLegislation": "This is a legislation",
-                                    "reportingRestriction": true
+                                    "reportingRestriction": true,
+                                    "reportingRestrictionDetails": [
+                                      "This is an offence level reporting restriction details example"
+                                    ]
                                   },
                                   {
                                     "offenceCode": "dd01-01",
@@ -324,6 +334,7 @@
                           {
                             "applicationReference": "AppRefA",
                             "applicationType": "Application Type 1",
+                            "applicationParticulars": "This is an application particulars example",
                             "party": [
                               {
                                 "partyRole": "APPLICANT",
