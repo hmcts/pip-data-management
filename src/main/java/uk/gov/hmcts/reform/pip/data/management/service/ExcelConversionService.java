@@ -74,14 +74,19 @@ public class ExcelConversionService {
         List<Map<String, String>> data = new ArrayList<>();
 
         for (int rowNumber = headerRowNumber + 1; rowNumber <= sheet.getLastRowNum(); rowNumber++) {
-            List<String> row = getExcelRow(sheet, rowNumber, firstColumnNumber);
-            Map<String, String> rowMappings = buildRowMap(headers, row);
+            Row currentRow = sheet.getRow(rowNumber);
 
-            if (rowMappings.values().stream().allMatch(String::isBlank)) {
-                break;
+            if (currentRow != null) {
+
+                List<String> row = getExcelRow(sheet, rowNumber, firstColumnNumber);
+                Map<String, String> rowMappings = buildRowMap(headers, row);
+
+                if (rowMappings.values().stream().allMatch(String::isBlank)) {
+                    break;
+                }
+
+                data.add(rowMappings);
             }
-
-            data.add(rowMappings);
         }
 
         return data;
@@ -107,7 +112,12 @@ public class ExcelConversionService {
         List<String> rowData = new ArrayList<>();
         Row row = sheet.getRow(rowNumber);
 
-        for (int columnNumber = firstColumnNumber; columnNumber < row.getLastCellNum(); columnNumber++) {
+        int lastCellNum = row.getLastCellNum();
+        if (lastCellNum < 0 || firstColumnNumber >= lastCellNum) {
+            return rowData;
+        }
+
+        for (int columnNumber = firstColumnNumber; columnNumber < lastCellNum; columnNumber++) {
             Cell cell = row.getCell(columnNumber, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
 
             String cellValue = cell == null ? "" : switch (cell.getCellType()) {
