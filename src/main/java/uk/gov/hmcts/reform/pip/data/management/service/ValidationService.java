@@ -1,12 +1,11 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.applicationinsights.TelemetryClient;
 import com.microsoft.applicationinsights.telemetry.SeverityLevel;
-import com.networknt.schema.JsonSchema;
-import com.networknt.schema.JsonSchemaFactory;
-import com.networknt.schema.SpecVersion;
+import com.networknt.schema.InputFormat;
+import com.networknt.schema.Schema;
+import com.networknt.schema.SchemaRegistry;
+import com.networknt.schema.SpecificationVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +22,6 @@ import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -40,19 +38,19 @@ import java.util.regex.Pattern;
 @Service
 public class ValidationService {
 
-    private final JsonSchema masterSchema;
+    private final Schema masterSchema;
 
     private final TelemetryClient telemetry;
 
-    Map<ListType, JsonSchema> validationSchemas = new ConcurrentHashMap<>();
+    Map<ListType, Schema> validationSchemas = new ConcurrentHashMap<>();
 
     @Autowired
     public ValidationService(ValidationConfiguration validationConfiguration, TelemetryClient telemetry) {
-        JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
+        SchemaRegistry schemaRegistry = SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_7);
 
         try (InputStream masterFile = this.getClass().getClassLoader()
             .getResourceAsStream(validationConfiguration.getMasterSchema())) {
-            masterSchema = schemaFactory.getSchema(masterFile);
+            masterSchema = schemaRegistry.getSchema(masterFile);
         } catch (Exception exception) {
             throw new PayloadValidationException(String.join(exception.getMessage()));
         }
@@ -63,7 +61,7 @@ public class ValidationService {
 
                 validationSchemas.put(
                     ListType.valueOf(key),
-                    schemaFactory.getSchema(schemaFile)
+                    schemaRegistry.getSchema(schemaFile)
                 );
             } catch (Exception exception) {
                 throw new PayloadValidationException(String.join(exception.getMessage()));
@@ -184,30 +182,30 @@ public class ValidationService {
      */
     public void validateBody(String jsonPayload, HeaderGroup headers, boolean validateMasterSchema) {
         Map<String, String> propertiesMap = headers.getAppInsightsHeaderMap();
+        Set<String> errors = new HashSet<>();
         try {
-            Set<String> errors = new HashSet<>();
-            JsonNode json = new ObjectMapper().readTree(jsonPayload);
-
             if (validateMasterSchema) {
-                masterSchema.validate(json).forEach(vm -> errors.add(vm.getMessage()));
+                masterSchema.validate(jsonPayload, InputFormat.JSON).forEach(vm -> errors.add(vm.toString()));
             }
 
             if (validationSchemas.containsKey(headers.getListType())) {
                 validationSchemas.get(headers.getListType())
-                    .validate(json)
-                    .forEach(vm ->  errors.add(vm.getMessage()));
+                    .validate(jsonPayload, InputFormat.JSON)
+                    .forEach(vm ->  errors.add(vm.toString()));
             }
 
-            if (!errors.isEmpty()) {
-                propertiesMap.put("ERROR", errors.toString());
-                telemetry.trackTrace(String.format("Payload validation failed, %s errors present", errors.size()),
-                                     SeverityLevel.Error, propertiesMap);
-                throw new PayloadValidationException(String.join(", ", errors));
-            }
-        } catch (IOException exception) {
+
+        } catch (Exception exception) {
             propertiesMap.put("ERROR", exception.getMessage());
             telemetry.trackTrace("Unable to parse JSON payload", SeverityLevel.Error, propertiesMap);
             throw new PayloadValidationException("Error while parsing JSON Payload");
+        }
+
+        if (!errors.isEmpty()) {
+            propertiesMap.put("ERROR", errors.toString());
+            telemetry.trackTrace(String.format("Payload validation failed, %s errors present", errors.size()),
+                                 SeverityLevel.Error, propertiesMap);
+            throw new PayloadValidationException(String.join(", ", errors));
         }
     }
 
