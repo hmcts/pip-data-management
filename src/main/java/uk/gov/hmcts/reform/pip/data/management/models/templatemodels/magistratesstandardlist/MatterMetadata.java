@@ -15,4 +15,6 @@ public class MatterMetadata {
     private String caseSequenceIndicator;
     private String hearingType;
     private String panel;
+    private String applicationParticulars;
+    private String reportingRestrictionDetails;
 }

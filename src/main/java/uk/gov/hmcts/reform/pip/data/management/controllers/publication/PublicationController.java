@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -31,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileFormatNotSupportedException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LcsuArtefactNotSupportedException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
@@ -95,9 +93,6 @@ public class PublicationController {
     private final ValidationService validationService;
     private final ExcelConversionService excelConversionService;
     private final PublicationServicesService publicationServicesService;
-
-    @Value("${pdda.enableLcsu}")
-    private boolean enableLcsu;
 
     /**
      * Constructor for Publication controller.
@@ -240,10 +235,6 @@ public class PublicationController {
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
         Artefact artefact = createPublicationMetadataFromHeaders(headers, file.getSize(), true);
-
-        if (type.equals(ArtefactType.LCSU) && !enableLcsu) {
-            throw new LcsuArtefactNotSupportedException("LCSU artefact type is not supported.");
-        }
 
         if (type.equals(ArtefactType.LCSU) && !validateLcsuUploadFile(file)) {
             throw new FileFormatNotSupportedException("File format is not supported for LCSU.");

@@ -11,6 +11,26 @@
   },
   "servers": [
     {
+      "url": "http://sds-api-mgmt.staging.platform.hmcts.net",
+      "description": "Staging URL"
+    },
+    {
+      "url": "http://sds-api-mgmt.test.platform.hmcts.net",
+      "description": "Test URL"
+    },
+    {
+      "url": "http://sds-api-mgmt.ithc.platform.hmcts.net",
+      "description": "ITHC URL"
+    },
+    {
+      "url": "http://sds-api-mgmt.demo.platform.hmcts.net",
+      "description": "Demo URL"
+    },
+    {
+      "url": "http://sds-api-mgmt.platform.hmcts.net",
+      "description": "Live URL"
+    },
+    {
       "url": "https://sds-api-mgmt.staging.platform.hmcts.net",
       "description": "Staging URL"
     },
