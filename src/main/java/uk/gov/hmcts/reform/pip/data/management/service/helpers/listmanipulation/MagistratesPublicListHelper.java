@@ -7,12 +7,17 @@ import uk.gov.hmcts.reform.pip.data.management.service.helpers.JudiciaryHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.PartyRoleHelper;
 
+import java.util.function.Predicate;
+
 public final class MagistratesPublicListHelper {
     private static final String COURT_LIST = "courtLists";
     private static final String COURT_HOUSE = "courtHouse";
     private static final String COURT_ROOM = "courtRoom";
     private static final String CASE = "case";
     private static final String APPLICATION = "application";
+    private static final String SUBJECT = "subject";
+    private static final String PARTY_ROLE = "partyRole";
+    private static final String DEFENDANT = "DEFENDANT";
     private static final String NO_BORDER_BOTTOM = "no-border-bottom";
 
     private MagistratesPublicListHelper() {
@@ -30,15 +35,19 @@ public final class MagistratesPublicListHelper {
                             if (hearing.has(CASE)) {
                                 hearing.get(CASE).forEach(hearingCase -> {
                                     PartyRoleHelper.findProsecutingAuthorities(hearingCase);
-                                    PartyRoleHelper.findMainDefendantName(hearingCase);
-                                    PartyRoleHelper.handlePartyOffences(hearingCase);
+                                    Predicate<JsonNode> partyFilter = p -> p.has(PARTY_ROLE)
+                                        && p.get(PARTY_ROLE).asText().equals(DEFENDANT);
+                                    PartyRoleHelper.findMainDefendantName(hearingCase, partyFilter);
+                                    PartyRoleHelper.handlePartyOffences(hearingCase, partyFilter);
                                 });
                             }
                             if (hearing.has("application")) {
                                 hearing.get("application").forEach(application -> {
                                     PartyRoleHelper.findProsecutingAuthorities(application);
-                                    PartyRoleHelper.findMainDefendantName(application);
-                                    PartyRoleHelper.handlePartyOffences(application);
+                                    Predicate<JsonNode> partyFilter = p -> p.has(SUBJECT)
+                                        && p.get(SUBJECT).asBoolean();
+                                    PartyRoleHelper.findMainDefendantName(application, partyFilter);
+                                    PartyRoleHelper.handlePartyOffences(application, partyFilter);
                                 });
                             }
                             formatCaseHtmlTable(hearing, CASE);
