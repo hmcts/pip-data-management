@@ -374,7 +374,7 @@ class MagistratesStandardListTest extends IntegrationBasicTestBase {
                 .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
                 .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
                 .get(HEARING_SCHEMA).get(0).get(CASE_SCHEMA).get(0)
-                .get("party").get(1).get("organisationDetails")).remove("organisationName");
+                .get("party").get(2).get("organisationDetails")).remove("organisationName");
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
