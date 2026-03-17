@@ -49,6 +49,13 @@
                                   "individualForenames":"Forename 1",
                                   "individualSurname":"Surname 1"
                                 },
+                                "partyRole": "RESPONDENT"
+                              },
+                              {
+                                "individualDetails":{
+                                  "individualForenames":"Forename 2",
+                                  "individualSurname":"Surname 2"
+                                },
                                 "partyRole": "DEFENDANT",
                                 "offence": [
                                   {
@@ -71,8 +78,8 @@
                               },
                               {
                                 "individualDetails":{
-                                  "individualForenames":"Forename 2",
-                                  "individualSurname":"Surname 2"
+                                  "individualForenames":"Forename 3",
+                                  "individualSurname":"Surname 3"
                                 },
                                 "partyRole": "DEFENDANT",
                                 "offence": [
@@ -199,7 +206,7 @@
                               },
                               {
                                 "individualDetails":{
-                                  "individualSurname":"Surname 3"
+                                  "individualSurname":"Surname 4"
                                 }
                               }
                             ]
@@ -214,7 +221,7 @@
                               },
                               {
                                 "individualDetails":{
-                                  "individualSurname":"Surname 4"
+                                  "individualSurname":"Surname 5"
                                 }
                               }
                             ]

@@ -53,6 +53,24 @@
                             ],
                             "party": [
                               {
+                                "partyRole": "RESPONDENT",
+                                "individualDetails": {
+                                  "individualForenames": "Respondent Forename",
+                                  "individualSurname": "Respondent Surname",
+                                  "dateOfBirth": "1950-01-01",
+                                  "age": 20,
+                                  "address": {
+                                    "county": "County A",
+                                    "town": "Town A",
+                                    "postCode": "AA1 AA1",
+                                    "line": [
+                                      "Address Line 1A",
+                                      "Address Line 2A"
+                                    ]
+                                  }
+                                }
+                              },
+                              {
                                 "partyRole": "DEFENDANT",
                                 "individualDetails": {
                                   "individualForenames": "Forename A",

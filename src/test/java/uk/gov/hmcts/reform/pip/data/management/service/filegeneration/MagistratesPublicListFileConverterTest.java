@@ -224,7 +224,7 @@ class MagistratesPublicListFileConverterTest {
             .containsSequence(
                 "10:40am",
                 "12345678",
-                "Surname 1, Forename 1",
+                "Surname 2, Forename 2",
                 "FHDRA1 (First Hearing and Dispute Resolution Appointment)",
                 "Pro_Auth",
                 "Offence Details: Test offence 1"
