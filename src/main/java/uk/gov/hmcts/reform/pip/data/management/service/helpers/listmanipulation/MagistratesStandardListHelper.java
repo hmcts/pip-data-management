@@ -4,11 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.CourtRoom;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.GroupedPartyMatters;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.Matter;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.MatterMetadata;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.PartyInfo;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.Hearing;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.HearingMetadata;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.Offence;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.PartyInfo;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.Sitting;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.CaseHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.JudiciaryHelper;
@@ -82,7 +83,7 @@ public final class MagistratesStandardListHelper {
     }
 
     /**
-     * Process raw JSON for Magistrates standard list to generate cases sorted by the plea date.
+     * Process raw JSON for Magistrates standard list to generate cases.
      * @param jsonData JSON data for the list
      * @return a map of court room/judiciary to Magistrates standard list cases
      */
@@ -94,17 +95,19 @@ public final class MagistratesStandardListHelper {
                 courtRoom ->
                     courtRoom.get(SESSION).forEach(
                         session -> {
-                            List<GroupedPartyMatters> groupedPartyMatters = new ArrayList<>();
+                            List<Sitting> sittings = new ArrayList<>();
                             session.get(SITTINGS).forEach(sitting -> {
                                 processSittingInfo(courtRoom, session, sitting);
                                 sitting.get(HEARING).forEach(hearing -> {
                                     if (hearing.has(CASE)) {
                                         hearing.get(CASE).forEach(caseObject -> {
                                             if (caseObject.has(PARTY)) {
-                                                MatterMetadata matterMetadata = buildMatter(caseObject, hearing, false);
+                                                HearingMetadata hearingMetadata = buildHearingMetadata(
+                                                    caseObject, hearing, false
+                                                );
                                                 caseObject.get(PARTY).forEach(
                                                     party -> processParty(
-                                                        party, sitting, matterMetadata, groupedPartyMatters,
+                                                        party, sitting, hearingMetadata, sittings,
                                                         p -> p.has(PARTY_ROLE)
                                                             && p.get(PARTY_ROLE).asText().equals(DEFENDANT)
                                                     )
@@ -116,13 +119,13 @@ public final class MagistratesStandardListHelper {
                                     if (hearing.has(APPLICATION)) {
                                         hearing.get(APPLICATION).forEach(applicationObject -> {
                                             if (applicationObject.has(PARTY)) {
-                                                MatterMetadata applicationInfo = buildMatter(
+                                                HearingMetadata hearingMetadata = buildHearingMetadata(
                                                     applicationObject,
                                                     hearing, true
                                                 );
                                                 applicationObject.get(PARTY).forEach(
                                                     party -> processParty(
-                                                        party, sitting, applicationInfo, groupedPartyMatters,
+                                                        party, sitting, hearingMetadata, sittings,
                                                         p -> p.has(SUBJECT) && p.get(SUBJECT).asBoolean()
                                                     )
                                                 );
@@ -145,7 +148,7 @@ public final class MagistratesStandardListHelper {
                                             courtList.get(COURT_HOUSE), COURT_HOUSE_NAME));
                                     return metadata;
                                 }
-                            ).getGroupedPartyMatters().addAll(groupedPartyMatters);
+                            ).getSittings().addAll(sittings);
                         }
                     )
             )
@@ -166,29 +169,32 @@ public final class MagistratesStandardListHelper {
         DateHelper.formatStartTime(sitting, TIME_FORMAT);
     }
 
-    private static MatterMetadata buildMatter(JsonNode caseOrApplication, JsonNode hearing, boolean isApplication) {
-        MatterMetadata matterMetadata = new MatterMetadata();
+    private static HearingMetadata buildHearingMetadata(JsonNode caseOrApplication, JsonNode hearing,
+                                                        boolean isApplication) {
+        HearingMetadata hearingMetadata = new HearingMetadata();
 
-        matterMetadata.setProsecutingAuthority(getProsecutingAuthority(caseOrApplication));
-        matterMetadata.setAttendanceMethod(GeneralHelper.formatNodeArray(hearing, CASE_HEARING_CHANNEL, ","));
+        hearingMetadata.setProsecutingAuthority(getProsecutingAuthority(caseOrApplication));
+        hearingMetadata.setAttendanceMethod(GeneralHelper.formatNodeArray(hearing, CASE_HEARING_CHANNEL, ","));
 
         if (isApplication) {
-            matterMetadata.setReference(GeneralHelper.findAndReturnNodeText(caseOrApplication, APPLICATION_REFERENCE));
-            matterMetadata.setApplicationType(GeneralHelper.findAndReturnNodeText(caseOrApplication, APPLICATION_TYPE));
-            matterMetadata.setApplicationParticulars(GeneralHelper.findAndReturnNodeText(caseOrApplication,
+            hearingMetadata.setReference(GeneralHelper.findAndReturnNodeText(caseOrApplication,
+                                                                             APPLICATION_REFERENCE));
+            hearingMetadata.setApplicationType(GeneralHelper.findAndReturnNodeText(caseOrApplication,
+                                                                                   APPLICATION_TYPE));
+            hearingMetadata.setApplicationParticulars(GeneralHelper.findAndReturnNodeText(caseOrApplication,
                                                                                          APPLICATION_PARTICULARS));
         } else {
-            matterMetadata.setReference(GeneralHelper.findAndReturnNodeText(caseOrApplication, CASE_URN));
-            matterMetadata.setReportingRestrictionDetails(GeneralHelper.formatNodeArray(
+            hearingMetadata.setReference(GeneralHelper.findAndReturnNodeText(caseOrApplication, CASE_URN));
+            hearingMetadata.setReportingRestrictionDetails(GeneralHelper.formatNodeArray(
                 caseOrApplication, REPORTING_RESTRICTION_DETAILS, ","));
         }
 
-        matterMetadata.setCaseSequenceIndicator(GeneralHelper.findAndReturnNodeText(caseOrApplication,
+        hearingMetadata.setCaseSequenceIndicator(GeneralHelper.findAndReturnNodeText(caseOrApplication,
                                                                                     CASE_SEQUENCE_INDICATOR));
-        matterMetadata.setHearingType(GeneralHelper.findAndReturnNodeText(hearing, HEARING_TYPE));
-        matterMetadata.setPanel(GeneralHelper.findAndReturnNodeText(hearing, PANEL));
+        hearingMetadata.setHearingType(GeneralHelper.findAndReturnNodeText(hearing, HEARING_TYPE));
+        hearingMetadata.setPanel(GeneralHelper.findAndReturnNodeText(hearing, PANEL));
 
-        return matterMetadata;
+        return hearingMetadata;
     }
 
     private static String getProsecutingAuthority(JsonNode hearingCase) {
@@ -212,37 +218,42 @@ public final class MagistratesStandardListHelper {
             : DateHelper.convertDateFormat(dateStr, inboundFormat, DATE_FORMAT);
     }
 
-    private static void processParty(JsonNode party, JsonNode sittingJson, MatterMetadata matterMetadata,
-                                     List<GroupedPartyMatters> groupedPartyMatters, Predicate<JsonNode> partyFilter) {
+    private static void processParty(JsonNode party, JsonNode sittingNode, HearingMetadata hearingMetadata,
+                                     List<Sitting> sittings, Predicate<JsonNode> partyFilter) {
         if (partyFilter.test(party)) {
-            Matter matter = buildSitting(sittingJson);
-            matter.setMatterMetadata(matterMetadata);
-            matter.setOffences(processOffences(party));
-            String partyHeading;
+            Hearing hearing = buildHearing(sittingNode, hearingMetadata);
+            hearing.setOffences(processOffences(party));
+            String sittingHeading = buildSittingHeading(hearing);
             if (party.has(INDIVIDUAL_DETAILS)) {
-                matter.setPartyInfo(buildIndividualPartyInfo(party));
-                partyHeading = formatIndividualPartyHeading(party.get(INDIVIDUAL_DETAILS),
-                                                                          matter.getPartyInfo().getName());
-            } else {
-                matter.setPartyInfo(buildOrganisationPartyInfo(party));
-                partyHeading = matter.getPartyInfo().getName();
+                hearing.setPartyInfo(buildIndividualPartyInfo(party));
+                addSitting(sittings, sittingHeading, hearing);
+            } else if (party.has(ORGANISATION_DETAILS)) {
+                hearing.setPartyInfo(buildOrganisationPartyInfo(party));
+                addSitting(sittings, sittingHeading, hearing);
             }
-
-            addMatter(groupedPartyMatters, partyHeading, matter);
         }
     }
 
-    private static Matter buildSitting(JsonNode sittingJson) {
-        Matter matter = new Matter();
-        matter.setSittingStartTime(GeneralHelper.findAndReturnNodeText(sittingJson, TIME));
-        return matter;
+    private static Hearing buildHearing(JsonNode sittingNode, HearingMetadata hearingMetadata) {
+        Hearing hearing = new Hearing();
+        hearing.setSittingStartTime(GeneralHelper.findAndReturnNodeText(sittingNode, TIME));
+        hearing.setHearingMetadata(hearingMetadata);
+        return hearing;
+    }
+
+    private static String buildSittingHeading(Hearing hearing) {
+        if (StringUtils.isEmpty(hearing.getSittingStartTime())) {
+            return "";
+        }
+        return CaseHelper.appendCaseSequenceIndicator(hearing.getSittingStartTime(),
+                                                      hearing.getHearingMetadata().getCaseSequenceIndicator());
     }
 
     private static PartyInfo buildIndividualPartyInfo(JsonNode party) {
         PartyInfo partyInfo = new PartyInfo();
-        partyInfo.setName(PartyRoleHelper.createIndividualDetails(party));
-
         JsonNode individualDetails = party.get(INDIVIDUAL_DETAILS);
+        partyInfo.setName(PartyRoleHelper.createIndividualDetails(party));
+        partyInfo.setNameDetails(formatIndividualPartyName(individualDetails, partyInfo.getName()));
         partyInfo.setDob(formatDate(GeneralHelper.findAndReturnNodeText(individualDetails, DOB), "yyyy-MM-dd"));
         partyInfo.setAge(GeneralHelper.findAndReturnNodeText(individualDetails, AGE));
         partyInfo.setAddress(individualDetails.has(ADDRESS)
@@ -264,12 +275,11 @@ public final class MagistratesStandardListHelper {
         return partyInfo;
     }
 
-    private static String formatIndividualPartyHeading(JsonNode individualDetails, String formattedName) {
+    private static String formatIndividualPartyName(JsonNode individualDetails, String formattedName) {
         String gender = GeneralHelper.findAndReturnNodeText(individualDetails,GENDER);
         return formattedName
             + (gender.isEmpty() ? "" : " (" + gender + ")")
             + (isInCustody(individualDetails) ? "*" : "");
-
     }
 
     private static boolean isInCustody(JsonNode individualDetails) {
@@ -299,28 +309,24 @@ public final class MagistratesStandardListHelper {
         return offences;
     }
 
-    private static void addMatter(List<GroupedPartyMatters> cases, String partyHeading,
-                                              Matter matter) {
-        // Check if a case / application with the same party heading has already been stored.
-        // If so append the new case to it, or else create a new case and add to the list of cases
-        Optional<GroupedPartyMatters> commonMatter = fetchCommonMatter(cases, partyHeading);
+    private static void addSitting(List<Sitting> sittings, String sittingHeading, Hearing hearing) {
+        // Check if a sitting with the same sitting heading has already been stored.
+        // If so append the new hearing to it, or else create a new sitting and add to the list of sittings
+        Optional<Sitting> commonSitting = fetchCommonSitting(sittings, sittingHeading);
 
-        if (commonMatter.isPresent()) {
-            commonMatter.get().getMatters().add(matter);
+        if (commonSitting.isPresent()) {
+            commonSitting.get().getHearings().add(hearing);
         } else {
-            List<Matter> matters = new ArrayList<>();
-            matters.add(matter);
-            cases.add(new GroupedPartyMatters(partyHeading, matters));
+            List<Hearing> hearings = new ArrayList<>();
+            hearings.add(hearing);
+            sittings.add(new Sitting(sittingHeading, hearings));
         }
     }
 
-    private static Optional<GroupedPartyMatters> fetchCommonMatter(List<GroupedPartyMatters> existingMatters,
-                                                                                   String partyHeading) {
-        for (GroupedPartyMatters matter : existingMatters) {
-            if (matter.getPartyHeading().equals(partyHeading)) {
-                return Optional.of(matter);
-            }
-        }
-        return Optional.empty();
+    private static Optional<Sitting> fetchCommonSitting(List<Sitting> existingSittings,
+                                                       String sittingHeading) {
+        return existingSittings.stream()
+            .filter(s -> s.getSittingHeading().equals(sittingHeading))
+            .findFirst();
     }
 }

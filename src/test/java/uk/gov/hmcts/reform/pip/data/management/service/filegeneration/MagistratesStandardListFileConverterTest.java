@@ -33,8 +33,8 @@ class MagistratesStandardListFileConverterTest {
     private static final String HEADER_MESSAGE = "Incorrect header text";
     private static final String BODY_MESSAGE = "Incorrect body text";
     private static final String COURT_ROOM_HEADING_MESSAGE = "Court room heading does not match";
-    private static final String PARTY_HEADING_MESSAGE = "Party heading does not match";
-    private static final String MATTER_INFO_MESSAGE = "Matter info does not match";
+    private static final String SITTING_HEADING_MESSAGE = "Sitting heading does not match";
+    private static final String HEARING_INFO_MESSAGE = "Hearing info does not match";
     private static final String OFFENCE_MESSAGE = "Offence info does not match";
     private static final String LINK_MESSAGE = "Link does not match";
     private static final String PROVENANCE_MESSAGE = "Provenance does not match";
@@ -190,180 +190,180 @@ class MagistratesStandardListFileConverterTest {
     }
 
     @Test
-    void testPartyHeading() throws IOException {
+    void testSittingHeading() throws IOException {
         String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(result);
         Elements heading = document.getElementsByClass("govuk-heading-m");
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(heading)
-            .as(PARTY_HEADING_MESSAGE)
+            .as(SITTING_HEADING_MESSAGE)
             .hasSize(5);
 
         softly.assertThat(heading.get(0).text())
-            .as(PARTY_HEADING_MESSAGE)
-            .contains("Name: Surname A, Forename A MiddleName A (male)");
+            .as(SITTING_HEADING_MESSAGE)
+            .contains("Sitting at 1:30pm [2 of 3]");
 
         softly.assertThat(heading.get(1).text())
-            .as(PARTY_HEADING_MESSAGE)
-            .contains("Name: Surname B, Forename B MiddleName B (male)*");
+            .as(SITTING_HEADING_MESSAGE)
+            .contains("Sitting at 4:30pm [2 of 3]");
 
         softly.assertThat(heading.get(2).text())
-            .as(PARTY_HEADING_MESSAGE)
-            .contains("Name: Surname D, Forename D (female)*");
+            .as(SITTING_HEADING_MESSAGE)
+            .contains("Sitting at 1:30pm [2 of 3]");
 
         softly.assertThat(heading.get(3).text())
-            .as(PARTY_HEADING_MESSAGE)
-            .contains("Name: This is an organisation");
+            .as(SITTING_HEADING_MESSAGE)
+            .contains("Sitting at 1:30pm");
 
         softly.assertThat(heading.get(4).text())
-            .as(PARTY_HEADING_MESSAGE)
-            .contains("Name: Surname E, Forename E (female)*");
+            .as(SITTING_HEADING_MESSAGE)
+            .contains("Sitting at 2:30pm");
 
         softly.assertAll();
     }
 
     @Test
-    void testMatterInfoHeaders() throws IOException {
+    void testHearingInfoHeaders() throws IOException {
         String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(result);
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(body.get(9).text())
-            .as(MATTER_INFO_MESSAGE)
-            .contains("Sitting at 1:30pm [2 of 3]");
+            .as(HEARING_INFO_MESSAGE)
+            .contains("Name: Surname A, Forename A MiddleName A (male)");
 
         softly.assertThat(body.get(10).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("DOB and Age:");
 
         softly.assertThat(body.get(11).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("Address:");
 
         softly.assertThat(body.get(12).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("Prosecuting Authority:");
 
         softly.assertThat(body.get(13).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("Attendance Method:");
 
         softly.assertThat(body.get(14).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("Reporting Restrictions:");
 
         softly.assertThat(body.get(15).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("Reference:");
 
         softly.assertThat(body.get(16).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("ASN:");
 
         softly.assertThat(body.get(17).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("Hearing Type:");
 
         softly.assertThat(body.get(18).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("Panel:");
 
         softly.assertAll();
     }
 
     @Test
-    void testMatterWhenSecondSittingExists() throws IOException {
+    void testSecondHearingExists() throws IOException {
         String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(result);
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(body.get(19).text())
-            .as(MATTER_INFO_MESSAGE)
-            .contains("Sitting at 4:30pm [2 of 3]");
+        softly.assertThat(body.get(46).text())
+            .as(HEARING_INFO_MESSAGE)
+            .contains("Surname D, Forename D (female)*");
 
         softly.assertAll();
     }
 
     @Test
-    void testMatterInfoHeaderWhenApplication() throws IOException {
+    void testHearingInfoHeaderWhenApplication() throws IOException {
         String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(result);
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(body.get(47).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("Application Particulars");
 
         softly.assertThat(body.get(53).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("Application Type");
 
         softly.assertAll();
     }
 
     @Test
-    void testMatterInfoValue() throws IOException {
+    void testHearingInfoValue() throws IOException {
         String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(result);
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(body.get(10).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("01/01/1950 Age: 20");
 
         softly.assertThat(body.get(11).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("Address Line 1A, Address Line 2A, Town A, County A, AA1 AA1");
 
         softly.assertThat(body.get(12).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("Prosecuting Authority Name");
 
         softly.assertThat(body.get(13).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("VIDEO HEARING A");
 
         softly.assertThat(body.get(14).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("This is a case level reporting restriction details example");
 
         softly.assertThat(body.get(15).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("45684548");
 
         softly.assertThat(body.get(16).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("ABC1234");
 
         softly.assertThat(body.get(17).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("Hearing Type A");
 
         softly.assertThat(body.get(18).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("ADULT");
 
         softly.assertAll();
     }
 
     @Test
-    void testMatterInfoValueWhenApplication() throws IOException {
+    void testHearingInfoValueWhenApplication() throws IOException {
         String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(result);
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(body.get(47).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("This is an application particulars example");
 
         softly.assertThat(body.get(53).text())
-            .as(MATTER_INFO_MESSAGE)
+            .as(HEARING_INFO_MESSAGE)
             .contains("Application Type 1");
 
         softly.assertAll();
