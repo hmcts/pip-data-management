@@ -27,7 +27,12 @@
         "individualMiddleName": "Rep Middlename",
         "individualSurname": "Rep Surname",
         "title": "Rep Title"
-      }
+      },
+      "offence": [
+        {
+          "offenceTitle": "Test offence 3"
+        }
+      ]
     },
     {
       "partyRole": "CLAIMANT_PETITIONER",
