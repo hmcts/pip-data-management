@@ -33,8 +33,16 @@ class PublicationSubscriptionControllerTest {
 
     @Test
     void testSendNewArtefactsForSubscriptionSuccess() {
-        doNothing().when(publicationSubscriptionService).checkNewlyActiveArtefacts();
-        assertThat(publicationSubscriptionController.sendNewArtefactsForSubscription().getStatusCode())
+        doNothing().when(publicationSubscriptionService).checkNewlyActiveArtefacts(false);
+        assertThat(publicationSubscriptionController.sendNewArtefactsForSubscription(false).getStatusCode())
+            .as(STATUS_CODE_MATCH)
+            .isEqualTo(HttpStatus.NO_CONTENT);
+    }
+
+    @Test
+    void testSendNewArtefactsForScheduledListTypeSubscriptionSuccess() {
+        doNothing().when(publicationSubscriptionService).checkNewlyActiveArtefacts(true);
+        assertThat(publicationSubscriptionController.sendNewArtefactsForSubscription(true).getStatusCode())
             .as(STATUS_CODE_MATCH)
             .isEqualTo(HttpStatus.NO_CONTENT);
     }
