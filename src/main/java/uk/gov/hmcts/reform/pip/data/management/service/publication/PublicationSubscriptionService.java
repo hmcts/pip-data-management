@@ -9,12 +9,16 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.ArtefactSummaryData;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -44,7 +48,8 @@ public class PublicationSubscriptionService {
      */
     public void checkAndTriggerPublicationSubscription(Artefact artefact) {
         //TODO: fully switch this logic to localdates once artefact model changes //NOSONAR
-        if (artefact.getDisplayFrom().toLocalDate().isBefore(LocalDate.now().plusDays(1))
+        if (!artefact.getListType().isScheduledSubscription()
+            && artefact.getDisplayFrom().toLocalDate().isBefore(LocalDate.now().plusDays(1))
             && (artefact.getDisplayTo() == null
             || artefact.getDisplayTo().toLocalDate().isAfter(LocalDate.now().minusDays(1)))) {
             accountManagementService.sendArtefactForSubscription(artefact);
@@ -52,11 +57,25 @@ public class PublicationSubscriptionService {
     }
 
     /**
-     * Scheduled method that checks daily for newly dated from artefacts.
+     * Scheduled method that checks daily for:
+     * - newly dated from artefacts.
+     * - certain list types where subscription is sent daily at a set time.
      */
-    public void checkNewlyActiveArtefacts() {
-        artefactRepository.findArtefactsByDisplayFrom(LocalDate.now(), LocalDateTime.now())
-            .forEach(accountManagementService::sendArtefactForSubscription);
+    public void checkNewlyActiveArtefacts(boolean scheduledListType) {
+        List<Artefact> artefacts;
+        if (scheduledListType) {
+            Set<String> listTypesToTrigger = new HashSet<>();
+            EnumSet.allOf(ListType.class).forEach(listType -> {
+                if (listType.isScheduledSubscription()) {
+                    listTypesToTrigger.add(listType.name());
+                }
+            });
+            artefacts = artefactRepository.findActiveArtefactsByListTypeIn(listTypesToTrigger, LocalDate.now(),
+                                                                           LocalDateTime.now());
+        } else {
+            artefacts = artefactRepository.findArtefactsByDisplayFrom(LocalDate.now(), LocalDateTime.now());
+        }
+        artefacts.forEach(accountManagementService::sendArtefactForSubscription);
     }
 
     /**
