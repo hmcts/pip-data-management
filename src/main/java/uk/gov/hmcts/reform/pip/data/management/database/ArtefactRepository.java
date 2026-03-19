@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
@@ -35,6 +36,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     String CONTENT_DATE_PARAM = "content_date";
     String LANGUAGE_PARAM = "language";
     String LIST_TYPE_PARAM = "list_type";
+    String LIST_TYPES_PARAM = "list_types";
     String PROVENANCE_PARAM = "provenance";
     String CURRENT_DATETIME_PARAM = "curr_datetime";
 
@@ -129,6 +131,15 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
                                                   @Param(LOCATION_ID_PARAM) String locationId);
 
     List<Artefact> findAllByLocationIdIn(List<String> locationId);
+
+    @Query(value = "SELECT * FROM Artefact "
+        + "WHERE DATE(content_date) = :curr_date "
+        + "AND display_to > :curr_datetime "
+        + "AND list_type IN (:list_types)",
+        nativeQuery = true)
+    List<Artefact> findActiveArtefactsByListTypeIn(@Param(LIST_TYPES_PARAM) Set<String> listTypes,
+                                                   @Param(CURRENT_DATE_PARAM) LocalDate currentDate,
+                                                   @Param(CURRENT_DATETIME_PARAM)LocalDateTime currentDateTime);
 
     @Transactional
     @Modifying
