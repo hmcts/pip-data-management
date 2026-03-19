@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -130,14 +131,23 @@ class PublicationSubscriptionServiceTest {
     }
 
     @Test
-    void testCheckNewlyActiveArtefactsLogs() throws IOException {
+    void testCheckNewlyActiveArtefactsLogs() {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
             when(artefactRepository.findArtefactsByDisplayFrom(any(), any())).thenReturn(List.of(new Artefact()));
             when(accountManagementService.sendArtefactForSubscription(any())).thenReturn(SUCCESS);
-            publicationSubscriptionService.checkNewlyActiveArtefacts();
+            publicationSubscriptionService.checkNewlyActiveArtefacts(false);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
-        } catch (Exception ex) {
-            throw new IOException(ex.getMessage());
+        }
+    }
+
+    @Test
+    void testCheckNewlyActiveArtefactsForScheduledListType() {
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
+            when(artefactRepository.findActiveArtefactsByListTypeIn(anySet(), any(), any()))
+                .thenReturn(List.of(new Artefact()));
+            when(accountManagementService.sendArtefactForSubscription(any())).thenReturn(SUCCESS);
+            publicationSubscriptionService.checkNewlyActiveArtefacts(true);
+            assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
         }
     }
 
