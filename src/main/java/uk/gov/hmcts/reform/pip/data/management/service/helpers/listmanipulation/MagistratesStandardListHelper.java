@@ -267,6 +267,7 @@ public final class MagistratesStandardListHelper {
     private static PartyInfo buildOrganisationPartyInfo(JsonNode party) {
         PartyInfo partyInfo = new PartyInfo();
         partyInfo.setName(PartyRoleHelper.createOrganisationDetails(party));
+        partyInfo.setNameDetails(PartyRoleHelper.createOrganisationDetails(party));
 
         JsonNode organisationDetails = party.get(ORGANISATION_DETAILS);
         partyInfo.setAddress(organisationDetails.has(ORGANISATION_ADDRESS)
