@@ -19,6 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PartyRoleHelperTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String PARTY = "party";
+    private static final String PARTY_ROLE = "partyRole";
+    private static final String SUBJECT = "subject";
+    private static final String DEFENDANT = "defendant";
 
     private static final String PARTY_NAME_MESSAGE = "Party names do not match";
     private static final String PARTY_OFFENCE_MESSAGE = "Party offences do not match";
@@ -194,7 +197,7 @@ class PartyRoleHelperTest {
     @Test
     void testHandleDefendantParty() {
         PartyRoleHelper.handleParties(inputJson);
-        assertThat(inputJson.get("defendant").asText())
+        assertThat(inputJson.get(DEFENDANT).asText())
             .as(PARTY_NAME_MESSAGE)
             .isEqualTo("SurnameA, ForenamesA, SurnameB, ForenamesB");
     }
@@ -216,10 +219,36 @@ class PartyRoleHelperTest {
     }
 
     @Test
-    void testHandlePartyOffences() {
-        PartyRoleHelper.handlePartyOffences(inputJson);
+    void testFindMainDefendantNameWithSubjectPredicate() {
+        PartyRoleHelper.findMainDefendantName(inputJson, p -> p.has(SUBJECT) && p.get(SUBJECT).asBoolean());
+        assertThat(inputJson.get(DEFENDANT).asText())
+            .as(PARTY_OFFENCE_MESSAGE)
+            .isEqualTo("Applicant Surname, Applicant Forename Applicant Middlename");
+    }
+
+    @Test
+    void testFindMainDefendantNameWithPartyRolePredicate() {
+        PartyRoleHelper.findMainDefendantName(inputJson, p -> p.has(PARTY_ROLE)
+            && p.get(PARTY_ROLE).asText().equals("CLAIMANT_PETITIONER"));
+        assertThat(inputJson.get(DEFENDANT).asText())
+            .as(PARTY_OFFENCE_MESSAGE)
+            .isEqualTo("Claimant Surname, Claimant Forename Claimant Middlename");
+    }
+
+    @Test
+    void testHandlePartyOffencesWithSubjectPredicate() {
+        PartyRoleHelper.handlePartyOffences(inputJson, p -> p.has(SUBJECT) && p.get(SUBJECT).asBoolean());
         assertThat(inputJson.get("offence").asText())
             .as(PARTY_OFFENCE_MESSAGE)
             .isEqualTo("Test offence 1, Test offence 2");
+    }
+
+    @Test
+    void testHandlePartyOffencesWithPartyRolePredicate() {
+        PartyRoleHelper.handlePartyOffences(inputJson, p -> p.has(PARTY_ROLE)
+            && p.get(PARTY_ROLE).asText().equals("APPLICANT_PETITIONER_REPRESENTATIVE"));
+        assertThat(inputJson.get("offence").asText())
+            .as(PARTY_OFFENCE_MESSAGE)
+            .isEqualTo("Test offence 3");
     }
 }
