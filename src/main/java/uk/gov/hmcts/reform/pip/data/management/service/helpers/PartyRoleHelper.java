@@ -6,6 +6,7 @@ import io.micrometer.common.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,7 +31,6 @@ public final class PartyRoleHelper {
     private static final String TITLE = "title";
     private static final String ORGANISATION_DETAILS = "organisationDetails";
     private static final String OFFENCE = "offence";
-    private static final String SUBJECT = "subject";
 
     private PartyRoleHelper() {
     }
@@ -183,17 +183,15 @@ public final class PartyRoleHelper {
         nodeObj.put(PROSECUTING_AUTHORITY, String.join(DELIMITER, prosecutingAuthorities));
     }
 
-    public static void findMainDefendantName(JsonNode node) {
+    public static void findMainDefendantName(JsonNode node, Predicate<JsonNode> partyFilter) {
         String mainDefendant = "";
 
         if (node.has(PARTY)) {
             for (JsonNode party : node.get(PARTY)) {
-                if (party.has(SUBJECT) && party.get(SUBJECT).asBoolean()) {
-                    if (party.has(INDIVIDUAL_DETAILS)) {
-                        mainDefendant = createIndividualDetails(party);
-                    } else {
-                        mainDefendant = createOrganisationDetails(party);
-                    }
+                if (partyFilter.test(party)) {
+                    mainDefendant = party.has(INDIVIDUAL_DETAILS)
+                        ? createIndividualDetails(party)
+                        : createOrganisationDetails(party);
                     break;
                 }
             }
@@ -211,12 +209,12 @@ public final class PartyRoleHelper {
         return "";
     }
 
-    public static void handlePartyOffences(JsonNode node) {
+    public static void handlePartyOffences(JsonNode node, Predicate<JsonNode> partyFilter) {
         List<String> offences = new ArrayList<>();
 
         if (node.has(PARTY)) {
             for (JsonNode party : node.get(PARTY)) {
-                if (party.has(SUBJECT) && party.get(SUBJECT).asBoolean() && party.has(OFFENCE)) {
+                if (partyFilter.test(party) && party.has(OFFENCE)) {
                     party.get(OFFENCE).forEach(offence -> {
                         offences.add(GeneralHelper.findAndReturnNodeText(offence, "offenceTitle"));
                     });

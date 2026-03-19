@@ -51,7 +51,6 @@
                             "party": [
                               {
                                 "partyRole": "DEFENDANT\r\n",
-                                "subject": true,
                                 "individualDetails": {
                                   "individualForenames": "Forena\r\nme A",
                                   "individualMiddleName": "MiddleN\r\name A",
