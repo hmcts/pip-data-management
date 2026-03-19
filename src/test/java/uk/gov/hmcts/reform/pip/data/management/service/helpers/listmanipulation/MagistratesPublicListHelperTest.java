@@ -27,9 +27,7 @@ class MagistratesPublicListHelperTest {
     private static final String CASE = "case";
     private static final String FORMATTED_SESSION_COURT_ROOM = "formattedSessionCourtRoom";
     private static final String TIME = "time";
-    private static final String PARTY = "party";
     private static final String OFFENCE = "offence";
-    private static final String OFFENCE_TITLE = "offenceTitle";
     private static final String TIME_ERROR = "Unable to find correct case time";
     private static JsonNode inputJsonMagistratesPublicList;
 
@@ -53,7 +51,7 @@ class MagistratesPublicListHelperTest {
         assertEquals("1pm", inputJsonMagistratesPublicList.get(COURT_LISTS).get(2).get(COURT_HOUSE)
                          .get(COURT_ROOM).get(0).get(SESSION).get(0).get(SITTINGS).get(0).get(TIME).asText(),
                      TIME_ERROR);
-        assertEquals("Surname 1, Forename 1", inputJsonMagistratesPublicList.get(COURT_LISTS).get(0)
+        assertEquals("Surname 2, Forename 2", inputJsonMagistratesPublicList.get(COURT_LISTS).get(0)
                          .get(COURT_HOUSE).get(COURT_ROOM).get(0).get(SESSION).get(0).get(SITTINGS).get(0)
                          .get(HEARING).get(0).get(CASE).get(0).get("defendant").asText(),
                      "Unable to find information for defendant");
@@ -63,7 +61,7 @@ class MagistratesPublicListHelperTest {
                      "Unable to find information for prosecution authority");
         assertEquals("Test offence 1", inputJsonMagistratesPublicList.get(COURT_LISTS).get(0)
                          .get(COURT_HOUSE).get(COURT_ROOM).get(0).get(SESSION).get(0).get(SITTINGS).get(0).get(HEARING)
-                         .get(0).get(CASE).get(0).get(PARTY).get(1).get(OFFENCE).get(0).get(OFFENCE_TITLE).asText(),
+                         .get(0).get(CASE).get(0).get(OFFENCE).asText(),
                      "Unable to find offence details for a particular party");
 
     }
