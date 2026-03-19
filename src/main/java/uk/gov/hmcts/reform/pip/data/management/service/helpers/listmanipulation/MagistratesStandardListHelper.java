@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public final class MagistratesStandardListHelper {
     private static final String COURT_LISTS = "courtLists";
@@ -71,6 +72,7 @@ public final class MagistratesStandardListHelper {
 
     private static final String FORMATTED_COURT_ROOM = "formattedSessionCourtRoom";
     private static final String TIME = "time";
+    private static final String DEFENDANT = "DEFENDANT";
     private static final String PROSECUTING_AUTHORITY = "PROSECUTING_AUTHORITY";
 
     private static final String DATE_FORMAT = "dd/MM/yyyy";
@@ -102,8 +104,9 @@ public final class MagistratesStandardListHelper {
                                                 MatterMetadata matterMetadata = buildMatter(caseObject, hearing, false);
                                                 caseObject.get(PARTY).forEach(
                                                     party -> processParty(
-                                                        party, sitting,
-                                                        matterMetadata, groupedPartyMatters
+                                                        party, sitting, matterMetadata, groupedPartyMatters,
+                                                        p -> p.has(PARTY_ROLE)
+                                                            && p.get(PARTY_ROLE).asText().equals(DEFENDANT)
                                                     )
                                                 );
                                             }
@@ -119,8 +122,8 @@ public final class MagistratesStandardListHelper {
                                                 );
                                                 applicationObject.get(PARTY).forEach(
                                                     party -> processParty(
-                                                        party, sitting,
-                                                        applicationInfo, groupedPartyMatters
+                                                        party, sitting, applicationInfo, groupedPartyMatters,
+                                                        p -> p.has(SUBJECT) && p.get(SUBJECT).asBoolean()
                                                     )
                                                 );
                                             }
@@ -210,9 +213,8 @@ public final class MagistratesStandardListHelper {
     }
 
     private static void processParty(JsonNode party, JsonNode sittingJson, MatterMetadata matterMetadata,
-                                     List<GroupedPartyMatters> groupedPartyMatters) {
-        if (party.has(SUBJECT) && party.get(SUBJECT).asBoolean()) {
-
+                                     List<GroupedPartyMatters> groupedPartyMatters, Predicate<JsonNode> partyFilter) {
+        if (partyFilter.test(party)) {
             Matter matter = buildSitting(sittingJson);
             matter.setMatterMetadata(matterMetadata);
             matter.setOffences(processOffences(party));
