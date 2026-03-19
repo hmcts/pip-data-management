@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSubscriptionService;
@@ -50,8 +51,10 @@ public class PublicationSubscriptionController {
     @Operation(summary = "Find latest artefacts from today and send them to subscribers")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/latest/subscription")
-    public ResponseEntity<Void> sendNewArtefactsForSubscription() {
-        publicationSubscriptionService.checkNewlyActiveArtefacts();
+    public ResponseEntity<Void> sendNewArtefactsForSubscription(
+        @RequestParam(required = false) boolean scheduledListType
+    ) {
+        publicationSubscriptionService.checkNewlyActiveArtefacts(scheduledListType);
         return ResponseEntity.noContent().build();
     }
 
