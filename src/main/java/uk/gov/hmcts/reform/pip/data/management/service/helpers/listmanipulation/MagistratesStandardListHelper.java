@@ -219,13 +219,13 @@ public final class MagistratesStandardListHelper {
             matter.setMatterMetadata(matterMetadata);
             matter.setOffences(processOffences(party));
             String partyHeading;
-            if (party.has(INDIVIDUAL_DETAILS)) {
-                matter.setPartyInfo(buildIndividualPartyInfo(party));
-                partyHeading = formatIndividualPartyHeading(party.get(INDIVIDUAL_DETAILS),
-                                                                          matter.getPartyInfo().getName());
-            } else {
+            if (party.has(ORGANISATION_DETAILS)) {
                 matter.setPartyInfo(buildOrganisationPartyInfo(party));
                 partyHeading = matter.getPartyInfo().getName();
+            } else {
+                matter.setPartyInfo(buildIndividualPartyInfo(party));
+                partyHeading = formatIndividualPartyHeading(party.get(INDIVIDUAL_DETAILS),
+                                                            matter.getPartyInfo().getName());
             }
 
             addMatter(groupedPartyMatters, partyHeading, matter);

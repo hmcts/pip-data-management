@@ -189,9 +189,9 @@ public final class PartyRoleHelper {
         if (node.has(PARTY)) {
             for (JsonNode party : node.get(PARTY)) {
                 if (partyFilter.test(party)) {
-                    mainDefendant = party.has(INDIVIDUAL_DETAILS)
-                        ? createIndividualDetails(party)
-                        : createOrganisationDetails(party);
+                    mainDefendant = party.has(ORGANISATION_DETAILS)
+                        ? createOrganisationDetails(party)
+                        : createIndividualDetails(party);
                     break;
                 }
             }
