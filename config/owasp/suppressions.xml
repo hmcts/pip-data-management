@@ -22,4 +22,8 @@
     <notes>Vulnerability in org.apache.pdfbox</notes>
     <cve>CVE-2026-23907</cve>
   </suppress>
+  <suppress>
+    <notes>Vulnerability in json-schema-validator</notes>
+    <cve>CVE-2025-15104</cve>
+  </suppress>
 </suppressions>
