@@ -170,10 +170,10 @@ public final class PartyRoleHelper {
             node.get(PARTY).forEach(party -> {
                 if (!GeneralHelper.findAndReturnNodeText(party, PARTY_ROLE).isEmpty()
                     && party.get(PARTY_ROLE).asText().equals("PROSECUTING_AUTHORITY")) {
-                    if (party.has(INDIVIDUAL_DETAILS)) {
-                        prosecutingAuthorities.add(createIndividualDetails(party));
-                    } else {
+                    if (party.has(ORGANISATION_DETAILS)) {
                         prosecutingAuthorities.add(createOrganisationDetails(party));
+                    } else {
+                        prosecutingAuthorities.add(createIndividualDetails(party));
                     }
                 }
             });
