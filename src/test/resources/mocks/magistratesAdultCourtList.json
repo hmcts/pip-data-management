@@ -52,7 +52,6 @@
                             "line5": "London",
                             "pcode": "SW1A 1AA"
                           },
-                          "inf": "POL02",
                           "offences": {
                             "offence": [
                               {
@@ -123,7 +122,6 @@
                             "line5": "London",
                             "pcode": "SW1A 1AA"
                           },
-                          "inf": "POL04",
                           "offences": {
                             "offence": [
                               {
