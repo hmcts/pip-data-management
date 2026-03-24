@@ -423,7 +423,17 @@ class MagistratesAdultCourtListFileConverterTest {
                 "1000000000",
                 "TH68001",
                 "Offence title 1",
-                "Offence summary 1"
+                "Offence summary 1",
+                "9am",
+                "Mr Test User",
+                "01/07/1981",
+                "1 High Street, London, SW1A 1AA",
+                "44",
+                "",
+                "1000000001",
+                "TH68002",
+                "Offence title 2",
+                "Offence summary 2"
             );
     }
 
