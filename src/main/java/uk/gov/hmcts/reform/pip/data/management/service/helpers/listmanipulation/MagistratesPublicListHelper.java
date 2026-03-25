@@ -34,7 +34,7 @@ public final class MagistratesPublicListHelper {
                         sitting.get("hearing").forEach(hearing -> {
                             if (hearing.has(CASE)) {
                                 hearing.get(CASE).forEach(hearingCase -> {
-                                    PartyRoleHelper.findProsecutingAuthorities(hearingCase);
+                                    PartyRoleHelper.findProsecutingAuthority(hearingCase);
                                     Predicate<JsonNode> partyFilter = p -> p.has(PARTY_ROLE)
                                         && p.get(PARTY_ROLE).asText().equals(DEFENDANT);
                                     PartyRoleHelper.findMainDefendantName(hearingCase, partyFilter);
@@ -43,7 +43,7 @@ public final class MagistratesPublicListHelper {
                             }
                             if (hearing.has("application")) {
                                 hearing.get("application").forEach(application -> {
-                                    PartyRoleHelper.findProsecutingAuthorities(application);
+                                    PartyRoleHelper.findProsecutingAuthority(application);
                                     Predicate<JsonNode> partyFilter = p -> p.has(SUBJECT)
                                         && p.get(SUBJECT).asBoolean();
                                     PartyRoleHelper.findMainDefendantName(application, partyFilter);
