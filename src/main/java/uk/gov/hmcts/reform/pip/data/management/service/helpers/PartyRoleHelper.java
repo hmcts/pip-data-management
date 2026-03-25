@@ -183,15 +183,34 @@ public final class PartyRoleHelper {
         nodeObj.put(PROSECUTING_AUTHORITY, String.join(DELIMITER, prosecutingAuthorities));
     }
 
+    public static void findProsecutingAuthority(JsonNode node) {
+        String prosecutingAuthority = "";
+
+        if (node.has(PARTY)) {
+            for (JsonNode party : node.get(PARTY)) {
+                if (!GeneralHelper.findAndReturnNodeText(party, PARTY_ROLE).isEmpty()
+                    && party.get(PARTY_ROLE).asText().equals("PROSECUTING_AUTHORITY")) {
+                    prosecutingAuthority = party.has(ORGANISATION_DETAILS)
+                        ? createOrganisationDetails(party)
+                        : createIndividualDetails(party);
+                    break;
+                }
+            }
+        }
+
+        ObjectNode nodeObj = (ObjectNode) node;
+        nodeObj.put(PROSECUTING_AUTHORITY, prosecutingAuthority);
+    }
+
     public static void findMainDefendantName(JsonNode node, Predicate<JsonNode> partyFilter) {
         String mainDefendant = "";
 
         if (node.has(PARTY)) {
             for (JsonNode party : node.get(PARTY)) {
                 if (partyFilter.test(party)) {
-                    mainDefendant = party.has(INDIVIDUAL_DETAILS)
-                        ? createIndividualDetails(party)
-                        : createOrganisationDetails(party);
+                    mainDefendant = party.has(ORGANISATION_DETAILS)
+                        ? createOrganisationDetails(party)
+                        : createIndividualDetails(party);
                     break;
                 }
             }
