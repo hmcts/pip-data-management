@@ -47,11 +47,6 @@
                           "def_name": "Mrs Test User",
                           "def_dob": "01/07/1981",
                           "def_age": 44,
-                          "def_addr": {
-                            "line1": "1 High Street",
-                            "line5": "London",
-                            "pcode": "SW1A 1AA"
-                          },
                           "offences": {
                             "offence": [
                               {
@@ -117,11 +112,6 @@
                           "def_name": "Mr Test User 3",
                           "def_dob": "12/02/1985",
                           "def_age": 40,
-                          "def_addr": {
-                            "line1": "3 High Street",
-                            "line5": "London",
-                            "pcode": "SW1A 1AA"
-                          },
                           "offences": {
                             "offence": [
                               {
