@@ -149,8 +149,7 @@
                                             "type": "object",
                                             "required": [
                                               "caseno",
-                                              "def_name",
-                                              "def_addr"
+                                              "def_name"
                                             ],
                                             "properties": {
                                               "caseno": {

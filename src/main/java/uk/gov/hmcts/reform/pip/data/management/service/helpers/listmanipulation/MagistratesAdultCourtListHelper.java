@@ -60,7 +60,12 @@ public final class MagistratesAdultCourtListHelper {
                 if (standardList) {
                     caseInfo.setDefendantDob(GeneralHelper.findAndReturnNodeText(caseNode, "def_dob"));
                     caseInfo.setDefendantAge(GeneralHelper.findAndReturnNodeText(caseNode, "def_age"));
-                    caseInfo.setDefendantAddress(formatDefendantAddress(caseNode.get("def_addr")));
+
+                    String defendantAddress = caseNode.has("def_addr")
+                        ? formatDefendantAddress(caseNode.get("def_addr"))
+                        : "";
+                    caseInfo.setDefendantAddress(defendantAddress);
+
                     caseInfo.setInformant(GeneralHelper.findAndReturnNodeText(caseNode, "inf"));
                     caseInfo.setOffence(processOffences(caseNode.path("offences").path("offence"), language));
                 }
