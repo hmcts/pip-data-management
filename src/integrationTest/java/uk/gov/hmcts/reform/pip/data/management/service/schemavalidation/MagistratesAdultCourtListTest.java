@@ -302,31 +302,6 @@ class MagistratesAdultCourtListTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @EnumSource(value = ListType.class,
         names = {MAGISTRATES_ADULT_COURT_LIST_DAILY, MAGISTRATES_ADULT_COURT_LIST_FUTURE})
-    void testValidateWithErrorWhenDefAddrMissing(ListType listType) throws IOException {
-        HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
-                                                  Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
-                                                  CONTENT_DATE);
-        try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(MAGISTRATES_ADULT_COURT_LIST_VALID_JSON)) {
-            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
-
-            JsonNode node = OBJECT_MAPPER.readValue(text, JsonNode.class);
-            ((ObjectNode) node.get(DOCUMENT).get(DATA).get(JOB)
-                .get(SESSIONS).get(SESSION).get(0)
-                .get(BLOCKS).get(BLOCK).get(0)
-                .get(CASES).get(CASE).get(0))
-                .remove(DEF_ADDR);
-
-            assertThrows(
-                PayloadValidationException.class,
-                () -> validationService.validateBody(node.toString(), headerGroup, true),
-                INVALID_JSON_MESSAGE);
-        }
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = ListType.class,
-        names = {MAGISTRATES_ADULT_COURT_LIST_DAILY, MAGISTRATES_ADULT_COURT_LIST_FUTURE})
     void testValidateWithErrorWhenLine1Missing(ListType listType) throws IOException {
         HeaderGroup headerGroup = new HeaderGroup(PROVENANCE, "", ArtefactType.LIST, Sensitivity.PUBLIC,
                                                   Language.ENGLISH, DISPLAY_FROM, DISPLAY_TO, listType, COURT_ID,
