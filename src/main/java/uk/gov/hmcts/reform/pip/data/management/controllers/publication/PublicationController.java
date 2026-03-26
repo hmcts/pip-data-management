@@ -463,7 +463,8 @@ public class PublicationController {
             || listType.equals(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE)
             || listType.equals(ListType.CROWN_DAILY_PDDA_LIST)
             || listType.equals(ListType.CROWN_FIRM_PDDA_LIST)
-            || listType.equals(ListType.CROWN_WARNED_PDDA_LIST));
+            || listType.equals(ListType.CROWN_WARNED_PDDA_LIST)
+            || listType.equals(ListType.CST_WEEKLY_HEARING_LIST));
     }
 
     private boolean validateLcsuUploadFile(MultipartFile file) {
