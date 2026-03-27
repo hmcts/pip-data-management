@@ -73,7 +73,10 @@ public class PublicationSubscriptionService {
             artefacts = artefactRepository.findActiveArtefactsByListTypeIn(listTypesToTrigger, LocalDate.now(),
                                                                            LocalDateTime.now());
         } else {
-            artefacts = artefactRepository.findArtefactsByDisplayFrom(LocalDate.now(), LocalDateTime.now());
+            artefacts = artefactRepository.findArtefactsByDisplayFrom(LocalDate.now(), LocalDateTime.now())
+                .stream()
+                .filter(artefact -> !artefact.getListType().isScheduledSubscription())
+                .toList();
         }
         artefacts.forEach(accountManagementService::sendArtefactForSubscription);
     }
