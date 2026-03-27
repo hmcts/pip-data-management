@@ -133,7 +133,7 @@ class PublicationSubscriptionServiceTest {
     @Test
     void testCheckNewlyActiveArtefactsLogs() {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
-            when(artefactRepository.findArtefactsByDisplayFrom(any(), any())).thenReturn(List.of(new Artefact()));
+            when(artefactRepository.findArtefactsByDisplayFrom(any(), any())).thenReturn(List.of(ARTEFACT));
             when(accountManagementService.sendArtefactForSubscription(any())).thenReturn(SUCCESS);
             publicationSubscriptionService.checkNewlyActiveArtefacts(false);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
