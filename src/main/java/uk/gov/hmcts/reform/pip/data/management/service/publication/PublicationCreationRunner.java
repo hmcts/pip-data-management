@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,7 +49,7 @@ public class PublicationCreationRunner {
 
         try {
             createdArtefact = publicationCreationService.createPublication(artefact, payload);
-        } catch (CannotAcquireLockException | DataIntegrityViolationException ex) {
+        } catch (ConcurrencyFailureException | DataIntegrityViolationException ex) {
             throw new CreateArtefactConflictException(
                 "Deadlock when creating json publication. Please try again later."
             );
@@ -73,7 +73,7 @@ public class PublicationCreationRunner {
 
         try {
             createdArtefact = publicationCreationService.createPublication(artefact, file);
-        } catch (CannotAcquireLockException | DataIntegrityViolationException ex) {
+        } catch (ConcurrencyFailureException | DataIntegrityViolationException ex) {
             throw new CreateArtefactConflictException(
                 "Deadlock when creating flat file publication. Please try again later."
             );
