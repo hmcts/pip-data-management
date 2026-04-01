@@ -26,4 +26,9 @@
     <notes>Vulnerability in json-schema-validator</notes>
     <cve>CVE-2025-15104</cve>
   </suppress>
+  <suppress>
+    <notes>Vulnerability in Netty</notes>
+    <cve>CVE-2026-33870</cve>
+    <cve>CVE-2026-33871</cve>
+  </suppress>
 </suppressions>
