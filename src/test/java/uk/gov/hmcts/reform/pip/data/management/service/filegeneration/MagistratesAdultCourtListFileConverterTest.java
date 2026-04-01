@@ -341,7 +341,7 @@ class MagistratesAdultCourtListFileConverterTest {
 
         softly.assertThat(firstSessionHeading)
             .as(COURT_ROOM_HEADING_MESSAGE)
-            .contains("Sitting at 1");
+            .contains("Sitting at Courtroom 1");
 
         softly.assertThat(firstSessionHeading)
             .as(COURT_ROOM_HEADING_MESSAGE)
@@ -365,7 +365,7 @@ class MagistratesAdultCourtListFileConverterTest {
         assertThat(document.getElementsByClass("govuk-table__head").get(0)
                               .getElementsByTag("th"))
             .as("Incorrect table headers")
-            .hasSize(10)
+            .hasSize(8)
             .extracting(Element::text)
             .containsExactly(
                 "Block Start",
@@ -375,9 +375,7 @@ class MagistratesAdultCourtListFileConverterTest {
                 "Age",
                 "Informant",
                 "Case Number",
-                "Offence Code",
-                "Offence Title",
-                "Offence Summary"
+                "Offence Code"
             );
     }
 
@@ -411,7 +409,7 @@ class MagistratesAdultCourtListFileConverterTest {
         assertThat(document.getElementsByClass("govuk-table__body").get(0)
                        .getElementsByTag("td"))
             .as("Incorrect table body")
-            .hasSize(20)
+            .hasSize(28)
             .extracting(Element::text)
             .contains(
                 "9am",
@@ -422,7 +420,9 @@ class MagistratesAdultCourtListFileConverterTest {
                 "POL01",
                 "1000000000",
                 "TH68001",
+                "Offence Title",
                 "Offence title 1",
+                "Offence Summary",
                 "Offence summary 1",
                 "9am",
                 "Mr Test User",
@@ -432,7 +432,9 @@ class MagistratesAdultCourtListFileConverterTest {
                 "",
                 "1000000001",
                 "TH68002",
+                "Offence Title",
                 "Offence title 2",
+                "Offence Summary",
                 "Offence summary 2"
             );
     }
