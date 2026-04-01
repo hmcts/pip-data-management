@@ -30,4 +30,9 @@
     <notes>Vulnerability in org.apache.pdfbox</notes>
     <cve>CVE-2026-23907</cve>
   </suppress>
+  <suppress>
+    <notes>Vulnerability in Netty</notes>
+    <cve>CVE-2026-33870</cve>
+    <cve>CVE-2026-33871</cve>
+  </suppress>
 </suppressions>
