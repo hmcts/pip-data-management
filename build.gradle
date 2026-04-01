@@ -192,7 +192,7 @@ dependencies {
   implementation "com.github.hmcts.java-logging:logging-appinsights:${reformLoggingVersion}"
   implementation "org.apache.logging.log4j:log4j-api:${log4JVersion}"
   implementation "org.apache.logging.log4j:log4j-to-slf4j:${log4JVersion}"
-  implementation 'org.postgresql:postgresql:42.7.8'
+  implementation 'org.postgresql:postgresql:42.7.10'
   implementation 'com.github.hmcts:pip-data-models:2.3.35'
   implementation 'com.networknt:json-schema-validator:3.0.0'
   implementation 'com.google.guava:guava:33.5.0-jre'
