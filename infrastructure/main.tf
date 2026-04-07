@@ -13,4 +13,5 @@ locals {
 
   prefix            = "${var.product}-ss"
   prefix_no_special = replace(local.prefix, "-", "")
+  deploy_apim_testing_support = local.env == "prod" ? 1 : 0
 }
