@@ -11,7 +11,7 @@ locals {
   api_policy_testing_support = replace(replace(replace(local.api_policy_raw_testing_support,
     "{TENANT_ID}", data.azurerm_client_config.current.tenant_id),
     "{CLIENT_ID}", length(data.azurerm_key_vault_secret.data_client_id) > 0 ? data.azurerm_key_vault_secret.data_client_id[0].value : ""),
-    "{ENV}", local.env)
+  "{ENV}", local.env)
 
 }
 module "apim_api" {

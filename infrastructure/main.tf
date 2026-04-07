@@ -11,7 +11,7 @@ locals {
 
   deploy_apim = local.env == "stg" || local.env == "demo" || local.env == "test" || local.env == "sbox" || local.env == "prod" ? 1 : 0
 
-  prefix            = "${var.product}-ss"
-  prefix_no_special = replace(local.prefix, "-", "")
+  prefix                      = "${var.product}-ss"
+  prefix_no_special           = replace(local.prefix, "-", "")
   deploy_apim_testing_support = local.env == "prod" ? 1 : 0
 }
