@@ -224,11 +224,11 @@ public final class MagistratesStandardListHelper {
             Hearing hearing = buildHearing(sittingNode, hearingMetadata);
             hearing.setOffences(processOffences(party));
             String sittingHeading = buildSittingHeading(hearing);
-            if (party.has(INDIVIDUAL_DETAILS)) {
-                hearing.setPartyInfo(buildIndividualPartyInfo(party));
-                addSitting(sittings, sittingHeading, hearing);
-            } else if (party.has(ORGANISATION_DETAILS)) {
+            if (party.has(ORGANISATION_DETAILS)) {
                 hearing.setPartyInfo(buildOrganisationPartyInfo(party));
+                addSitting(sittings, sittingHeading, hearing);
+            } else if (party.has(INDIVIDUAL_DETAILS)) {
+                hearing.setPartyInfo(buildIndividualPartyInfo(party));
                 addSitting(sittings, sittingHeading, hearing);
             }
         }
