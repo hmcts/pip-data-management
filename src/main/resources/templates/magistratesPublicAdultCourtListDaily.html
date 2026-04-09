@@ -96,7 +96,7 @@
     <div aria-label="List body" class="landscape">
       <div class="site-header govuk-accordion" data-module="govuk-accordion" tabindex="0" aria-label="List details" th:each="listSession : ${listData}">
         <h2 class="govuk-heading-m govuk-!-margin-bottom-1" tabindex="0" th:text="${listSession.courtName}"/>
-        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" tabindex="0" th:text="${i18n.sittingAt + listSession.courtRoom}"/>
+        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" tabindex="0" th:text="${i18n.sittingAt + i18n.courtRoom + listSession.courtRoom}"/>
         <p class="govuk-body govuk-!-margin-bottom-1" tabindex="0" th:text="${i18n.lja + listSession.lja}"/>
         <p class="govuk-body" tabindex="0" th:text="${i18n.sessionStart + listSession.sessionStartTime}"/>
 
