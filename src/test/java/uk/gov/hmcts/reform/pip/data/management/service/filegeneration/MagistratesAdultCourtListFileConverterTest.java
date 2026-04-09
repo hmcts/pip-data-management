@@ -409,7 +409,7 @@ class MagistratesAdultCourtListFileConverterTest {
         assertThat(document.getElementsByClass("govuk-table__body").get(0)
                        .getElementsByTag("td"))
             .as("Incorrect table body")
-            .hasSize(28)
+            .hasSize(24)
             .extracting(Element::text)
             .contains(
                 "9am",
