@@ -52,6 +52,10 @@
     .align-warning-icon {
       margin-top: 15px;
     }
+
+    .no-border-bottom {
+      border-bottom: 0;
+    }
   </style>
   <meta charset="UTF-8"/>
   <meta name="subject" content="Accessible PDF template"/>
@@ -96,7 +100,7 @@
     <div aria-label="List body" class="landscape">
       <div class="site-header govuk-accordion" data-module="govuk-accordion" tabindex="0" aria-label="List details" th:each="listSession : ${listData}">
         <h2 class="govuk-heading-m govuk-!-margin-bottom-1" tabindex="0" th:text="${listSession.courtName}"/>
-        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" tabindex="0" th:text="${i18n.sittingAt + listSession.courtRoom}"/>
+        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" tabindex="0" th:text="${i18n.sittingAt + i18n.courtRoom + listSession.courtRoom}"/>
         <p class="govuk-body govuk-!-margin-bottom-1" tabindex="0" th:text="${i18n.lja + listSession.lja}"/>
         <p class="govuk-body" tabindex="0" th:text="${i18n.sessionStart + listSession.sessionStartTime}"/>
 
@@ -113,16 +117,22 @@
               <tbody class="govuk-table__body">
               <th:block th:each="case : ${listSession.cases}">
                 <tr class="govuk-table__row">
-                  <td class="govuk-table__cell no-wrap" th:text="${case.blockStartTime}"/>
-                  <td class="govuk-table__cell" th:text="${case.defendantName}"/>
-                  <td class="govuk-table__cell no-wrap" th:text="${case.defendantDob}"/>
-                  <td class="govuk-table__cell" th:text="${case.defendantAddress}"/>
-                  <td class="govuk-table__cell no-wrap" th:text="${case.defendantAge}"/>
-                  <td class="govuk-table__cell" th:text="${case.informant}"/>
-                  <td class="govuk-table__cell no-wrap" th:text="${case.caseNumber}"/>
-                  <td class="govuk-table__cell" th:text="${case.offence.offenceCode}"/>
-                  <td class="govuk-table__cell" th:text="${case.offence.offenceTitle}"/>
-                  <td class="govuk-table__cell" th:text="${case.offence.offenceSummary}"/>
+                  <td class="govuk-table__cell no-wrap no-border-bottom" th:text="${case.blockStartTime}"/>
+                  <td class="govuk-table__cell no-border-bottom" th:text="${case.defendantName}"/>
+                  <td class="govuk-table__cell no-wrap no-border-bottom" th:text="${case.defendantDob}"/>
+                  <td class="govuk-table__cell no-border-bottom" th:text="${case.defendantAddress}"/>
+                  <td class="govuk-table__cell no-wrap no-border-bottom" th:text="${case.defendantAge}"/>
+                  <td class="govuk-table__cell no-border-bottom" th:text="${case.informant}"/>
+                  <td class="govuk-table__cell no-wrap no-border-bottom" th:text="${case.caseNumber}"/>
+                  <td class="govuk-table__cell no-border-bottom" th:text="${case.offence.offenceCode}"/>
+                </tr>
+                <tr>
+                  <td class="govuk-table__cell no-border-bottom" colspan="2" th:text="${i18n.offenceTitle}"/>
+                  <td class="govuk-table__cell no-border-bottom" colspan="6" th:text="${case.offence.offenceTitle}"/>
+                </tr>
+                <tr>
+                  <td class="govuk-table__cell" colspan="2" th:text="${i18n.offenceSummary}"/>
+                  <td class="govuk-table__cell" colspan="6" th:text="${case.offence.offenceSummary}"/>
                 </tr>
               </th:block>
               </tbody>
