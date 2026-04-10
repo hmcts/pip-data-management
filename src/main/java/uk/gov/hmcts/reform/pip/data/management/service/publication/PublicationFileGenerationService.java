@@ -39,6 +39,7 @@ public class PublicationFileGenerationService {
     private static final String SNL = "SNL";
     private static final String PDDA = "PDDA";
     private static final String MANUAL_UPLOAD = "MANUAL_UPLOAD";
+    private static final String CP_CATH = "CP_CATH";
 
     private final PublicationRetrievalService publicationRetrievalService;
     private final LocationService locationService;
@@ -60,6 +61,7 @@ public class PublicationFileGenerationService {
     public static String convertDataSourceName(String provenance, Language language) {
         return switch (provenance) {
             case SNL -> "ListAssist";
+            case CP_CATH -> "Libra";
             case PDDA -> PDDA;
             case MANUAL_UPLOAD -> {
                 if (language == Language.WELSH) {
