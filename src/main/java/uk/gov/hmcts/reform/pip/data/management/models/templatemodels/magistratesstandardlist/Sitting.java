@@ -9,9 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Matter {
-    private String sittingStartTime;
-    private PartyInfo partyInfo;
-    private MatterMetadata matterMetadata;
-    private List<Offence> offences;
+public class Sitting {
+    private String sittingHeading;
+    private List<Hearing> hearings;
 }
