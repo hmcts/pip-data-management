@@ -20,9 +20,9 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAGISTRATES_STA
 
 @ActiveProfiles("test")
 class MagistratesStandardListSummaryDataTest {
-    private static final String SUMMARY_SECTIONS_MESSAGE = "Summary sections count does not match";
-    private static final String SUMMARY_MATTERS_MESSAGE = "Summary matters count does not match";
-    private static final String SUMMARY_FIELDS_MESSAGE = "Summary fields count does not match";
+    private static final String SUMMARY_SECTION_MESSAGE = "Summary sections count does not match";
+    private static final String SUMMARY_HEARING_MESSAGE = "Summary hearing count does not match";
+    private static final String SUMMARY_FIELD_MESSAGE = "Summary fields count does not match";
     private static final String SUMMARY_FIELD_KEY_MESSAGE = "Summary field key does not match";
     private static final String SUMMARY_FIELD_VALUE_MESSAGE = "Summary field value does not match";
 
@@ -49,17 +49,17 @@ class MagistratesStandardListSummaryDataTest {
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(output)
-            .as(SUMMARY_SECTIONS_MESSAGE)
+            .as(SUMMARY_SECTION_MESSAGE)
             .hasSize(1);
 
         List<Map<String, String>> summaryMatters = output.get(null);
         softly.assertThat(summaryMatters)
-            .as(SUMMARY_MATTERS_MESSAGE)
+            .as(SUMMARY_HEARING_MESSAGE)
             .hasSize(7);
 
         Map<String, String> summaryFieldsForCase = summaryMatters.get(0);
         softly.assertThat(summaryFieldsForCase)
-            .as(SUMMARY_FIELDS_MESSAGE)
+            .as(SUMMARY_FIELD_MESSAGE)
             .hasSize(5);
 
         softly.assertAll();

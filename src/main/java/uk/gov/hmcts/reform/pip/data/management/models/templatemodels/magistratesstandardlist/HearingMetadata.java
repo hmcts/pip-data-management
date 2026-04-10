@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MatterMetadata {
+public class HearingMetadata {
     private String prosecutingAuthority;
     private String attendanceMethod;
     private String reference;

@@ -7,11 +7,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.CourtRoom;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.GroupedPartyMatters;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.Matter;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.MatterMetadata;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.Hearing;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.HearingMetadata;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.Offence;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.PartyInfo;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.Sitting;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -30,9 +30,9 @@ class MagistratesStandardListHelperTest {
     private static final String COURT_ROOM2 = "Courtroom 2: PRESTON";
 
     private static final String COURT_ROOM_MESSAGE = "Court room and judiciary does not match";
-    private static final String MATTER_MESSAGE = "Matter does not match";
-    private static final String SUBJECT_PARTY_MESSAGE = "Subject GroupedPartyMatters info does not match";
-    private static final String MATTER_INFO_MESSAGE = "Case info does not match";
+    private static final String HEARING_MESSAGE = "Hearing does not match";
+    private static final String SUBJECT_PARTY_MESSAGE = "Sitting info does not match";
+    private static final String HEARING_INFO_MESSAGE = "Hearing info does not match";
     private static final String OFFENCE_MESSAGE = "Offence does not match";
 
     private static JsonNode inputJson;
@@ -60,21 +60,21 @@ class MagistratesStandardListHelperTest {
     }
 
     @Test
-    void testPartyHeading() {
+    void testSittingHeading() {
         Map<String, CourtRoom> result = MagistratesStandardListHelper.processRawListData(inputJson);
 
-        assertThat(result.get(COURT_ROOM1).getGroupedPartyMatters())
-            .hasSize(1)
-            .extracting(GroupedPartyMatters::getPartyHeading)
-            .containsExactly("Surname A, Forename A MiddleName A (male)");
+        assertThat(result.get(COURT_ROOM1).getSittings())
+            .hasSize(2)
+            .extracting(Sitting::getSittingHeading)
+            .containsExactly("1:30pm [2 of 3]",
+                             "4:30pm [2 of 3]");
 
-        assertThat(result.get(COURT_ROOM2).getGroupedPartyMatters())
-            .hasSize(4)
-            .extracting(GroupedPartyMatters::getPartyHeading)
-            .containsExactly("Surname B, Forename B MiddleName B (male)*",
-                             "Surname D, Forename D (female)*",
-                             "This is an organisation",
-                             "Surname E, Forename E (female)*");
+        assertThat(result.get(COURT_ROOM2).getSittings())
+            .hasSize(3)
+            .extracting(Sitting::getSittingHeading)
+            .containsExactly("1:30pm [2 of 3]",
+                             "1:30pm",
+                             "2:30pm");
     }
 
     @Test
@@ -106,26 +106,28 @@ class MagistratesStandardListHelperTest {
     }
 
     @Test
-    void testMatterObject() {
+    void testHearingObject() {
         Map<String, CourtRoom> result = MagistratesStandardListHelper.processRawListData(inputJson);
 
-        List<Matter> matters = result
-            .get(COURT_ROOM1).getGroupedPartyMatters().get(0)
-            .getMatters();
+        List<Hearing> hearings = result
+            .get(COURT_ROOM1).getSittings().get(0)
+            .getHearings();
 
-        assertThat(matters)
-            .as(MATTER_MESSAGE)
-            .hasSize(2)
-            .extracting(Matter::getSittingStartTime)
-            .containsExactly("1:30pm", "4:30pm");
+        assertThat(hearings)
+            .as(HEARING_MESSAGE)
+            .hasSize(1)
+            .extracting(Hearing::getSittingStartTime)
+            .containsExactly("1:30pm");
 
-        List<Matter> sittings2 = result
-            .get(COURT_ROOM2).getGroupedPartyMatters().get(0)
-            .getMatters();
+        List<Hearing> sittings2 = result
+            .get(COURT_ROOM2).getSittings().get(1)
+            .getHearings();
 
         assertThat(sittings2)
-            .as(MATTER_MESSAGE)
-            .hasSize(2);
+            .as(HEARING_MESSAGE)
+            .hasSize(3)
+            .extracting(Hearing::getSittingStartTime)
+            .containsExactly("1:30pm", "1:30pm", "1:30pm");
     }
 
     @Test
@@ -133,20 +135,21 @@ class MagistratesStandardListHelperTest {
         Map<String, CourtRoom> result = MagistratesStandardListHelper.processRawListData(inputJson);
 
         PartyInfo partyInfo = result
-            .get(COURT_ROOM1).getGroupedPartyMatters().get(0)
-            .getMatters().get(0)
+            .get(COURT_ROOM1).getSittings().get(0)
+            .getHearings().get(0)
             .getPartyInfo();
 
         assertThat(partyInfo)
             .as(SUBJECT_PARTY_MESSAGE)
             .extracting(
+                PartyInfo::getNameDetails,
                 PartyInfo::getName,
                 PartyInfo::getDob,
                 PartyInfo::getAge,
                 PartyInfo::getAddress,
                 PartyInfo::getAsn)
-            .containsExactly(
-                     "Surname A, Forename A MiddleName A",
+            .containsExactly("Surname A, Forename A MiddleName A (male)",
+                             "Surname A, Forename A MiddleName A",
                              "01/01/1950",
                              "20",
                              "Address Line 1A, Address Line 2A, Town A, County A, AA1 AA1",
@@ -158,8 +161,8 @@ class MagistratesStandardListHelperTest {
         Map<String, CourtRoom> result = MagistratesStandardListHelper.processRawListData(inputJson);
 
         PartyInfo partyInfo = result
-            .get(COURT_ROOM2).getGroupedPartyMatters().get(2)
-            .getMatters().get(0)
+            .get(COURT_ROOM2).getSittings().get(1)
+            .getHearings().get(2)
             .getPartyInfo();
 
         assertThat(partyInfo)
@@ -173,24 +176,24 @@ class MagistratesStandardListHelperTest {
     }
 
     @Test
-    void testMatterInfo() {
+    void testHearingInfo() {
         Map<String, CourtRoom> result = MagistratesStandardListHelper.processRawListData(inputJson);
 
-        MatterMetadata matterMetadata = result
-            .get(COURT_ROOM1).getGroupedPartyMatters().get(0)
-            .getMatters().get(0)
-            .getMatterMetadata();
+        HearingMetadata hearingMetadata = result
+            .get(COURT_ROOM1).getSittings().get(0)
+            .getHearings().get(0)
+            .getHearingMetadata();
 
-        assertThat(matterMetadata)
-            .as(MATTER_INFO_MESSAGE)
+        assertThat(hearingMetadata)
+            .as(HEARING_INFO_MESSAGE)
             .extracting(
-                MatterMetadata::getProsecutingAuthority,
-                MatterMetadata::getAttendanceMethod,
-                MatterMetadata::getReference,
-                MatterMetadata::getReportingRestrictionDetails,
-                MatterMetadata::getCaseSequenceIndicator,
-                MatterMetadata::getHearingType,
-                MatterMetadata::getPanel)
+                HearingMetadata::getProsecutingAuthority,
+                HearingMetadata::getAttendanceMethod,
+                HearingMetadata::getReference,
+                HearingMetadata::getReportingRestrictionDetails,
+                HearingMetadata::getCaseSequenceIndicator,
+                HearingMetadata::getHearingType,
+                HearingMetadata::getPanel)
             .containsExactly("Prosecuting Authority Name",
                              "VIDEO HEARING A",
                              "45684548",
@@ -201,20 +204,20 @@ class MagistratesStandardListHelperTest {
     }
 
     @Test
-    void testMatterInfoWhenApplication() {
+    void testHearingInfoWhenApplication() {
         Map<String, CourtRoom> result = MagistratesStandardListHelper.processRawListData(inputJson);
 
-        MatterMetadata matterMetadata = result
-            .get(COURT_ROOM2).getGroupedPartyMatters().get(1)
-            .getMatters().get(0)
-            .getMatterMetadata();
+        HearingMetadata hearingMetadata = result
+            .get(COURT_ROOM2).getSittings().get(1)
+            .getHearings().get(1)
+            .getHearingMetadata();
 
-        assertThat(matterMetadata)
-            .as(MATTER_INFO_MESSAGE)
+        assertThat(hearingMetadata)
+            .as(HEARING_INFO_MESSAGE)
             .extracting(
-                MatterMetadata::getReference,
-                MatterMetadata::getApplicationType,
-                MatterMetadata::getApplicationParticulars)
+                HearingMetadata::getReference,
+                HearingMetadata::getApplicationType,
+                HearingMetadata::getApplicationParticulars)
             .containsExactly("AppRefA",
                              "Application Type 1",
                              "This is an application particulars example");
@@ -225,8 +228,8 @@ class MagistratesStandardListHelperTest {
         Map<String, CourtRoom> result = MagistratesStandardListHelper.processRawListData(inputJson);
 
         List<Offence> offences = result
-            .get(COURT_ROOM1).getGroupedPartyMatters().get(0)
-            .getMatters().get(0)
+            .get(COURT_ROOM1).getSittings().get(0)
+            .getHearings().get(0)
             .getOffences();
 
         assertThat(offences)
