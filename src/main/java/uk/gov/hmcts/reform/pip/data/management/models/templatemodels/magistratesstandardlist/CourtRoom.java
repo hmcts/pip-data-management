@@ -16,6 +16,6 @@ public class CourtRoom {
     private String courtRoomName;
     private String courtHouseName;
     private String lja;
-    private List<GroupedPartyMatters> groupedPartyMatters = new ArrayList<>();
+    private List<Sitting> sittings = new ArrayList<>();
 
 }
