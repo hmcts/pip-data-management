@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.service.artefactsummary;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.StringUtils;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.MatterMetadata;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.HearingMetadata;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.Offence;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.MagistratesStandardListHelper;
 
@@ -19,20 +19,20 @@ public class MagistratesStandardListSummaryData implements ArtefactSummaryData {
         List<Map<String, String>> summaryCases = new ArrayList<>();
         MagistratesStandardListHelper.processRawListData(payload)
             .forEach(
-                (courtRoom, list) -> list.getGroupedPartyMatters().forEach(
-                    item -> item.getMatters().forEach(sitting -> {
+                (courtRoom, list) -> list.getSittings().forEach(
+                    item -> item.getHearings().forEach(sitting -> {
                         String offenceTitles = sitting.getOffences()
                             .stream()
                             .map(Offence::getOffenceTitle)
                             .filter(StringUtils::isNotBlank)
                             .collect(Collectors.joining(", "));
-                        MatterMetadata matterMetadata = sitting.getMatterMetadata();
+                        HearingMetadata hearingMetadata = sitting.getHearingMetadata();
 
                         Map<String, String> fields = ImmutableMap.of(
                             "Name", sitting.getPartyInfo().getName(),
-                            "Prosecuting authority", matterMetadata.getProsecutingAuthority(),
-                            "Reference", matterMetadata.getReference(),
-                            "Hearing type", matterMetadata.getHearingType(),
+                            "Prosecuting authority", hearingMetadata.getProsecutingAuthority(),
+                            "Reference", hearingMetadata.getReference(),
+                            "Hearing type", hearingMetadata.getHearingType(),
                             "Offence", offenceTitles
                         );
                         summaryCases.add(fields);

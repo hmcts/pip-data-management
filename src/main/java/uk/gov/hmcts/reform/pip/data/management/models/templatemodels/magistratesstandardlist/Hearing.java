@@ -9,7 +9,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GroupedPartyMatters {
-    private String partyHeading;
-    private List<Matter> matters;
+public class Hearing {
+    private String sittingStartTime;
+    private PartyInfo partyInfo;
+    private HearingMetadata hearingMetadata;
+    private List<Offence> offences;
 }
