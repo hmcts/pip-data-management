@@ -18,6 +18,14 @@ class PublicationFileGenerationServiceTest {
     }
 
     @Test
+    void testConvertCrimePortalDataSourceName() {
+        assertThat(publicationFileGenerationService.convertDataSourceName("CP_CATH", Language.ENGLISH))
+            .as("Provenance should be changed to Libra")
+            .isEqualTo("Libra");
+    }
+
+
+    @Test
     void testConvertPddaDataSourceName() {
         assertThat(publicationFileGenerationService.convertDataSourceName("PDDA", Language.ENGLISH))
             .as("Provenance should stay as PDDA")
