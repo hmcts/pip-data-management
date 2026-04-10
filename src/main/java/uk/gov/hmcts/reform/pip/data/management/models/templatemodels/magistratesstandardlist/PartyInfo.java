@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PartyInfo {
+    private String nameDetails;
     private String name;
     private String dob;
     private String age;

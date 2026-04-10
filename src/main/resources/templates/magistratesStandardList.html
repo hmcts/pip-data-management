@@ -3,6 +3,7 @@
 <head>
   <style th:replace="~{css/template-styles :: page-govuk-classes}"></style>
   <style th:replace="~{css/template-styles :: warning-govuk-classes}"></style>
+  <style th:replace="~{css/template-styles :: margin-padding-classes}"></style>
   <style th:inline="text">
 
     h1 {
@@ -153,83 +154,80 @@
       <h1 class="govuk-heading-l site-address" tabindex="0" th:text="${entry.value.courtHouseName}" />
       <h1 class="govuk-heading-l site-address" tabindex="0" th:text="${i18n.lja + ': ' + entry.value.lja}" />
       <h1 class="govuk-heading-l site-address border-bottom" tabindex="0" th:text="${entry.value.courtRoomName}" />
-      <th:block th:each="row: ${entry.value.groupedPartyMatters}">
+      <th:block th:each="sitting: ${entry.value.sittings}">
         <div>
-          <h2 class="govuk-heading-m site-address" th:text="${i18n.nameHeading + row.partyHeading}" />
+          <h2 class="govuk-heading-m site-address" th:text="${i18n.sittingAt + sitting.sittingHeading}" />
         </div>
-        <th:block th:each="matter, iStat: ${row.matters}">
-          <div class="parent-box overflow-table">
+        <th:block th:each="hearing, iStat: ${sitting.hearings}">
+          <div class="parent-box overflow-table border-bottom govuk-!-margin-bottom-5">
             <div class="govuk-grid-row">
               <div class="govuk-grid-column-two-thirds no_padding">
-                <div th:if="${matter.matterMetadata.caseSequenceIndicator != ''}">
-                  <p class="govuk-body row-heading" th:text="${i18n.sittingAt + matter.sittingStartTime + ' [' + matter.matterMetadata.caseSequenceIndicator + ']'}" />
-                </div>
-                <div th:if="${matter.matterMetadata.caseSequenceIndicator == ''}">
-                  <p class="govuk-body row-heading" th:text="${i18n.sittingAt + matter.sittingStartTime}" />
-                </div>
-                <br />
-                <div th:if="${matter.matterMetadata.applicationParticulars != '' && matter.matterMetadata.applicationParticulars != null}">
+                <p class="govuk-body">
+                  <span class="row-heading" th:text="${i18n.name}" />
+                  <span th:text="${hearing.partyInfo.nameDetails}" />
+                </p>
+                <div th:if="${hearing.hearingMetadata.applicationParticulars != '' && hearing.hearingMetadata.applicationParticulars != null}">
                   <p class="govuk-body">
                     <span class="row-heading" th:text="${i18n.applicationParticulars}" />
-                    <span th:text="${matter.matterMetadata.applicationParticulars}" />
+                    <span th:text="${hearing.hearingMetadata.applicationParticulars}" />
                   </p>
                 </div>
-                <div th:if="${matter.partyInfo.age != '' && matter.partyInfo.age != null}">
+                <div th:if="${hearing.partyInfo.age != '' && hearing.partyInfo.age != null}">
                   <p class="govuk-body">
                     <span class="row-heading" th:text="${i18n.dobAndAge}" />
-                    <span th:text="${matter.partyInfo.dob + i18n.age + matter.partyInfo.age}" />
+                    <span th:text="${hearing.partyInfo.dob + i18n.age + hearing.partyInfo.age}" />
                   </p>
                 </div>
-                <div th:if="${matter.partyInfo.age == '' && matter.partyInfo.dob != null}">
+                <div th:if="${hearing.partyInfo.age == '' && hearing.partyInfo.dob != null}">
                   <p class="govuk-body">
                     <span class="row-heading" th:text="${i18n.dobAndAge}" />
-                    <span th:text="${matter.partyInfo.dob}" />
+                    <span th:text="${hearing.partyInfo.dob}" />
                   </p>
                 </div>
                 <p class="govuk-body">
                   <span class="row-heading" th:text="${i18n.address}" />
-                  <span th:text="${matter.partyInfo.address}" />
+                  <span th:text="${hearing.partyInfo.address}" />
                 </p>
                 <p class="govuk-body">
                   <span class="row-heading" th:text="${i18n.prosecutingAuthority}" />
-                  <span th:text="${matter.matterMetadata.prosecutingAuthority}" />
+                  <span th:text="${hearing.hearingMetadata.prosecutingAuthority}" />
                 </p>
                 <p class="govuk-body">
                   <span class="row-heading" th:text="${i18n.attendanceMethod}" />
-                  <span th:text="${matter.matterMetadata.attendanceMethod}" />
+                  <span th:text="${hearing.hearingMetadata.attendanceMethod}" />
                 </p>
-                <div th:if="${matter.matterMetadata.reportingRestrictionDetails != '' && matter.matterMetadata.reportingRestrictionDetails != null}">
+                <div th:if="${hearing.hearingMetadata.reportingRestrictionDetails != '' && hearing.hearingMetadata.reportingRestrictionDetails != null}">
                   <p class="govuk-body">
                     <span class="row-heading" th:text="${i18n.reportingRestrictions + ':'}" />
-                    <span th:text="${matter.matterMetadata.reportingRestrictionDetails}" />
+                    <span th:text="${hearing.hearingMetadata.reportingRestrictionDetails}" />
                   </p>
                 </div>
               </div>
               <div class="govuk-grid-column-one-third">
                 <p class="govuk-body">
                   <span class="row-heading" th:text="${i18n.reference}" />
-                  <span th:text="${matter.matterMetadata.reference}" />
+                  <span th:text="${hearing.hearingMetadata.reference}" />
                 </p>
-                <p th:if="${!#strings.isEmpty(matter.matterMetadata.applicationType)}" class="govuk-body">
+                <p th:if="${!#strings.isEmpty(hearing.hearingMetadata.applicationType)}" class="govuk-body">
                   <span class="row-heading" th:text="${i18n.applicationType}" />
-                  <span th:text="${matter.matterMetadata.applicationType}" />
+                  <span th:text="${hearing.hearingMetadata.applicationType}" />
                 </p>
                 <p class="govuk-body">
                   <span class="row-heading" th:text="${i18n.asn}" />
-                  <span th:text="${matter.partyInfo.asn}" />
+                  <span th:text="${hearing.partyInfo.asn}" />
                 </p>
                 <p class="govuk-body">
                   <span class="row-heading" th:text="${i18n.hearingType}" />
-                  <span th:text="${matter.matterMetadata.hearingType}" />
+                  <span th:text="${hearing.hearingMetadata.hearingType}" />
                 </p>
                 <p class="govuk-body">
                   <span class="row-heading" th:text="${i18n.panel}" />
-                  <span th:text="${matter.matterMetadata.panel}" />
+                  <span th:text="${hearing.hearingMetadata.panel}" />
                 </p>
               </div>
             </div>
             <div class="govuk-grid-row">
-              <div class="moj-timeline__description" th:each="offence, iStat : ${matter.offences}">
+              <div class="moj-timeline__description" th:each="offence, iStat : ${hearing.offences}">
                 <details class="govuk-details" data-module="govuk-details" open="">
                   <summary class="govuk-details__summary">
                     <span th:text="${iStat.count + '. '}" />
