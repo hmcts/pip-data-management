@@ -31,4 +31,16 @@
     <cve>CVE-2026-33870</cve>
     <cve>CVE-2026-33871</cve>
   </suppress>
+  <suppress>
+    <notes>Tomcat 10.1.52 false positives or accepted risk</notes>
+    <cve>CVE-2026-29145</cve>
+    <cve>CVE-2026-24880</cve>
+    <cve>CVE-2026-29129</cve>
+    <cve>CVE-2026-29146</cve>
+    <cve>CVE-2026-34483</cve>
+    <cve>CVE-2026-34487</cve>
+    <cve>CVE-2026-34500</cve>
+    <cve>CVE-2026-25854</cve>
+    <cve>CVE-2026-32990</cve>
+  </suppress>
 </suppressions>
