@@ -187,7 +187,7 @@
             "organisationName": {
               "title": "Organisation Name",
               "type": "string",
-              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+              "pattern": "(?s)^(?!.*(?:<\\s*\\/[^>]*>|<[^>]*\\/>|&lt;\\s*\\/[^&]*&gt;|&lt;[^&]*\\/&gt;)).*$"
             },
             "organisationAddress": {
               "title": "Organisation Address",
@@ -234,7 +234,7 @@
         "offenceWording":{
           "title": "Offence wording",
           "type":"string",
-          "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+          "pattern": "^(?!(?:.|\\r|\\n)*(?:<\\s*\\/[^>]*>|<[^>]*\\/>|&lt;\\s*\\/[^&]*&gt;|&lt;[^&]*\\/&gt;))(?:.|\\r|\\n)*$"
         },
         "plea":{
           "title": "Plea",
@@ -700,7 +700,7 @@
                                               "examples": [
                                                 "application particulars example"
                                               ],
-                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                              "pattern": "^(?!(?:.|\\r|\\n)*(?:<\\s*/[^>]*>|<[^>]*\\/>|&lt;\\s*\\/[^&]*&gt;|&lt;[^&]*\\/&gt;))(?:.|\\r|\\n)*$"
                                             }
                                           }
                                         }

@@ -193,7 +193,7 @@
                 "examples": [
                   "driving whilst under the influence of alcohol"
                 ],
-                "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                "pattern": "^(?!(?:.|\\r|\\n)*(?:<\\s*\\/[^>]*>|<[^>]*\\/>|&lt;\\s*\\/[^&]*&gt;|&lt;[^&]*\\/&gt;))(?:.|\\r|\\n)*$"
               },
               "offenceMaxPen": {
                 "description": "Maximum penalty if found guilty",
@@ -281,7 +281,7 @@
               "examples": [
                 "A & B Solicitors"
               ],
-              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+              "pattern": "(?s)^(?!.*(?:<\\s*\\/[^>]*>|<[^>]*\\/>|&lt;\\s*\\/[^&]*&gt;|&lt;[^&]*\\/&gt;)).*$"
             },
             "organisationAddress": {
               "title": "Organisation Address",
@@ -554,7 +554,7 @@
                                               "examples": [
                                                 "application particulars example"
                                               ],
-                                              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+                                              "pattern": "^(?!(?:.|\\r|\\n)*(?:<\\s*/[^>]*>|<[^>]*\\/>|&lt;\\s*\\/[^&]*&gt;|&lt;[^&]*\\/&gt;))(?:.|\\r|\\n)*$"
                                             }
                                           }
                                         }

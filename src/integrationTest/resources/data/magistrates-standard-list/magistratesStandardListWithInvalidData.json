@@ -91,13 +91,13 @@
                                   {
                                     "offenceCode": "dd01-01",
                                     "offenceTitle": "drink driving",
-                                    "offenceWording": "driving whilst under the influence of alcohol <this is valid text>",
                                     "offenceMaxPen": "100yrs",
                                     "plea": "NOT_GUILTY",
                                     "pleaDate": "2026-01-27T10:00:00.123Z",
                                     "convictionDate": "2026-05-01T11:00:00.123Z",
                                     "adjournedDate": "2026-05-02T11:00:00.123Z",
-                                    "offenceLegislation": "This is a legislation"
+                                    "offenceLegislation": "This is a legislation",
+                                    "offenceWording": "driving whilst under the influence of alcohol </invalid>"
                                   },
                                   {
                                     "offenceCode": "dd01-01",
@@ -115,7 +115,7 @@
                               {
                                 "partyRole": "PROSECUTING_AUTHORITY",
                                 "organisationDetails": {
-                                  "organisationName": "Prosecuting Authority Name <this is valid text>"
+                                  "organisationName": "Prosecuting Authority Name </invalid>"
                                 }
                               }
                             ]
@@ -172,11 +172,10 @@
                               {
                                 "partyRole": "PROSECUTING_AUTHORITY",
                                 "organisationDetails": {
-                                  "organisationName": "Prosecuting Authority Name"
+                                  "organisationName": "Prosecuting Authority Name <valid text>"
                                 }
                               }
-                            ],
-                            "applicationParticulars": "This is application particulars <this is valid text>"
+                            ]
                           },
                           {
                             "applicationReference": "AppRefB",
@@ -228,7 +227,7 @@
                                 }
                               }
                             ],
-                            "applicationParticulars": "This is application particulars <validtext>"
+                            "applicationParticulars": "This is application particulars </valid>"
                           }
                         ]
                       }
@@ -318,7 +317,7 @@
                                   {
                                     "offenceCode": "dd01-01",
                                     "offenceTitle": "drink driving",
-                                    "offenceWording": "driving whilst under the influence of alcohol",
+                                    "offenceWording": "driving whilst under the influence of alcohol <valid text>",
                                     "offenceMaxPen": "100yrs",
                                     "plea": "NOT_GUILTY",
                                     "pleaDate": "2026-01-27T10:00:00.123Z",
@@ -469,4 +468,3 @@
     }
   ]
 }
-
