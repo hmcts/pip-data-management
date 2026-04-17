@@ -46,7 +46,6 @@ class MagistratesPublicListTest extends IntegrationBasicTestBase {
     private static final String COURT_LIST_SCHEMA = "courtLists";
     private static final String VENUE_SCHEMA = "venue";
     private static final String VENUE_ADDRESS_SCHEMA = "venueAddress";
-    private static final String VENUE_CONTACT_SCHEMA = "venueContact";
     private static final String COURT_HOUSE_SCHEMA = "courtHouse";
     private static final String COURT_ROOM_SCHEMA = "courtRoom";
     private static final String SESSION_SCHEMA = "session";
