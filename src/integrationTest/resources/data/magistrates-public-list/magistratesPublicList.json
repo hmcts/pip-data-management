@@ -40,7 +40,7 @@
                             "party": [
                               {
                                 "organisationDetails": {
-                                  "organisationName": "Pro_Auth"
+                                  "organisationName": "Pro_Auth <this is valid text>"
                                 },
                                 "partyRole": "PROSECUTING_AUTHORITY"
                               },

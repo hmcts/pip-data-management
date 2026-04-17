@@ -91,7 +91,7 @@
                                   {
                                     "offenceCode": "dd01-01",
                                     "offenceTitle": "drink driving",
-                                    "offenceWording": "driving whilst under the influence of alcohol",
+                                    "offenceWording": "driving whilst under the influence of alcohol <this is valid text>",
                                     "offenceMaxPen": "100yrs",
                                     "plea": "NOT_GUILTY",
                                     "pleaDate": "2026-01-27T10:00:00.123Z",
@@ -115,7 +115,7 @@
                               {
                                 "partyRole": "PROSECUTING_AUTHORITY",
                                 "organisationDetails": {
-                                  "organisationName": "Prosecuting Authority Name <test data>"
+                                  "organisationName": "Prosecuting Authority Name <this is valid text>"
                                 }
                               }
                             ]
@@ -175,7 +175,8 @@
                                   "organisationName": "Prosecuting Authority Name"
                                 }
                               }
-                            ]
+                            ],
+                            "applicationParticulars": "This is application particulars <this is valid text>"
                           },
                           {
                             "applicationReference": "AppRefB",
@@ -226,7 +227,8 @@
                                   "organisationName": "Prosecuting Authority Name"
                                 }
                               }
-                            ]
+                            ],
+                            "applicationParticulars": "This is application particulars <validtext>"
                           }
                         ]
                       }
