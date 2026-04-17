@@ -38,13 +38,14 @@ class MagistratesPublicListTest extends IntegrationBasicTestBase {
         "data/magistrates-public-list/magistratesPublicList.json";
     private static final String MAGISTRATES_PUBLIC_LIST_WITH_NEW_LINES =
         "data/magistrates-public-list/magistratesPublicListWithNewLines.json";
+    private static final String MAGISTRATES_PUBLIC_LIST_INVALID_JSON_DATA =
+        "data/magistrates-public-list/magistratesPublicListWithInvalidData.json";
     private static final String MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE =
         "Invalid crime magistrates public list marked as valid";
 
     private static final String COURT_LIST_SCHEMA = "courtLists";
     private static final String VENUE_SCHEMA = "venue";
     private static final String VENUE_ADDRESS_SCHEMA = "venueAddress";
-    private static final String VENUE_CONTACT_SCHEMA = "venueContact";
     private static final String COURT_HOUSE_SCHEMA = "courtHouse";
     private static final String COURT_ROOM_SCHEMA = "courtRoom";
     private static final String SESSION_SCHEMA = "session";
@@ -394,6 +395,46 @@ class MagistratesPublicListTest extends IntegrationBasicTestBase {
             assertThrows(PayloadValidationException.class,
                          () -> validationService.validateBody(listJson, headerGroup, true),
                          MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorWhenOrganisationNameDataIsInvalid() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_INVALID_JSON_DATA)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(text, headerGroup, true),
+                         MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithNoErrorWhenInvalidDataRemoved() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(MAGISTRATES_PUBLIC_LIST_INVALID_JSON_DATA)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ObjectNode organisationDetails = ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
+                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
+                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
+                .get(HEARING_SCHEMA).get(0).get(CASE_SCHEMA).get(0)
+                .get("party").get(0).get("organisationDetails"));
+
+            JsonNode orgNameNode = organisationDetails.get("organisationName");
+
+            if (orgNameNode != null && orgNameNode.isTextual()) {
+                String cleaned = orgNameNode.asText().replace("</invalid>", "");
+                organisationDetails.put("organisationName", cleaned);
+            }
+
+            String listJson = node.toString();
+            assertDoesNotThrow(
+                () -> validationService.validateBody(listJson, headerGroup, true),
+                MAGISTRATES_PUBLIC_LIST_INVALID_MESSAGE
+            );
         }
     }
 }
