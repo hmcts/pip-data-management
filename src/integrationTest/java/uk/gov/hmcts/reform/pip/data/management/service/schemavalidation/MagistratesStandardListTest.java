@@ -39,6 +39,8 @@ class MagistratesStandardListTest extends IntegrationBasicTestBase {
         "data/magistrates-standard-list/magistratesStandardList.json";
     private static final String MAGISTRATES_STANDARD_LIST_WITH_NEW_LINES =
         "data/magistrates-standard-list/magistratesStandardListWithNewLines.json";
+    private static final String MAGISTRATES_STANDARD_LIST_INVALID_JSON_DATA =
+        "data/magistrates-standard-list/magistratesStandardListWithInvalidData.json";
     private static final String MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE =
         "Invalid magistrates standard list marked as valid";
 
@@ -49,6 +51,7 @@ class MagistratesStandardListTest extends IntegrationBasicTestBase {
     private static final String SITTINGS_SCHEMA = "sittings";
     private static final String HEARING_SCHEMA = "hearing";
     private static final String CASE_SCHEMA  = "case";
+    private static final String PARTY_SCHEMA = "party";
     private static final String SOURCE_ARTEFACT_ID = "sourceArtefactId";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now();
     private static final LocalDateTime DISPLAY_TO = LocalDateTime.now();
@@ -374,7 +377,7 @@ class MagistratesStandardListTest extends IntegrationBasicTestBase {
                 .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
                 .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
                 .get(HEARING_SCHEMA).get(0).get(CASE_SCHEMA).get(0)
-                .get("party").get(2).get("organisationDetails")).remove("organisationName");
+                .get(PARTY_SCHEMA).get(2).get("organisationDetails")).remove("organisationName");
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -415,6 +418,165 @@ class MagistratesStandardListTest extends IntegrationBasicTestBase {
             assertThrows(PayloadValidationException.class, () ->
                 validationService.validateBody(listJson, headerGroup, true),
                 MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorWhenJsonHasInvalidData() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_INVALID_JSON_DATA)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(text, headerGroup, true),
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorWhenOffenceWordingDataIsInvalid() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_INVALID_JSON_DATA)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
+                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
+                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
+                .get(HEARING_SCHEMA).get(0).get("application").get(1)).remove("applicationParticulars");
+
+            ObjectNode organisationDetails = (ObjectNode) node
+                .get(COURT_LIST_SCHEMA).get(0)
+                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
+                .get(SESSION_SCHEMA).get(0)
+                .get(SITTINGS_SCHEMA).get(0)
+                .get(HEARING_SCHEMA).get(0)
+                .get(CASE_SCHEMA).get(0)
+                .get(PARTY_SCHEMA).get(2)
+                .get("organisationDetails");
+
+            JsonNode orgNameNode = organisationDetails.get("organisationName");
+
+            if (orgNameNode != null && orgNameNode.isTextual()) {
+                String cleaned = orgNameNode.asText().replace("</invalid>", "");
+                organisationDetails.put("organisationName", cleaned);
+            }
+
+            String listJson = node.toString();
+            assertThrows(
+                PayloadValidationException.class, () ->
+                    validationService.validateBody(listJson, headerGroup, true),
+                MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE
+            );
+        }
+
+    }
+
+    @Test
+    void testValidateWithErrorWhenApplicationParticularsDataIsInvalid() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_INVALID_JSON_DATA)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
+                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
+                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
+                .get(HEARING_SCHEMA).get(0).get(CASE_SCHEMA).get(0)
+                .get(PARTY_SCHEMA).get(1)
+                .get("offence").get(0)).remove("offenceWording");
+
+            ObjectNode organisationDetails = (ObjectNode) node
+                .get(COURT_LIST_SCHEMA).get(0)
+                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
+                .get(SESSION_SCHEMA).get(0)
+                .get(SITTINGS_SCHEMA).get(0)
+                .get(HEARING_SCHEMA).get(0)
+                .get(CASE_SCHEMA).get(0)
+                .get(PARTY_SCHEMA).get(2)
+                .get("organisationDetails");
+
+            JsonNode orgNameNode = organisationDetails.get("organisationName");
+
+            if (orgNameNode != null && orgNameNode.isTextual()) {
+                String cleaned = orgNameNode.asText().replace("</invalid>", "");
+                organisationDetails.put("organisationName", cleaned);
+            }
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson, headerGroup, true),
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithErrorWhenOrganisationNameDataIsInvalid() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_INVALID_JSON_DATA)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
+                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
+                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
+                .get(HEARING_SCHEMA).get(0).get(CASE_SCHEMA).get(0)
+                .get(PARTY_SCHEMA).get(1)
+                .get("offence").get(0)).remove("offenceWording");
+
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
+                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
+                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
+                .get(HEARING_SCHEMA).get(0).get("application").get(1)).remove("applicationParticulars");
+
+            String listJson = node.toString();
+            assertThrows(PayloadValidationException.class, () ->
+                             validationService.validateBody(listJson, headerGroup, true),
+                         MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE);
+        }
+    }
+
+    @Test
+    void testValidateWithNoErrorWhenInvalidDataRemoved() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(MAGISTRATES_STANDARD_LIST_INVALID_JSON_DATA)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
+                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
+                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
+                .get(HEARING_SCHEMA).get(0).get(CASE_SCHEMA).get(0)
+                .get(PARTY_SCHEMA).get(1)
+                .get("offence").get(0)).remove("offenceWording");
+
+            ((ObjectNode) node.get(COURT_LIST_SCHEMA).get(0)
+                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
+                .get(SESSION_SCHEMA).get(0).get(SITTINGS_SCHEMA).get(0)
+                .get(HEARING_SCHEMA).get(0).get("application").get(1)).remove("applicationParticulars");
+
+            ObjectNode organisationDetails = (ObjectNode) node
+                .get(COURT_LIST_SCHEMA).get(0)
+                .get(COURT_HOUSE_SCHEMA).get(COURT_ROOM_SCHEMA).get(0)
+                .get(SESSION_SCHEMA).get(0)
+                .get(SITTINGS_SCHEMA).get(0)
+                .get(HEARING_SCHEMA).get(0)
+                .get(CASE_SCHEMA).get(0)
+                .get(PARTY_SCHEMA).get(2)
+                .get("organisationDetails");
+
+            JsonNode orgNameNode = organisationDetails.get("organisationName");
+
+            if (orgNameNode != null && orgNameNode.isTextual()) {
+                String cleaned = orgNameNode.asText().replace("</invalid>", "");
+                organisationDetails.put("organisationName", cleaned);
+            }
+
+            String listJson = node.toString();
+            assertDoesNotThrow(
+                () -> validationService.validateBody(listJson, headerGroup, true),
+                MAGISTRATES_STANDARD_LIST_INVALID_MESSAGE
+            );
         }
     }
 }
