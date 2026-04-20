@@ -44,7 +44,7 @@ public class PublicationReportingService {
      */
     public List<PublicationMiData> getMiData() {
         LocalDateTime publicationReceivedDate = LocalDate.now()
-            .minusDays(31)
+            .minusDays(7)
             .atStartOfDay();
         List<PublicationMiData> publicationMiData =
             artefactRepository.getMiData(publicationReceivedDate);
