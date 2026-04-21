@@ -47,4 +47,8 @@
     <notes>PDFBox and XMPBox</notes>
     <cve>CVE-2026-33929</cve>
   </suppress>
+  <suppress>
+    <notes>Angus</notes>
+    <cve>CVE-2025-7962</cve>
+  </suppress>
 </suppressions>
