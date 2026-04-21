@@ -44,11 +44,7 @@
     <cve>CVE-2026-32990</cve>
   </suppress>
   <suppress>
-    <notes>PDFBox</notes>
-    <cve>CVE-2026-33929</cve>
-  </suppress>
-  <suppress>
-    <notes>XMPBox</notes>
+    <notes>PDFBox and XMPBox</notes>
     <cve>CVE-2026-33929</cve>
   </suppress>
 </suppressions>
