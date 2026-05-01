@@ -13,12 +13,12 @@ plugins {
   id 'checkstyle'
   id 'io.spring.dependency-management' version '1.1.7'
   id 'jacoco'
-  id 'org.springframework.boot' version '3.5.12'
-  id 'org.owasp.dependencycheck' version '12.2.0'
-  id 'org.sonarqube' version '7.2.3.7755'
-  id 'org.flywaydb.flyway' version '12.0.3'
-  id 'io.freefair.lombok' version '9.2.0'
-  id 'org.jetbrains.kotlin.jvm' version '2.3.20'
+  id 'org.springframework.boot' version '3.5.14'
+  id 'org.owasp.dependencycheck' version '12.2.1'
+  id 'org.sonarqube' version '7.3.0.8198'
+  id 'org.flywaydb.flyway' version '12.5.0'
+  id 'io.freefair.lombok' version '9.5.0'
+  id 'org.jetbrains.kotlin.jvm' version '2.3.21'
 }
 
 application {
@@ -96,7 +96,7 @@ tasks.register('smoke', Test) {
 }
 
 checkstyle {
-  toolVersion = '13.3.0'
+  toolVersion = '13.4.1'
 }
 
 configurations {
@@ -174,7 +174,7 @@ dependencyCheck {
 
 ext {
   reformLoggingVersion = "6.1.9"
-  log4JVersion = "2.25.3"
+  log4JVersion = "2.25.4"
 }
 
 dependencies {
@@ -184,18 +184,18 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-json'
   implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
-  implementation 'com.azure:azure-storage-blob:12.32.0'
+  implementation 'com.azure:azure-storage-blob:12.33.3'
   implementation 'com.jayway.jsonpath:json-path:3.0.0'
   implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.15.2'
-  implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.16"
+  implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3"
   implementation "com.github.hmcts.java-logging:logging:8.0.0"
   implementation "com.github.hmcts.java-logging:logging-appinsights:${reformLoggingVersion}"
   implementation "org.apache.logging.log4j:log4j-api:${log4JVersion}"
   implementation "org.apache.logging.log4j:log4j-to-slf4j:${log4JVersion}"
-  implementation 'org.postgresql:postgresql:42.7.10'
+  implementation 'org.postgresql:postgresql:42.7.11'
   implementation 'com.github.hmcts:pip-data-models:PUB-3179-e5bc1d2'
-  implementation 'com.networknt:json-schema-validator:3.0.0'
-  implementation 'com.google.guava:guava:33.5.0-jre'
+  implementation 'com.networknt:json-schema-validator:3.0.2'
+  implementation 'com.google.guava:guava:33.6.0-jre'
   implementation 'org.apache.poi:poi-ooxml:5.5.1'
   implementation 'com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10'
   implementation 'com.openhtmltopdf:openhtmltopdf-slf4j:1.0.10'
@@ -204,7 +204,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-validation'
   implementation 'org.springframework.boot:spring-boot-starter-jdbc'
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-  implementation 'com.azure.spring:spring-cloud-azure-starter-active-directory:6.1.0'
+  implementation 'com.azure.spring:spring-cloud-azure-starter-active-directory:7.2.0'
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
   implementation 'com.opencsv:opencsv:5.12.0'
@@ -214,7 +214,7 @@ dependencies {
 
   // Include Flyway for database migrations
   implementation 'org.flywaydb:flyway-core:12.0.3'
-  implementation 'org.flywaydb:flyway-database-postgresql:12.0.3'
+  implementation 'org.flywaydb:flyway-database-postgresql:12.5.0'
 
   testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
@@ -225,8 +225,8 @@ dependencies {
   testImplementation 'io.github.hakky54:logcaptor:2.12.6'
   testImplementation 'org.apiguardian:apiguardian-api:1.1.2'
   testImplementation 'com.github.hmcts:fortify-client:1.4.10:all'
-  testImplementation 'org.jsoup:jsoup:1.22.1'
-  testImplementation 'com.google.code.gson:gson:2.13.2'
+  testImplementation 'org.jsoup:jsoup:1.22.2'
+  testImplementation 'com.google.code.gson:gson:2.14.0'
 
   functionalTestImplementation 'io.rest-assured:rest-assured'
 }
