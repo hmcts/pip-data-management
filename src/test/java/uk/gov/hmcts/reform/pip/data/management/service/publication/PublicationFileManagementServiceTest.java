@@ -104,7 +104,7 @@ class PublicationFileManagementServiceTest {
     @Test
     void testGenerateFilesWithPrimaryPdfOnly() {
         when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
-            .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, EMPTY_BYTES, EMPTY_BYTES)));
+            .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, EMPTY_BYTES, EMPTY_BYTES, EMPTY_BYTES)));
 
         publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
 
@@ -117,7 +117,7 @@ class PublicationFileManagementServiceTest {
     @Test
     void testGenerateFilesWithPrimaryAndAdditionalPdfs() {
         when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
-            .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, BYTE_DATA, EMPTY_BYTES)));
+            .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, BYTE_DATA, EMPTY_BYTES, EMPTY_BYTES)));
 
         publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
 
@@ -129,7 +129,7 @@ class PublicationFileManagementServiceTest {
     @Test
     void testGenerateFilesWithPdfAndExcel() {
         when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
-            .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, EMPTY_BYTES, BYTE_DATA)));
+            .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, EMPTY_BYTES, BYTE_DATA, EMPTY_BYTES)));
 
         publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
 
@@ -142,7 +142,7 @@ class PublicationFileManagementServiceTest {
     @Test
     void testGenerateFilesWithExcelOnly() {
         when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
-            .thenReturn(Optional.of(new PublicationFiles(EMPTY_BYTES, EMPTY_BYTES, BYTE_DATA)));
+            .thenReturn(Optional.of(new PublicationFiles(EMPTY_BYTES, EMPTY_BYTES, BYTE_DATA, EMPTY_BYTES)));
 
         publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
 

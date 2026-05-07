@@ -106,7 +106,12 @@ public class PublicationFileGenerationService {
                 pdfs = generatePdfs(fileConverter.get(), topLevelNode, artefact, location);
             }
 
-            return Optional.of(new PublicationFiles(pdfs.getLeft(), pdfs.getRight(), excel));
+            byte[] csv = new byte[0];
+            if (publicationRetrievalService.payloadWithinExcelLimit(artefact.getPayloadSize())) {
+                csv = fileConverter.get().convertToCsv(topLevelNode, artefact.getListType());
+            }
+
+            return Optional.of(new PublicationFiles(pdfs.getLeft(), pdfs.getRight(), excel, csv));
 
         } catch (IOException ex) {
             throw new ProcessingException(String.format("Failed to generate files for artefact id %s", artefactId));

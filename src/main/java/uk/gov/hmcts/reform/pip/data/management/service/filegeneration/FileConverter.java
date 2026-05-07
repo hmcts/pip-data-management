@@ -24,4 +24,13 @@ public interface FileConverter {
     default byte[] convertToExcel(JsonNode artefact, ListType listType) throws IOException {
         return new byte[0];
     }
+
+    /**
+     * Interface method that captures the conversion of an artefact to a Csv file.
+     *
+     * @return The converted Csv file as a byte array.
+     */
+    default byte[] convertToCsv(JsonNode artefact, ListType listType) throws IOException {
+        return new byte[0];
+    }
 }

@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opencsv.CSVWriter;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
@@ -11,6 +12,10 @@ import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -69,5 +74,42 @@ public class NonStrategicListFileConverter implements FileConverter {
         }
 
         return TemplateEngine.processNonStrategicTemplate(listType, context);
+    }
+
+    @Override
+    public byte[] convertToCsv(JsonNode artefact, ListType listType) throws IOException {
+        String[] headings = {"Date", "Case name", "Duration",
+            "Hearing Type", "Venue", "Additional information"};
+        try (StringWriter sw = new StringWriter();
+             CSVWriter csvWriter = new CSVWriter(sw)) {
+
+            List<String[]> data = new ArrayList<>(Collections.singleton(headings));
+
+            if (artefact != null && artefact.isArray()) {
+
+                for (JsonNode hearing : artefact) {
+
+                    data.add(new String[]{
+                        getTextValue(hearing, "date"),
+                        getTextValue(hearing, "caseName"),
+                        getTextValue(hearing, "hearingLength"),
+                        getTextValue(hearing, "hearingType"),
+                        getTextValue(hearing, "venue"),
+                        getTextValue(hearing, "additionalInformation")
+                    });
+                }
+            }
+            csvWriter.writeAll(data);
+
+            return sw.toString().getBytes(StandardCharsets.UTF_8);
+
+        } catch (IOException e) {
+            throw new IOException(e.getMessage());
+        }
+    }
+
+    private String getTextValue(JsonNode node, String fieldName) {
+        JsonNode value = node.get(fieldName);
+        return value != null && !value.isNull() ? value.asText() : "";
     }
 }
