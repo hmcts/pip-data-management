@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 import java.util.Base64;
 import java.util.UUID;
 
+import static uk.gov.hmcts.reform.pip.model.publication.FileType.CSV;
 import static uk.gov.hmcts.reform.pip.model.publication.FileType.EXCEL;
 import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 
@@ -61,6 +62,10 @@ public class PublicationFileManagementService {
 
                 if (files.getExcel().length > 0) {
                     azureBlobService.uploadFile(artefactId + EXCEL.getExtension(), files.getExcel());
+                }
+
+                if (files.getCsv().length > 0) {
+                    azureBlobService.uploadFile(artefactId + CSV.getExtension(), files.getCsv());
                 }
             });
     }

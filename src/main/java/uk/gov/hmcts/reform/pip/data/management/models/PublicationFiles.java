@@ -11,4 +11,5 @@ public class PublicationFiles {
     private byte[] primaryPdf;
     private byte[] additionalPdf;
     private byte[] excel;
+    private byte[] csv;
 }
