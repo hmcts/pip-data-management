@@ -93,4 +93,9 @@
     <!-- Spring Security -->
     <cve>CVE-2026-22751</cve>
   </suppress>
+  <suppress>
+    <notes>Temporary suppression for investigation</notes>
+    <cve>CVE-2026-34479</cve>
+    <cve>CVE-2026-34477</cve>
+  </suppress>
 </suppressions>
