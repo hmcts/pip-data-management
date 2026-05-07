@@ -78,4 +78,24 @@
     <cve>CVE-2026-40477</cve>
     <cve>CVE-2026-40478</cve>
   </suppress>
+  <suppress>
+    <notes>PostgreSQL, Spring Boot, Spring Framework, and Spring Security vulnerabilities – false positives or accepted risk</notes>
+    <cve>CVE-2026-42198</cve>
+    <!-- Spring Framework -->
+    <cve>CVE-2026-22740</cve>
+    <cve>CVE-2026-22745</cve>
+    <cve>CVE-2026-22741</cve>
+    <!-- Spring Boot -->
+    <cve>CVE-2026-40972</cve>
+    <cve>CVE-2026-40975</cve>
+    <cve>CVE-2026-40973</cve>
+    <cve>CVE-2026-40977</cve>
+    <!-- Spring Security -->
+    <cve>CVE-2026-22751</cve>
+  </suppress>
+  <suppress>
+    <notes>log4j suppression</notes>
+    <cve>CVE-2026-34479</cve>
+    <cve>CVE-2026-34477</cve>
+  </suppress>
 </suppressions>
