@@ -30,6 +30,7 @@
     <notes>Vulnerability in Netty</notes>
     <cve>CVE-2026-33870</cve>
     <cve>CVE-2026-33871</cve>
+    <cve>CVE-2026-41417</cve>
   </suppress>
   <suppress>
     <notes>Tomcat 10.1.52 false positives or accepted risk</notes>
