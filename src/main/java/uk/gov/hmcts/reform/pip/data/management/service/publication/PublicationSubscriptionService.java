@@ -47,12 +47,14 @@ public class PublicationSubscriptionService {
      * process on account-management if appropriate.
      */
     public void checkAndTriggerPublicationSubscription(Artefact artefact) {
-        //TODO: fully switch this logic to localdates once artefact model changes //NOSONAR
-        if (!artefact.getListType().isScheduledSubscription()
-            && artefact.getDisplayFrom().toLocalDate().isBefore(LocalDate.now().plusDays(1))
+        // For scheduled subscription list types, send to API subscribers only during publication upload.
+        // Notify email subscribers once a day only at a scheduled time.
+        if (artefact.getListType().isScheduledSubscription()) {
+            accountManagementService.sendArtefactForApiSubscription(artefact);
+        } else if (artefact.getDisplayFrom().toLocalDate().isBefore(LocalDate.now().plusDays(1))
             && (artefact.getDisplayTo() == null
             || artefact.getDisplayTo().toLocalDate().isAfter(LocalDate.now().minusDays(1)))) {
-            accountManagementService.sendArtefactForSubscription(artefact);
+            accountManagementService.sendArtefactForAllSubscriptions(artefact);
         }
     }
 
@@ -63,6 +65,8 @@ public class PublicationSubscriptionService {
      */
     public void checkNewlyActiveArtefacts(boolean scheduledListType) {
         List<Artefact> artefacts;
+        // For scheduled subscription list types, the API subscribers have already been notified at publication upload,
+        // so only trigger email subscriptions here.
         if (scheduledListType) {
             Set<String> listTypesToTrigger = new HashSet<>();
             EnumSet.allOf(ListType.class).forEach(listType -> {
@@ -72,13 +76,14 @@ public class PublicationSubscriptionService {
             });
             artefacts = artefactRepository.findActiveArtefactsByListTypeIn(listTypesToTrigger, LocalDate.now(),
                                                                            LocalDateTime.now());
+            artefacts.forEach(accountManagementService::sendArtefactForEmailSubscription);
         } else {
             artefacts = artefactRepository.findArtefactsByDisplayFrom(LocalDate.now(), LocalDateTime.now())
                 .stream()
                 .filter(artefact -> !artefact.getListType().isScheduledSubscription())
                 .toList();
+            artefacts.forEach(accountManagementService::sendArtefactForAllSubscriptions);
         }
-        artefacts.forEach(accountManagementService::sendArtefactForSubscription);
     }
 
     /**

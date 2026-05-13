@@ -47,8 +47,8 @@
                         "hearingType": "Directions",
                         "case": [
                           {
-                            "caseName": "This is a case name",
-                            "caseNumber": "12341234",
+                            "caseName": "This is a case name 2",
+                            "caseNumber": "12341235",
                             "caseType": "Case type",
                             "caseJurisdictionET": "Family Law",
                             "caseSequenceIndicator": "2 of 3",

@@ -93,6 +93,96 @@
                                 }
                               }
                             ]
+                          },
+                          {
+                            "caseName": "This is a case name 2",
+                            "caseNumber": "12341235",
+                            "caseJurisdictionET": "Family Law",
+                            "caseSequenceIndicator": "2 of 3",
+                            "caseType": "Case type",
+                            "reportingRestrictionDetail": [
+                              "Reporting restriction 1",
+                              "Reporting restriction 2"
+                            ],
+                            "party": [
+                              {
+                                "partyRole": "APPLICANT_PETITIONER",
+                                "individualDetails": {
+                                  "individualSurname": "Surname"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT",
+                                "organisationDetails": {
+                                  "organisationName": "OrganisationName"
+                                }
+                              },
+                              {
+                                "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
+                                "friendlyRoleName": "Legal Advisor",
+                                "individualDetails": {
+                                  "individualForenames": "Individual Forenames",
+                                  "individualMiddleName": "Individual Middlename",
+                                  "individualSurname": "Individual Surname",
+                                  "title": "Mr"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT_REPRESENTATIVE",
+                                "friendlyRoleName": "Legal Advisor",
+                                "individualDetails": {
+                                  "individualForenames": "Individual Forenames",
+                                  "individualMiddleName": "Individual Middlename",
+                                  "individualSurname": "Individual Surname",
+                                  "title": "Mr"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "caseName": "This is another case name",
+                            "caseNumber": "12341236",
+                            "caseJurisdictionET": "Family Law",
+                            "caseSequenceIndicator": "2 of 3",
+                            "caseType": "Case type",
+                            "reportingRestrictionDetail": [
+                              "Reporting restriction 1",
+                              "Reporting restriction 2"
+                            ],
+                            "party": [
+                              {
+                                "partyRole": "APPLICANT_PETITIONER",
+                                "individualDetails": {
+                                  "individualSurname": "Surname"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT",
+                                "organisationDetails": {
+                                  "organisationName": "OrganisationName"
+                                }
+                              },
+                              {
+                                "partyRole": "APPLICANT_PETITIONER_REPRESENTATIVE",
+                                "friendlyRoleName": "Legal Advisor",
+                                "individualDetails": {
+                                  "individualForenames": "Individual Forenames",
+                                  "individualMiddleName": "Individual Middlename",
+                                  "individualSurname": "Individual Surname",
+                                  "title": "Mr"
+                                }
+                              },
+                              {
+                                "partyRole": "RESPONDENT_REPRESENTATIVE",
+                                "friendlyRoleName": "Legal Advisor",
+                                "individualDetails": {
+                                  "individualForenames": "Individual Forenames",
+                                  "individualMiddleName": "Individual Middlename",
+                                  "individualSurname": "Individual Surname",
+                                  "title": "Mr"
+                                }
+                              }
+                            ]
                           }
                         ]
                       }

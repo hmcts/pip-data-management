@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.OK;
 
 @ActiveProfiles("test")
 class AccountManagementServiceTest {
@@ -115,29 +116,65 @@ class AccountManagementServiceTest {
     }
 
     @Test
-    void testSendTrigger() {
+    void testSendArtefactForEmailSubscriptionSuccess() {
         mockAccountManagementEndpoint.enqueue(new MockResponse()
-                                                       .setBody(TRIGGER_RECEIVED));
-        assertEquals(TRIGGER_RECEIVED, accountManagementService.sendArtefactForSubscription(ARTEFACT),
-                     "Trigger is not being sent");
+                                                  .setResponseCode(OK.value()));
+        accountManagementService.sendArtefactForEmailSubscription(ARTEFACT);
+        assertTrue(logCaptor.getErrorLogs().isEmpty());
     }
 
     @Test
-    void testFailedSend() {
+    void testSendArtefactForEmailSubscriptionFailed() {
         mockAccountManagementEndpoint.enqueue(new MockResponse()
-                                                       .setResponseCode(BAD_REQUEST.value()));
-        assertEquals(accountManagementService.sendArtefactForSubscription(ARTEFACT),
-                     "Artefact failed to send: " + ARTEFACT.getArtefactId(), "Error message failed to send.");
+                                                  .setResponseCode(BAD_REQUEST.value()));
+        accountManagementService.sendArtefactForEmailSubscription(ARTEFACT);
         assertTrue(logCaptor.getErrorLogs().get(0)
-                       .contains("Request to send artefact to Account Management failed with error:"),
-                   "Exception was not logged.");
+                       .contains("Request to send artefact to Account Management for email subscriptions failed "
+                                     + "with error:"));
+    }
+
+    @Test
+    void testSendArtefactForApiSubscriptionSuccess() {
+        mockAccountManagementEndpoint.enqueue(new MockResponse()
+                                                  .setResponseCode(OK.value()));
+        accountManagementService.sendArtefactForApiSubscription(ARTEFACT);
+        assertTrue(logCaptor.getErrorLogs().isEmpty());
+    }
+
+    @Test
+    void testSendArtefactForApiSubscriptionFailed() {
+        mockAccountManagementEndpoint.enqueue(new MockResponse()
+                                                  .setResponseCode(BAD_REQUEST.value()));
+        accountManagementService.sendArtefactForApiSubscription(ARTEFACT);
+        assertTrue(logCaptor.getErrorLogs().get(0)
+                       .contains("Request to send artefact to Account Management for API subscriptions failed "
+                                     + "with error:"));
+    }
+
+    @Test
+    void testSendArtefactForAllSubscriptionsSuccess() {
+        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(OK.value()));
+        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(OK.value()));
+        accountManagementService.sendArtefactForAllSubscriptions(ARTEFACT);
+        assertTrue(logCaptor.getErrorLogs().isEmpty());
+    }
+
+    @Test
+    void testSendArtefactForAllSubscriptionsPartiallyFailed() {
+        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(BAD_REQUEST.value()));
+        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(OK.value()));
+        accountManagementService.sendArtefactForAllSubscriptions(ARTEFACT);
+        assertEquals(1, logCaptor.getErrorLogs().size());
+        assertTrue(logCaptor.getErrorLogs().get(0)
+                       .contains("Request to send artefact to Account Management for email subscriptions failed "
+                                     + "with error:"));
     }
 
     @Test
     void testSendDeletedArtefact() {
         mockAccountManagementEndpoint.enqueue(new MockResponse()
-                                                       .setBody(TRIGGER_RECEIVED)
-                                                       .setResponseCode(200));
+                                                  .setBody(TRIGGER_RECEIVED)
+                                                  .setResponseCode(200));
         assertEquals(TRIGGER_RECEIVED, accountManagementService.sendDeletedArtefactForThirdParties(ARTEFACT),
                      "Trigger is not being sent");
     }
