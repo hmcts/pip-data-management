@@ -108,40 +108,20 @@ public class AccountManagementService {
         return systemAdmins;
     }
 
-    public void sendArtefactForAllSubscriptions(Artefact artefact) {
-        sendArtefactForEmailSubscription(artefact);
-        sendArtefactForApiSubscription(artefact);
-    }
-
-    public void sendArtefactForEmailSubscription(Artefact artefact) {
+    public String sendArtefactForSubscription(Artefact artefact) {
         try {
-            webClient.post()
-                .uri(url + "/subscription/email-recipients")
+            return webClient.post()
+                .uri(url + "/subscription/artefact-recipients")
                 .body(BodyInserters.fromValue(artefact))
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
         } catch (WebClientException ex) {
             log.error(writeLog(
-                String.format("Request to send artefact to Account Management for email subscriptions failed with "
-                                  + "error: %s", ex.getMessage())
+                String.format("Request to send artefact to Account Management failed with error: %s",
+                              ex.getMessage())
             ));
-        }
-    }
-
-    public void sendArtefactForApiSubscription(Artefact artefact) {
-        try {
-            webClient.post()
-                .uri(url + "/subscription/api-recipients")
-                .body(BodyInserters.fromValue(artefact))
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-        } catch (WebClientException ex) {
-            log.error(writeLog(
-                String.format("Request to send artefact to Account Management for API subscriptions failed with "
-                                  + "error: %s", ex.getMessage())
-            ));
+            return "Artefact failed to send: " + artefact.getArtefactId();
         }
     }
 

@@ -191,19 +191,6 @@ public final class ArtefactConstantTestHelper {
             .build();
     }
 
-    public static Artefact buildArtefactFromTomorrow() {
-        return Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .sourceArtefactId(SOURCE_ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .displayFrom(LocalDateTime.now().plusDays(1))
-            .displayTo(LocalDateTime.now().plusDays(2))
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .build();
-    }
-
     public static Artefact buildArtefactWithNullDateTo() {
         return Artefact.builder()
             .artefactId(ARTEFACT_ID)
