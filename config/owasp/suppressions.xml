@@ -98,4 +98,8 @@
     <cve>CVE-2026-34479</cve>
     <cve>CVE-2026-34477</cve>
   </suppress>
+  <suppress>
+    <notes>netty</notes>
+    <cve>CVE-2026-41417</cve>
+  </suppress>
 </suppressions>
