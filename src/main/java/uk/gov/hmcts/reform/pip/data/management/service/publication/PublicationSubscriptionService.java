@@ -47,14 +47,16 @@ public class PublicationSubscriptionService {
      * process on account-management if appropriate.
      */
     public void checkAndTriggerPublicationSubscription(Artefact artefact) {
-        // For scheduled subscription list types, send to API subscribers only during publication upload.
-        // Notify email subscribers once a day only at a scheduled time.
-        if (artefact.getListType().isScheduledSubscription()) {
-            accountManagementService.sendArtefactForApiSubscription(artefact);
-        } else if (artefact.getDisplayFrom().toLocalDate().isBefore(LocalDate.now().plusDays(1))
+        if (artefact.getDisplayFrom().toLocalDate().isBefore(LocalDate.now().plusDays(1))
             && (artefact.getDisplayTo() == null
             || artefact.getDisplayTo().toLocalDate().isAfter(LocalDate.now().minusDays(1)))) {
-            accountManagementService.sendArtefactForAllSubscriptions(artefact);
+            // For scheduled subscription list types, send to API subscribers only during publication upload.
+            // Notify email subscribers once a day only at a scheduled time.
+            if (artefact.getListType().isScheduledSubscription()) {
+                accountManagementService.sendArtefactForApiSubscription(artefact);
+            } else {
+                accountManagementService.sendArtefactForAllSubscriptions(artefact);
+            }
         }
     }
 
@@ -80,9 +82,14 @@ public class PublicationSubscriptionService {
         } else {
             artefacts = artefactRepository.findArtefactsByDisplayFrom(LocalDate.now(), LocalDateTime.now())
                 .stream()
-                .filter(artefact -> !artefact.getListType().isScheduledSubscription())
                 .toList();
-            artefacts.forEach(accountManagementService::sendArtefactForAllSubscriptions);
+            artefacts.forEach(a -> {
+                if (a.getListType().isScheduledSubscription()) {
+                    accountManagementService.sendArtefactForApiSubscription(a);
+                } else {
+                    accountManagementService.sendArtefactForAllSubscriptions(a);
+                }
+            });
         }
     }
 
