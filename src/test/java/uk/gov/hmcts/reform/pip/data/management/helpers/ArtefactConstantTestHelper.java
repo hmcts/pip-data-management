@@ -1,178 +1,260 @@
-package uk.gov.hmcts.reform.pip.data.management.service;
+package uk.gov.hmcts.reform.pip.data.management.helpers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientException;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
+import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.model.account.PiUser;
+import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
+import uk.gov.hmcts.reform.pip.model.location.LocationCsv;
+import uk.gov.hmcts.reform.pip.model.location.LocationType;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
-import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
+public final class ArtefactConstantTestHelper {
 
-@Slf4j
-@Component
-public class AccountManagementService {
+    public static final UUID ARTEFACT_ID = UUID.randomUUID();
+    public static final UUID USER_ID = UUID.randomUUID();
+    public static final String SOURCE_ARTEFACT_ID = "1234";
+    public static final String PROVENANCE = "provenance";
+    public static final String PROVENANCE_ID = "1234";
+    public static final String MANUAL_UPLOAD_PROVENANCE = "MANUAL_UPLOAD";
+    public static final String PAYLOAD = "This is a payload";
+    public static final String PAYLOAD_URL = "https://ThisIsATestPayload";
+    public static final String PAYLOAD_STRIPPED = "ThisIsATestPayload";
+    public static final String LOCATION_ID = "123";
+    public static final String NO_MATCH_LOCATION_ID = "NoMatch" + LOCATION_ID;
+    public static final String TEST_KEY = "TestKey";
+    public static final String TEST_VALUE = "TestValue";
+    public static final CaseSearchTerm SEARCH_TERM_CASE_ID = CaseSearchTerm.CASE_ID;
+    public static final CaseSearchTerm SEARCH_TERM_CASE_NAME = CaseSearchTerm.CASE_NAME;
+    public static final CaseSearchTerm SEARCH_TERM_CASE_URN = CaseSearchTerm.CASE_URN;
+    public static final Map<String, List<Object>> SEARCH_VALUES = new ConcurrentHashMap<>();
+    public static final MultipartFile FILE = new MockMultipartFile("test", (byte[]) null);
+    public static final String VALIDATION_ARTEFACT_NOT_MATCH = "Artefacts do not match";
+    public static final String ROWID_RETURNS_UUID = "Row ID must match returned UUID";
+    public static final String LOCATION_TYPE_MATCH = "Location types should match";
+    public static final String DELETION_TRACK_LOG_MESSAGE = "Track: %s, Removed %s, at ";
+    public static final String NO_COURT_EXISTS_IN_REFERENCE_DATA = "NoMatch1234";
+    public static final String VALIDATION_MORE_THAN_PUBLIC = "More than the public artefact has been found";
+    public static final String VALIDATION_NOT_THROWN_MESSAGE = "Expected exception has not been thrown";
+    public static final String TEST_FILE = "Hello";
+    public static final String SUCCESSFUL_TRIGGER = "success - subscription sent";
+    public static final String SUCCESS = "Success";
 
-    private final WebClient webClient;
+    public static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
+    public static final LocalDateTime START_OF_TODAY_CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay();
 
-    @Value("${service-to-service.account-management}")
-    private String url;
+    public static final String LOCATION_VENUE = LocationType.VENUE.name();
 
-    @Autowired
-    public AccountManagementService(WebClient webClient) {
-        this.webClient = webClient;
+    public static Artefact buildArtefact() {
+        return Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .locationId(PROVENANCE_ID)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.PUBLIC)
+            .build();
     }
 
-    /**
-     * Calls Account Management to determine whether a user is allowed to see a set publication.
-     * @param userId The UUID of the user to retrieve.
-     * @param listType The list type of the publication.
-     * @param sensitivity The sensitivity of the publication
-     * @return A flag indicating whether the user is authorised.
-     */
-    public Boolean getIsAuthorised(UUID userId, ListType listType, Sensitivity sensitivity) {
-        try {
-            return webClient.get()
-                .uri(String.format("%s/account/isAuthorised/%s/%s/%s", url, userId, listType, sensitivity))
-                .retrieve()
-                .bodyToMono(Boolean.class)
-                .block();
-        } catch (WebClientException ex) {
-            log.error(writeLog(
-                String.format("Request to Account Management to check user authorisation failed with error: %s",
-                              ex.getMessage())
-            ));
-            return false;
-        }
+    public static Artefact buildArtefactWithPayloadUrl() {
+        return Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .locationId(LOCATION_ID)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.PUBLIC)
+            .build();
     }
 
-    public List<String> getAllAccounts(String provenances, String role, UUID requesterId)
-        throws JsonProcessingException  {
-        try {
-            String result = webClient.get()
-                .uri(String.format("%s/account/all?provenances=%s&roles=%s", url, provenances, role))
-                .header("x-requester-id", requesterId.toString())
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-            return findAllSystemAdmins(result);
-        } catch (WebClientException ex) {
-            log.error(writeLog(
-                String.format("Request to Account Management to get all user accounts failed with error: %s",
-                              ex.getMessage())
-            ));
-            return List.of("Failed to find all the accounts");
-        }
+    public static Artefact buildArtefactWithIdAndPayloadUrl() {
+        return Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .locationId(LOCATION_ID)
+            .contentDate(CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.PUBLIC)
+            .build();
     }
 
-    public PiUser getUserById(UUID userId) {
-        try {
-            return webClient.get()
-                .uri(url + "/account/" + userId)
-                .header("x-requester-id", userId.toString())
-                .retrieve()
-                .bodyToMono(PiUser.class)
-                .block();
-        } catch (WebClientException ex) {
-            log.error(writeLog(
-                String.format("Request to Account Management to get PI User account failed with error: %s",
-                              ex.getMessage())
-            ));
-            return new PiUser();
-        }
+    public static Artefact buildNoMatchArtefactWithIdAndPayloadUrl() {
+        return Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .locationId(NO_MATCH_LOCATION_ID)
+            .contentDate(CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.PUBLIC)
+            .build();
     }
 
-    private List<String> findAllSystemAdmins(String result) throws JsonProcessingException {
-        List<String> systemAdmins = new ArrayList<>();
-        JsonNode node = new ObjectMapper().readTree(result);
-        if (!node.isEmpty()) {
-            JsonNode content = node.get("content");
-            content.forEach(jsonObject -> {
-                if (jsonObject.has("roles")) {
-                    systemAdmins.add(jsonObject.get("email").asText());
-                }
-            });
-        }
-        return systemAdmins;
+    public static Artefact buildSjpPublicArtefact() {
+        return Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .locationId(PROVENANCE_ID)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
+            .listType(ListType.SJP_PUBLIC_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.PUBLIC)
+            .displayFrom(LocalDateTime.now().plusDays(1))
+            .displayTo(LocalDateTime.now().plusDays(2))
+            .build();
     }
 
-    public void sendArtefactForAllSubscriptions(Artefact artefact) {
-        sendArtefactForEmailSubscription(artefact);
-        sendArtefactForApiSubscription(artefact);
+    public static Artefact buildSjpPressArtefact() {
+        return Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .locationId(PROVENANCE_ID)
+            .contentDate(START_OF_TODAY_CONTENT_DATE)
+            .listType(ListType.SJP_PRESS_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.PUBLIC)
+            .displayFrom(LocalDateTime.now().plusDays(1))
+            .displayTo(LocalDateTime.now().plusDays(2))
+            .build();
     }
 
-    public void sendArtefactForEmailSubscription(Artefact artefact) {
-        try {
-            webClient.post()
-                .uri(url + "/subscription/email-recipients")
-                .body(BodyInserters.fromValue(artefact))
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-        } catch (WebClientException ex) {
-            log.error(writeLog(
-                String.format("Request to send artefact to Account Management for email subscriptions failed with "
-                                  + "error: %s", ex.getMessage())
-            ));
-        }
+    public static Artefact buildClassifiedPayloads() {
+        return Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .locationId(PROVENANCE_ID)
+            .contentDate(CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.CLASSIFIED)
+            .build();
     }
 
-    public void sendArtefactForApiSubscription(Artefact artefact) {
-        try {
-            webClient.post()
-                .uri(url + "/subscription/api-recipients")
-                .body(BodyInserters.fromValue(artefact))
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-        } catch (WebClientException ex) {
-            log.error(writeLog(
-                String.format("Request to send artefact to Account Management for API subscriptions failed with "
-                                  + "error: %s", ex.getMessage())
-            ));
-        }
+    public static Artefact buildArtefactWithPayloadUrlClassified() {
+        return Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .displayFrom(LocalDateTime.now())
+            .displayTo(null)
+            .locationId(LOCATION_ID)
+            .contentDate(CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.CLASSIFIED)
+            .build();
     }
 
-    public String sendDeletedArtefactForThirdParties(Artefact artefact) {
-        try {
-            return webClient.post().uri(url + "/subscription/deleted-artefact")
-                .body(BodyInserters.fromValue(artefact))
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-        } catch (WebClientException ex) {
-            log.error(writeLog(
-                String.format("Request to Account Management to send deleted artefact to third party failed "
-                                  + "with error: %s", ex.getMessage())
-            ));
-            return "Artefact failed to send: " + artefact.getArtefactId();
-        }
+    public static Artefact buildArtefactFromThePast() {
+        return Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .displayFrom(LocalDateTime.now().minusDays(1))
+            .displayTo(LocalDateTime.now().plusDays(1))
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .build();
     }
 
-    public String findSubscriptionsByLocationId(String locationId) {
-        try {
-            return webClient.get().uri(url + "/subscription/location/" + locationId)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-        } catch (WebClientException ex) {
-            log.error(writeLog(
-                String.format("Request to Account Management to find subscriptions for location %s failed "
-                                  + "with error: %s", locationId, ex.getMessage())
-            ));
-            return "Failed to find subscription for Location: " + locationId + " with status: " + ex.getMessage();
-        }
+    public static Artefact buildArtefactFromNow() {
+        return Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .displayFrom(LocalDateTime.now())
+            .displayTo(LocalDateTime.now().plusHours(3))
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .build();
+    }
+
+    public static Artefact buildArtefactWithNullDateTo() {
+        return Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .displayFrom(LocalDateTime.now())
+            .displayTo(null)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .build();
+    }
+
+    public static Artefact buildArtefactWithSameDateFromAndTo() {
+        return Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .displayFrom(LocalDateTime.now())
+            .displayTo(LocalDateTime.now())
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .build();
+    }
+
+    public static Artefact buildArtefactInTheFuture() {
+        return Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .displayFrom(LocalDateTime.now().plusDays(1))
+            .displayTo(LocalDateTime.now().plusDays(2))
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .build();
+    }
+
+    public static Artefact buildNoMatchArtefact() {
+        return Artefact.builder()
+            .artefactId(ARTEFACT_ID)
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .payload(PAYLOAD_URL)
+            .search(SEARCH_VALUES)
+            .locationId(NO_COURT_EXISTS_IN_REFERENCE_DATA)
+            .contentDate(CONTENT_DATE)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.PUBLIC)
+            .build();
+    }
+
+    public static Location initialiseCourts() {
+        LocationCsv locationCsvFirstExample = new LocationCsv();
+        locationCsvFirstExample.setLocationName("Court Name First Example");
+        locationCsvFirstExample.setProvenanceLocationType("venue");
+        Location location = new Location(locationCsvFirstExample);
+        location.setLocationId(1234);
+        return location;
+    }
+
+    private ArtefactConstantTestHelper() {
+
     }
 }
