@@ -42,9 +42,9 @@ public class PublicationReportingService {
      * Retrieve artefact data for MI reporting.
      * @return MI artefact data as a list of PublicationMiData objects
      */
-    public List<PublicationMiData> getMiData() {
-        LocalDateTime publicationReceivedDate = LocalDate.now()
-            .minusDays(7)
+    public List<PublicationMiData> getMiData(int days) {
+        LocalDateTime publicationReceivedDate = days == -1 ? null : LocalDate.now()
+            .minusDays(days)
             .atStartOfDay();
         List<PublicationMiData> publicationMiData =
             artefactRepository.getMiData(publicationReceivedDate);

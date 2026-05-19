@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.STATUS_CODE_MATCH;
@@ -46,9 +47,9 @@ class PublicationReportingControllerTest {
             Sensitivity.PUBLIC, UUID.randomUUID().toString(), 1, ArtefactType.GENERAL_PUBLICATION,
             LocalDateTime.now(), "NoMatch2", ListType.CIVIL_DAILY_CAUSE_LIST);
 
-        when(publicationReportingService.getMiData()).thenReturn(List.of(publicationMiData, publicationMiData2));
+        when(publicationReportingService.getMiData(any())).thenReturn(List.of(publicationMiData, publicationMiData2));
 
-        ResponseEntity<List<PublicationMiData>> response = publicationReportingController.getMiData();
+        ResponseEntity<List<PublicationMiData>> response = publicationReportingController.getMiData(any());
 
         assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_CODE_MATCH);
         assertThat(response.getBody()).containsExactlyInAnyOrder(publicationMiData, publicationMiData2);

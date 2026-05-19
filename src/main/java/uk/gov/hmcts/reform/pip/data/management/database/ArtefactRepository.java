@@ -120,7 +120,7 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
         + "provenance, sensitivity, sourceArtefactId, "
         + "supersededCount, type, contentDate, locationId, listType) "
         + "FROM Artefact "
-        + "WHERE lastReceivedDate >= :publicationReceivedDate")
+        + "WHERE CAST(:publicationReceivedDate AS timestamp) IS NULL OR lastReceivedDate >= :publicationReceivedDate")
     List<PublicationMiData> getMiData(@Param("publicationReceivedDate") LocalDateTime date);
 
     @Query(value = "SELECT * FROM Artefact "

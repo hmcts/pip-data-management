@@ -10,8 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationReportingService;
@@ -48,9 +50,10 @@ public class PublicationReportingController {
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @Operation(summary = "Returns MI data for artefacts")
-    @GetMapping("/mi-data")
-    public ResponseEntity<List<PublicationMiData>> getMiData() {
-        return ResponseEntity.ok().body(publicationReportingService.getMiData());
+    @GetMapping("/mi-data/{days}")
+    public ResponseEntity<List<PublicationMiData>> getMiData(
+        @PathVariable int days) {
+        return ResponseEntity.ok().body(publicationReportingService.getMiData(days));
     }
 
     @ApiResponse(responseCode = NO_CONTENT_CODE, description = NO_CONTENT_DESCRIPTION)
