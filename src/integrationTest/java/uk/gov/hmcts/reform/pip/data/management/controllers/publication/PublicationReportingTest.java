@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PublicationReportingTest extends PublicationIntegrationTestBase {
     private static final String PUBLICATION_URL = "/publication";
     private static final String REPORT_NO_MATCH_ARTEFACTS_URL = PUBLICATION_URL + "/no-match/reporting";
-    private static final String MI_REPORTING_DATA_URL = PUBLICATION_URL + "/mi-data";
+    private static final String MI_REPORTING_DATA_URL = PUBLICATION_URL + "/mi-data/-1";
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static final String ADMIN = "admin";
     private static final String VALIDATION_MI_REPORT = "Should successfully retrieve MI data";
