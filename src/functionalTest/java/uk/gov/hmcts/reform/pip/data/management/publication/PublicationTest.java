@@ -61,7 +61,7 @@ class PublicationTest extends FunctionalTestBase {
     private static final String ARTEFACT_BY_LOCATION_ID_URL = PUBLICATION_URL + "/locationId/";
     private static final String ARTEFACT_BY_SEARCH_VALUE_URL = PUBLICATION_URL + "/search";
     private static final String DELETE_ARTEFACTS_BY_LOCATION_ID = PUBLICATION_URL + "/%s/deleteArtefacts";
-    private static final String MI_DATA_URL = PUBLICATION_URL + "/mi-data";
+    private static final String MI_DATA_URL = PUBLICATION_URL + "/mi-data/-1";
 
     private static final String TESTING_SUPPORT_LOCATION_URL = "/testing-support/location/";
     private static final String TESTING_SUPPORT_PUBLICATION_URL = "/testing-support/publication/";
