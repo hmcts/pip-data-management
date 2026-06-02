@@ -1,7 +1,7 @@
 # pip-data-management
 ![alt-text](./hmctsLogo.png)
 
-## Table of Contents 
+## Table of Contents
 
 - [Overview](#overview)
 - [Features and Functionality](#features-and-functionality)
@@ -56,7 +56,7 @@ Broadly speaking, this service has components relating to:
 
 - Retrieving individual locations or lists of locations
 - Uploading and validation of location reference data
-- Deletion of locations where appropriate.
+- Deletion of locations where appropriate
 
 ##### Alternative publishing formats
 
