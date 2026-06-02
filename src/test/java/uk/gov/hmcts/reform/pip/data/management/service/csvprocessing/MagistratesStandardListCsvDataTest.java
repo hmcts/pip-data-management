@@ -65,7 +65,7 @@ class MagistratesStandardListCsvDataTest {
             json = new ObjectMapper().readTree(inputRaw);
         }
         Map<String, Object> languageResources = TestUtils.getLanguageResources(MAGISTRATES_STANDARD_LIST, "en");
-        List<List<String>> rows = csvData.getRows(json, languageResources);
+        List<List<String>> rows = csvData.getRows(json, Map.of(), languageResources);
 
         assertThat(rows)
             .as("Incorrect number of rows")

@@ -116,7 +116,12 @@ public class PublicationFileGenerationService {
             );
             if (csvData.isPresent()) {
                 csv = fileConverter.get().convertToCsv(csvData.get().getHeaders(languageResources),
-                                                       csvData.get().getRows(topLevelNode, languageResources));
+                                                       csvData.get().getRows(
+                                                           topLevelNode,
+                                                           buildArtefactMetadata(artefact, location,
+                                                                                 artefact.getLanguage()),
+                                                           languageResources
+                                                       ));
             }
 
             return Optional.of(new PublicationFiles(pdfs.getLeft(), pdfs.getRight(), excel, csv));

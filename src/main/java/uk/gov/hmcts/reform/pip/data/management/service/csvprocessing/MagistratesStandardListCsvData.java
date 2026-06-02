@@ -42,7 +42,7 @@ public class MagistratesStandardListCsvData implements CsvData {
     }
 
     @Override
-    public List<List<String>> getRows(JsonNode json, Map<String, Object> languageResources) {
+    public List<List<String>> getRows(JsonNode json, Map<String, String> metadata, Map<String, Object> languageResources) {
         List<List<String>> rows = new ArrayList<>();
         Map<String, CourtRoom> processedData = MagistratesStandardListHelper.processRawListData(json);
 

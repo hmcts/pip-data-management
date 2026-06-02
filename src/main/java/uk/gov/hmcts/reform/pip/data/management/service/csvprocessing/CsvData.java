@@ -16,7 +16,8 @@ public interface CsvData {
     /**
      * Interface method that retrieves the rows required to generate CSV.
      */
-    default List<List<String>> getRows(JsonNode json, Map<String, Object> languageResource) {
+    default List<List<String>> getRows(JsonNode json, Map<String, String> metadata,
+                                       Map<String, Object> languageResource) {
         return List.of();
     }
 }

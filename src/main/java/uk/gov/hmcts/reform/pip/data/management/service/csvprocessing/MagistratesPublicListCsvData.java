@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.service.csvprocessing;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.MagistratesPublicListHelper;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class MagistratesPublicListCsvData implements CsvData {
     }
 
     @Override
-    public List<List<String>> getRows(JsonNode json, Map<String, Object> languageResources) {
+    public List<List<String>> getRows(JsonNode json, Map<String, String> metadata, Map<String, Object> languageResources) {
         List<List<String>> rows = new ArrayList<>();
         MagistratesPublicListHelper.manipulatedMagistratesPublicListData(json);
 
@@ -38,18 +39,20 @@ public class MagistratesPublicListCsvData implements CsvData {
                         courtRoom -> courtRoom.get("session").forEach(
                                 session -> session.get("sittings").forEach(
                                         sitting -> sitting.get("hearing").forEach(hearing -> {
+                                            String courtHouse = metadata.get("locationName");
                                             if (hearing.has("case")) {
                                                 hearing.get("case").forEach(
                                                     hearingCase -> rows.add(
                                                         List.of(
-                                                            "",
+                                                            courtHouse,
                                                             session.get("formattedSessionCourtRoom").asText(),
                                                             sitting.get("time").asText(),
                                                             hearingCase.get("caseUrn").asText(),
                                                             hearingCase.get("defendant").asText(),
                                                             hearing.get("hearingType").asText(),
                                                             hearingCase.get("prosecutingAuthority").asText(),
-                                                            getOffenceDetails(hearingCase),
+                                                            GeneralHelper.findAndReturnNodeText(hearingCase,
+                                                                                                "offence"),
                                                             getReportingRestriction(
                                                                 hearingCase,
                                                                 languageResources
@@ -60,14 +63,15 @@ public class MagistratesPublicListCsvData implements CsvData {
                                                 hearing.get("application").forEach(
                                                     application -> rows.add(
                                                         List.of(
-                                                            "",
+                                                            courtHouse,
                                                             session.get("formattedSessionCourtRoom").asText(),
                                                             sitting.get("time").asText(),
                                                             application.get("applicationReference").asText(),
                                                             application.get("defendant").asText(),
                                                             "",
                                                             application.get("prosecutingAuthority").asText(),
-                                                            getOffenceDetails(application),
+                                                            GeneralHelper.findAndReturnNodeText(application,
+                                                                                                "offence"),
                                                             ""
                                                         )));
                                             }
@@ -79,12 +83,6 @@ public class MagistratesPublicListCsvData implements CsvData {
 
 
         return rows;
-    }
-
-    private String getOffenceDetails(JsonNode node) {
-        return node.has("offence") && !node.get("offence").asText().isEmpty()
-                ? node.get("offence").asText()
-                : "";
     }
 
     private String getReportingRestriction(JsonNode hearingCase, Map<String, Object> languageResources) {
