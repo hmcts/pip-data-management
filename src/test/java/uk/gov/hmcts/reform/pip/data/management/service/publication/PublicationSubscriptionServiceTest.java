@@ -17,7 +17,6 @@ import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CivilDail
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.NonStrategicListSummaryData;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,9 +28,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SUCCESS;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SUCCESSFUL_TRIGGER;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
@@ -70,16 +68,19 @@ class PublicationSubscriptionServiceTest {
     private final Artefact artefactWithSameDateFromAndTo = ArtefactConstantTestHelper
         .buildArtefactWithSameDateFromAndTo();
     private final Artefact artefactInTheFuture = ArtefactConstantTestHelper.buildArtefactInTheFuture();
+    private final Artefact artefactForScheduledSubscriptionListType = ArtefactConstantTestHelper.buildArtefactFromNow();
 
     @BeforeEach
     void setup() {
         ARTEFACT.setArtefactId(TEST_ARTEFACT_ID);
         ARTEFACT.setListType(ListType.SJP_PUBLIC_LIST);
         ARTEFACT.setPayloadSize(100F);
+
+        artefactForScheduledSubscriptionListType.setListType(ListType.MAGISTRATES_ADULT_COURT_LIST_DAILY);
     }
 
     @Test
-    void testTriggerIfDateIsFuture() throws IOException {
+    void testNotTriggerIfDateIsFuture() {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
             publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefactInTheFuture);
             assertEquals(
@@ -87,46 +88,54 @@ class PublicationSubscriptionServiceTest {
                 logCaptor.getInfoLogs().size(),
                 "Should not have returned a log as no trigger was sent."
             );
-        } catch (Exception ex) {
-            throw new IOException(ex.getMessage());
+            verifyNoInteractions(accountManagementService);
         }
     }
 
     @Test
     void testTriggerIfDateIsNow() {
-        when(accountManagementService.sendArtefactForSubscription(artefactFromNow)).thenReturn(SUCCESSFUL_TRIGGER);
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
             publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefactFromNow);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
+            verify(accountManagementService).sendArtefactForAllSubscriptions(artefactFromNow);
         }
     }
 
     @Test
     void testTriggerIfDateIsPast() {
-        when(accountManagementService.sendArtefactForSubscription(artefactFromThePast)).thenReturn(SUCCESSFUL_TRIGGER);
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
             publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefactFromThePast);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
+            verify(accountManagementService).sendArtefactForAllSubscriptions(artefactFromThePast);
         }
     }
 
     @Test
     void testTriggerIfDateToNull() {
-        when(accountManagementService.sendArtefactForSubscription(artefactWithNullDateTo))
-            .thenReturn(SUCCESSFUL_TRIGGER);
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
             publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefactWithNullDateTo);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
+            verify(accountManagementService).sendArtefactForAllSubscriptions(artefactWithNullDateTo);
         }
     }
 
     @Test
     void testTriggerIfSameDateFromTo() {
-        when(accountManagementService.sendArtefactForSubscription(artefactWithSameDateFromAndTo))
-            .thenReturn(SUCCESSFUL_TRIGGER);
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
             publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefactWithSameDateFromAndTo);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
+            verify(accountManagementService).sendArtefactForAllSubscriptions(artefactWithSameDateFromAndTo);
+        }
+    }
+
+    @Test
+    void testTriggerApiSubscriptionOnlyForScheduledListType() {
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
+            publicationSubscriptionService.checkAndTriggerPublicationSubscription(
+                artefactForScheduledSubscriptionListType
+            );
+            assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
+            verify(accountManagementService).sendArtefactForApiSubscription(artefactForScheduledSubscriptionListType);
         }
     }
 
@@ -134,20 +143,20 @@ class PublicationSubscriptionServiceTest {
     void testCheckNewlyActiveArtefactsLogs() {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
             when(artefactRepository.findArtefactsByDisplayFrom(any(), any())).thenReturn(List.of(ARTEFACT));
-            when(accountManagementService.sendArtefactForSubscription(any())).thenReturn(SUCCESS);
             publicationSubscriptionService.checkNewlyActiveArtefacts(false);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
+            verify(accountManagementService).sendArtefactForAllSubscriptions(any());
         }
     }
 
     @Test
-    void testCheckNewlyActiveArtefactsForScheduledListType() {
+    void testCheckNewlyActiveArtefactsForEmailSubscriptionOnlyForScheduledListType() {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
             when(artefactRepository.findActiveArtefactsByListTypeIn(anySet(), any(), any()))
                 .thenReturn(List.of(new Artefact()));
-            when(accountManagementService.sendArtefactForSubscription(any())).thenReturn(SUCCESS);
             publicationSubscriptionService.checkNewlyActiveArtefacts(true);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
+            verify(accountManagementService).sendArtefactForEmailSubscription(any());
         }
     }
 
