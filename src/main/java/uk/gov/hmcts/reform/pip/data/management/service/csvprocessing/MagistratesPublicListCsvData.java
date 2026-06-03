@@ -30,7 +30,8 @@ public class MagistratesPublicListCsvData implements CsvData {
     }
 
     @Override
-    public List<List<String>> getRows(JsonNode json, Map<String, String> metadata, Map<String, Object> languageResources) {
+    public List<List<String>> getRows(JsonNode json, Map<String, String> metadata,
+                                      Map<String, Object> languageResources) {
         List<List<String>> rows = new ArrayList<>();
         MagistratesPublicListHelper.manipulatedMagistratesPublicListData(json);
 

@@ -48,7 +48,7 @@ class MagistratesPublicListCsvDataTest {
             json = new ObjectMapper().readTree(inputRaw);
         }
         Map<String, Object> languageResources = TestUtils.getLanguageResources(MAGISTRATES_PUBLIC_LIST, "en");
-        List<List<String>> rows = csvData.getRows(json, languageResources);
+        List<List<String>> rows = csvData.getRows(json, Map.of("locationName", "Court A"), languageResources);
 
         assertThat(rows)
             .as("Incorrect number of rows")
@@ -57,7 +57,7 @@ class MagistratesPublicListCsvDataTest {
         assertThat(rows.get(0))
             .as("Incorrect first row")
             .containsExactly(
-                "",
+                "Court A",
                 "CourtRoom 1: Judge KnownAs, Judge KnownAs 2",
                 "10:40am",
                 "12345678",
