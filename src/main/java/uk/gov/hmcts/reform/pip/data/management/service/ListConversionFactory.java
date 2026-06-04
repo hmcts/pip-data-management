@@ -17,6 +17,9 @@ import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.Magistrat
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.MagistratesStandardListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.NonStrategicListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.SscsDailyListSummaryData;
+import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.CrownDailyPddaListCsvData;
+import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.CrownFirmPddaListCsvData;
+import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.CrownWarnedPddaListCsvData;
 import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.CsvData;
 import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.MagistratesPublicListCsvData;
 import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.MagistratesStandardListCsvData;
@@ -434,14 +437,17 @@ public class ListConversionFactory {
         )),
         Map.entry(CROWN_DAILY_PDDA_LIST, new ConversionConfig(
             new CrownPddaListFileConverter(CROWN_DAILY_PDDA_LIST),
+            new CrownDailyPddaListCsvData(),
             new CrownPddaListSummaryData(CROWN_DAILY_PDDA_LIST)
         )),
         Map.entry(CROWN_FIRM_PDDA_LIST, new ConversionConfig(
             new CrownPddaListFileConverter(CROWN_FIRM_PDDA_LIST),
+            new CrownFirmPddaListCsvData(),
             new CrownPddaListSummaryData(CROWN_FIRM_PDDA_LIST)
         )),
         Map.entry(CROWN_WARNED_PDDA_LIST, new ConversionConfig(
             new CrownWarnedPddaListFileConverter(),
+            new CrownWarnedPddaListCsvData(),
             new CrownWarnedPddaListSummaryData()
         ))
     );

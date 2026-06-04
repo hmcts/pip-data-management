@@ -17,7 +17,11 @@
   "restrictionBulletPoint1": "the court directly",
   "restrictionBulletPoint2": "HM Courts and Tribunals Service on 0330 808 4407",
   "court": "COURT ",
-  "sittingAt": "Sitting at ",
+  "courtHouse": "Court House",
+  "courtAddress": "Court Address",
+  "courtPhone": "Court Phone Number",
+  "courtRoom": "Court Room",
+  "sittingAt": "Sitting at",
   "tableHeaders": [
     "Hearing Time",
     "Case Reference",

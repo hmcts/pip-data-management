@@ -17,7 +17,11 @@
   "restrictionBulletPoint1": "llys yn uniongyrchol",
   "restrictionBulletPoint2": "Gwasanaeth Llysoedd a Thribiwnlysoedd EM ar 0330 808 4407",
   "court": "LLYS ",
-  "sittingAt": "Yn eistedd yn ",
+  "courtHouse": "Llys",
+  "courtAddress": "Court Address",
+  "courtPhone": "Court Phone Number",
+  "courtRoom": "Ystafell Llys",
+  "sittingAt": "Yn eistedd yn",
   "tableHeaders": [
     "Amser y Gwrandawiad",
     "Cyfeirnod yr Achos",
