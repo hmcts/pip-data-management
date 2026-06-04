@@ -65,7 +65,7 @@ class CrownWarnedPddaListCsvDataTest {
             );
 
         assertThat(rows.get(1))
-            .as("Incorrect first row")
+            .as("Incorrect second row for not allocated cases")
             .containsExactly(
                 "To be allocated",
                 "03/01/2024",
