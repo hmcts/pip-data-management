@@ -21,6 +21,8 @@
   "hearingDurationMinute": "min",
   "hearingDurationHours": "hours",
   "hearingDurationMinutes": "mins",
+  "courtHouse": "Court House",
+  "courtRoom": "Court Room",
   "headerValuesNoWrap": [
     "Sitting at"
   ],
@@ -30,8 +32,8 @@
     "Hearing Type",
     "Prosecuting Authority"
   ],
-  "offenceDetails": "Offence Details: ",
-  "reportingRestrictions": "Reporting Restrictions: ",
+  "offenceDetails": "Offence Details",
+  "reportingRestrictions": "Reporting Restrictions",
   "reportingRestrictionText": "Press/Publication restrictions apply to this case",
   "dataSource": "Data Source: ",
   "thanks": "Thank you for reading this document thoroughly.",
