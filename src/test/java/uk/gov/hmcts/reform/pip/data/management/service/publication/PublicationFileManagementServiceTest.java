@@ -44,6 +44,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.pip.model.publication.FileType.CSV;
 import static uk.gov.hmcts.reform.pip.model.publication.FileType.EXCEL;
 import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 
@@ -52,6 +53,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 class PublicationFileManagementServiceTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final Artefact ARTEFACT = new Artefact();
+    private static final Artefact ARTEFACT_MAGISTRATES_LIST = new Artefact();
 
     private static final String NOT_FOUND_MESSAGE = "File not found";
     private static final String BYTES_NO_MATCH = "Bytes didn't match";
@@ -95,6 +97,10 @@ class PublicationFileManagementServiceTest {
         ARTEFACT.setListType(ListType.SJP_PUBLIC_LIST);
         ARTEFACT.setPayloadSize(100F);
 
+        ARTEFACT_MAGISTRATES_LIST.setArtefactId(TEST_ARTEFACT_ID);
+        ARTEFACT_MAGISTRATES_LIST.setListType(ListType.MAGISTRATES_PUBLIC_LIST);
+        ARTEFACT_MAGISTRATES_LIST.setPayloadSize(100F);
+
         lenient().when(publicationRetrievalService.payloadWithinExcelLimit(argThat(arg -> arg <= 2048)))
             .thenReturn(true);
         lenient().when(publicationRetrievalService.payloadWithinPdfLimit(argThat(arg -> arg <= 256)))
@@ -104,7 +110,7 @@ class PublicationFileManagementServiceTest {
     @Test
     void testGenerateFilesWithPrimaryPdfOnly() {
         when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
-            .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, EMPTY_BYTES, EMPTY_BYTES)));
+            .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, EMPTY_BYTES, EMPTY_BYTES, EMPTY_BYTES)));
 
         publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
 
@@ -112,24 +118,26 @@ class PublicationFileManagementServiceTest {
         verify(azureBlobService, never())
             .uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
         verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
+        verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + CSV.getExtension()), any());
     }
 
     @Test
     void testGenerateFilesWithPrimaryAndAdditionalPdfs() {
         when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
-            .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, BYTE_DATA, EMPTY_BYTES)));
+            .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, BYTE_DATA, EMPTY_BYTES, EMPTY_BYTES)));
 
         publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
         verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
+        verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + CSV.getExtension()), any());
     }
 
     @Test
     void testGenerateFilesWithPdfAndExcel() {
         when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
-            .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, EMPTY_BYTES, BYTE_DATA)));
+            .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, EMPTY_BYTES, BYTE_DATA, EMPTY_BYTES)));
 
         publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
 
@@ -137,12 +145,13 @@ class PublicationFileManagementServiceTest {
         verify(azureBlobService, never())
             .uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
+        verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + CSV.getExtension()), any());
     }
 
     @Test
     void testGenerateFilesWithExcelOnly() {
         when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
-            .thenReturn(Optional.of(new PublicationFiles(EMPTY_BYTES, EMPTY_BYTES, BYTE_DATA)));
+            .thenReturn(Optional.of(new PublicationFiles(EMPTY_BYTES, EMPTY_BYTES, BYTE_DATA, EMPTY_BYTES)));
 
         publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
 
@@ -150,6 +159,35 @@ class PublicationFileManagementServiceTest {
         verify(azureBlobService, never())
             .uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
+        verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + CSV.getExtension()), any());
+    }
+
+    @Test
+    void testGenerateFilesWithPdfAndCsv() {
+        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
+            .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, EMPTY_BYTES, EMPTY_BYTES, BYTE_DATA)));
+
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
+
+        verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
+        verify(azureBlobService, never())
+            .uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
+        verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
+        verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + CSV.getExtension()), any());
+    }
+
+    @Test
+    void testGenerateFilesWithCsvOnly() {
+        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
+            .thenReturn(Optional.of(new PublicationFiles(EMPTY_BYTES, EMPTY_BYTES, EMPTY_BYTES, BYTE_DATA)));
+
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
+
+        verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
+        verify(azureBlobService, never())
+            .uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
+        verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
+        verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + CSV.getExtension()), any());
     }
 
     @Test
@@ -207,7 +245,7 @@ class PublicationFileManagementServiceTest {
     }
 
     @Test
-    void testGetStoredPdfPublicationNonSjp() {
+    void testGetStoredPdfPublicationCivilList() {
         ARTEFACT.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         when(publicationRetrievalService.getMetadataByArtefactId(TEST_ARTEFACT_ID)).thenReturn(ARTEFACT);
         when(azureBlobService.getBlobFile(TEST_ARTEFACT_ID + PDF.getExtension())).thenReturn(TEST_BYTE);
@@ -221,7 +259,7 @@ class PublicationFileManagementServiceTest {
     }
 
     @Test
-    void testGetStoredAdditionalPdfPublicationNonSjp() {
+    void testGetStoredAdditionalPdfPublicationCivilList() {
         ARTEFACT.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         when(publicationRetrievalService.getMetadataByArtefactId(TEST_ARTEFACT_ID)).thenReturn(ARTEFACT);
         when(azureBlobService.getBlobFile(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()))
@@ -236,7 +274,7 @@ class PublicationFileManagementServiceTest {
     }
 
     @Test
-    void testGetStoredExcelPublicationNonSjp() {
+    void testGetStoredExcelPublicationCivilList() {
         ARTEFACT.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         when(publicationRetrievalService.getMetadataByArtefactId(TEST_ARTEFACT_ID)).thenReturn(ARTEFACT);
         doThrow(new NotFoundException(NOT_FOUND_MESSAGE)).when(azureBlobService)
@@ -245,6 +283,36 @@ class PublicationFileManagementServiceTest {
         NotFoundException ex = assertThrows(NotFoundException.class, () ->
             publicationFileManagementService.getStoredPublication(
                 TEST_ARTEFACT_ID, EXCEL, null, TEST_USER_ID, true, false
+            ));
+
+        assertTrue(ex.getMessage().contains(NOT_FOUND_MESSAGE), EXCEPTION_NOT_MATCH);
+    }
+
+    @Test
+    void testGetStoredCsvPublicationMagistratesList() {
+        when(publicationRetrievalService.getMetadataByArtefactId(TEST_ARTEFACT_ID))
+            .thenReturn(ARTEFACT_MAGISTRATES_LIST);
+        when(azureBlobService.getBlobFile(TEST_ARTEFACT_ID + CSV.getExtension())).thenReturn(TEST_BYTE);
+
+        String response = publicationFileManagementService.getStoredPublication(
+            TEST_ARTEFACT_ID, CSV, null, TEST_USER_ID, true, false
+        );
+
+        byte[] decodedBytes = Base64.getDecoder().decode(response);
+        assertEquals(Arrays.toString(TEST_BYTE), Arrays.toString(decodedBytes), BYTES_NO_MATCH);
+    }
+
+    @Test
+    void testGetStoredCsvPublicationCivilList() {
+        ARTEFACT.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
+        when(publicationRetrievalService.getMetadataByArtefactId(TEST_ARTEFACT_ID))
+            .thenReturn(ARTEFACT_MAGISTRATES_LIST);
+        doThrow(new NotFoundException(NOT_FOUND_MESSAGE)).when(azureBlobService)
+            .getBlobFile(TEST_ARTEFACT_ID + CSV.getExtension());
+
+        NotFoundException ex = assertThrows(NotFoundException.class, () ->
+            publicationFileManagementService.getStoredPublication(
+                TEST_ARTEFACT_ID, CSV, null, TEST_USER_ID, true, false
             ));
 
         assertTrue(ex.getMessage().contains(NOT_FOUND_MESSAGE), EXCEPTION_NOT_MATCH);
@@ -330,6 +398,7 @@ class PublicationFileManagementServiceTest {
         verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + PDF.getExtension());
         verify(azureBlobService, never()).deleteBlobFile(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension());
         verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + EXCEL.getExtension());
+        verify(azureBlobService, never()).deleteBlobFile(TEST_ARTEFACT_ID + CSV.getExtension());
     }
 
     @Test
@@ -339,25 +408,39 @@ class PublicationFileManagementServiceTest {
         verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + PDF.getExtension());
         verify(azureBlobService, never()).deleteBlobFile(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension());
         verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + EXCEL.getExtension());
+        verify(azureBlobService, never()).deleteBlobFile(TEST_ARTEFACT_ID + CSV.getExtension());
     }
 
     @Test
-    void testDeleteFilesV2NonSjpEnglish() {
+    void testDeleteFilesV2CivilListEnglish() {
         publicationFileManagementService.deleteFiles(TEST_ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
                                                      Language.ENGLISH);
 
         verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + PDF.getExtension());
         verify(azureBlobService, never()).deleteBlobFile(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension());
         verify(azureBlobService, never()).deleteBlobFile(TEST_ARTEFACT_ID + EXCEL.getExtension());
+        verify(azureBlobService, never()).deleteBlobFile(TEST_ARTEFACT_ID + CSV.getExtension());
     }
 
     @Test
-    void testDeleteFilesV2NonSjpWelsh() {
+    void testDeleteFilesV2CivilListWelsh() {
         publicationFileManagementService.deleteFiles(TEST_ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Language.WELSH);
 
         verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + PDF.getExtension());
         verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension());
         verify(azureBlobService, never()).deleteBlobFile(TEST_ARTEFACT_ID + EXCEL.getExtension());
+        verify(azureBlobService, never()).deleteBlobFile(TEST_ARTEFACT_ID + CSV.getExtension());
+    }
+
+    @Test
+    void testDeleteFilesV2MagistratesList() {
+        publicationFileManagementService.deleteFiles(TEST_ARTEFACT_ID, ListType.MAGISTRATES_PUBLIC_LIST,
+                                                     Language.ENGLISH);
+
+        verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + PDF.getExtension());
+        verify(azureBlobService, never()).deleteBlobFile(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension());
+        verify(azureBlobService, never()).deleteBlobFile(TEST_ARTEFACT_ID + EXCEL.getExtension());
+        verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + CSV.getExtension());
     }
 
     @Test
@@ -375,6 +458,8 @@ class PublicationFileManagementServiceTest {
         when(azureBlobService.blobFileExists(TEST_ARTEFACT_ID  + WELSH_PDF_SUFFIX + PDF.getExtension()))
             .thenReturn(false);
         when(azureBlobService.blobFileExists(TEST_ARTEFACT_ID + EXCEL.getExtension()))
+            .thenReturn(false);
+        when(azureBlobService.blobFileExists(TEST_ARTEFACT_ID + CSV.getExtension()))
             .thenReturn(true);
 
         assertTrue(publicationFileManagementService.fileExists(TEST_ARTEFACT_ID), FILE_EXISTS_FLAG_MESSAGE);
@@ -388,6 +473,8 @@ class PublicationFileManagementServiceTest {
             .thenReturn(false);
         when(azureBlobService.blobFileExists(TEST_ARTEFACT_ID + EXCEL.getExtension()))
             .thenReturn(false);
+        when(azureBlobService.blobFileExists(TEST_ARTEFACT_ID + CSV.getExtension()))
+            .thenReturn(false);
 
         assertFalse(publicationFileManagementService.fileExists(TEST_ARTEFACT_ID), FILE_EXISTS_FLAG_MESSAGE);
     }
@@ -400,12 +487,15 @@ class PublicationFileManagementServiceTest {
             .thenReturn(null);
         when(azureBlobService.getBlobSize(TEST_ARTEFACT_ID + EXCEL.getExtension()))
             .thenReturn(123L);
+        when(azureBlobService.getBlobSize(TEST_ARTEFACT_ID + CSV.getExtension()))
+            .thenReturn(120L);
 
         PublicationFileSizes fileSizes = publicationFileManagementService.getFileSizes(TEST_ARTEFACT_ID);
 
         assertNull(fileSizes.getAdditionalPdf(), FILE_SIZE_MESSAGE);
         assertEquals(1234L, fileSizes.getPrimaryPdf(), FILE_SIZE_MESSAGE);
         assertEquals(123L, fileSizes.getExcel(), FILE_SIZE_MESSAGE);
+        assertEquals(120L, fileSizes.getCsv(), FILE_SIZE_MESSAGE);
     }
 
     private static Stream<Arguments> sjpParameters() throws JsonProcessingException {
