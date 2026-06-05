@@ -21,6 +21,8 @@ import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.CrownDailyP
 import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.CrownFirmPddaListCsvData;
 import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.CrownWarnedPddaListCsvData;
 import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.CsvData;
+import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.MagistratesAdultCourtListCsvData;
+import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.MagistratesPublicAdultCourtListCsvData;
 import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.MagistratesPublicListCsvData;
 import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.MagistratesStandardListCsvData;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CivilAndFamilyDailyCauseListFileConverter;
@@ -421,18 +423,22 @@ public class ListConversionFactory {
         )),
         Map.entry(MAGISTRATES_ADULT_COURT_LIST_DAILY, new ConversionConfig(
             new MagistratesAdultCourtListFileConverter(true),
+            new MagistratesAdultCourtListCsvData(),
             new MagistratesAdultCourtListSummaryData(true)
         )),
         Map.entry(MAGISTRATES_ADULT_COURT_LIST_FUTURE, new ConversionConfig(
             new MagistratesAdultCourtListFileConverter(true),
+            new MagistratesAdultCourtListCsvData(),
             new MagistratesAdultCourtListSummaryData(true)
         )),
         Map.entry(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, new ConversionConfig(
             new MagistratesAdultCourtListFileConverter(false),
+            new MagistratesPublicAdultCourtListCsvData(),
             new MagistratesAdultCourtListSummaryData(false)
         )),
         Map.entry(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE, new ConversionConfig(
             new MagistratesAdultCourtListFileConverter(false),
+            new MagistratesPublicAdultCourtListCsvData(),
             new MagistratesAdultCourtListSummaryData(false)
         )),
         Map.entry(CROWN_DAILY_PDDA_LIST, new ConversionConfig(
