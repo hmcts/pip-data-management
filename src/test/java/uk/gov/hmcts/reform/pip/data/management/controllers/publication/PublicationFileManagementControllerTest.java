@@ -60,7 +60,7 @@ class PublicationFileManagementControllerTest {
 
     @Test
     void testGetFileSizes() {
-        PublicationFileSizes fileSizes = new PublicationFileSizes(1234L, null, 123L);
+        PublicationFileSizes fileSizes = new PublicationFileSizes(1234L, null, 123L, null);
         when(publicationFileManagementService.getFileSizes(ARTEFACT_ID)).thenReturn(fileSizes);
 
         ResponseEntity<PublicationFileSizes> response =
