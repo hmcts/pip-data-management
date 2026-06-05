@@ -244,7 +244,7 @@ class MagistratesStandardListFileConverterTest {
 
         softly.assertThat(body.get(12).text())
             .as(HEARING_INFO_MESSAGE)
-            .contains("Prosecuting Authority:");
+            .contains("Prosecuting Authority Name:");
 
         softly.assertThat(body.get(13).text())
             .as(HEARING_INFO_MESSAGE)
