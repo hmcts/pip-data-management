@@ -368,7 +368,9 @@ class MagistratesStandardListFileConverterTest {
 
         softly.assertThat(body)
             .as(HEARING_INFO_MESSAGE)
-            .anyMatch(element -> element.text().contains("Application Particulars: This is an application particulars example"));
+            .anyMatch(
+                element ->
+                    element.text().contains("Application Particulars: This is an application particulars example"));
 
         softly.assertThat(body)
             .as(HEARING_INFO_MESSAGE)
