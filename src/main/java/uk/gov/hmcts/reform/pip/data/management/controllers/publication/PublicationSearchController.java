@@ -10,16 +10,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSearchService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.List;
 import java.util.UUID;
@@ -39,9 +45,13 @@ public class PublicationSearchController {
     private static final String FORBIDDEN_MESSAGE = "User has not been authorized";
 
     private static final String OK_CODE = "200";
+    private static final String CREATED_CODE = "201";
+    private static final String BAD_REQUEST_CODE = "400";
     private static final String NOT_FOUND_CODE = "404";
     private static final String UNAUTHORISED_CODE = "401";
     private static final String FORBIDDEN_CODE = "403";
+    private static final String CONFLICT_CODE = "409";
+    private static final String BEARER_AUTHENTICATION = "bearerAuth";
 
     private static final String DEFAULT_ADMIN_VALUE = "false";
     private static final String REQUESTER_ID_HEADER = "x-requester-id";
@@ -52,6 +62,44 @@ public class PublicationSearchController {
     public PublicationSearchController(PublicationSearchService publicationSearchService) {
         this.publicationSearchService = publicationSearchService;
     }
+
+    @ApiResponse(responseCode = CREATED_CODE, description = "List search config created successfully")
+    @ApiResponse(responseCode = BAD_REQUEST_CODE, description = "Unable to create list search config")
+    @ApiResponse(responseCode = CONFLICT_CODE, description = "List search config already exists")
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
+    @SecurityRequirement(name = BEARER_AUTHENTICATION)
+    @PostMapping("/search-config")
+    @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
+    public ResponseEntity<List<Artefact>> createListSearchConfig(
+        @RequestParam ListSearchConfig listSearchConfig,
+        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
+        return ResponseEntity.created();
+    }
+//
+//    @PutMapping("/search-config")
+//    @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
+//    public ResponseEntity<List<Artefact>> updateListSearchConfig(
+//        @RequestParam ListSearchConfig listSearchConfig,
+//        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
+//        return ResponseEntity.ok();
+//    }
+//
+//    @GetMapping("/search-config/{listType}")
+//    @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
+//    public ResponseEntity<ListSearchConfig> getListSearchConfigByListType(
+//        @PathVariable ListType listType,
+//        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
+//        return ResponseEntity.ok();
+//    }
+//
+//    @DeleteMapping("/search-config/{listType}")
+//    @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
+//    public ResponseEntity<ListSearchConfig> deleteListSearchConfigByListType(
+//        @PathVariable ListType listType,
+//        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
+//        return ResponseEntity.ok();
+//    }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching"
         + " a given case value, verification parameters and date requirements")

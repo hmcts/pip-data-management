@@ -2,27 +2,105 @@ package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
+import uk.gov.hmcts.reform.pip.data.management.database.ListSearchConfigRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateListSearchConfigConflictException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
+import uk.gov.hmcts.reform.pip.model.enums.UserActions;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
+
 @Slf4j
 @Service
 public class PublicationSearchService {
     private final ArtefactRepository artefactRepository;
+    private final ListSearchConfigRepository listSearchConfigRepository;
     private final PublicationRetrievalService publicationRetrievalService;
 
     @Autowired
     public PublicationSearchService(ArtefactRepository artefactRepository,
+                                    ListSearchConfigRepository listSearchConfigRepository,
                                     PublicationRetrievalService publicationRetrievalService) {
         this.artefactRepository = artefactRepository;
+        this.listSearchConfigRepository = listSearchConfigRepository;
         this.publicationRetrievalService = publicationRetrievalService;
+    }
+
+    /**
+     * Handles request to add list search config.
+     *
+     * @param listSearchConfig The list search config object
+     * @param actioningUserId The userId who is performing this action
+     */
+    public void createListSearchConfig(ListSearchConfig listSearchConfig, UUID actioningUserId) {
+        try {
+            listSearchConfigRepository.save(listSearchConfig);
+            log.info(writeLog(actioningUserId, UserActions.ADD_LIST_SEARCH_CONFIG,
+                              listSearchConfig.getListType().toString()));
+        } catch (DataIntegrityViolationException e) {
+            String errorMessage = String.format(
+                "List search config for list type %s already exists",
+                listSearchConfig.getListType());
+            log.error(writeLog(errorMessage));
+            throw new CreateListSearchConfigConflictException(errorMessage);
+        }
+    }
+
+    /**
+     * Handles request to update list search config.
+     * @param id The list search config ID to update
+     * @param listSearchConfig The list search config object
+     * @param actioningUserId The userId who is performing this action
+     */
+    public void updateListSearchConfig(String id, ListSearchConfig listSearchConfig, UUID actioningUserId) {
+        listSearchConfigRepository.findById(UUID.fromString(id))
+            .orElseThrow(() -> new NotFoundException(
+                String.format("List search config for ID %s does not exist", id)
+            ));
+
+        log.info(writeLog(actioningUserId, UserActions.UPDATE_LIST_SEARCH_CONFIG,
+                          listSearchConfig.getListType().toString()));
+
+        listSearchConfigRepository.save(listSearchConfig);
+    }
+
+    /**
+     * Handles request to delete list search config.
+     * @param id The list search config ID to delete
+     * @param actioningUserId The userId who is performing this action
+     */
+    public void deleteListSearchConfig(String id, UUID actioningUserId) {
+        UUID listSearchConfigId = UUID.fromString(id);
+        listSearchConfigRepository.findById(listSearchConfigId)
+            .orElseThrow(() -> new NotFoundException(
+                String.format("List search config for ID %s does not exist", id)
+            ));
+        listSearchConfigRepository.deleteById(listSearchConfigId);
+
+        log.info(writeLog(actioningUserId, UserActions.DELETE_LIST_SEARCH_CONFIG, id));
+    }
+
+    /**
+     * Handles request to find list search config by list type.
+     * @param listType The list type to search for
+     * @return the list search config for the given list type
+     */
+    public ListSearchConfig findListSearchConfigByListType(ListType listType) {
+        return listSearchConfigRepository.findByListType(listType)
+            .orElseThrow(() -> new NotFoundException(
+                String.format("List search config for list type %s does not exist", listType)
+            ));
     }
 
     /**
