@@ -120,15 +120,16 @@ public class PublicationSearchController {
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List search config retrieved successfully")
+    @ApiResponse(responseCode = BAD_REQUEST_CODE, description = "Unable to retrieve list search config")
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No list search config found with list type: {listType}")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @GetMapping("/search-config/{listType}")
     @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
     public ResponseEntity<ListSearchConfig> getListSearchConfigByListType(
-        @PathVariable String listType,
+        @PathVariable ListType listType,
         @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
-        return ResponseEntity.ok(publicationSearchService.findListSearchConfigByListType(ListType.valueOf(listType)));
+        return ResponseEntity.ok(publicationSearchService.findListSearchConfigByListType(listType));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching"
