@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions;
 
-public class CreateArtefactConflictException extends RuntimeException {
+public class CreateArtefactConflictException extends DataConflictException {
     private static final long serialVersionUID = 3662821754485634512L;
 
     /**

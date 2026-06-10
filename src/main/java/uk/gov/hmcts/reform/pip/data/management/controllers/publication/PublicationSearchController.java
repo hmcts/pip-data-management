@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -72,7 +73,7 @@ public class PublicationSearchController {
     @PostMapping("/search-config")
     @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
     public ResponseEntity<String> createListSearchConfig(
-        @RequestParam ListSearchConfig listSearchConfig,
+        @RequestBody ListSearchConfig listSearchConfig,
         @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
         publicationSearchService.createListSearchConfig(listSearchConfig, requesterId);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -91,7 +92,7 @@ public class PublicationSearchController {
     @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
     public ResponseEntity<String> updateListSearchConfig(
         @PathVariable String id,
-        @RequestParam ListSearchConfig listSearchConfig,
+        @RequestBody ListSearchConfig listSearchConfig,
         @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
         publicationSearchService.updateListSearchConfig(id, listSearchConfig, requesterId);
         return ResponseEntity.status(HttpStatus.OK)
@@ -125,9 +126,9 @@ public class PublicationSearchController {
     @GetMapping("/search-config/{listType}")
     @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
     public ResponseEntity<ListSearchConfig> getListSearchConfigByListType(
-        @PathVariable ListType listType,
+        @PathVariable String listType,
         @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
-        return ResponseEntity.ok(publicationSearchService.findListSearchConfigByListType(listType));
+        return ResponseEntity.ok(publicationSearchService.findListSearchConfigByListType(ListType.valueOf(listType)));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching"

@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.models.publication;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,7 +26,7 @@ public class ListSearchConfig {
     @Column(columnDefinition = "uuid", insertable = false, updatable = false, nullable = false)
     private UUID id;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(unique = true)
     private ListType listType;
 
