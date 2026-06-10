@@ -70,7 +70,7 @@ public class PublicationSearchController {
     @ApiResponse(responseCode = CONFLICT_CODE, description = "List search config already exists")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @PostMapping("/search-config")
+    @PostMapping("/search/config")
     @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
     public ResponseEntity<String> createListSearchConfig(
         @RequestBody ListSearchConfig listSearchConfig,
@@ -88,7 +88,7 @@ public class PublicationSearchController {
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No list search config found with id: {id}")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @PutMapping("/search-config/{id}")
+    @PutMapping("/search/config/{id}")
     @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
     public ResponseEntity<String> updateListSearchConfig(
         @PathVariable String id,
@@ -106,7 +106,7 @@ public class PublicationSearchController {
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No list search config found with id: {id}")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @DeleteMapping("/search-config/{id}")
+    @DeleteMapping("/search/config/{id}")
     @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
     public ResponseEntity<String> deleteListSearchConfig(
         @PathVariable String id,
@@ -124,7 +124,7 @@ public class PublicationSearchController {
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No list search config found with list type: {listType}")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @GetMapping("/search-config/{listType}")
+    @GetMapping("/search/config/{listType}")
     @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
     public ResponseEntity<ListSearchConfig> getListSearchConfigByListType(
         @PathVariable ListType listType,
