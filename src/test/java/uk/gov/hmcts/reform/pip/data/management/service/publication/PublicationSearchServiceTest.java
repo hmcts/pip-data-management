@@ -64,6 +64,7 @@ class PublicationSearchServiceTest {
     private static final String ABC = "abc";
     private static final ListSearchConfig LIST_SEARCH_CONFIG = new ListSearchConfig();
     private static final String CASE_NUMBER_FIELD_NAME = "caseNumber";
+    private static final String CASE_NAME_FIELD_NAME = "caseName";
 
     @Mock
     private ArtefactRepository artefactRepository;
@@ -99,6 +100,7 @@ class PublicationSearchServiceTest {
         SEARCH_VALUES.put(TEST_KEY, List.of(TEST_VALUE));
         LIST_SEARCH_CONFIG.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         LIST_SEARCH_CONFIG.setCaseNumberFieldName(CASE_NUMBER_FIELD_NAME);
+        LIST_SEARCH_CONFIG.setCaseNameFieldName(CASE_NAME_FIELD_NAME);
 
     }
 
@@ -230,6 +232,9 @@ class PublicationSearchServiceTest {
 
         assertThat(listSearchConfig.getCaseNumberFieldName())
             .isEqualTo(CASE_NUMBER_FIELD_NAME);
+
+        assertThat(listSearchConfig.getCaseNameFieldName())
+            .isEqualTo(CASE_NAME_FIELD_NAME);
     }
 
     @Test

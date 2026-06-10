@@ -11,9 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +25,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConf
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSearchService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,7 +33,8 @@ import java.util.UUID;
 @Slf4j
 @Validated
 @RestController
-@Tag(name = "Data Management - API for filtering and searching publications")
+@Tag(name = "Data Management - API for filtering and searching publications as well as management of the search "
+    + "configurations for list types")
 @RequestMapping("/publication")
 @SecurityRequirement(name = "bearerAuth")
 public class PublicationSearchController {
@@ -65,7 +69,6 @@ public class PublicationSearchController {
     @ApiResponse(responseCode = CONFLICT_CODE, description = "List search config already exists")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     @PostMapping("/search-config")
     @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
     public ResponseEntity<String> createListSearchConfig(
@@ -78,30 +81,54 @@ public class PublicationSearchController {
                 requesterId
             ));
     }
-//
-//    @PutMapping("/search-config")
-//    @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
-//    public ResponseEntity<List<Artefact>> updateListSearchConfig(
-//        @RequestParam ListSearchConfig listSearchConfig,
-//        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
-//        return ResponseEntity.ok();
-//    }
-//
-//    @GetMapping("/search-config/{listType}")
-//    @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
-//    public ResponseEntity<ListSearchConfig> getListSearchConfigByListType(
-//        @PathVariable ListType listType,
-//        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
-//        return ResponseEntity.ok();
-//    }
-//
-//    @DeleteMapping("/search-config/{listType}")
-//    @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
-//    public ResponseEntity<ListSearchConfig> deleteListSearchConfigByListType(
-//        @PathVariable ListType listType,
-//        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
-//        return ResponseEntity.ok();
-//    }
+
+    @ApiResponse(responseCode = OK_CODE, description = "List search config updated successfully")
+    @ApiResponse(responseCode = BAD_REQUEST_CODE, description = "Unable to update list search config")
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No list search config found with id: {id}")
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
+    @PutMapping("/search-config/{id}")
+    @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
+    public ResponseEntity<String> updateListSearchConfig(
+        @PathVariable String id,
+        @RequestParam ListSearchConfig listSearchConfig,
+        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
+        publicationSearchService.updateListSearchConfig(id, listSearchConfig, requesterId);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(String.format(
+                "List search config successfully updated by user %s",
+                requesterId
+            ));
+    }
+
+    @ApiResponse(responseCode = OK_CODE, description = "List search config deleted successfully")
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No list search config found with id: {id}")
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
+    @DeleteMapping("/search-config/{id}")
+    @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
+    public ResponseEntity<String> deleteListSearchConfig(
+        @PathVariable String id,
+        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
+        publicationSearchService.deleteListSearchConfig(id, requesterId);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(String.format(
+                "List search config successfully deleted by user %s",
+                requesterId
+            ));
+    }
+
+    @ApiResponse(responseCode = OK_CODE, description = "List search config retrieved successfully")
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No list search config found with list type: {listType}")
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
+    @GetMapping("/search-config/{listType}")
+    @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
+    public ResponseEntity<ListSearchConfig> getListSearchConfigByListType(
+        @PathVariable ListType listType,
+        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
+        return ResponseEntity.ok(publicationSearchService.findListSearchConfigByListType(listType));
+    }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching"
         + " a given case value, verification parameters and date requirements")

@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSearchService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
@@ -21,8 +23,14 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_VALUES;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_KEY;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_VALUE;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.MESSAGES_MATCH;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.STATUS_CODE_MATCH;
 
 @ActiveProfiles("test")
@@ -58,20 +66,97 @@ class PublicationSearchControllerTest {
         .payloadSize(10f)
         .build();
 
+    private static final ListSearchConfig LIST_SEARCH_CONFIG = new ListSearchConfig();
+    private static final String CASE_NUMBER_FIELD_NAME = "caseNumber";
+    private static final String CASE_NAME_FIELD_NAME = "caseName";
+
     @Mock
     private PublicationSearchService publicationSearchService;
 
     @InjectMocks
     private PublicationSearchController publicationSearchController;
 
+    @BeforeAll
+    public static void setup() {
+        SEARCH_VALUES.put(TEST_KEY, List.of(TEST_VALUE));
+        LIST_SEARCH_CONFIG.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
+        LIST_SEARCH_CONFIG.setCaseNumberFieldName(CASE_NUMBER_FIELD_NAME);
+        LIST_SEARCH_CONFIG.setCaseNameFieldName(CASE_NAME_FIELD_NAME);
+    }
+
     @Test
     void testCreateListSearchConfigReturnsCreated() {
-        when(publicationSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID))
-            .thenReturn(List.of(ARTEFACT_WITH_ID));
-        assertEquals(HttpStatus.OK, publicationSearchController
-                         .getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING, USER_ID).getStatusCode(),
-                     STATUS_CODE_MATCH
+        doNothing().when(publicationSearchService).createListSearchConfig(LIST_SEARCH_CONFIG, USER_ID);
+
+        ResponseEntity<String> result = publicationSearchController.createListSearchConfig(LIST_SEARCH_CONFIG, USER_ID);
+
+        assertThat(result.getStatusCode())
+            .as(STATUS_CODE_MATCH)
+            .isEqualTo(HttpStatus.CREATED);
+
+        assertThat(result.getBody())
+            .as(MESSAGES_MATCH)
+            .isEqualTo("List search config successfully added by user " + USER_ID);
+    }
+
+    @Test
+    void testUpdateListSearchConfigReturnsOk() {
+        doNothing().when(publicationSearchService).updateListSearchConfig(TEST_STRING, LIST_SEARCH_CONFIG, USER_ID);
+
+        ResponseEntity<String> result = publicationSearchController.updateListSearchConfig(
+            TEST_STRING, LIST_SEARCH_CONFIG, USER_ID
         );
+
+        assertThat(result.getStatusCode())
+            .as(STATUS_CODE_MATCH)
+            .isEqualTo(HttpStatus.OK);
+
+        assertThat(result.getBody())
+            .as(MESSAGES_MATCH)
+            .isEqualTo("List search config successfully updated by user " + USER_ID);
+    }
+
+    @Test
+    void testDeleteListSearchConfigReturnsOk() {
+        doNothing().when(publicationSearchService).deleteListSearchConfig(TEST_STRING, USER_ID);
+
+        ResponseEntity<String> result = publicationSearchController.deleteListSearchConfig(TEST_STRING, USER_ID);
+
+        assertThat(result.getStatusCode())
+            .as(STATUS_CODE_MATCH)
+            .isEqualTo(HttpStatus.OK);
+
+        assertThat(result.getBody())
+            .as(MESSAGES_MATCH)
+            .isEqualTo("List search config successfully deleted by user " + USER_ID);
+    }
+
+    @Test
+    void testFindListSearchConfigByListTypeReturnsOk() {
+        when(publicationSearchService.findListSearchConfigByListType(ListType.CIVIL_DAILY_CAUSE_LIST))
+            .thenReturn(LIST_SEARCH_CONFIG);
+
+        ResponseEntity<ListSearchConfig> result = publicationSearchController.getListSearchConfigByListType(
+            ListType.CIVIL_DAILY_CAUSE_LIST, USER_ID
+        );
+
+        assertThat(result.getStatusCode())
+            .as(STATUS_CODE_MATCH)
+            .isEqualTo(HttpStatus.OK);
+
+        ListSearchConfig body = result.getBody();
+        assertThat(body.getListType())
+            .as(MESSAGES_MATCH)
+            .isEqualTo(ListType.CIVIL_DAILY_CAUSE_LIST);
+
+        assertThat(body.getCaseNumberFieldName())
+            .as(MESSAGES_MATCH)
+            .isEqualTo(CASE_NUMBER_FIELD_NAME);
+
+        assertThat(body.getCaseNameFieldName())
+            .as(MESSAGES_MATCH)
+            .isEqualTo(CASE_NAME_FIELD_NAME);
+
     }
 
     @Test
