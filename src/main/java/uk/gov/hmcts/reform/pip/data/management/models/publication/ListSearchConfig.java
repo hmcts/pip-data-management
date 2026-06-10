@@ -26,7 +26,7 @@ public class ListSearchConfig {
     private UUID id;
 
     @Enumerated
-    @Column(unique=true)
+    @Column(unique = true)
     private ListType listType;
 
     private String caseNumberFieldName;

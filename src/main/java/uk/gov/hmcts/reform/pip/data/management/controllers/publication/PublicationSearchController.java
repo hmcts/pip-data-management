@@ -7,15 +7,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +23,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConf
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSearchService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
-import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.List;
 import java.util.UUID;
@@ -71,10 +68,15 @@ public class PublicationSearchController {
     @SecurityRequirement(name = BEARER_AUTHENTICATION)
     @PostMapping("/search-config")
     @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
-    public ResponseEntity<List<Artefact>> createListSearchConfig(
+    public ResponseEntity<String> createListSearchConfig(
         @RequestParam ListSearchConfig listSearchConfig,
         @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
-        return ResponseEntity.created();
+        publicationSearchService.createListSearchConfig(listSearchConfig, requesterId);
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(String.format(
+                "List search config successfully added by user %s",
+                requesterId
+            ));
     }
 //
 //    @PutMapping("/search-config")
