@@ -16,11 +16,13 @@ import uk.gov.hmcts.reform.pip.data.management.models.PublicationFiles;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
+import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.CsvData;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -90,7 +92,8 @@ public class PublicationFileGenerationService {
 
         try {
             topLevelNode = MAPPER.readTree(rawJson);
-            Optional<FileConverter> fileConverter = listConversionFactory.getFileConverter(artefact.getListType());
+            ListType listType = artefact.getListType();
+            Optional<FileConverter> fileConverter = listConversionFactory.getFileConverter(listType);
 
             if (fileConverter.isEmpty()) {
                 log.error("Failed to find converter for list type");
@@ -98,7 +101,7 @@ public class PublicationFileGenerationService {
             }
             byte[] excel = new byte[0];
             if (publicationRetrievalService.payloadWithinExcelLimit(artefact.getPayloadSize())) {
-                excel = fileConverter.get().convertToExcel(topLevelNode, artefact.getListType());
+                excel = fileConverter.get().convertToExcel(topLevelNode, listType);
             }
 
             Pair<byte[], byte[]> pdfs = Pair.of(new byte[0], new byte[0]);
@@ -106,7 +109,22 @@ public class PublicationFileGenerationService {
                 pdfs = generatePdfs(fileConverter.get(), topLevelNode, artefact, location);
             }
 
-            return Optional.of(new PublicationFiles(pdfs.getLeft(), pdfs.getRight(), excel));
+            byte[] csv = new byte[0];
+            Optional<CsvData> csvData = listConversionFactory.getCsvData(listType);
+            Map<String, Object> languageResources = LanguageResourceHelper.getLanguageResources(
+                listType, artefact.getLanguage()
+            );
+            if (csvData.isPresent()) {
+                csv = fileConverter.get().convertToCsv(csvData.get().getHeaders(languageResources),
+                                                       csvData.get().getRows(
+                                                           topLevelNode,
+                                                           buildArtefactMetadata(artefact, location,
+                                                                                 artefact.getLanguage()),
+                                                           languageResources
+                                                       ));
+            }
+
+            return Optional.of(new PublicationFiles(pdfs.getLeft(), pdfs.getRight(), excel, csv));
 
         } catch (IOException ex) {
             throw new ProcessingException(String.format("Failed to generate files for artefact id %s", artefactId));

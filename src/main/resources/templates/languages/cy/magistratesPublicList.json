@@ -20,6 +20,8 @@
   "hearingDurationMinute": "munud",
   "hearingDurationHours": "awr",
   "hearingDurationMinutes": "munud",
+  "courtHouse": "Llys",
+  "courtRoom": "Ystafell Llys",
   "headerValuesNoWrap": [
     "Yn eistedd yn"
   ],
@@ -29,8 +31,8 @@
     "Math o Wrandawiad",
     "Yr Awdurdod sy'n Erlyn"
   ],
-  "offenceDetails": "Manylion yr Trosedd: ",
-  "reportingRestrictions": "Cyfyngiadau Riportio: ",
+  "offenceDetails": "Manylion yr Trosedd",
+  "reportingRestrictions": "Cyfyngiadau Riportio",
   "reportingRestrictionText": "Mae cyfyngiadau cyhoeddi/y wasg yn berthnasol i’r achos hwn",
   "dataSource": "Ffynhonnell Data: ",
   "thanks": "Diolch am ddarllen y ddogfen hon yn fanwl.",
