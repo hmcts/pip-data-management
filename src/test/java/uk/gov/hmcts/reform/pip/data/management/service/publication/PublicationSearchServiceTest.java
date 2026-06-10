@@ -101,7 +101,6 @@ class PublicationSearchServiceTest {
         LIST_SEARCH_CONFIG.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         LIST_SEARCH_CONFIG.setCaseNumberFieldName(CASE_NUMBER_FIELD_NAME);
         LIST_SEARCH_CONFIG.setCaseNameFieldName(CASE_NAME_FIELD_NAME);
-
     }
 
     @Test

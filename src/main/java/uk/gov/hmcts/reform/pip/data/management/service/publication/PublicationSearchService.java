@@ -41,13 +41,11 @@ public class PublicationSearchService {
      * Handles request to add list search config.
      *
      * @param listSearchConfig The list search config object
-     * @param actioningUserId The userId who is performing this action
+     * @param actioningUserId The ID of user who is performing this action
      */
     public void createListSearchConfig(ListSearchConfig listSearchConfig, UUID actioningUserId) {
         try {
             listSearchConfigRepository.save(listSearchConfig);
-            log.info(writeLog(actioningUserId, UserActions.ADD_LIST_SEARCH_CONFIG,
-                              listSearchConfig.getListType().toString()));
         } catch (DataIntegrityViolationException e) {
             String errorMessage = String.format(
                 "List search config for list type %s already exists",
@@ -55,30 +53,32 @@ public class PublicationSearchService {
             log.error(writeLog(errorMessage));
             throw new CreateListSearchConfigConflictException(errorMessage);
         }
+
+        log.info(writeLog(actioningUserId, UserActions.ADD_LIST_SEARCH_CONFIG,
+                          listSearchConfig.getListType().toString()));
     }
 
     /**
      * Handles request to update list search config.
      * @param id The list search config ID to update
      * @param listSearchConfig The list search config object
-     * @param actioningUserId The userId who is performing this action
+     * @param actioningUserId The ID of user who is performing this action
      */
     public void updateListSearchConfig(String id, ListSearchConfig listSearchConfig, UUID actioningUserId) {
         listSearchConfigRepository.findById(UUID.fromString(id))
             .orElseThrow(() -> new NotFoundException(
                 String.format("List search config for ID %s does not exist", id)
             ));
+        listSearchConfigRepository.save(listSearchConfig);
 
         log.info(writeLog(actioningUserId, UserActions.UPDATE_LIST_SEARCH_CONFIG,
                           listSearchConfig.getListType().toString()));
-
-        listSearchConfigRepository.save(listSearchConfig);
     }
 
     /**
      * Handles request to delete list search config.
      * @param id The list search config ID to delete
-     * @param actioningUserId The userId who is performing this action
+     * @param actioningUserId The ID of user who is performing this action
      */
     public void deleteListSearchConfig(String id, UUID actioningUserId) {
         UUID listSearchConfigId = UUID.fromString(id);

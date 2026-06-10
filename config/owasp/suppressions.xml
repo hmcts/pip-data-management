@@ -122,4 +122,13 @@
     <notes>netty</notes>
     <cve>CVE-2026-41417</cve>
   </suppress>
+  <suppress>
+    <notes>Spring vulnerabilities</notes>
+    <cve>CVE-2026-41842</cve>
+    <cve>CVE-2026-41850</cve>
+    <cve>CVE-2026-41851</cve>
+    <cve>CVE-2026-41840</cve>
+    <cve>CVE-2026-41841</cve>
+    <cve>CVE-2026-41843</cve>
+  </suppress>
 </suppressions>
