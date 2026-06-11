@@ -6,7 +6,6 @@ import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.ListSearchConfigRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationMetadataRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 
 public class IntegrationBasicTestBase extends IntegrationCommonTestBase {
     @MockitoBean
