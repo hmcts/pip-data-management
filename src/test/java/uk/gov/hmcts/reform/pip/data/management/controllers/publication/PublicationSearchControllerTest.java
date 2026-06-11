@@ -77,7 +77,7 @@ class PublicationSearchControllerTest {
     private PublicationSearchController publicationSearchController;
 
     @BeforeAll
-    public static void setup() {
+    static void setup() {
         SEARCH_VALUES.put(TEST_KEY, List.of(TEST_VALUE));
         LIST_SEARCH_CONFIG.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         LIST_SEARCH_CONFIG.setCaseNumberFieldName(CASE_NUMBER_FIELD_NAME);

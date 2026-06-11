@@ -53,7 +53,6 @@ public class PublicationSearchController {
     private static final String UNAUTHORISED_CODE = "401";
     private static final String FORBIDDEN_CODE = "403";
     private static final String CONFLICT_CODE = "409";
-    private static final String BEARER_AUTHENTICATION = "bearerAuth";
 
     private static final String DEFAULT_ADMIN_VALUE = "false";
     private static final String REQUESTER_ID_HEADER = "x-requester-id";
