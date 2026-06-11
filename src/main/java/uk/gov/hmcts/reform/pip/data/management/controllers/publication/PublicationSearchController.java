@@ -71,8 +71,8 @@ public class PublicationSearchController {
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @PostMapping("/search/config")
     @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
-    public ResponseEntity<String> createListSearchConfig(//NOSONAR
-        @RequestBody ListSearchConfig listSearchConfig,
+    public ResponseEntity<String> createListSearchConfig(
+        @RequestBody ListSearchConfig listSearchConfig,//NOSONAR
         @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
         publicationSearchService.createListSearchConfig(listSearchConfig, requesterId);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -89,9 +89,9 @@ public class PublicationSearchController {
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @PutMapping("/search/config/{id}")
     @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
-    public ResponseEntity<String> updateListSearchConfig(//NOSONAR
+    public ResponseEntity<String> updateListSearchConfig(
         @PathVariable String id,
-        @RequestBody ListSearchConfig listSearchConfig,
+        @RequestBody ListSearchConfig listSearchConfig,//NOSONAR
         @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
         publicationSearchService.updateListSearchConfig(id, listSearchConfig, requesterId);
         return ResponseEntity.status(HttpStatus.OK)
