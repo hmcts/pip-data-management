@@ -107,8 +107,8 @@ class ArtefactSearchServiceTest {
 
     @Test
     void testArtefactSearchStoreSuccess() throws Exception {
-        UUID artefactId = artefactWithIdAndListType.getArtefactId();
-        String payload = new ObjectMapper().writeValueAsString(
+        final UUID artefactId = artefactWithIdAndListType.getArtefactId();
+        final String payload = new ObjectMapper().writeValueAsString(
             Map.of(
                 "hearing", Map.of(
                     "caseNumber", "123",
