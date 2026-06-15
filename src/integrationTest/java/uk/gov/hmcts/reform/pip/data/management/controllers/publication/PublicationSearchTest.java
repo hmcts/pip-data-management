@@ -58,6 +58,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     private static final String SEARCH_BY_COURT_URL = PUBLICATION_URL + "/locationId";
     private static final String SEARCH_URL = PUBLICATION_URL + "/search";
     private static final String SEARCH_CONFIG_URL = PUBLICATION_URL + "/search/config";
+    private static final String SEARCH_ARTEFACT_URL = PUBLICATION_URL + "search/artefact";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final String COURT_ID = "1";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
@@ -757,4 +758,48 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
             .andExpect(status().isForbidden())
             .andReturn();
     }
+
+
+    @Test
+    void testFindArtefactSearchByArtefactIdSuccess() throws Exception {
+        Artefact artefact = createDailyList(Sensitivity.PUBLIC);
+
+        mockMvc.perform(get(SEARCH_ARTEFACT_URL + "/" + artefact.getArtefactId())
+                            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
+                            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void testDeleteArtefactSearchByArtefactIdSuccess() throws Exception {
+        Artefact artefact = createDailyList(Sensitivity.PUBLIC);
+
+        mockMvc.perform(delete(SEARCH_ARTEFACT_URL + "/" + artefact.getArtefactId())
+                            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
+                            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().string(
+                String.format("Artefact search rows successfully deleted for artefactId %s", artefact.getArtefactId())
+            ));
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testFindArtefactSearchByArtefactIdForbidden() throws Exception {
+        mockMvc.perform(get(SEARCH_ARTEFACT_URL + "/" + UUID.randomUUID())
+                            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
+                            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testDeleteArtefactSearchByArtefactIdForbidden() throws Exception {
+        mockMvc.perform(delete(SEARCH_ARTEFACT_URL + "/" + UUID.randomUUID())
+                            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
+                            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isForbidden());
+    }
+
+
 }

@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactSearchService;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSearchService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
@@ -72,6 +74,9 @@ class PublicationSearchControllerTest {
 
     @Mock
     private PublicationSearchService publicationSearchService;
+
+    @Mock
+    private ArtefactSearchService artefactSearchService;
 
     @InjectMocks
     private PublicationSearchController publicationSearchController;
@@ -190,5 +195,44 @@ class PublicationSearchControllerTest {
 
         assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
         assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
+    }
+
+    @Test
+    void testFindArtefactSearchByArtefactIdReturnsOk() {
+        ArtefactSearch artefactSearch = ArtefactSearch.builder()
+            .artefactId(ARTEFACT_ID)
+            .build();
+
+        List<ArtefactSearch> expected = List.of(artefactSearch);
+
+        when(artefactSearchService.findByArtefactId(ARTEFACT_ID)).thenReturn(expected);
+
+        ResponseEntity<List<ArtefactSearch>> result =
+            publicationSearchController.findArtefactSearchByArtefactId(ARTEFACT_ID, USER_ID);
+
+        assertThat(result.getStatusCode())
+            .as(STATUS_CODE_MATCH)
+            .isEqualTo(HttpStatus.OK);
+
+        assertThat(result.getBody())
+            .as(MESSAGES_MATCH)
+            .isEqualTo(expected);
+
+    }
+
+    @Test
+    void testDeleteArtefactSearchByArtefactIdReturnsOk() {
+        doNothing().when(artefactSearchService).deleteByArtefactId(ARTEFACT_ID);
+
+        ResponseEntity<String> result =
+            publicationSearchController.deleteArtefactSearchByArtefactId(ARTEFACT_ID, USER_ID);
+
+        assertThat(result.getStatusCode())
+            .as(STATUS_CODE_MATCH)
+            .isEqualTo(HttpStatus.OK);
+
+        assertThat(result.getBody())
+            .as(MESSAGES_MATCH)
+            .isEqualTo("Artefact search rows successfully deleted for artefactId " + ARTEFACT_ID);
     }
 }

@@ -308,6 +308,39 @@ class AuthorisationServiceTest {
                     "Should not be able to access list search config without OAuth admin role");
     }
 
+
+    @Test
+    void testSystemAdminUserCanAccessArtefactSearch() {
+        when(accountManagementService.getUserById(TEST_UUID))
+            .thenReturn(createUser(Roles.SYSTEM_ADMIN));
+
+        List<GrantedAuthority> authorities = List.of(
+            new SimpleGrantedAuthority(ADMIN_ROLE)
+        );
+        Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+
+        assertTrue(authorisationService.userCanAccessArtefactSearch(TEST_UUID),
+                   "System admin with OAuth admin role should be able to access artefact search");
+    }
+
+    @Test
+    void testVerifiedUserCannotAccessArtefactSearch() {
+        when(accountManagementService.getUserById(TEST_UUID))
+            .thenReturn(createUser(Roles.VERIFIED));
+
+        List<GrantedAuthority> authorities = List.of(
+            new SimpleGrantedAuthority(ADMIN_ROLE)
+        );
+        Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+
+        assertFalse(authorisationService.userCanAccessArtefactSearch(TEST_UUID),
+                    "Verified user should not be able to access artefact search");
+    }
+
     @Test
     void testVerifiedUserCanSearchInPublicationData() {
         when(accountManagementService.getUserById(TEST_UUID))

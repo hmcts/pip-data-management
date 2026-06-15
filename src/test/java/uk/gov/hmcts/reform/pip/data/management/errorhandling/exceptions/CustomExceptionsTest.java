@@ -87,6 +87,12 @@ class CustomExceptionsTest {
     }
 
     @Test
+    void testStoreOfArtefactSearchExtractionException() {
+        ArtefactSearchExtractionException exception = new ArtefactSearchExtractionException(TEST_MESSAGE);
+        assertEquals(TEST_MESSAGE, exception.getMessage(), ASSERTION_MESSAGE);
+    }
+
+    @Test
     void testPublicationFilesNotFoundException() {
         PublicationFileNotFoundException notFoundException = new PublicationFileNotFoundException(TEST_MESSAGE);
         assertEquals(TEST_MESSAGE, notFoundException.getMessage(), ASSERTION_MESSAGE);
