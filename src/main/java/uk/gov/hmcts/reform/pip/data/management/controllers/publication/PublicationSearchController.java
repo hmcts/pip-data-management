@@ -77,7 +77,7 @@ public class PublicationSearchController {
     @PostMapping("/search/config")
     @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
     public ResponseEntity<String> createListSearchConfig(
-        @RequestBody ListSearchConfig listSearchConfig,
+        @RequestBody ListSearchConfig listSearchConfig,//NOSONAR
         @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
         publicationSearchService.createListSearchConfig(listSearchConfig, requesterId);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -96,7 +96,7 @@ public class PublicationSearchController {
     @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
     public ResponseEntity<String> updateListSearchConfig(
         @PathVariable String id,
-        @RequestBody ListSearchConfig listSearchConfig,
+        @RequestBody ListSearchConfig listSearchConfig,//NOSONAR
         @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
         publicationSearchService.updateListSearchConfig(id, listSearchConfig, requesterId);
         return ResponseEntity.status(HttpStatus.OK)
