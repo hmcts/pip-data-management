@@ -10,7 +10,6 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +30,7 @@ class ArtefactSearchRepositoryTest {
     }
 
     @Test
-    @DisplayName("records should be found by artefactId")
+    @DisplayName("records should be found by given artefactId")
     void shouldFindByArtefactId() {
         UUID artefactId = UUID.randomUUID();
         UUID otherArtefactId = UUID.randomUUID();
@@ -42,17 +41,17 @@ class ArtefactSearchRepositoryTest {
 
         artefactSearchRepository.saveAll(List.of(match, match2, nonMatch));
 
-        Optional<List<ArtefactSearch>> results = artefactSearchRepository.findByArtefactId(artefactId);
+        List<ArtefactSearch> results = artefactSearchRepository.findByArtefactId(artefactId);
 
-        assertThat(results).isPresent();
-        assertThat(results.orElseThrow())
+        assertThat(!results.isEmpty());
+        assertThat(results)
             .hasSize(2)
             .extracting(ArtefactSearch::getArtefactId)
             .containsOnly(artefactId);
     }
 
     @Test
-    @DisplayName("records should be deleted by artefactId")
+    @DisplayName("records should be deleted by given artefactId")
     void shouldDeleteByArtefactId() {
         UUID artefactIdToDelete = UUID.randomUUID();
         UUID artefactIdToKeep = UUID.randomUUID();
@@ -66,7 +65,7 @@ class ArtefactSearchRepositoryTest {
         artefactSearchRepository.deleteByArtefactId(artefactIdToDelete);
 
         assertThat(artefactSearchRepository.findByArtefactId(artefactIdToDelete)).isEmpty();
-        assertThat(artefactSearchRepository.findByArtefactId(artefactIdToKeep)).isPresent();
+        assertThat(artefactSearchRepository.findByArtefactId(artefactIdToKeep)).isNotEmpty();
     }
 
     private ArtefactSearch createArtefactSearch(UUID artefactId) {

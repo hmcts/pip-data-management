@@ -64,7 +64,7 @@ class ArtefactSearchServiceTest {
             .build();
 
         when(artefactSearchRepository.findByArtefactId(artefactId))
-            .thenReturn(Optional.of(List.of(row)));
+            .thenReturn(List.of(row));
 
         List<ArtefactSearch> result = artefactSearchService.findByArtefactId(artefactId);
 
@@ -78,7 +78,7 @@ class ArtefactSearchServiceTest {
         UUID artefactId = UUID.randomUUID();
 
         when(artefactSearchRepository.findByArtefactId(artefactId))
-            .thenReturn(Optional.of(Collections.emptyList()));
+            .thenReturn(Collections.emptyList());
 
         assertThrows(NotFoundException.class, () -> artefactSearchService.findByArtefactId(artefactId));
     }
@@ -87,7 +87,7 @@ class ArtefactSearchServiceTest {
     void testDeleteArtefactSearchByIDSuccess() {
         UUID artefactId = UUID.randomUUID();
         when(artefactSearchRepository.findByArtefactId(artefactId))
-            .thenReturn(Optional.of(List.of(ArtefactSearch.builder().artefactId(artefactId).build())));
+            .thenReturn(List.of(ArtefactSearch.builder().artefactId(artefactId).build()));
 
         artefactSearchService.deleteByArtefactId(artefactId);
 
@@ -97,7 +97,7 @@ class ArtefactSearchServiceTest {
     @Test
     void testDeleteArtefactSearchByIDException() {
         UUID artefactId = UUID.randomUUID();
-        when(artefactSearchRepository.findByArtefactId(artefactId)).thenReturn(Optional.empty());
+        when(artefactSearchRepository.findByArtefactId(artefactId)).thenReturn(List.of());
 
         assertThrows(NotFoundException.class, () -> artefactSearchService.deleteByArtefactId(artefactId));
 

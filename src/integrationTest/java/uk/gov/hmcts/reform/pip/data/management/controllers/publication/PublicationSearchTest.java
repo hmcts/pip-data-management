@@ -58,7 +58,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     private static final String SEARCH_BY_COURT_URL = PUBLICATION_URL + "/locationId";
     private static final String SEARCH_URL = PUBLICATION_URL + "/search";
     private static final String SEARCH_CONFIG_URL = PUBLICATION_URL + "/search/config";
-    private static final String SEARCH_ARTEFACT_URL = PUBLICATION_URL + "search/artefact";
+    private static final String SEARCH_ARTEFACT_URL = PUBLICATION_URL + "/search/artefact";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final String COURT_ID = "1";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
@@ -762,6 +762,9 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testFindArtefactSearchByArtefactIdSuccess() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(systemAdminUser);
+        setupMockListSearchConfig();
+
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         mockMvc.perform(get(SEARCH_ARTEFACT_URL + "/" + artefact.getArtefactId())
@@ -772,6 +775,8 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
 
     @Test
     void testDeleteArtefactSearchByArtefactIdSuccess() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(systemAdminUser);
+        setupMockListSearchConfig();
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         mockMvc.perform(delete(SEARCH_ARTEFACT_URL + "/" + artefact.getArtefactId())
@@ -786,6 +791,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     @Test
     @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
     void testFindArtefactSearchByArtefactIdForbidden() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(systemAdminUser);
         mockMvc.perform(get(SEARCH_ARTEFACT_URL + "/" + UUID.randomUUID())
                             .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                             .contentType(MediaType.APPLICATION_JSON))
@@ -795,6 +801,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     @Test
     @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
     void testDeleteArtefactSearchByArtefactIdForbidden() throws Exception {
+        when(accountManagementService.getUserById(any())).thenReturn(systemAdminUser);
         mockMvc.perform(delete(SEARCH_ARTEFACT_URL + "/" + UUID.randomUUID())
                             .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                             .contentType(MediaType.APPLICATION_JSON))

@@ -39,11 +39,13 @@ public class ArtefactSearchService {
      */
     @Transactional(readOnly = true)
     public List<ArtefactSearch> findByArtefactId(UUID artefactId) {
-        return artefactSearchRepository.findByArtefactId(artefactId)
-            .filter(rows -> !rows.isEmpty())
-            .orElseThrow(() -> new NotFoundException(
-                String.format("Artefact search rows for %s does not exist", artefactId)
-            ));
+        List<ArtefactSearch> artefactSearchRows = artefactSearchRepository.findByArtefactId(artefactId);
+        if (artefactSearchRows.isEmpty()) {
+            throw new NotFoundException(
+                String.format("Artefact search rows for %s do not exist", artefactId)
+            );
+        }
+        return artefactSearchRows;
     }
 
     /**
@@ -52,11 +54,12 @@ public class ArtefactSearchService {
      */
     @Transactional
     public void deleteByArtefactId(UUID artefactId) {
-        artefactSearchRepository.findByArtefactId(artefactId)
-            .filter(rows -> !rows.isEmpty())
-            .orElseThrow(() -> new NotFoundException(
+        List<ArtefactSearch> artefactSearchRows = artefactSearchRepository.findByArtefactId(artefactId);
+        if (artefactSearchRows.isEmpty()) {
+            throw new NotFoundException(
                 String.format("Artefact search rows for %s do not exist", artefactId)
-            ));
+            );
+        }
         artefactSearchRepository.deleteByArtefactId(artefactId);
     }
 
