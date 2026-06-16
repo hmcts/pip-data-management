@@ -75,8 +75,8 @@ public class ArtefactSearchService {
             return;
         }
 
-        // Parse and extract before deleting from the table. If error is thrown, the
-        // process rolls back and existing rows are preserved.
+        // Extract before deleting from the table.
+        // If error is thrown, existing rows are preserved.
         List<ArtefactSearch> artefactRows = extractSearchCases(artefact, payload);
 
         artefactSearchRepository.deleteByArtefactId(artefact.getArtefactId());
