@@ -16,7 +16,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.PublicationFiles;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
-import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.CsvData;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
@@ -109,22 +108,7 @@ public class PublicationFileGenerationService {
                 pdfs = generatePdfs(fileConverter.get(), topLevelNode, artefact, location);
             }
 
-            byte[] csv = new byte[0];
-            Optional<CsvData> csvData = listConversionFactory.getCsvData(listType);
-            Map<String, Object> languageResources = LanguageResourceHelper.getLanguageResources(
-                listType, artefact.getLanguage()
-            );
-            if (csvData.isPresent()) {
-                csv = fileConverter.get().convertToCsv(csvData.get().getHeaders(languageResources),
-                                                       csvData.get().getRows(
-                                                           topLevelNode,
-                                                           buildArtefactMetadata(artefact, location,
-                                                                                 artefact.getLanguage()),
-                                                           languageResources
-                                                       ));
-            }
-
-            return Optional.of(new PublicationFiles(pdfs.getLeft(), pdfs.getRight(), excel, csv));
+            return Optional.of(new PublicationFiles(pdfs.getLeft(), pdfs.getRight(), excel));
 
         } catch (IOException ex) {
             throw new ProcessingException(String.format("Failed to generate files for artefact id %s", artefactId));
