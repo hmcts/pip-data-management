@@ -145,6 +145,9 @@
     <cve>CVE-2026-40977</cve>
     <!-- Spring Security -->
     <cve>CVE-2026-22751</cve>
+    <cve>CVE-2026-40988</cve>
+    <cve>CVE-2026-41003</cve>
+    <cve>CVE-2026-41694</cve>
   </suppress>
   <suppress>
     <notes>log4j suppression</notes>
