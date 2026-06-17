@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PublicationReportingTest extends PublicationIntegrationTestBase {
     private static final String PUBLICATION_URL = "/publication";
     private static final String REPORT_NO_MATCH_ARTEFACTS_URL = PUBLICATION_URL + "/no-match/reporting";
-    private static final String MI_REPORTING_DATA_URL = PUBLICATION_URL + "/mi-data/-1";
+    private static final String MI_REPORTING_DATA_URL = PUBLICATION_URL + "/mi-data";
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static final String ADMIN = "admin";
     private static final String VALIDATION_MI_REPORT = "Should successfully retrieve MI data";
@@ -45,7 +45,8 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(MI_REPORTING_DATA_URL);
+            .get(MI_REPORTING_DATA_URL)
+            .param("days", "7");
 
         MvcResult responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
         assertNotNull(responseMiData.getResponse(), VALIDATION_MI_REPORT);
@@ -68,6 +69,7 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .get(MI_REPORTING_DATA_URL)
+            .param("days", "7")
             .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         MvcResult responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
@@ -92,7 +94,8 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
                                             PROVENANCE, "12345");
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(MI_REPORTING_DATA_URL);
+            .get(MI_REPORTING_DATA_URL)
+            .param("days", "7");
 
         MvcResult responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
         assertNotNull(responseMiData.getResponse(), VALIDATION_MI_REPORT);
@@ -121,7 +124,8 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
     @WithMockUser(username = ADMIN, authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedGetMiData() throws Exception {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(MI_REPORTING_DATA_URL);
+            .get(MI_REPORTING_DATA_URL)
+            .param("days", "7");
 
         mockMvc.perform(request)
             .andExpect(status().isForbidden())
