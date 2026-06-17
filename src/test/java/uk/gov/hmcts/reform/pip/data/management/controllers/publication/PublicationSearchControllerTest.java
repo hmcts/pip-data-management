@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactSearchService;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.CaseSearchResult;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSearchService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
@@ -234,5 +235,49 @@ class PublicationSearchControllerTest {
         assertThat(result.getBody())
             .as(MESSAGES_MATCH)
             .isEqualTo("Artefact search rows successfully deleted for artefactId " + ARTEFACT_ID);
+    }
+
+    @Test
+    void testGetCasesByCaseNumberReturnsOk() {
+        CaseSearchResult caseSearchResult = new CaseSearchResult(TEST_STRING, "Test Case Name");
+        when(publicationSearchService.findCasesByCaseNumber(TEST_STRING))
+            .thenReturn(List.of(caseSearchResult));
+
+        ResponseEntity<List<CaseSearchResult>> result =
+            publicationSearchController.getCasesByCaseNumber(TEST_STRING, USER_ID);
+
+        assertThat(result.getStatusCode())
+            .as(STATUS_CODE_MATCH)
+            .isEqualTo(HttpStatus.OK);
+
+        assertThat(result.getBody())
+            .as(MESSAGES_MATCH)
+            .hasSize(1);
+
+        assertThat(result.getBody().get(0).getCaseNumber())
+            .as(MESSAGES_MATCH)
+            .isEqualTo(TEST_STRING);
+    }
+
+    @Test
+    void testGetCasesByCaseNameReturnsOk() {
+        CaseSearchResult caseSearchResult = new CaseSearchResult("123", TEST_STRING);
+        when(publicationSearchService.findCasesByCaseName(TEST_STRING))
+            .thenReturn(List.of(caseSearchResult));
+
+        ResponseEntity<List<CaseSearchResult>> result =
+            publicationSearchController.getCasesByCaseName(TEST_STRING, USER_ID);
+
+        assertThat(result.getStatusCode())
+            .as(STATUS_CODE_MATCH)
+            .isEqualTo(HttpStatus.OK);
+
+        assertThat(result.getBody())
+            .as(MESSAGES_MATCH)
+            .hasSize(1);
+
+        assertThat(result.getBody().get(0).getCaseName())
+            .as(MESSAGES_MATCH)
+            .isEqualTo(TEST_STRING);
     }
 }
