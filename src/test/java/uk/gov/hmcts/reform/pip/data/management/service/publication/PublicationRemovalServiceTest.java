@@ -98,6 +98,9 @@ class PublicationRemovalServiceTest {
     private PublicationFileManagementService publicationFileManagementService;
 
     @Mock
+    private PublicationSubscriptionService publicationSubscriptionService;
+
+    @Mock
     private SystemAdminNotificationService systemAdminNotificationService;
 
     @Mock private ArtefactSearchRepository artefactSearchRepository;
@@ -123,15 +126,16 @@ class PublicationRemovalServiceTest {
                                                                              USER_ID, ARTEFACT_ID)), MESSAGES_MATCH);
 
             InOrder orderVerifier = inOrder(azureArtefactBlobService, publicationFileManagementService,
-                                            artefactRepository, artefactSearchRepository, accountManagementService);
+                                            artefactRepository, artefactSearchRepository,
+                                            publicationSubscriptionService);
             orderVerifier.verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
             orderVerifier.verify(publicationFileManagementService).deleteFiles(ARTEFACT_ID,
                                                                                ListType.CIVIL_DAILY_CAUSE_LIST,
                                                                                Language.ENGLISH);
             orderVerifier.verify(artefactSearchRepository).deleteByArtefactId(ARTEFACT_ID);
             orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
-            orderVerifier.verify(accountManagementService)
-                .sendDeletedArtefactForThirdParties(artefactWithIdAndPayloadUrl);
+            orderVerifier.verify(publicationSubscriptionService)
+                .sendDeleteArtefactForApiSubscriptions(artefactWithIdAndPayloadUrl);
         }
     }
 
@@ -165,13 +169,14 @@ class PublicationRemovalServiceTest {
                                                                              USER_ID, ARTEFACT_ID)), MESSAGES_MATCH);
 
             InOrder orderVerifier = inOrder(azureArtefactBlobService, publicationFileManagementService,
-                                            artefactRepository, artefactSearchRepository, accountManagementService);
+                                            artefactRepository, artefactSearchRepository,
+                                            publicationSubscriptionService);
 
             orderVerifier.verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
             orderVerifier.verify(artefactSearchRepository).deleteByArtefactId(ARTEFACT_ID);
             orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
-            orderVerifier.verify(accountManagementService)
-                .sendDeletedArtefactForThirdParties(artefactWithIdAndPayloadUrl);
+            orderVerifier.verify(publicationSubscriptionService)
+                .sendDeleteArtefactForApiSubscriptions(artefactWithIdAndPayloadUrl);
             verifyNoInteractions(publicationFileManagementService);
         }
     }
@@ -345,7 +350,7 @@ class PublicationRemovalServiceTest {
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(publicationFileManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
                                                              Language.ENGLISH);
-        verify(accountManagementService).sendDeletedArtefactForThirdParties(artefactWithIdAndPayloadUrl);
+        verify(publicationSubscriptionService).sendDeleteArtefactForApiSubscriptions(artefactWithIdAndPayloadUrl);
     }
 
     @Test
@@ -387,13 +392,13 @@ class PublicationRemovalServiceTest {
 
         InOrder orderVerifier = inOrder(azureArtefactBlobService, publicationFileManagementService,
                                         artefactRepository, artefactSearchRepository,
-                                        accountManagementService, systemAdminNotificationService);
+                                        publicationSubscriptionService, systemAdminNotificationService);
         orderVerifier.verify(azureArtefactBlobService).deleteBlob(any());
         orderVerifier.verify(publicationFileManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
                                                                            Language.ENGLISH);
         orderVerifier.verify(artefactSearchRepository).deleteByArtefactId(ARTEFACT_ID);
         orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
-        orderVerifier.verify(accountManagementService).sendDeletedArtefactForThirdParties(any());
+        orderVerifier.verify(publicationSubscriptionService).sendDeleteArtefactForApiSubscriptions(any());
         orderVerifier.verify(systemAdminNotificationService).sendEmailNotification(
             EMAIL_ADDRESS, USER_ID, ActionResult.SUCCEEDED, "Total 1 artefact(s) for location NAME",
             ChangeType.DELETE_LOCATION_ARTEFACT
@@ -449,7 +454,7 @@ class PublicationRemovalServiceTest {
         verify(azureArtefactBlobService).deleteBlob("url2");
         verify(azureArtefactBlobService).deleteBlob("url3");
         verify(artefactRepository, times(3)).delete(any());
-        verify(accountManagementService, times(3)).sendDeletedArtefactForThirdParties(any());
+        verify(publicationSubscriptionService, times(3)).sendDeleteArtefactForApiSubscriptions(any());
     }
 
     @Test

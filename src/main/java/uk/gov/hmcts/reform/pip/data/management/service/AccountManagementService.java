@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
+import uk.gov.hmcts.reform.pip.model.publication.Artefact;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
@@ -113,10 +113,27 @@ public class AccountManagementService {
         sendArtefactForApiSubscription(artefact);
     }
 
+    @Deprecated
     public void sendArtefactForEmailSubscription(Artefact artefact) {
         try {
             webClient.post()
                 .uri(url + "/subscription/email-recipients")
+                .body(BodyInserters.fromValue(artefact))
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+        } catch (WebClientException ex) {
+            log.error(writeLog(
+                String.format("Request to send artefact to Account Management for email subscriptions failed with "
+                                  + "error: %s", ex.getMessage())
+            ));
+        }
+    }
+
+    public void sendArtefactForEmailSubscriptionV2(Artefact artefact) {
+        try {
+            webClient.post()
+                .uri(url + "/subscription/email-recipients/V2")
                 .body(BodyInserters.fromValue(artefact))
                 .retrieve()
                 .bodyToMono(String.class)
