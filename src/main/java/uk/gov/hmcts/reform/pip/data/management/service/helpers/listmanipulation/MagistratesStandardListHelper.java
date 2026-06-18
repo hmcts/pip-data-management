@@ -61,6 +61,7 @@ public final class MagistratesStandardListHelper {
     private static final String ADDRESS = "address";
     private static final String ORGANISATION_ADDRESS = "organisationAddress";
     private static final String ASN = "asn";
+    private static final String PNC_ID = "pncId";
     private static final String IN_CUSTODY = "inCustody";
     private static final String PLEA = "plea";
     private static final String PLEA_DATE = "pleaDate";
@@ -260,6 +261,7 @@ public final class MagistratesStandardListHelper {
                                         ? CrimeListHelper.formatAddress(individualDetails.get(ADDRESS))
                                         : "");
         partyInfo.setAsn(GeneralHelper.findAndReturnNodeText(individualDetails, ASN));
+        partyInfo.setPncId(GeneralHelper.findAndReturnNodeText(individualDetails, PNC_ID));
 
         return partyInfo;
     }

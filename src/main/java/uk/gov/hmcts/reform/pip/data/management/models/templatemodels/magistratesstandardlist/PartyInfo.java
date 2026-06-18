@@ -14,4 +14,5 @@ public class PartyInfo {
     private String age;
     private String address;
     private String asn;
+    private String pncId;
 }

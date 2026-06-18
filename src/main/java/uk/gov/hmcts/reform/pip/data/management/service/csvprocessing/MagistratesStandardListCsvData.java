@@ -26,6 +26,7 @@ public class MagistratesStandardListCsvData implements CsvData {
                 languageResources.get("reference").toString(),
                 languageResources.get("applicationType").toString(),
                 languageResources.get("asn").toString(),
+                languageResources.get("pncId").toString(),
                 languageResources.get("hearingType").toString(),
                 languageResources.get("panel").toString(),
                 languageResources.get("reportingRestrictions").toString(),
@@ -67,6 +68,7 @@ public class MagistratesStandardListCsvData implements CsvData {
                                                 getFieldValue(hearing.getHearingMetadata().getReference()),
                                                 getFieldValue(hearing.getHearingMetadata().getApplicationType()),
                                                 getFieldValue(hearing.getPartyInfo().getAsn()),
+                                                getFieldValue(hearing.getPartyInfo().getPncId()),
                                                 getFieldValue(hearing.getHearingMetadata().getHearingType()),
                                                 getFieldValue(hearing.getHearingMetadata().getPanel()),
                                                 getFieldValue(hearing.getHearingMetadata()
