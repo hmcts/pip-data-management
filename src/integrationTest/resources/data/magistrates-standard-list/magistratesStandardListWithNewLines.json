@@ -67,7 +67,8 @@
                                     ]
                                   },
                                   "gender": "\r\nmale",
-                                  "asn": "ABC1234\r\n"
+                                  "asn": "ABC1234\r\n",
+                                  "pncId": "PNC12345\r\n"
                                 },
                                 "offence": [
                                   {
@@ -127,7 +128,8 @@
                                     ]
                                   },
                                   "gender": "\r\nmale",
-                                  "asn": "ABC12345\r\n"
+                                  "asn": "ABC12345\r\n",
+                                  "pncId": "PNC123456\r\n"
                                 },
                                 "offence": [
                                   {
