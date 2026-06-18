@@ -264,9 +264,13 @@ class MagistratesStandardListFileConverterTest {
 
         softly.assertThat(body.get(17).text())
             .as(HEARING_INFO_MESSAGE)
-            .contains("Hearing Type:");
+            .contains("PNC ID:");
 
         softly.assertThat(body.get(18).text())
+            .as(HEARING_INFO_MESSAGE)
+            .contains("Hearing Type:");
+
+        softly.assertThat(body.get(19).text())
             .as(HEARING_INFO_MESSAGE)
             .contains("Panel:");
 
@@ -280,7 +284,7 @@ class MagistratesStandardListFileConverterTest {
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(body.get(46).text())
+        softly.assertThat(body.get(50).text())
             .as(HEARING_INFO_MESSAGE)
             .contains("Surname D, Forename D (female)*");
 
@@ -294,13 +298,13 @@ class MagistratesStandardListFileConverterTest {
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(body.get(47).text())
+        softly.assertThat(body)
             .as(HEARING_INFO_MESSAGE)
-            .contains("Application Particulars");
+            .anyMatch(element -> element.text().contains("Application Particulars"));
 
-        softly.assertThat(body.get(53).text())
+        softly.assertThat(body)
             .as(HEARING_INFO_MESSAGE)
-            .contains("Application Type");
+            .anyMatch(element -> element.text().contains("Application Type"));
 
         softly.assertAll();
     }
@@ -342,9 +346,13 @@ class MagistratesStandardListFileConverterTest {
 
         softly.assertThat(body.get(17).text())
             .as(HEARING_INFO_MESSAGE)
-            .contains("Hearing Type A");
+            .contains("PNC1234");
 
         softly.assertThat(body.get(18).text())
+            .as(HEARING_INFO_MESSAGE)
+            .contains("Hearing Type A");
+
+        softly.assertThat(body.get(19).text())
             .as(HEARING_INFO_MESSAGE)
             .contains("ADULT");
 
@@ -358,13 +366,15 @@ class MagistratesStandardListFileConverterTest {
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(body.get(47).text())
+        softly.assertThat(body)
             .as(HEARING_INFO_MESSAGE)
-            .contains("This is an application particulars example");
+            .anyMatch(
+                element ->
+                    element.text().contains("Application Particulars: This is an application particulars example"));
 
-        softly.assertThat(body.get(53).text())
+        softly.assertThat(body)
             .as(HEARING_INFO_MESSAGE)
-            .contains("Application Type 1");
+            .anyMatch(element -> element.text().contains("Application Type: Application Type 1"));
 
         softly.assertAll();
     }
@@ -464,11 +474,10 @@ class MagistratesStandardListFileConverterTest {
         Elements body = document.getElementsByClass(BODY_CLASS);
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(body.get(76).text())
+        softly.assertThat(body)
             .as(PROVENANCE_MESSAGE)
-            .contains("Data Source: provenance");
+            .anyMatch(element -> element.text().contains("Data Source: provenance"));
 
         softly.assertAll();
-
     }
 }
