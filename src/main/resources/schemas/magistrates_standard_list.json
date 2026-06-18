@@ -158,6 +158,15 @@
                 "ABC1234567D"
               ],
               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+            },
+            "pncId": {
+              "description": "PNC Id Number",
+              "title": "PNC Id",
+              "type": "string",
+              "examples": [
+                "ABC1234567D"
+              ],
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
             }
           }
         },

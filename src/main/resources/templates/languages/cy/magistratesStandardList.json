@@ -31,6 +31,7 @@
   "dob": "Dyddiad Geni",
   "age": "Oedran",
   "asn": "ASN (Rhif Gwŷs  Arestio)",
+  "pncId": "PNC ID",
   "address": "Cyfeiriad",
   "hearingType": "Math o Wrandawiad",
   "prosecutingAuthority": "Yr Awdurdod sy'n Erlyn",
