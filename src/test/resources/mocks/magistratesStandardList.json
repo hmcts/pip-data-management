@@ -88,7 +88,8 @@
                                     ]
                                   },
                                   "gender": "male",
-                                  "asn": "ABC1234"
+                                  "asn": "ABC1234",
+                                  "pncId": "PNC1234"
                                 },
                                 "offence": [
                                   {
@@ -163,7 +164,8 @@
                                     ]
                                   },
                                   "gender": "male",
-                                  "asn": "ABC1234"
+                                  "asn": "ABC1234",
+                                  "pncId": "PNC1234"
                                 },
                                 "offence": [
                                   {
@@ -241,7 +243,8 @@
                                   },
                                   "inCustody": true,
                                   "gender": "male",
-                                  "asn": "ABC12345"
+                                  "asn": "ABC12345",
+                                  "pncId": "PNC12345"
                                 },
                                 "offence": [
                                   {
@@ -308,7 +311,8 @@
                                   },
                                   "inCustody": true,
                                   "gender": "male",
-                                  "asn": "ABC123456"
+                                  "asn": "ABC123456",
+                                  "pncId": "PNC123456"
                                 },
                                 "offence": [
                                   {
@@ -366,7 +370,8 @@
                                   },
                                   "inCustody": true,
                                   "gender": "female",
-                                  "asn": "ABC1234567"
+                                  "asn": "ABC1234567",
+                                  "pncId": "PNC1234567"
                                 },
                                 "offence": [
                                   {
@@ -486,7 +491,8 @@
                                   },
                                   "inCustody": true,
                                   "gender": "female",
-                                  "asn": "ABC1234567"
+                                  "asn": "ABC1234567",
+                                  "pncId": "PNC1234567"
                                 },
                                 "offence": [
                                   {

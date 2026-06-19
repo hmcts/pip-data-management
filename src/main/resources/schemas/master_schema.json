@@ -171,6 +171,11 @@
               "type": "string",
               "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
             },
+            "pncId": {
+              "title": "PNC Id",
+              "type": "string",
+              "pattern": "^(?!(.|\\r|\\n)*<[^>]+>)(.|\\r|\\n)*$"
+            },
             "offence": {
               "title": "offence",
               "type": "array",
