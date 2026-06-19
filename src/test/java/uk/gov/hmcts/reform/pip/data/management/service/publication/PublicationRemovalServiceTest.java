@@ -135,7 +135,7 @@ class PublicationRemovalServiceTest {
             orderVerifier.verify(artefactSearchRepository).deleteByArtefactId(ARTEFACT_ID);
             orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
             orderVerifier.verify(publicationSubscriptionService)
-                .sendDeleteArtefactForApiSubscriptions(artefactWithIdAndPayloadUrl);
+                .sendDeleteArtefactForApiSubscription(artefactWithIdAndPayloadUrl);
         }
     }
 
@@ -176,7 +176,7 @@ class PublicationRemovalServiceTest {
             orderVerifier.verify(artefactSearchRepository).deleteByArtefactId(ARTEFACT_ID);
             orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
             orderVerifier.verify(publicationSubscriptionService)
-                .sendDeleteArtefactForApiSubscriptions(artefactWithIdAndPayloadUrl);
+                .sendDeleteArtefactForApiSubscription(artefactWithIdAndPayloadUrl);
             verifyNoInteractions(publicationFileManagementService);
         }
     }
@@ -350,7 +350,7 @@ class PublicationRemovalServiceTest {
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(publicationFileManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
                                                              Language.ENGLISH);
-        verify(publicationSubscriptionService).sendDeleteArtefactForApiSubscriptions(artefactWithIdAndPayloadUrl);
+        verify(publicationSubscriptionService).sendDeleteArtefactForApiSubscription(artefactWithIdAndPayloadUrl);
     }
 
     @Test
@@ -398,7 +398,7 @@ class PublicationRemovalServiceTest {
                                                                            Language.ENGLISH);
         orderVerifier.verify(artefactSearchRepository).deleteByArtefactId(ARTEFACT_ID);
         orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
-        orderVerifier.verify(publicationSubscriptionService).sendDeleteArtefactForApiSubscriptions(any());
+        orderVerifier.verify(publicationSubscriptionService).sendDeleteArtefactForApiSubscription(any());
         orderVerifier.verify(systemAdminNotificationService).sendEmailNotification(
             EMAIL_ADDRESS, USER_ID, ActionResult.SUCCEEDED, "Total 1 artefact(s) for location NAME",
             ChangeType.DELETE_LOCATION_ARTEFACT
@@ -454,7 +454,7 @@ class PublicationRemovalServiceTest {
         verify(azureArtefactBlobService).deleteBlob("url2");
         verify(azureArtefactBlobService).deleteBlob("url3");
         verify(artefactRepository, times(3)).delete(any());
-        verify(publicationSubscriptionService, times(3)).sendDeleteArtefactForApiSubscriptions(any());
+        verify(publicationSubscriptionService, times(3)).sendDeleteArtefactForApiSubscription(any());
     }
 
     @Test

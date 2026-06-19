@@ -101,7 +101,7 @@ public class PublicationSubscriptionService {
         }
     }
 
-    public void sendDeleteArtefactForApiSubscriptions(Artefact artefact) {
+    public void sendDeleteArtefactForApiSubscription(Artefact artefact) {
         accountManagementService.sendDeletedArtefactForThirdParties(convertArtefactToSharedModel(artefact));
     }
 

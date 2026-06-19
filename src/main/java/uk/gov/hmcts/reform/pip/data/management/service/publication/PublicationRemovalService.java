@@ -75,7 +75,7 @@ public class PublicationRemovalService {
 
         handleArtefactArchiving(artefactToArchive, isManuallyDeleted);
         if (!NoMatchArtefactHelper.isNoMatchLocationId(artefactToArchive.getLocationId())) {
-            publicationSubscriptionService.sendDeleteArtefactForApiSubscriptions(artefactToArchive);
+            publicationSubscriptionService.sendDeleteArtefactForApiSubscription(artefactToArchive);
         }
         log.info(writeLog(String.format("Artefact archived by %s, with artefact id: %s", requesterId, artefactId)));
     }
@@ -153,7 +153,7 @@ public class PublicationRemovalService {
         artefactSearchRepository.deleteByArtefactId(artefact.getArtefactId());
         artefactRepository.delete(artefact);
         if (!NoMatchArtefactHelper.isNoMatchLocationId(artefact.getLocationId())) {
-            publicationSubscriptionService.sendDeleteArtefactForApiSubscriptions(artefact);
+            publicationSubscriptionService.sendDeleteArtefactForApiSubscription(artefact);
         }
     }
 
