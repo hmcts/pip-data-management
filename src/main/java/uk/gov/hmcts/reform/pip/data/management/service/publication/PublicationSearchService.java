@@ -11,10 +11,10 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.Artefact
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateListSearchConfigConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.CaseSearchResult;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
+import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.time.LocalDateTime;
@@ -176,12 +176,12 @@ public class PublicationSearchService {
      * Get all case number/name pairs from the artefact_search table matching the given case number.
      *
      * @param caseNumber the case number to search for (exact match, case-insensitive)
-     * @return list of CaseSearchResult containing case number and case name pairs
+     * @return list of ArtefactCaseInfo containing case number and case name pairs
      */
-    public List<CaseSearchResult> findCasesByCaseNumber(String caseNumber) {
+    public List<ArtefactCaseInfo> findCasesByCaseNumber(String caseNumber) {
         LocalDateTime currDate = LocalDateTime.now();
         return artefactSearchRepository.findByCaseNumberIgnoreCase(caseNumber, currDate).stream()
-            .map(r -> new CaseSearchResult(r.getCaseNumber(), r.getCaseName()))
+            .map(r -> new ArtefactCaseInfo(r.getCaseNumber(), r.getCaseName()))
             .toList();
     }
 
@@ -189,13 +189,13 @@ public class PublicationSearchService {
      * Get all case number/name pairs from the artefact_search table matching the given case name.
      *
      * @param caseName the case name to search for (partial match, case-insensitive)
-     * @return list of CaseSearchResult containing case number and case name pairs (only the top 50 matches are
+     * @return list of ArtefactCaseInfo containing case number and case name pairs (only the top 50 matches are
      *         returned)
      */
-    public List<CaseSearchResult> findCasesByCaseName(String caseName) {
+    public List<ArtefactCaseInfo> findCasesByCaseName(String caseName) {
         LocalDateTime currDate = LocalDateTime.now();
         return artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(caseName, currDate).stream()
-            .map(r -> new CaseSearchResult(r.getCaseNumber(), r.getCaseName()))
+            .map(r -> new ArtefactCaseInfo(r.getCaseNumber(), r.getCaseName()))
             .toList();
     }
 }

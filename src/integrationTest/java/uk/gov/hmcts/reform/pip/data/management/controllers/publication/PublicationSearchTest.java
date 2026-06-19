@@ -19,11 +19,11 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.CaseSearchResult;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PublicationIntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
+import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
@@ -824,7 +824,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
             .andExpect(status().isOk())
             .andReturn();
 
-        List<CaseSearchResult> results = OBJECT_MAPPER.readValue(
+        List<ArtefactCaseInfo> results = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), new TypeReference<>() {}
         );
 
@@ -842,7 +842,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
             .andExpect(status().isOk())
             .andReturn();
 
-        List<CaseSearchResult> results = OBJECT_MAPPER.readValue(
+        List<ArtefactCaseInfo> results = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), new TypeReference<>() {}
         );
 
@@ -870,7 +870,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
             .andExpect(status().isOk())
             .andReturn();
 
-        List<CaseSearchResult> results = OBJECT_MAPPER.readValue(
+        List<ArtefactCaseInfo> results = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), new TypeReference<>() {}
         );
 
@@ -888,7 +888,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
             .andExpect(status().isOk())
             .andReturn();
 
-        List<CaseSearchResult> results = OBJECT_MAPPER.readValue(
+        List<ArtefactCaseInfo> results = OBJECT_MAPPER.readValue(
             response.getResponse().getContentAsString(), new TypeReference<>() {}
         );
 

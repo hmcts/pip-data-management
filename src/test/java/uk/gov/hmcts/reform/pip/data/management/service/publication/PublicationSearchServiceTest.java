@@ -19,9 +19,9 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFound
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.CaseSearchResult;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
+import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
@@ -566,7 +566,7 @@ class PublicationSearchServiceTest {
         when(artefactSearchRepository.findByCaseNumberIgnoreCase(eq(TEST_VALUE), any()))
             .thenReturn(List.of(artefactSearch));
 
-        List<CaseSearchResult> results = publicationSearchService.findCasesByCaseNumber(TEST_VALUE);
+        List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseNumber(TEST_VALUE);
 
         assertEquals(1, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
         assertEquals(TEST_VALUE, results.get(0).getCaseNumber(), VALIDATION_ARTEFACT_NOT_MATCH);
@@ -577,7 +577,7 @@ class PublicationSearchServiceTest {
     void testFindCasesByCaseNumberReturnsEmptyListWhenNotFound() {
         when(artefactSearchRepository.findByCaseNumberIgnoreCase(any(), any())).thenReturn(List.of());
 
-        List<CaseSearchResult> results = publicationSearchService.findCasesByCaseNumber("not found");
+        List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseNumber("not found");
         assertEquals(0, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
@@ -591,7 +591,7 @@ class PublicationSearchServiceTest {
         when(artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(eq(TEST_VALUE), any()))
             .thenReturn(List.of(artefactSearch));
 
-        List<CaseSearchResult> results = publicationSearchService.findCasesByCaseName(TEST_VALUE);
+        List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseName(TEST_VALUE);
 
         assertEquals(1, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
         assertEquals(TEST_VALUE, results.get(0).getCaseName(), VALIDATION_ARTEFACT_NOT_MATCH);
@@ -601,7 +601,7 @@ class PublicationSearchServiceTest {
     void testFindCasesByCaseNameReturnsEmptyListWhenNotFound() {
         when(artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(any(), any())).thenReturn(List.of());
 
-        List<CaseSearchResult> results = publicationSearchService.findCasesByCaseName("not found");
+        List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseName("not found");
         assertEquals(0, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 }

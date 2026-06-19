@@ -108,7 +108,7 @@ class PublicationSubscriptionServiceTest {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
             publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefactFromNow);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
-            verify(accountManagementService).sendArtefactForAllSubscriptions(
+            verify(accountManagementService).sendArtefactForAllSubscriptionsV2(
                 any(uk.gov.hmcts.reform.pip.model.publication.Artefact.class)
             );
         }
@@ -119,7 +119,7 @@ class PublicationSubscriptionServiceTest {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
             publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefactFromThePast);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
-            verify(accountManagementService).sendArtefactForAllSubscriptions(
+            verify(accountManagementService).sendArtefactForAllSubscriptionsV2(
                 any(uk.gov.hmcts.reform.pip.model.publication.Artefact.class)
             );
         }
@@ -130,7 +130,7 @@ class PublicationSubscriptionServiceTest {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
             publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefactWithNullDateTo);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
-            verify(accountManagementService).sendArtefactForAllSubscriptions(
+            verify(accountManagementService).sendArtefactForAllSubscriptionsV2(
                 any(uk.gov.hmcts.reform.pip.model.publication.Artefact.class)
             );
         }
@@ -141,7 +141,7 @@ class PublicationSubscriptionServiceTest {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSubscriptionService.class)) {
             publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefactWithSameDateFromAndTo);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
-            verify(accountManagementService).sendArtefactForAllSubscriptions(
+            verify(accountManagementService).sendArtefactForAllSubscriptionsV2(
                 any(uk.gov.hmcts.reform.pip.model.publication.Artefact.class)
             );
         }
@@ -166,7 +166,7 @@ class PublicationSubscriptionServiceTest {
             when(artefactRepository.findArtefactsByDisplayFrom(any(), any())).thenReturn(List.of(ARTEFACT));
             publicationSubscriptionService.checkNewlyActiveArtefacts(false);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
-            verify(accountManagementService).sendArtefactForAllSubscriptions(
+            verify(accountManagementService).sendArtefactForAllSubscriptionsV2(
                 any(uk.gov.hmcts.reform.pip.model.publication.Artefact.class)
             );
         }
@@ -179,7 +179,7 @@ class PublicationSubscriptionServiceTest {
                 .thenReturn(List.of(new Artefact()));
             publicationSubscriptionService.checkNewlyActiveArtefacts(true);
             assertTrue(ERROR_LOG_EMPTY, logCaptor.getErrorLogs().isEmpty());
-            verify(accountManagementService).sendArtefactForEmailSubscription(
+            verify(accountManagementService).sendArtefactForEmailSubscriptionV2(
                 any(uk.gov.hmcts.reform.pip.model.publication.Artefact.class)
             );
         }

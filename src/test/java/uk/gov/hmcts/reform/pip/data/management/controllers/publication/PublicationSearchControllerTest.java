@@ -11,11 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.CaseSearchResult;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactSearchService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSearchService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
+import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -239,11 +239,11 @@ class PublicationSearchControllerTest {
 
     @Test
     void testGetCasesByCaseNumberReturnsOk() {
-        CaseSearchResult caseSearchResult = new CaseSearchResult(TEST_STRING, "Test Case Name");
+        ArtefactCaseInfo caseInfo = new ArtefactCaseInfo(TEST_STRING, "Test Case Name");
         when(publicationSearchService.findCasesByCaseNumber(TEST_STRING))
-            .thenReturn(List.of(caseSearchResult));
+            .thenReturn(List.of(caseInfo));
 
-        ResponseEntity<List<CaseSearchResult>> result =
+        ResponseEntity<List<ArtefactCaseInfo>> result =
             publicationSearchController.getCasesByCaseNumber(TEST_STRING, USER_ID);
 
         assertThat(result.getStatusCode())
@@ -261,11 +261,11 @@ class PublicationSearchControllerTest {
 
     @Test
     void testGetCasesByCaseNameReturnsOk() {
-        CaseSearchResult caseSearchResult = new CaseSearchResult("123", TEST_STRING);
+        ArtefactCaseInfo caseInfo = new ArtefactCaseInfo("123", TEST_STRING);
         when(publicationSearchService.findCasesByCaseName(TEST_STRING))
-            .thenReturn(List.of(caseSearchResult));
+            .thenReturn(List.of(caseInfo));
 
-        ResponseEntity<List<CaseSearchResult>> result =
+        ResponseEntity<List<ArtefactCaseInfo>> result =
             publicationSearchController.getCasesByCaseName(TEST_STRING, USER_ID);
 
         assertThat(result.getStatusCode())
