@@ -108,8 +108,14 @@ public class AccountManagementService {
         return systemAdmins;
     }
 
+    @Deprecated
     public void sendArtefactForAllSubscriptions(Artefact artefact) {
         sendArtefactForEmailSubscription(artefact);
+        sendArtefactForApiSubscription(artefact);
+    }
+
+    public void sendArtefactForAllSubscriptionsV2(Artefact artefact) {
+        sendArtefactForEmailSubscriptionV2(artefact);
         sendArtefactForApiSubscription(artefact);
     }
 

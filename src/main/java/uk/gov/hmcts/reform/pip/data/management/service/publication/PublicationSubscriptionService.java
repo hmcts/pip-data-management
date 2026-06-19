@@ -61,7 +61,7 @@ public class PublicationSubscriptionService {
             if (artefact.getListType().isScheduledSubscription()) {
                 accountManagementService.sendArtefactForApiSubscription(convertArtefactToSharedModel(artefact));
             } else {
-                accountManagementService.sendArtefactForAllSubscriptions(convertArtefactToSharedModel(artefact));
+                accountManagementService.sendArtefactForAllSubscriptionsV2(convertArtefactToSharedModel(artefact));
             }
         }
     }
@@ -84,7 +84,7 @@ public class PublicationSubscriptionService {
             });
             artefacts = artefactRepository.findActiveArtefactsByListTypeIn(listTypesToTrigger, LocalDate.now(),
                                                                            LocalDateTime.now());
-            artefacts.forEach(artefact -> accountManagementService.sendArtefactForEmailSubscription(
+            artefacts.forEach(artefact -> accountManagementService.sendArtefactForEmailSubscriptionV2(
                 convertArtefactToSharedModel(artefact)
             ));
         } else {
@@ -95,7 +95,7 @@ public class PublicationSubscriptionService {
                 if (a.getListType().isScheduledSubscription()) {
                     accountManagementService.sendArtefactForApiSubscription(convertArtefactToSharedModel(a));
                 } else {
-                    accountManagementService.sendArtefactForAllSubscriptions(convertArtefactToSharedModel(a));
+                    accountManagementService.sendArtefactForAllSubscriptionsV2(convertArtefactToSharedModel(a));
                 }
             });
         }
