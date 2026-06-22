@@ -217,6 +217,10 @@
                   <span th:text="${hearing.partyInfo.asn}" />
                 </p>
                 <p class="govuk-body">
+                  <span class="row-heading" th:text="${i18n.pncId + ': '}" />
+                  <span th:text="${hearing.partyInfo.pncId}" />
+                </p>
+                <p class="govuk-body">
                   <span class="row-heading" th:text="${i18n.hearingType + ': '}" />
                   <span th:text="${hearing.hearingMetadata.hearingType}" />
                 </p>
