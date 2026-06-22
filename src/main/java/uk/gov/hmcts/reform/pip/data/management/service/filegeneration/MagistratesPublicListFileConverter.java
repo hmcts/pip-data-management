@@ -10,7 +10,6 @@ import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.MagistratesPublicList;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratespubliclist.CourtRoom;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.MagistratesPublicListHelper;

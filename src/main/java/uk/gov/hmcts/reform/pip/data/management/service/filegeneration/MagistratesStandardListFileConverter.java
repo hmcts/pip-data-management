@@ -9,7 +9,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.MagistratesStandardList;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.CourtRoom;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratesstandardlist.Offence;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LocationHelper;
@@ -181,7 +180,8 @@ public class MagistratesStandardListFileConverter extends ExcelAbstractList impl
                         item.setAsn(hearing.getPartyInfo().getAsn());
                         item.setHearingType(hearing.getHearingMetadata().getHearingType());
                         item.setPanel(hearing.getHearingMetadata().getPanel());
-                        item.setReportingRestrictionDetails(hearing.getHearingMetadata().getReportingRestrictionDetails());
+                        item.setReportingRestrictionDetails(
+                            hearing.getHearingMetadata().getReportingRestrictionDetails());
                         item.setOffences(hearing.getOffences());
                         hearingList.add(item);
                     }
