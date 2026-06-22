@@ -86,9 +86,11 @@ class PublicationSearchControllerTest {
 
     @Test
     void testCreateListSearchConfigReturnsCreated() {
-        doNothing().when(publicationSearchService).createListSearchConfig(LIST_SEARCH_CONFIG, USER_ID);
+        UUID listSearchConfigId = UUID.randomUUID();
+        when(publicationSearchService.createListSearchConfig(LIST_SEARCH_CONFIG, USER_ID))
+            .thenReturn(listSearchConfigId);
 
-        ResponseEntity<String> result = publicationSearchController.createListSearchConfig(LIST_SEARCH_CONFIG, USER_ID);
+        ResponseEntity<UUID> result = publicationSearchController.createListSearchConfig(LIST_SEARCH_CONFIG, USER_ID);
 
         assertThat(result.getStatusCode())
             .as(STATUS_CODE_MATCH)
@@ -96,14 +98,16 @@ class PublicationSearchControllerTest {
 
         assertThat(result.getBody())
             .as(MESSAGES_MATCH)
-            .isEqualTo("List search config successfully added by user " + USER_ID);
+            .isEqualTo(listSearchConfigId);
     }
 
     @Test
     void testUpdateListSearchConfigReturnsOk() {
-        doNothing().when(publicationSearchService).updateListSearchConfig(TEST_STRING, LIST_SEARCH_CONFIG, USER_ID);
+        UUID listSearchConfigId = UUID.randomUUID();
+        when(publicationSearchService.updateListSearchConfig(TEST_STRING, LIST_SEARCH_CONFIG, USER_ID))
+            .thenReturn(listSearchConfigId);
 
-        ResponseEntity<String> result = publicationSearchController.updateListSearchConfig(
+        ResponseEntity<UUID> result = publicationSearchController.updateListSearchConfig(
             TEST_STRING, LIST_SEARCH_CONFIG, USER_ID
         );
 
@@ -113,7 +117,7 @@ class PublicationSearchControllerTest {
 
         assertThat(result.getBody())
             .as(MESSAGES_MATCH)
-            .isEqualTo("List search config successfully updated by user " + USER_ID);
+            .isEqualTo(listSearchConfigId);
     }
 
     @Test
