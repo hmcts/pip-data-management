@@ -42,7 +42,7 @@ public class PublicationSearchService {
      *
      * @param listSearchConfig The list search config object
      * @param actioningUserId The ID of user who is performing this action
-     * returns the ID of the created list search config
+     * @return the ID of the created list search config
      */
     public UUID createListSearchConfig(ListSearchConfig listSearchConfig, UUID actioningUserId) {
         ListSearchConfig savedListSearchConfig;
@@ -66,7 +66,7 @@ public class PublicationSearchService {
      * @param id The list search config ID to update
      * @param listSearchConfig The list search config object
      * @param actioningUserId The ID of user who is performing this action
-     * returns the ID of the updated list search config
+     * @return the ID of the updated list search config
      */
     public UUID updateListSearchConfig(String id, ListSearchConfig listSearchConfig, UUID actioningUserId) {
         listSearchConfigRepository.findById(UUID.fromString(id))
