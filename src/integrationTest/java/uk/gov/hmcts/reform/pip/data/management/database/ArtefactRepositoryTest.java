@@ -294,7 +294,7 @@ class ArtefactRepositoryTest {
     }
 
     @Test
-    void shouldRetrieveArtefactsForMiData() {
+    void shouldRetrieveArtefactsForMiDataWithPublicationReceivedDate() {
         LocalDateTime publicationReceivedDate = LocalDate.now()
             .minusDays(31)
             .atStartOfDay();
@@ -344,5 +344,22 @@ class ArtefactRepositoryTest {
         miDataList = artefactRepository.getMiData(publicationReceivedDate);
 
         assertThat(miDataList).hasSize(0);
+
+        //no last received date is given so it will return all the artefacts
+        miDataList = artefactRepository.getMiData(null);
+        assertThat(miDataList).hasSize(5).extracting(PublicationMiData::getArtefactId)
+            .containsExactlyInAnyOrder(artefactId1, artefactId2, artefactId3, artefactId4, artefactId5);
+
+        miData = miDataList.get(0);
+        assertThat(miData.getSourceArtefactId()).isEqualTo(SOURCE_ARTEFACT_ID);
+        assertThat(miData.getLocationId()).isEqualTo(LOCATION_ID);
+        assertThat(miData.getListType()).isEqualTo(ListType.CIVIL_DAILY_CAUSE_LIST);
+        assertThat(miData.getLanguage()).isEqualTo(Language.ENGLISH);
+        assertThat(miData.getProvenance()).isEqualTo(PROVENANCE);
+        assertThat(miData.getDisplayFrom()).isEqualTo(YESTERDAY);
+        assertThat(miData.getDisplayTo()).isEqualTo(TOMORROW);
+        assertThat(miData.getContentDate()).isEqualTo(TODAY);
+        assertThat(miData.getSensitivity()).isEqualTo(Sensitivity.PUBLIC);
+        assertThat(miData.getSupersededCount()).isEqualTo(1);
     }
 }

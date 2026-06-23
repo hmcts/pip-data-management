@@ -78,7 +78,7 @@ class PublicationReportingServiceTest {
         when(locationRepository.findAll()).thenReturn(List.of(location));
         when(artefactRepository.getMiData(any())).thenReturn(List.of(publicationMiData, publicationMiData2));
 
-        List<PublicationMiData> publicationMiDataList = publicationReportingService.getMiData(-1);
+        List<PublicationMiData> publicationMiDataList = publicationReportingService.getMiData(null);
 
         PublicationMiData publicationMiDataWithLocationName = new PublicationMiData(
             randomId, localDateTime, localDateTime, Language.ENGLISH, MANUAL_UPLOAD_PROVENANCE,
@@ -101,7 +101,7 @@ class PublicationReportingServiceTest {
 
         when(artefactRepository.getMiData(any())).thenReturn(List.of(publicationMiData));
 
-        List<PublicationMiData> publicationMiDataList = publicationReportingService.getMiData(-1);
+        List<PublicationMiData> publicationMiDataList = publicationReportingService.getMiData(null);
 
         assertThat(publicationMiDataList.get(0).getLocationName())
             .as("Location name is not null").isNull();
@@ -116,7 +116,7 @@ class PublicationReportingServiceTest {
 
         when(artefactRepository.getMiData(any())).thenReturn(List.of(publicationMiData));
 
-        List<PublicationMiData> publicationMiDataList = publicationReportingService.getMiData(-1);
+        List<PublicationMiData> publicationMiDataList = publicationReportingService.getMiData(null);
 
         assertThat(publicationMiDataList.get(0).getLocationName())
             .as("Location name is not blank").isNull();
