@@ -89,7 +89,6 @@ public class PublicationSearchController {
         @PathVariable String id,
         @RequestBody ListSearchConfig listSearchConfig,//NOSONAR
         @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
-        publicationSearchService.updateListSearchConfig(id, listSearchConfig, requesterId);
         return ResponseEntity.status(HttpStatus.OK)
             .body(publicationSearchService.updateListSearchConfig(id, listSearchConfig, requesterId));
     }
