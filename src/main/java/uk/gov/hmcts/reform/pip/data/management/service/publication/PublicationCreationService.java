@@ -102,8 +102,6 @@ public class PublicationCreationService {
         artefact.setPayload(blobUrl);
         Artefact createdArtefact = artefactRepository.save(artefact);
 
-        artefactSearchService.artefactSearchStore(createdArtefact, null);
-
         // Remove the old payload after superseded by the new one
         if (existingPayload != null) {
             azureArtefactBlobService.deleteBlob(ArtefactHelper.getUuidFromUrl(existingPayload));

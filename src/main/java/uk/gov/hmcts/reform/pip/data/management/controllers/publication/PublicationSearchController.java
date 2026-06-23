@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactSearchService;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSearchService;
@@ -60,13 +58,10 @@ public class PublicationSearchController {
     private static final String REQUESTER_ID_HEADER = "x-requester-id";
 
     private final PublicationSearchService publicationSearchService;
-    private final ArtefactSearchService artefactSearchService;
 
     @Autowired
-    public PublicationSearchController(PublicationSearchService publicationSearchService,
-                                       ArtefactSearchService artefactSearchService) {
+    public PublicationSearchController(PublicationSearchService publicationSearchService) {
         this.publicationSearchService = publicationSearchService;
-        this.artefactSearchService = artefactSearchService;
     }
 
     @ApiResponse(responseCode = CREATED_CODE, description = "List search config created successfully")
@@ -166,43 +161,6 @@ public class PublicationSearchController {
         @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
         return ResponseEntity.ok(publicationSearchService.findAllByLocationIdAdmin(locationId, requesterId, isAdmin));
-    }
-
-    @ApiResponse(responseCode = OK_CODE, description = "Artefact search rows found for "
-        + "given artefactId")
-    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No artefact search rows found for "
-        + "given artefactId: {artefactId}")
-    @ApiResponse(responseCode = BAD_REQUEST_CODE, description = "Unable to retrieve artefact search "
-        + "rows for given artefactId")
-    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
-    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @GetMapping("/search/artefact/{artefactId}")
-    @PreAuthorize("@authorisationService.userCanAccessArtefactSearch(#requesterId)")
-    public ResponseEntity<List<ArtefactSearch>> findArtefactSearchByArtefactId(
-        @PathVariable UUID artefactId,
-        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
-        return ResponseEntity.ok(artefactSearchService.findByArtefactId(artefactId));
-    }
-
-    @ApiResponse(responseCode = OK_CODE, description = "Artefact search rows deleted for "
-        + "given artefactId")
-    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No artefact search rows found for "
-        + "given artefactId: {artefactId}")
-    @ApiResponse(responseCode = BAD_REQUEST_CODE, description = "Unable to delete artefact search rows "
-        + "for given artefactId")
-    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
-    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @DeleteMapping("/search/artefact/{artefactId}")
-    @PreAuthorize("@authorisationService.userCanAccessArtefactSearch(#requesterId)")
-    public ResponseEntity<String> deleteArtefactSearchByArtefactId(
-        @PathVariable UUID artefactId,
-        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
-        artefactSearchService.deleteByArtefactId(artefactId);
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(String.format(
-                "Artefact search rows successfully deleted for artefactId %s",
-                artefactId
-            ));
     }
 
 }
