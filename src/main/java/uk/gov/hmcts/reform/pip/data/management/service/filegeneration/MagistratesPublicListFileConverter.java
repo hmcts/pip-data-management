@@ -1,11 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.MagistratesPublicList;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.magistratespubliclist.CourtRoom;
@@ -31,36 +26,9 @@ public class MagistratesPublicListFileConverter extends ExcelAbstractList implem
         );
     }
 
+
     @Override
-    public byte[] convertToExcel(JsonNode artefact, ListType listType) throws IOException {
-        try (Workbook workbook = new XSSFWorkbook()) {
-            Map<String, Object> languageResources = LanguageResourceHelper.getLanguageResources(listType,
-                                                                                                 Language.ENGLISH);
-            List<MagistratesPublicList> cases = processRawListData(artefact, languageResources);
-
-            Sheet sheet = workbook.createSheet(listType.getFriendlyName());
-            CellStyle boldStyle = createBoldStyle(workbook);
-
-            int rowIdx = 0;
-            Row headingRow = sheet.createRow(rowIdx++);
-            List<String> headers = getExcelHeaders(languageResources);
-            for (int i = 0; i < headers.size(); i++) {
-                setCellValue(headingRow, i, headers.get(i), boldStyle);
-            }
-
-            for (List<String> rowData : getExcelRows(cases)) {
-                Row dataRow = sheet.createRow(rowIdx++);
-                for (int i = 0; i < rowData.size(); i++) {
-                    setCellValue(dataRow, i, rowData.get(i));
-                }
-            }
-
-            autoSizeSheet(sheet);
-            return convertToByteArray(workbook);
-        }
-    }
-
-    private List<String> getExcelHeaders(Map<String, Object> languageResources) {
+    public List<String> getExcelHeaders(Map<String, Object> languageResources) {
         @SuppressWarnings("unchecked")
         List<String> headerValuesNoWrap = (List<String>) languageResources.get("headerValuesNoWrap");
         @SuppressWarnings("unchecked")
@@ -79,7 +47,10 @@ public class MagistratesPublicListFileConverter extends ExcelAbstractList implem
         );
     }
 
-    private List<List<String>> getExcelRows(List<MagistratesPublicList> cases) {
+    @Override
+    public List<List<String>> getExcelRows(JsonNode artefact, Map<String, Object> languageResources) {
+        List<MagistratesPublicList> cases = processRawListData(artefact, languageResources);
+
         List<List<String>> rows = new ArrayList<>();
         cases.forEach(caseItem -> rows.add(List.of(
             caseItem.getCourtHouse(),

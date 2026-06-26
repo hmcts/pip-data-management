@@ -77,10 +77,11 @@ public class SjpPressListFileConverter extends ExcelAbstractList implements File
      *
      * @param artefact Tree object model for artefact.
      * @param listType The list type of the publication.
+     * @param language The language of the publication.
      * @return The converted Excel spreadsheet as a byte array.
      */
     @Override
-    public byte[] convertToExcel(JsonNode artefact, ListType listType) throws IOException {
+    public byte[] convertToExcel(JsonNode artefact, ListType listType, Language language) throws IOException {
         try (Workbook workbook = new XSSFWorkbook()) {
             final List<SjpPressList> cases = processRawListData(artefact);
 

@@ -15,6 +15,7 @@ import org.jsoup.select.Elements;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.ByteArrayInputStream;
@@ -491,7 +492,7 @@ class MagistratesStandardListFileConverterTest {
 
     @Test
     void testSuccessfulExcelConversion() throws IOException {
-        byte[] result = converter.convertToExcel(inputJson, ListType.MAGISTRATES_STANDARD_LIST);
+        byte[] result = converter.convertToExcel(inputJson, ListType.MAGISTRATES_STANDARD_LIST, Language.ENGLISH);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);

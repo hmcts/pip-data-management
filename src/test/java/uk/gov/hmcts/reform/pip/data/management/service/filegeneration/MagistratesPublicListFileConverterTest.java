@@ -13,6 +13,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Test;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.ByteArrayInputStream;
@@ -250,7 +251,7 @@ class MagistratesPublicListFileConverterTest {
         );
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
 
-        byte[] result = magistratesPublicListFileConverter.convertToExcel(inputJson, ListType.MAGISTRATES_PUBLIC_LIST);
+        byte[] result = magistratesPublicListFileConverter.convertToExcel(inputJson, ListType.MAGISTRATES_PUBLIC_LIST, Language.ENGLISH);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -296,5 +297,42 @@ class MagistratesPublicListFileConverterTest {
                      "Offence details value is different");
         assertEquals("Press/Publication restrictions apply to this case",
                      dataRow.getCell(8).getStringCellValue(), "Reporting restrictions value is different");
+    }
+
+    @Test
+    void testWelshExcelConversion() throws IOException {
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(Files.newInputStream(Paths.get("src/test/resources/mocks/",
+                                                    "magistratesPublicList.json")), writer,
+                     Charset.defaultCharset()
+        );
+        JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
+
+        byte[] result = magistratesPublicListFileConverter.convertToExcel(inputJson, ListType.MAGISTRATES_PUBLIC_LIST, Language.WELSH);
+        ByteArrayInputStream file = new ByteArrayInputStream(result);
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheetAt(0);
+        Row headingRow = sheet.getRow(0);
+
+        assertEquals(ListType.MAGISTRATES_PUBLIC_LIST.getFriendlyName(), sheet.getSheetName(),
+                     "Sheet name does not match");
+        assertEquals("Llys", headingRow.getCell(0).getStringCellValue(),
+                     "Court House column is different");
+        assertEquals("Ystafell Llys", headingRow.getCell(1).getStringCellValue(),
+                     "Court Room column is different");
+        assertEquals("Yn eistedd yn", headingRow.getCell(2).getStringCellValue(),
+                     "Sitting at column is different");
+        assertEquals("URN", headingRow.getCell(3).getStringCellValue(),
+                     "URN column is different");
+        assertEquals("Enw", headingRow.getCell(4).getStringCellValue(),
+                     "Name column is different");
+        assertEquals("Math o Wrandawiad", headingRow.getCell(5).getStringCellValue(),
+                     "Hearing Type column is different");
+        assertEquals("Yr Awdurdod sy'n Erlyn", headingRow.getCell(6).getStringCellValue(),
+                     "Prosecuting Authority column is different");
+        assertEquals("Manylion yr Trosedd", headingRow.getCell(7).getStringCellValue(),
+                     "Offence Details column is different");
+        assertEquals("Cyfyngiadau Riportio", headingRow.getCell(8).getStringCellValue(),
+                     "Reporting Restrictions column is different");
     }
 }
