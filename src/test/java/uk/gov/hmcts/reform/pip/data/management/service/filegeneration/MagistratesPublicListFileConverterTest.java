@@ -251,7 +251,8 @@ class MagistratesPublicListFileConverterTest {
         );
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
 
-        byte[] result = magistratesPublicListFileConverter.convertToExcel(inputJson, ListType.MAGISTRATES_PUBLIC_LIST, Language.ENGLISH);
+        byte[] result = magistratesPublicListFileConverter
+            .convertToExcel(inputJson, ListType.MAGISTRATES_PUBLIC_LIST, Language.ENGLISH);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -308,7 +309,8 @@ class MagistratesPublicListFileConverterTest {
         );
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
 
-        byte[] result = magistratesPublicListFileConverter.convertToExcel(inputJson, ListType.MAGISTRATES_PUBLIC_LIST, Language.WELSH);
+        byte[] result = magistratesPublicListFileConverter
+            .convertToExcel(inputJson, ListType.MAGISTRATES_PUBLIC_LIST, Language.WELSH);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);

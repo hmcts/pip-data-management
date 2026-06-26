@@ -9,7 +9,6 @@ import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceH
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.MagistratesPublicListHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
-import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
 import java.util.ArrayList;
