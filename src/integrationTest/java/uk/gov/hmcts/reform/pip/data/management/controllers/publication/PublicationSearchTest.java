@@ -134,15 +134,16 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
         return listSearchConfig;
     }
 
-    private void setupMockListSearchConfig() throws Exception {
+    private UUID setupMockListSearchConfig() throws Exception {
         MockHttpServletRequestBuilder mappedListSearchConfig = post(SEARCH_CONFIG_URL)
             .content(OBJECT_MAPPER.writeValueAsString(createTestListSearchConfig()))
             .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
             .contentType(MediaType.APPLICATION_JSON);
 
-        mockMvc.perform(mappedListSearchConfig)
+        MvcResult response = mockMvc.perform(mappedListSearchConfig)
             .andExpect(status().isCreated())
             .andReturn();
+        return OBJECT_MAPPER.readValue(response.getResponse().getContentAsString(), UUID.class);
     }
 
     @Test
@@ -154,10 +155,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
                             .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(OBJECT_MAPPER.writeValueAsString(listSearchConfig)))
-            .andExpect(status().isCreated())
-            .andExpect(content().string(
-                String.format("List search config successfully added by user %s", SYSTEM_ADMIN_ID)
-            ));
+            .andExpect(status().isCreated());
     }
 
     @Test
@@ -188,7 +186,7 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     @Test
     void testUpdateListSearchConfigSuccess() throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(systemAdminUser);
-        setupMockListSearchConfig();
+        UUID createdListSearchConfigId = setupMockListSearchConfig();
 
         MvcResult getResponse = mockMvc.perform(get(SEARCH_CONFIG_URL + "/" + ListType.CIVIL_DAILY_CAUSE_LIST)
                                                     .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
@@ -201,14 +199,15 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
         );
         returnedListSearchConfig.setCaseNumberFieldName(UPDATED_CASE_NUMBER_FIELD_NAME);
 
-        mockMvc.perform(put(SEARCH_CONFIG_URL + "/" + returnedListSearchConfig.getId())
+        MvcResult putResponse = mockMvc.perform(put(SEARCH_CONFIG_URL + "/" + createdListSearchConfigId)
                             .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(OBJECT_MAPPER.writeValueAsString(returnedListSearchConfig)))
             .andExpect(status().isOk())
-            .andExpect(content().string(
-                String.format("List search config successfully updated by user %s", SYSTEM_ADMIN_ID)
-            ));
+            .andReturn();
+
+        assertThat(OBJECT_MAPPER.readValue(putResponse.getResponse().getContentAsString(), UUID.class))
+            .isEqualTo(createdListSearchConfigId);
 
         getResponse = mockMvc.perform(get(SEARCH_CONFIG_URL + "/" + ListType.CIVIL_DAILY_CAUSE_LIST)
                                                     .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)

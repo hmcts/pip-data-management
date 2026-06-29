@@ -71,15 +71,11 @@ public class PublicationSearchController {
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @PostMapping("/search/config")
     @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
-    public ResponseEntity<String> createListSearchConfig(
+    public ResponseEntity<UUID> createListSearchConfig(
         @RequestBody ListSearchConfig listSearchConfig,//NOSONAR
         @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
-        publicationSearchService.createListSearchConfig(listSearchConfig, requesterId);
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(String.format(
-                "List search config successfully added by user %s",
-                requesterId
-            ));
+            .body(publicationSearchService.createListSearchConfig(listSearchConfig, requesterId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List search config updated successfully")
@@ -89,16 +85,12 @@ public class PublicationSearchController {
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
     @PutMapping("/search/config/{id}")
     @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
-    public ResponseEntity<String> updateListSearchConfig(
+    public ResponseEntity<UUID> updateListSearchConfig(
         @PathVariable String id,
         @RequestBody ListSearchConfig listSearchConfig,//NOSONAR
         @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
-        publicationSearchService.updateListSearchConfig(id, listSearchConfig, requesterId);
         return ResponseEntity.status(HttpStatus.OK)
-            .body(String.format(
-                "List search config successfully updated by user %s",
-                requesterId
-            ));
+            .body(publicationSearchService.updateListSearchConfig(id, listSearchConfig, requesterId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List search config deleted successfully")

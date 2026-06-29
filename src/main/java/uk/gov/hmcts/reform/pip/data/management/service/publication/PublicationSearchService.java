@@ -42,10 +42,12 @@ public class PublicationSearchService {
      *
      * @param listSearchConfig The list search config object
      * @param actioningUserId The ID of user who is performing this action
+     * @return the ID of the created list search config
      */
-    public void createListSearchConfig(ListSearchConfig listSearchConfig, UUID actioningUserId) {
+    public UUID createListSearchConfig(ListSearchConfig listSearchConfig, UUID actioningUserId) {
+        ListSearchConfig savedListSearchConfig;
         try {
-            listSearchConfigRepository.save(listSearchConfig);
+            savedListSearchConfig = listSearchConfigRepository.save(listSearchConfig);
         } catch (DataIntegrityViolationException e) {
             String errorMessage = String.format(
                 "List search config for list type %s already exists",
@@ -56,6 +58,7 @@ public class PublicationSearchService {
 
         log.info(writeLog(actioningUserId, UserActions.ADD_LIST_SEARCH_CONFIG,
                           listSearchConfig.getListType().toString()));
+        return savedListSearchConfig.getId();
     }
 
     /**
@@ -63,16 +66,19 @@ public class PublicationSearchService {
      * @param id The list search config ID to update
      * @param listSearchConfig The list search config object
      * @param actioningUserId The ID of user who is performing this action
+     * @return the ID of the updated list search config
      */
-    public void updateListSearchConfig(String id, ListSearchConfig listSearchConfig, UUID actioningUserId) {
+    public UUID updateListSearchConfig(String id, ListSearchConfig listSearchConfig, UUID actioningUserId) {
         listSearchConfigRepository.findById(UUID.fromString(id))
             .orElseThrow(() -> new NotFoundException(
                 String.format("List search config for ID %s does not exist", id)
             ));
-        listSearchConfigRepository.save(listSearchConfig);
+        ListSearchConfig savedListSearchConfig = listSearchConfigRepository.save(listSearchConfig);
 
         log.info(writeLog(actioningUserId, UserActions.UPDATE_LIST_SEARCH_CONFIG,
                           listSearchConfig.getListType().toString()));
+
+        return savedListSearchConfig.getId();
     }
 
     /**

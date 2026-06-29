@@ -98,6 +98,7 @@ class PublicationSearchServiceTest {
     @BeforeAll
     static void setup() {
         SEARCH_VALUES.put(TEST_KEY, List.of(TEST_VALUE));
+        LIST_SEARCH_CONFIG.setId(TEST_ID);
         LIST_SEARCH_CONFIG.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         LIST_SEARCH_CONFIG.setCaseNumberFieldName(CASE_NUMBER_FIELD_NAME);
         LIST_SEARCH_CONFIG.setCaseNameFieldName(CASE_NAME_FIELD_NAME);
@@ -147,8 +148,11 @@ class PublicationSearchServiceTest {
     void testUpdateListSearchConfigSuccess() {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationSearchService.class)) {
             when(listSearchConfigRepository.findById(TEST_ID)).thenReturn(Optional.of(LIST_SEARCH_CONFIG));
+            when(listSearchConfigRepository.save(LIST_SEARCH_CONFIG)).thenReturn(LIST_SEARCH_CONFIG);
 
-            publicationSearchService.updateListSearchConfig(TEST_ID.toString(), LIST_SEARCH_CONFIG, ACTIONING_USER_ID);
+            assertThat(publicationSearchService.updateListSearchConfig(TEST_ID.toString(), LIST_SEARCH_CONFIG,
+                                                                       ACTIONING_USER_ID))
+                .isEqualTo(TEST_ID);
 
             assertThat(logCaptor.getInfoLogs())
                 .hasSize(1);
@@ -158,8 +162,6 @@ class PublicationSearchServiceTest {
 
             assertThat(logCaptor.getErrorLogs())
                 .isEmpty();
-
-            verify(listSearchConfigRepository).save(LIST_SEARCH_CONFIG);
         }
     }
 
