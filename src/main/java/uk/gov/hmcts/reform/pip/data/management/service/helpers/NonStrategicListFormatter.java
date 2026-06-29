@@ -222,6 +222,9 @@ public final class NonStrategicListFormatter {
         Map.entry(CIC_WEEKLY_HEARING_LIST,
                   Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField,
                          HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField))
+    //Map.entry(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST,
+    //Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField,
+    //TIME, NonStrategicFieldFormattingHelper::formatTimeField))
     );
 
     private NonStrategicListFormatter() {

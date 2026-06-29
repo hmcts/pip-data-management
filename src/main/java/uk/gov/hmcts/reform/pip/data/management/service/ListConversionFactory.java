@@ -443,6 +443,10 @@ public class ListConversionFactory {
         Map.entry(CROWN_WARNED_PDDA_LIST, new ConversionConfig(
             new CrownWarnedPddaListFileConverter(),
             new CrownWarnedPddaListSummaryData()
+        //        )),
+        //        Map.entry(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST, new ConversionConfig(
+        //            new NonStrategicListFileConverter(),
+        //            new NonStrategicListSummaryData(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST)
         ))
     );
 

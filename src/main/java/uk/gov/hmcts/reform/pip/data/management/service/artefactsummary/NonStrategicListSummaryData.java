@@ -81,6 +81,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_STATUTOR
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_T_AND_CC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
+//import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_RPT_WEEKLY_HEARING_LIST;
 
 public class NonStrategicListSummaryData implements ArtefactSummaryData {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -166,6 +167,7 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
                                                                             CASE_DETAILS)),
         Map.entry(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, HEARING_TYPE, CASE_DETAILS)),
         Map.entry(CIC_WEEKLY_HEARING_LIST, List.of(DATE, HEARING_TIME, CASE_REFERENCE_NUMBER, CASE_NAME))
+    //Map.entry(FTT_RPT_WEEKLY_HEARING_LIST, List.of(DATE, HEARING_TIME, CASE_REFERENCE_NUMBER, CASE_NAME))
     );
 
     private final ListType listType;
