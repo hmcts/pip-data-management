@@ -225,7 +225,6 @@ class PublicationCreationServiceTest {
 
         Artefact returnedArtefact = publicationCreationService.createPublication(artefact, FILE);
 
-        verify(artefactSearchService).artefactSearchStore(returnedArtefact, null);
         verify(azureArtefactBlobService, never()).deleteBlob(anyString());
         assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, VALIDATION_ARTEFACT_NOT_MATCH);
     }

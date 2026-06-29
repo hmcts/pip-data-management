@@ -122,17 +122,6 @@ public class AuthorisationService {
         return false;
     }
 
-    public boolean userCanAccessArtefactSearch(UUID requesterId) {
-        if (hasOAuthAdminRole() && isUserSystemAdmin(requesterId)) {
-            return true;
-        }
-        log.error(writeLog(
-            String.format("User with ID %s is not authorised to access artefact search",
-                          requesterId)
-        ));
-        return false;
-    }
-
     public boolean  userCanSearchInPublicationData(UUID requesterId) {
         if (!(hasOAuthAdminRole() && isVerifiedUser(requesterId))) {
             log.error(writeLog(

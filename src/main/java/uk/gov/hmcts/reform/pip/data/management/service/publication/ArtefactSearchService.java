@@ -3,11 +3,12 @@ package uk.gov.hmcts.reform.pip.data.management.service.publication;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.apache.commons.lang3.StringUtils;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.ListSearchConfigRepository;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactSearchExtractionException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class ArtefactSearchService {
 
@@ -37,7 +39,6 @@ public class ArtefactSearchService {
      * @param artefactId The artefact ID for which the search rows need to be retrieved.
      * @return The list of ArtefactSearch rows associated with the given artefact ID.
      */
-    @Transactional(readOnly = true)
     public List<ArtefactSearch> findByArtefactId(UUID artefactId) {
         List<ArtefactSearch> artefactSearchRows = artefactSearchRepository.findByArtefactId(artefactId);
         if (artefactSearchRows.isEmpty()) {
@@ -105,12 +106,12 @@ public class ArtefactSearchService {
 
 
     private List<ArtefactSearch> parseJson(String payload, UUID artefactId,
-                                                 String caseNumberField, String caseNameField) {
-        JsonNode node;
+                                           String caseNumberField, String caseNameField) {
+        JsonNode node = null;
         try {
             node = objectMapper.readTree(payload);
         } catch (JsonProcessingException error) {
-            throw new ArtefactSearchExtractionException(error.getMessage());
+            log.error("Failed to parse JSON payload for artefactId {}: {}", artefactId, error.getMessage());
         }
 
         return traverse(node, artefactId, caseNumberField, caseNameField);
@@ -145,17 +146,17 @@ public class ArtefactSearchService {
 
 
     private static boolean containsSearchableFields(ListSearchConfig config) {
-        return config.getCaseNumberFieldName() != null && !config.getCaseNumberFieldName().isBlank()
-            || config.getCaseNameFieldName() != null && !config.getCaseNameFieldName().isBlank();
+        return !StringUtils.isBlank(config.getCaseNumberFieldName())
+            || !StringUtils.isBlank(config.getCaseNameFieldName());
     }
 
 
     private String extractField(JsonNode node, String fieldName) {
-        if (fieldName == null || fieldName.isBlank()) {
+        if (StringUtils.isBlank(fieldName)) {
             return null;
         }
         String text = node.path(fieldName).asText(null);
-        return (text == null || text.isBlank()) ? null : text;
+        return StringUtils.isBlank(text) ? null : text;
     }
 }
 

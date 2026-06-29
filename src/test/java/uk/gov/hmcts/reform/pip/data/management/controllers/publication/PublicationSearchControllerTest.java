@@ -10,9 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
-import uk.gov.hmcts.reform.pip.data.management.service.publication.ArtefactSearchService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSearchService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
@@ -76,9 +74,6 @@ class PublicationSearchControllerTest {
     @Mock
     private PublicationSearchService publicationSearchService;
 
-    @Mock
-    private ArtefactSearchService artefactSearchService;
-
     @InjectMocks
     private PublicationSearchController publicationSearchController;
 
@@ -92,9 +87,11 @@ class PublicationSearchControllerTest {
 
     @Test
     void testCreateListSearchConfigReturnsCreated() {
-        doNothing().when(publicationSearchService).createListSearchConfig(LIST_SEARCH_CONFIG, USER_ID);
+        UUID listSearchConfigId = UUID.randomUUID();
+        when(publicationSearchService.createListSearchConfig(LIST_SEARCH_CONFIG, USER_ID))
+            .thenReturn(listSearchConfigId);
 
-        ResponseEntity<String> result = publicationSearchController.createListSearchConfig(LIST_SEARCH_CONFIG, USER_ID);
+        ResponseEntity<UUID> result = publicationSearchController.createListSearchConfig(LIST_SEARCH_CONFIG, USER_ID);
 
         assertThat(result.getStatusCode())
             .as(STATUS_CODE_MATCH)
@@ -102,14 +99,16 @@ class PublicationSearchControllerTest {
 
         assertThat(result.getBody())
             .as(MESSAGES_MATCH)
-            .isEqualTo("List search config successfully added by user " + USER_ID);
+            .isEqualTo(listSearchConfigId);
     }
 
     @Test
     void testUpdateListSearchConfigReturnsOk() {
-        doNothing().when(publicationSearchService).updateListSearchConfig(TEST_STRING, LIST_SEARCH_CONFIG, USER_ID);
+        UUID listSearchConfigId = UUID.randomUUID();
+        when(publicationSearchService.updateListSearchConfig(TEST_STRING, LIST_SEARCH_CONFIG, USER_ID))
+            .thenReturn(listSearchConfigId);
 
-        ResponseEntity<String> result = publicationSearchController.updateListSearchConfig(
+        ResponseEntity<UUID> result = publicationSearchController.updateListSearchConfig(
             TEST_STRING, LIST_SEARCH_CONFIG, USER_ID
         );
 
@@ -119,7 +118,7 @@ class PublicationSearchControllerTest {
 
         assertThat(result.getBody())
             .as(MESSAGES_MATCH)
-            .isEqualTo("List search config successfully updated by user " + USER_ID);
+            .isEqualTo(listSearchConfigId);
     }
 
     @Test
@@ -196,45 +195,6 @@ class PublicationSearchControllerTest {
 
         assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
         assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
-    }
-
-    @Test
-    void testFindArtefactSearchByArtefactIdReturnsOk() {
-        ArtefactSearch artefactSearch = ArtefactSearch.builder()
-            .artefactId(ARTEFACT_ID)
-            .build();
-
-        List<ArtefactSearch> expected = List.of(artefactSearch);
-
-        when(artefactSearchService.findByArtefactId(ARTEFACT_ID)).thenReturn(expected);
-
-        ResponseEntity<List<ArtefactSearch>> result =
-            publicationSearchController.findArtefactSearchByArtefactId(ARTEFACT_ID, USER_ID);
-
-        assertThat(result.getStatusCode())
-            .as(STATUS_CODE_MATCH)
-            .isEqualTo(HttpStatus.OK);
-
-        assertThat(result.getBody())
-            .as(MESSAGES_MATCH)
-            .isEqualTo(expected);
-
-    }
-
-    @Test
-    void testDeleteArtefactSearchByArtefactIdReturnsOk() {
-        doNothing().when(artefactSearchService).deleteByArtefactId(ARTEFACT_ID);
-
-        ResponseEntity<String> result =
-            publicationSearchController.deleteArtefactSearchByArtefactId(ARTEFACT_ID, USER_ID);
-
-        assertThat(result.getStatusCode())
-            .as(STATUS_CODE_MATCH)
-            .isEqualTo(HttpStatus.OK);
-
-        assertThat(result.getBody())
-            .as(MESSAGES_MATCH)
-            .isEqualTo("Artefact search rows successfully deleted for artefactId " + ARTEFACT_ID);
     }
 
     @Test
