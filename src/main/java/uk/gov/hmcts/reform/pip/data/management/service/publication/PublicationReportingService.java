@@ -43,13 +43,21 @@ public class PublicationReportingService {
      * @return MI artefact data as a list of PublicationMiData objects
      */
     public List<PublicationMiData> getMiData(Integer days) {
-        LocalDateTime publicationReceivedDate = days == null ? null : LocalDate.now()
-            .minusDays(days)
-            .atStartOfDay();
-        List<PublicationMiData> publicationMiData =
-            artefactRepository.getMiData(publicationReceivedDate);
-        List<PublicationMiData> archivedPublicationMiData =
-            artefactArchivedRepository.getArchivedMiData(publicationReceivedDate);
+        List<PublicationMiData> publicationMiData;
+        List<PublicationMiData> archivedPublicationMiData;
+
+        if (days == null) {
+            publicationMiData = artefactRepository.getAllMiData();
+            archivedPublicationMiData = artefactArchivedRepository.getAllArchivedMiData();
+        } else {
+            LocalDateTime publicationReceivedDate = LocalDate.now()
+                .minusDays(days)
+                .atStartOfDay();
+
+            publicationMiData = artefactRepository.getMiDataWithPublicationReceivedDate(publicationReceivedDate);
+            archivedPublicationMiData = artefactArchivedRepository.getArchivedMiDataWithPublicationReceivedDate(publicationReceivedDate);
+        }
+
         if (!archivedPublicationMiData.isEmpty()) {
             publicationMiData.addAll(archivedPublicationMiData);
         }
