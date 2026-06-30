@@ -55,7 +55,9 @@ public class PublicationReportingService {
                 .atStartOfDay();
 
             publicationMiData = artefactRepository.getMiDataWithPublicationReceivedDate(publicationReceivedDate);
-            archivedPublicationMiData = artefactArchivedRepository.getArchivedMiDataWithPublicationReceivedDate(publicationReceivedDate);
+            archivedPublicationMiData = artefactArchivedRepository.getArchivedMiDataWithPublicationReceivedDate(
+                publicationReceivedDate
+            );
         }
 
         if (!archivedPublicationMiData.isEmpty()) {

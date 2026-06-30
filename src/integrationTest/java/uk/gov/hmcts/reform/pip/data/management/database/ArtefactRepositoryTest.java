@@ -298,7 +298,8 @@ class ArtefactRepositoryTest {
         LocalDateTime publicationReceivedDate = LocalDate.now()
             .minusDays(31)
             .atStartOfDay();
-        List<PublicationMiData> miDataList = artefactRepository.getMiData(publicationReceivedDate);
+        List<PublicationMiData> miDataList = artefactRepository.getMiDataWithPublicationReceivedDate(
+            publicationReceivedDate);
 
         //artefactId5 has last lastReceivedDate more than 31 days old, so it will not be picked.
         assertThat(miDataList).hasSize(4).extracting(PublicationMiData::getArtefactId)
@@ -320,7 +321,7 @@ class ArtefactRepositoryTest {
         publicationReceivedDate = LocalDate.now()
             .minusDays(5)
             .atStartOfDay();
-        miDataList = artefactRepository.getMiData(publicationReceivedDate);
+        miDataList = artefactRepository.getMiDataWithPublicationReceivedDate(publicationReceivedDate);
 
         assertThat(miDataList).hasSize(1).extracting(PublicationMiData::getArtefactId)
             .containsExactlyInAnyOrder(artefactId1);
@@ -341,12 +342,12 @@ class ArtefactRepositoryTest {
         publicationReceivedDate = LocalDate.now()
             .minusDays(1)
             .atStartOfDay();
-        miDataList = artefactRepository.getMiData(publicationReceivedDate);
+        miDataList = artefactRepository.getMiDataWithPublicationReceivedDate(publicationReceivedDate);
 
         assertThat(miDataList).hasSize(0);
 
         //no last received date is given so it will return all the artefacts
-        miDataList = artefactRepository.getMiData(null);
+        miDataList = artefactRepository.getAllMiData();
         assertThat(miDataList).hasSize(5).extracting(PublicationMiData::getArtefactId)
             .containsExactlyInAnyOrder(artefactId1, artefactId2, artefactId3, artefactId4, artefactId5);
 
