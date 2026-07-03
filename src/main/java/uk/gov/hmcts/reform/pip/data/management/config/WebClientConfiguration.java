@@ -22,7 +22,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class WebClientConfiguration {
     private static final ExchangeStrategies STRATEGIES =  ExchangeStrategies.builder()
         .codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs()
-            .maxInMemorySize(2 * 1024 * 1024))
+            .maxInMemorySize(10 * 1024 * 1024))
         .build();
 
     @Bean
