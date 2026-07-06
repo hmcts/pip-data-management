@@ -111,6 +111,17 @@ public class AuthorisationService {
         return true;
     }
 
+    public boolean  userCanAccessListSearchConfig(UUID requesterId) {
+        if (hasOAuthAdminRole() && isUserSystemAdmin(requesterId)) {
+            return true;
+        }
+        log.error(writeLog(
+            String.format("User with ID %s is not authorised to access list search config",
+                          requesterId)
+        ));
+        return false;
+    }
+
     public boolean  userCanSearchInPublicationData(UUID requesterId) {
         if (!(hasOAuthAdminRole() && isVerifiedUser(requesterId))) {
             log.error(writeLog(
