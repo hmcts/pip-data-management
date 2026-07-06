@@ -69,6 +69,8 @@
     <cve>CVE-2026-43513</cve>
     <cve>CVE-2026-42498</cve>
     <cve>CVE-2026-43514</cve>
+  </suppress>
+  <suppress>
     <notes>Tomcat 10.1.54</notes>
     <cve>CVE-2026-53404</cve>
     <cve>CVE-2026-55956</cve>
