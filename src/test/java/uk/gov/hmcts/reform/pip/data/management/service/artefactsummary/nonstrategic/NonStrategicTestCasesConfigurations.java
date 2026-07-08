@@ -250,6 +250,15 @@ public final class NonStrategicTestCasesConfigurations {
                 List.of(DATE_TEXT, TIME_TEXT_4, CASE_REFERENCE_NUMBER_TEXT_1)
             ),
             new ArtefactSummaryTestInput(
+                FTT_RP_WEEKLY_HEARING_LIST_JSON,
+                ListType.FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST,
+                1,
+                2,
+                3,
+                List.of(DATE_FIELD, TIME_FIELD, CASE_REFERENCE_NUMBER_FIELD),
+                List.of(DATE_TEXT, TIME_TEXT_4, CASE_REFERENCE_NUMBER_TEXT_1)
+            ),
+            new ArtefactSummaryTestInput(
                 "fttTaxWeeklyHearingList.json",
                 ListType.FTT_TAX_WEEKLY_HEARING_LIST,
                 1,

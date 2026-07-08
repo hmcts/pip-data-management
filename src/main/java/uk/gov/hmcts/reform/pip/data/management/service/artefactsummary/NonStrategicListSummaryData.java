@@ -167,8 +167,7 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
                                                                             CASE_DETAILS)),
         Map.entry(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, HEARING_TYPE, CASE_DETAILS)),
         Map.entry(CIC_WEEKLY_HEARING_LIST, List.of(DATE, HEARING_TIME, CASE_REFERENCE_NUMBER, CASE_NAME)),
-        Map.entry(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST, List.of(DATE, HEARING_TIME, CASE_REFERENCE_NUMBER,
-                                                                    CASE_NAME))
+        Map.entry(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST, List.of(DATE, TIME, CASE_REFERENCE_NUMBER))
     );
 
     private final ListType listType;

@@ -90,7 +90,10 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
             Arguments.of("RPT_NORTHERN_WEEKLY_HEARING_LIST", "rptNorthernWeeklyHearingList.json",
                          "First-tier Tribunal (Residential Property Tribunal): Northern region Weekly Hearing List"),
             Arguments.of("RPT_SOUTHERN_WEEKLY_HEARING_LIST", "rptSouthernWeeklyHearingList.json",
-                         "First-tier Tribunal (Residential Property Tribunal): Southern region Weekly Hearing List")
+                         "First-tier Tribunal (Residential Property Tribunal): Southern region Weekly Hearing List"),
+            Arguments.of("FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST",
+                         "fttRptMarketRentsWeeklyHearingList.json",
+                         "First-tier Tribunal (Residential Property Tribunal): Market Rents Weekly Hearing List")
         );
     }
 
@@ -105,7 +108,11 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
             Arguments.of("RPT_NORTHERN_WEEKLY_HEARING_LIST", "rptNorthernWeeklyHearingList.json",
                          COMMON_WELSH_HEADER_TEXT + "Gogledd Lloegr"),
             Arguments.of("RPT_SOUTHERN_WEEKLY_HEARING_LIST", "rptSouthernWeeklyHearingList.json",
-                         COMMON_WELSH_HEADER_TEXT + "De Lloegr")
+                         COMMON_WELSH_HEADER_TEXT + "De Lloegr"),
+            Arguments.of("FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST",
+                         "fttRptMarketRentsWeeklyHearingList.json",
+                         "Tribiwnlys Haen Gyntaf (Tribiwnlys Eiddo Preswyl): " +
+                             "Rhestr Gwrandawiadau Wythnosol Rhenti’r Farchnad")
         );
     }
 
