@@ -111,8 +111,8 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
                          COMMON_WELSH_HEADER_TEXT + "De Lloegr"),
             Arguments.of("FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST",
                          "fttRptMarketRentsWeeklyHearingList.json",
-                         "Tribiwnlys Haen Gyntaf (Tribiwnlys Eiddo Preswyl): " +
-                             "Rhestr Gwrandawiadau Wythnosol Rhenti’r Farchnad")
+                         "Tribiwnlys Haen Gyntaf (Tribiwnlys Eiddo Preswyl): "
+                         + "Rhestr Gwrandawiadau Wythnosol Rhenti’r Farchnad")
         );
     }
 
