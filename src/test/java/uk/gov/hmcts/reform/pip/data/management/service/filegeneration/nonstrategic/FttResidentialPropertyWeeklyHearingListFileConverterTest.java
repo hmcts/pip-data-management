@@ -190,6 +190,11 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
                            + "subject line “[OBSERVER/MEDIA] REQUEST – [case reference] – [hearing date]” "
                            + "and appropriate arrangements will be made to allow access where reasonably practicable.");
 
+        if ("FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST".equals(listName)) {
+            softly.assertThat(document.text())
+                .contains("For Market Rent applications received before 16 March 2026");
+        }
+
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
             .isEqualTo(OBSERVE_HEARING_ENGLISH);
@@ -280,6 +285,10 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
                            + "wybodaeth arall sy’n ofynnol gan y tribiwnlys)” a gwneir trefniadau priodol i "
                            + "ganiatáu mynediad lle bo hynny’n rhesymol ymarferol.");
 
+        if ("FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST".equals(listName)) {
+            softly.assertThat(document.text())
+                .contains("Ar gyfer ceisiadau Rhenti’r Farchnad a ddaeth i law cyn 16 Mawrth 2026");
+        }
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
