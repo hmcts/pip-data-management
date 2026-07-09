@@ -10,9 +10,8 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateArtefactConflictException;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLocationConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CsvParseException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.DataConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ExcelConversionException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileFormatNotSupportedException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileSizeLimitException;
@@ -111,16 +110,9 @@ public class GlobalExceptionHandler {
             .body(generateExceptionResponse(ex.getMessage()));
     }
 
-    @ExceptionHandler(CreateArtefactConflictException.class)
-    public ResponseEntity<ExceptionResponse> handle(CreateArtefactConflictException ex) {
-        log.error(writeLog("409, conflict while uploading publication"));
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-            .body(generateExceptionResponse(ex.getMessage()));
-    }
-
-    @ExceptionHandler(CreateLocationConflictException.class)
-    public ResponseEntity<ExceptionResponse> handle(CreateLocationConflictException ex) {
-        log.error(writeLog("409, conflict while creating location"));
+    @ExceptionHandler(DataConflictException.class)
+    public ResponseEntity<ExceptionResponse> handle(DataConflictException ex) {
+        log.error(writeLog("409, Conflict while saving entity. Details: " + ex.getMessage()));
         return ResponseEntity.status(HttpStatus.CONFLICT)
             .body(generateExceptionResponse(ex.getMessage()));
     }
