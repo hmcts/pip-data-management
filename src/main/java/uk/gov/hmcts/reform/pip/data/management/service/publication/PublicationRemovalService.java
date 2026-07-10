@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactArchivedRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
@@ -35,6 +36,7 @@ public class PublicationRemovalService {
     private final ArtefactRepository artefactRepository;
     private final LocationRepository locationRepository;
     private final ArtefactArchivedRepository artefactArchivedRepository;
+    private final ArtefactSearchRepository artefactSearchRepository;
     private final PublicationFileManagementService publicationFileManagementService;
     private final AzureArtefactBlobService azureArtefactBlobService;
     private final AccountManagementService accountManagementService;
@@ -45,7 +47,8 @@ public class PublicationRemovalService {
                                      AzureArtefactBlobService azureArtefactBlobService,
                                      AccountManagementService accountManagementService,
                                      SystemAdminNotificationService systemAdminNotificationService,
-                                     ArtefactArchivedRepository artefactArchivedRepository) {
+                                     ArtefactArchivedRepository artefactArchivedRepository,
+                                     ArtefactSearchRepository artefactSearchRepository) {
         this.artefactRepository = artefactRepository;
         this.locationRepository = locationRepository;
         this.publicationFileManagementService = publicationFileManagementService;
@@ -53,6 +56,7 @@ public class PublicationRemovalService {
         this.accountManagementService = accountManagementService;
         this.systemAdminNotificationService = systemAdminNotificationService;
         this.artefactArchivedRepository = artefactArchivedRepository;
+        this.artefactSearchRepository = artefactSearchRepository;
     }
 
     /**
@@ -143,6 +147,7 @@ public class PublicationRemovalService {
 
     public void handleArtefactDeletion(Artefact artefact) {
         deleteDataFromBlobStore(artefact);
+        artefactSearchRepository.deleteByArtefactId(artefact.getArtefactId());
         artefactRepository.delete(artefact);
         if (!NoMatchArtefactHelper.isNoMatchLocationId(artefact.getLocationId())) {
             accountManagementService.sendDeletedArtefactForThirdParties(artefact);
@@ -153,6 +158,7 @@ public class PublicationRemovalService {
         deleteDataFromBlobStore(artefact);
         ArtefactArchived artefactArchived = new ArtefactArchived(artefact, isManuallyDeleted);
         artefactArchivedRepository.save(artefactArchived);
+        artefactSearchRepository.deleteByArtefactId(artefact.getArtefactId());
         artefactRepository.delete(artefact);
     }
 }
