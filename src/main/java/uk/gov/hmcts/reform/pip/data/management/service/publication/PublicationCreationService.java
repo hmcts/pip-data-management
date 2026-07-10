@@ -42,18 +42,21 @@ public class PublicationCreationService {
     private final PublicationSubscriptionService publicationSubscriptionService;
 
     private static final String MANUAL_UPLOAD_VALUE = "MANUAL_UPLOAD";
+    private final ArtefactSearchService artefactSearchService;
 
     @Autowired
     public PublicationCreationService(ArtefactRepository artefactRepository,
                                       AzureArtefactBlobService azureArtefactBlobService,
                                       LocationRepository locationRepository,
                                       PublicationFileManagementService publicationFileManagementService,
-                                      PublicationSubscriptionService publicationSubscriptionService) {
+                                      PublicationSubscriptionService publicationSubscriptionService,
+                                      ArtefactSearchService artefactSearchService) {
         this.artefactRepository = artefactRepository;
         this.azureArtefactBlobService = azureArtefactBlobService;
         this.locationRepository = locationRepository;
         this.publicationFileManagementService = publicationFileManagementService;
         this.publicationSubscriptionService = publicationSubscriptionService;
+        this.artefactSearchService = artefactSearchService;
     }
 
     /**
@@ -72,6 +75,7 @@ public class PublicationCreationService {
 
         artefact.setPayload(blobUrl);
         Artefact createdArtefact = artefactRepository.save(artefact);
+        artefactSearchService.artefactSearchStore(createdArtefact, payload);
 
         // Remove the old payload after superseded by the new one
         if (existingPayload != null) {
