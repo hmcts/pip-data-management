@@ -18,6 +18,13 @@
   <suppress>
     <notes>Vulnerability in jackson-databind</notes>
     <cve>CVE-2026-29062</cve>
+    <cve>CVE-2026-54512</cve>
+    <cve>CVE-2026-54513</cve>
+    <cve>CVE-2026-54518</cve>
+    <cve>CVE-2026-54514</cve>
+    <cve>CVE-2026-54515</cve>
+    <cve>CVE-2026-54516</cve>
+    <cve>CVE-2026-54517</cve>
   </suppress>
   <suppress>
     <notes>Vulnerability in org.apache.pdfbox</notes>
@@ -159,13 +166,18 @@
     <cve>CVE-2026-41843</cve>
     <cve>CVE-2026-41852</cve>
     <cve>CVE-2026-41853</cve>
+    <cve>CVE-2026-41855</cve>
   </suppress>
   <suppress>
     <notes>spring security suppression</notes>
     <cve>CVE-2026-40988</cve>
     <cve>CVE-2026-41003</cve>
     <cve>CVE-2026-41694</cve>
-    <cve>CVE-2026-41854</cve>
-    <cve>CVE-2026-41853</cve>
+    <cve>CVE-2026-47838</cve>
+    <cve>CVE-2026-41706</cve>
+  </suppress>
+  <suppress>
+    <notes>kotlin suppression</notes>
+    <cve>CVE-2026-53914</cve>
   </suppress>
 </suppressions>
