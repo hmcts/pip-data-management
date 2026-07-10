@@ -69,6 +69,12 @@
     <cve>CVE-2026-43513</cve>
     <cve>CVE-2026-42498</cve>
     <cve>CVE-2026-43514</cve>
+    <cve>CVE-2026-53404</cve>
+    <cve>CVE-2026-55956</cve>
+    <cve>CVE-2026-55955</cve>
+    <cve>CVE-2026-50229</cve>
+    <cve>CVE-2026-55276</cve>
+    <cve>CVE-2026-53434</cve>
   </suppress>
   <suppress>
     <notes>Tomcat 10.1.54</notes>
@@ -117,6 +123,7 @@
   <suppress>
     <notes>PostgreSQL, Spring Boot, Spring Framework, and Spring Security vulnerabilities – false positives or accepted risk</notes>
     <cve>CVE-2026-42198</cve>
+    <cve>CVE-2026-54291</cve>
     <!-- Spring Framework -->
     <cve>CVE-2026-22740</cve>
     <cve>CVE-2026-22745</cve>
