@@ -8,7 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,7 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.AbstractMockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
@@ -120,7 +120,7 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
             .getResourceAsStream("data/non-strategic/cst-weekly-hearing-list/cstWeeklyHearingList.xlsx")) {
             return new MockMultipartFile(
                 "file", "TestFileName.xlsx", EXCEL_FILE_TYPE,
-                org.testcontainers.shaded.org.apache.commons.io.IOUtils.toByteArray(inputStream)
+                org.apache.commons.io.IOUtils.toByteArray(inputStream)
             );
         }
     }
@@ -130,7 +130,8 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @MethodSource(PARAMETERS)
     void testEmptyProvenance(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
+        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
+            = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
@@ -155,7 +156,8 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @MethodSource(PARAMETERS)
     void testMissingProvenance(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
+        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
+            = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
@@ -180,7 +182,8 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @MethodSource(PARAMETERS)
     void testEmptyLanguage(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
+        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
+            = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
@@ -205,7 +208,8 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @MethodSource(PARAMETERS)
     void testMissingLanguage(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
+        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
+            = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
@@ -230,7 +234,8 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @MethodSource(PARAMETERS)
     void testEmptyArtefactType(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
+        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
+            = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
@@ -255,7 +260,8 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @MethodSource(PARAMETERS)
     void testMissingArtefactType(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
+        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
+            = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
@@ -280,7 +286,8 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @MethodSource(PARAMETERS)
     void testEmptyListType(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
+        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
+            = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
@@ -304,7 +311,8 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @MethodSource(PARAMETERS)
     void testMissingListType(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
+        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
+            = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
@@ -327,7 +335,8 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @MethodSource(PARAMETERS)
     void testEmptyContentDate(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
+        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
+            = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
@@ -352,7 +361,8 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @MethodSource(PARAMETERS)
     void testMissingContentDate(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
+        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
+            = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
@@ -378,7 +388,8 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @MethodSource(PARAMETERS)
     void testEmptyCourtId(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
+        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
+            = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
@@ -403,7 +414,8 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @MethodSource(PARAMETERS)
     void testMissingCourtId(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
+        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
+            = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
@@ -429,7 +441,8 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @MethodSource(PARAMETERS)
     void testDateToAbsenceList(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
+        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
+            = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
@@ -454,7 +467,8 @@ class PublicationMissingHeadersTest extends IntegrationBasicTestBase {
     @MethodSource(PARAMETERS)
     void testDateFromAbsenceList(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
+        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
+            = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 

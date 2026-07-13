@@ -5,8 +5,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -294,11 +294,12 @@ class ArtefactRepositoryTest {
     }
 
     @Test
-    void shouldRetrieveArtefactsForMiData() {
+    void shouldRetrieveArtefactsForMiDataWithPublicationReceivedDate() {
         LocalDateTime publicationReceivedDate = LocalDate.now()
             .minusDays(31)
             .atStartOfDay();
-        List<PublicationMiData> miDataList = artefactRepository.getMiData(publicationReceivedDate);
+        List<PublicationMiData> miDataList = artefactRepository.getMiDataWithPublicationReceivedDate(
+            publicationReceivedDate);
 
         //artefactId5 has last lastReceivedDate more than 31 days old, so it will not be picked.
         assertThat(miDataList).hasSize(4).extracting(PublicationMiData::getArtefactId)
@@ -320,7 +321,7 @@ class ArtefactRepositoryTest {
         publicationReceivedDate = LocalDate.now()
             .minusDays(5)
             .atStartOfDay();
-        miDataList = artefactRepository.getMiData(publicationReceivedDate);
+        miDataList = artefactRepository.getMiDataWithPublicationReceivedDate(publicationReceivedDate);
 
         assertThat(miDataList).hasSize(1).extracting(PublicationMiData::getArtefactId)
             .containsExactlyInAnyOrder(artefactId1);
@@ -341,8 +342,25 @@ class ArtefactRepositoryTest {
         publicationReceivedDate = LocalDate.now()
             .minusDays(1)
             .atStartOfDay();
-        miDataList = artefactRepository.getMiData(publicationReceivedDate);
+        miDataList = artefactRepository.getMiDataWithPublicationReceivedDate(publicationReceivedDate);
 
         assertThat(miDataList).hasSize(0);
+
+        //no last received date is given so it will return all the artefacts
+        miDataList = artefactRepository.getAllMiData();
+        assertThat(miDataList).hasSize(5).extracting(PublicationMiData::getArtefactId)
+            .containsExactlyInAnyOrder(artefactId1, artefactId2, artefactId3, artefactId4, artefactId5);
+
+        miData = miDataList.get(0);
+        assertThat(miData.getSourceArtefactId()).isEqualTo(SOURCE_ARTEFACT_ID);
+        assertThat(miData.getLocationId()).isEqualTo(LOCATION_ID);
+        assertThat(miData.getListType()).isEqualTo(ListType.CIVIL_DAILY_CAUSE_LIST);
+        assertThat(miData.getLanguage()).isEqualTo(Language.ENGLISH);
+        assertThat(miData.getProvenance()).isEqualTo(PROVENANCE);
+        assertThat(miData.getDisplayFrom()).isEqualTo(YESTERDAY);
+        assertThat(miData.getDisplayTo()).isEqualTo(TOMORROW);
+        assertThat(miData.getContentDate()).isEqualTo(TODAY);
+        assertThat(miData.getSensitivity()).isEqualTo(Sensitivity.PUBLIC);
+        assertThat(miData.getSupersededCount()).isEqualTo(1);
     }
 }

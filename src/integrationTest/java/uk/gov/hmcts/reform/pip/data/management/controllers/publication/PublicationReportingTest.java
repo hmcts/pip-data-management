@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -45,7 +45,8 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
         Artefact artefact = createDailyList(Sensitivity.PUBLIC);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(MI_REPORTING_DATA_URL);
+            .get(MI_REPORTING_DATA_URL)
+            .param("days", "7");
 
         MvcResult responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
         assertNotNull(responseMiData.getResponse(), VALIDATION_MI_REPORT);
@@ -68,6 +69,7 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
             .get(MI_REPORTING_DATA_URL)
+            .param("days", "7")
             .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
 
         MvcResult responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
@@ -92,7 +94,8 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
                                             PROVENANCE, "12345");
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(MI_REPORTING_DATA_URL);
+            .get(MI_REPORTING_DATA_URL)
+            .param("days", "7");
 
         MvcResult responseMiData = mockMvc.perform(request).andExpect(status().isOk()).andReturn();
         assertNotNull(responseMiData.getResponse(), VALIDATION_MI_REPORT);
@@ -121,7 +124,8 @@ class PublicationReportingTest extends PublicationIntegrationTestBase {
     @WithMockUser(username = ADMIN, authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedGetMiData() throws Exception {
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(MI_REPORTING_DATA_URL);
+            .get(MI_REPORTING_DATA_URL)
+            .param("days", "7");
 
         mockMvc.perform(request)
             .andExpect(status().isForbidden())
