@@ -631,7 +631,8 @@ class PublicationTest extends FunctionalTestBase {
         Map<String, String> headerMap = getBaseHeaderMap();
 
         final Response responseGetArtefactMetadata = doGetRequest(
-            MI_DATA_URL, headerMap
+            MI_DATA_URL + "?days=7",
+            headerMap
         );
 
         assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(OK.value());
