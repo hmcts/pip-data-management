@@ -34,6 +34,7 @@ class ArtefactArchivedRepositoryTest {
     private static final String PROVENANCE = "MANUAL_UPLOAD";
 
     private UUID artefactId1;
+    private UUID artefactId2;
 
     @Autowired
     ArtefactArchivedRepository artefactArchivedRepository;
@@ -74,7 +75,9 @@ class ArtefactArchivedRepositoryTest {
         artefact2.setSensitivity(Sensitivity.PUBLIC);
         artefact2.setSupersededCount(1);
 
-        artefactArchivedRepository.save(artefact2);
+        ArtefactArchived savedArtefactArchived2 =
+            artefactArchivedRepository.save(artefact2);
+        artefactId2 = savedArtefactArchived2.getArtefactId();
     }
 
     @AfterAll
@@ -84,11 +87,12 @@ class ArtefactArchivedRepositoryTest {
 
 
     @Test
-    void shouldRetrieveArtefactsForMiData() {
+    void shouldRetrieveArtefactsForMiDataWithPublicationReceivedDate() {
         LocalDateTime publicationReceivedDate = LocalDate.now()
             .minusDays(31)
             .atStartOfDay();
-        List<PublicationMiData> miDataList = artefactArchivedRepository.getArchivedMiData(publicationReceivedDate);
+        List<PublicationMiData> miDataList = artefactArchivedRepository.getArchivedMiDataWithPublicationReceivedDate(
+            publicationReceivedDate);
 
         //artefactId2 has last lastReceivedDate more than 31 days old, so it will not be picked.
         assertThat(miDataList).hasSize(1).extracting(PublicationMiData::getArtefactId)
@@ -111,8 +115,28 @@ class ArtefactArchivedRepositoryTest {
         publicationReceivedDate = LocalDate.now()
             .minusDays(1)
             .atStartOfDay();
-        miDataList = artefactArchivedRepository.getArchivedMiData(publicationReceivedDate);
+        miDataList = artefactArchivedRepository.getArchivedMiDataWithPublicationReceivedDate(publicationReceivedDate);
 
         assertThat(miDataList).hasSize(0);
+    }
+
+    @Test
+    void shouldRetrieveAllArtefactsForMiData() {
+        List<PublicationMiData> miDataList = artefactArchivedRepository.getAllArchivedMiData();
+
+        assertThat(miDataList).hasSize(2).extracting(PublicationMiData::getArtefactId)
+            .containsExactlyInAnyOrder(artefactId1, artefactId2);
+
+        PublicationMiData miData = miDataList.get(1);
+        assertThat(miData.getSourceArtefactId()).isEmpty();
+        assertThat(miData.getLocationId()).isEqualTo(LOCATION_ID);
+        assertThat(miData.getListType()).isEqualTo(ListType.CIVIL_DAILY_CAUSE_LIST);
+        assertThat(miData.getLanguage()).isEqualTo(Language.ENGLISH);
+        assertThat(miData.getProvenance()).isEqualTo(PROVENANCE);
+        assertThat(miData.getDisplayFrom()).isEqualTo(YESTERDAY);
+        assertThat(miData.getDisplayTo()).isEqualTo(TOMORROW);
+        assertThat(miData.getContentDate()).isEqualTo(TODAY);
+        assertThat(miData.getSensitivity()).isEqualTo(Sensitivity.PUBLIC);
+        assertThat(miData.getSupersededCount()).isEqualTo(1);
     }
 }
