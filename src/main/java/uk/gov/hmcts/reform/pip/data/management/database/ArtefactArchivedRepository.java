@@ -19,7 +19,15 @@ public interface ArtefactArchivedRepository extends JpaRepository<ArtefactArchiv
         + "supersededCount, type, contentDate, locationId, listType) "
         + "FROM ArtefactArchived "
         + "WHERE lastReceivedDate >= :publicationReceivedDate")
-    List<PublicationMiData> getArchivedMiData(@Param("publicationReceivedDate") LocalDateTime date);
+    List<PublicationMiData> getArchivedMiDataWithPublicationReceivedDate(
+        @Param("publicationReceivedDate") LocalDateTime date);
+
+    @Query("SELECT new uk.gov.hmcts.reform.pip.model.report.PublicationMiData("
+        + "artefactId, displayFrom, displayTo, language, "
+        + "provenance, sensitivity, '' as sourceArtefactId, "
+        + "supersededCount, type, contentDate, locationId, listType) "
+        + "FROM ArtefactArchived ")
+    List<PublicationMiData> getAllArchivedMiData();
 
     void deleteAllByLocationIdIn(List<String> locationIds);
 }

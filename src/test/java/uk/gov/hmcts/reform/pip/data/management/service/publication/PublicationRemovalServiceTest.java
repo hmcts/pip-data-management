@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactArchivedRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
@@ -99,6 +100,8 @@ class PublicationRemovalServiceTest {
     @Mock
     private SystemAdminNotificationService systemAdminNotificationService;
 
+    @Mock private ArtefactSearchRepository artefactSearchRepository;
+
     @InjectMocks
     private PublicationRemovalService publicationRemovalService;
 
@@ -120,11 +123,12 @@ class PublicationRemovalServiceTest {
                                                                              USER_ID, ARTEFACT_ID)), MESSAGES_MATCH);
 
             InOrder orderVerifier = inOrder(azureArtefactBlobService, publicationFileManagementService,
-                                            artefactRepository, accountManagementService);
+                                            artefactRepository, artefactSearchRepository, accountManagementService);
             orderVerifier.verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
             orderVerifier.verify(publicationFileManagementService).deleteFiles(ARTEFACT_ID,
                                                                                ListType.CIVIL_DAILY_CAUSE_LIST,
                                                                                Language.ENGLISH);
+            orderVerifier.verify(artefactSearchRepository).deleteByArtefactId(ARTEFACT_ID);
             orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
             orderVerifier.verify(accountManagementService)
                 .sendDeletedArtefactForThirdParties(artefactWithIdAndPayloadUrl);
@@ -141,6 +145,7 @@ class PublicationRemovalServiceTest {
             assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE,
                                                                              USER_ID, ARTEFACT_ID)), MESSAGES_MATCH);
 
+            verify(artefactSearchRepository).deleteByArtefactId(ARTEFACT_ID);
             verify(artefactRepository).delete(artefactWithNoMatchLocationId);
             verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
             verifyNoInteractions(publicationFileManagementService);
@@ -160,8 +165,10 @@ class PublicationRemovalServiceTest {
                                                                              USER_ID, ARTEFACT_ID)), MESSAGES_MATCH);
 
             InOrder orderVerifier = inOrder(azureArtefactBlobService, publicationFileManagementService,
-                                            artefactRepository, accountManagementService);
+                                            artefactRepository, artefactSearchRepository, accountManagementService);
+
             orderVerifier.verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
+            orderVerifier.verify(artefactSearchRepository).deleteByArtefactId(ARTEFACT_ID);
             orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
             orderVerifier.verify(accountManagementService)
                 .sendDeletedArtefactForThirdParties(artefactWithIdAndPayloadUrl);
@@ -180,6 +187,7 @@ class PublicationRemovalServiceTest {
             assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE,
                                                                              USER_ID, ARTEFACT_ID)), MESSAGES_MATCH);
 
+            verify(artefactSearchRepository).deleteByArtefactId(ARTEFACT_ID);
             verify(artefactRepository).delete(artefactWithNoMatchLocationId);
             verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
             verifyNoInteractions(publicationFileManagementService);
@@ -205,6 +213,7 @@ class PublicationRemovalServiceTest {
         verify(artefactArchivedRepository).save(
             matchesArchivedArtefact(archivedArtefactWithIdAndPayloadUrl)
         );
+        verify(artefactSearchRepository).deleteByArtefactId(ARTEFACT_ID);
         verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(publicationFileManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
@@ -220,6 +229,7 @@ class PublicationRemovalServiceTest {
         verify(artefactArchivedRepository).save(
             matchesArchivedArtefact(archivedArtefactWithNoMatchLocationId)
         );
+        verify(artefactSearchRepository).deleteByArtefactId(ARTEFACT_ID);
         verify(artefactRepository).delete(artefactWithNoMatchLocationId);
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verifyNoInteractions(publicationFileManagementService);
@@ -239,6 +249,7 @@ class PublicationRemovalServiceTest {
         verify(artefactArchivedRepository).save(
             matchesArchivedArtefact(archivedArtefactWithPayloadUrl)
         );
+        verify(artefactSearchRepository).deleteByArtefactId(testArtefactId);
         verify(artefactRepository).delete(artefactWithPayloadUrl);
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(publicationFileManagementService).deleteFiles(testArtefactId, ListType.SJP_PUBLIC_LIST,
@@ -261,6 +272,7 @@ class PublicationRemovalServiceTest {
             matchesArchivedArtefact(archivedArtefactWithPayloadUrl)
         );
 
+        verify(artefactSearchRepository).deleteByArtefactId(testArtefactId);
         verify(artefactRepository).delete(artefactWithPayloadUrl);
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(publicationFileManagementService).deleteFiles(testArtefactId, ListType.SJP_PRESS_LIST, Language.ENGLISH);
@@ -284,6 +296,7 @@ class PublicationRemovalServiceTest {
         verify(artefactArchivedRepository).save(
             matchesArchivedArtefact(archivedArtefactWithPayloadUrl)
         );
+        verify(artefactSearchRepository).deleteByArtefactId(testArtefactId);
         verify(artefactRepository).delete(artefactWithPayloadUrl);
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verifyNoInteractions(publicationFileManagementService);
@@ -301,6 +314,7 @@ class PublicationRemovalServiceTest {
         verify(artefactArchivedRepository).save(
             matchesArchivedArtefact(archivedArtefactWithNoMatchLocationId)
         );
+        verify(artefactSearchRepository).deleteByArtefactId(ARTEFACT_ID);
         verify(artefactRepository).delete(artefactWithNoMatchLocationId);
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verifyNoInteractions(publicationFileManagementService);
@@ -311,6 +325,7 @@ class PublicationRemovalServiceTest {
     void testArchiveExpiredArtefactsWhenArtefactsNotFound() {
         when(artefactRepository.findOutdatedArtefacts(any())).thenReturn(Collections.emptyList());
         publicationRemovalService.archiveExpiredArtefacts();
+        verifyNoInteractions(artefactSearchRepository);
         verifyNoInteractions(azureArtefactBlobService);
         verifyNoInteractions(accountManagementService);
     }
@@ -325,6 +340,7 @@ class PublicationRemovalServiceTest {
         verify(artefactArchivedRepository).save(
             matchesArchivedArtefact(archivedManuallyArtefactWithIdAndPayloadUrl)
         );
+        verify(artefactSearchRepository).deleteByArtefactId(ARTEFACT_ID);
         verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verify(publicationFileManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
@@ -342,6 +358,7 @@ class PublicationRemovalServiceTest {
         verify(artefactArchivedRepository).save(
             matchesArchivedArtefact(artefactArchivedManuallyWithNoMatchLocationId)
         );
+        verify(artefactSearchRepository).deleteByArtefactId(ARTEFACT_ID);
         verify(artefactRepository).delete(artefactWithNoMatchLocationId);
         verify(azureArtefactBlobService).deleteBlob(PAYLOAD_STRIPPED);
         verifyNoInteractions(publicationFileManagementService);
@@ -369,10 +386,12 @@ class PublicationRemovalServiceTest {
         publicationRemovalService.deleteArtefactByLocation(List.of(artefactWithIdAndPayloadUrl), LOCATION_ID, USER_ID);
 
         InOrder orderVerifier = inOrder(azureArtefactBlobService, publicationFileManagementService,
-                                        artefactRepository, accountManagementService, systemAdminNotificationService);
+                                        artefactRepository, artefactSearchRepository,
+                                        accountManagementService, systemAdminNotificationService);
         orderVerifier.verify(azureArtefactBlobService).deleteBlob(any());
         orderVerifier.verify(publicationFileManagementService).deleteFiles(ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
                                                                            Language.ENGLISH);
+        orderVerifier.verify(artefactSearchRepository).deleteByArtefactId(ARTEFACT_ID);
         orderVerifier.verify(artefactRepository).delete(artefactWithIdAndPayloadUrl);
         orderVerifier.verify(accountManagementService).sendDeletedArtefactForThirdParties(any());
         orderVerifier.verify(systemAdminNotificationService).sendEmailNotification(
@@ -422,6 +441,10 @@ class PublicationRemovalServiceTest {
 
         publicationRemovalService.deleteArtefacts(artefactsToDelete);
 
+        verify(artefactSearchRepository).deleteByArtefactId(artefact1.getArtefactId());
+        verify(artefactSearchRepository).deleteByArtefactId(artefact2.getArtefactId());
+        verify(artefactSearchRepository).deleteByArtefactId(artefact3.getArtefactId());
+
         verify(azureArtefactBlobService).deleteBlob("url1");
         verify(azureArtefactBlobService).deleteBlob("url2");
         verify(azureArtefactBlobService).deleteBlob("url3");
@@ -433,6 +456,7 @@ class PublicationRemovalServiceTest {
     void testDeleteArtefactsWithNoArtefactsToDelete() {
         publicationRemovalService.deleteArtefacts(Collections.emptyList());
 
+        verifyNoInteractions(artefactSearchRepository);
         verifyNoInteractions(azureArtefactBlobService);
         verifyNoMoreInteractions(artefactRepository);
         verifyNoInteractions(accountManagementService);

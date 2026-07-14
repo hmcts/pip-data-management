@@ -46,9 +46,9 @@ class PublicationReportingControllerTest {
             Sensitivity.PUBLIC, UUID.randomUUID().toString(), 1, ArtefactType.GENERAL_PUBLICATION,
             LocalDateTime.now(), "NoMatch2", ListType.CIVIL_DAILY_CAUSE_LIST);
 
-        when(publicationReportingService.getMiData()).thenReturn(List.of(publicationMiData, publicationMiData2));
+        when(publicationReportingService.getMiData(null)).thenReturn(List.of(publicationMiData, publicationMiData2));
 
-        ResponseEntity<List<PublicationMiData>> response = publicationReportingController.getMiData();
+        ResponseEntity<List<PublicationMiData>> response = publicationReportingController.getMiData(null);
 
         assertEquals(HttpStatus.OK, response.getStatusCode(), STATUS_CODE_MATCH);
         assertThat(response.getBody()).containsExactlyInAnyOrder(publicationMiData, publicationMiData2);
