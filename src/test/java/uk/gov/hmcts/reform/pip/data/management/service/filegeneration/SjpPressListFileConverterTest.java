@@ -14,6 +14,7 @@ import org.jsoup.select.Elements;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.ByteArrayInputStream;
@@ -30,6 +31,8 @@ class SjpPressListFileConverterTest {
     private static final String LINK_CLASS = "govuk-link";
     private static final String HREF = "href";
     private static final String BODY_CLASS = "govuk-body";
+    private static final String ENGLISH_LANGUAGE = "ENGLISH";
+    private static final String WELSH_LANGUAGE = "WELSH";
 
     private static final String LINK_MESSAGE = "Link does not match";
 
@@ -236,8 +239,10 @@ class SjpPressListFileConverterTest {
 
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {"SJP_PRESS_LIST", "SJP_DELTA_PRESS_LIST"})
-    void testExcelConversionTableHeaders(ListType listType) throws IOException {
-        byte[] result = sjpPressListConverter.convertToExcel(getInput("/mocks/sjpPressList.json"), listType);
+    void testExcelConversionEnglishTableHeaders(ListType listType) throws IOException {
+        byte[] result = sjpPressListConverter.convertToExcel(getInput("/mocks/sjpPressList.json"), listType,
+                                                             Language.valueOf(ENGLISH_LANGUAGE)
+        );
 
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
@@ -299,8 +304,74 @@ class SjpPressListFileConverterTest {
 
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {"SJP_PRESS_LIST", "SJP_DELTA_PRESS_LIST"})
+    void testExcelConversionWelshTableHeaders(ListType listType) throws IOException {
+        byte[] result = sjpPressListConverter.convertToExcel(getInput("/mocks/sjpPressList.json"), listType,
+                                                             Language.valueOf(WELSH_LANGUAGE)
+        );
+
+        ByteArrayInputStream file = new ByteArrayInputStream(result);
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheetAt(0);
+        Row headingRow = sheet.getRow(0);
+
+        String expectedSheetName = listType.equals(ListType.SJP_PRESS_LIST)
+            ? "SJP Press List (Full list)"
+            : "SJP Press List (New cases)";
+
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(sheet.getSheetName())
+            .as("Sheet name does not match")
+            .isEqualTo(expectedSheetName);
+
+        softly.assertThat(headingRow.getCell(0).getStringCellValue())
+            .as("Address column is different")
+            .isEqualTo("Cyfeiriad");
+
+        softly.assertThat(headingRow.getCell(1).getStringCellValue())
+            .as("Case URN column is different")
+            .isEqualTo("Case URN");
+
+        softly.assertThat(headingRow.getCell(2).getStringCellValue())
+            .as("Date of Birth column is different")
+            .isEqualTo("Date of Birth");
+
+        softly.assertThat(headingRow.getCell(3).getStringCellValue())
+            .as("Defendant Name column is different")
+            .isEqualTo("Defendant Name");
+
+        softly.assertThat(headingRow.getCell(4).getStringCellValue())
+            .as("Offence 1 Press Restriction Requested column is different")
+            .isEqualTo("Offence 1 Press Restriction Requested");
+
+        softly.assertThat(headingRow.getCell(5).getStringCellValue())
+            .as("Offence 1 Title column is different")
+            .isEqualTo("Offence 1 Title");
+
+        softly.assertThat(headingRow.getCell(6).getStringCellValue())
+            .as("Offence 1 Wording column is different")
+            .isEqualTo("Offence 1 Wording");
+
+        softly.assertThat(headingRow.getCell(7).getStringCellValue())
+            .as("Offence 2 Press Restriction Requested column is different")
+            .isEqualTo("Offence 2 Press Restriction Requested");
+
+        softly.assertThat(headingRow.getCell(8).getStringCellValue())
+            .as("Offence 2 Title column is different")
+            .isEqualTo("Offence 2 Title");
+
+        softly.assertThat(headingRow.getCell(9).getStringCellValue())
+            .as("Offence 2 Wording column is different")
+            .isEqualTo("Offence 2 Wording");
+
+        softly.assertAll();
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"SJP_PRESS_LIST", "SJP_DELTA_PRESS_LIST"})
     void testExcelConversionTableValues(ListType listType) throws IOException {
-        byte[] result = sjpPressListConverter.convertToExcel(getInput("/mocks/sjpPressList.json"), listType);
+        byte[] result = sjpPressListConverter.convertToExcel(getInput("/mocks/sjpPressList.json"), listType,
+                                                             Language.valueOf(ENGLISH_LANGUAGE));
 
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
