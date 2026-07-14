@@ -39,8 +39,6 @@ spring:
         write-dates-as-timestamps: false
     mapper:
       accept_case_insensitive_enums: true
-    deserialization:
-        fail-on-null-for-primitives: false
   config:
     import: "optional:configtree:/mnt/secrets/pip-ss-kv/"
   application:
