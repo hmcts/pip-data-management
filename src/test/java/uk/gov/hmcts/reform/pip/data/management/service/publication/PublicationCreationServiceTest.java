@@ -66,6 +66,9 @@ class PublicationCreationServiceTest {
     @Mock
     private PublicationFileManagementService publicationFileManagementService;
 
+    @Mock
+    private ArtefactSearchService artefactSearchService;
+
     @InjectMocks
     private PublicationCreationService publicationCreationService;
 
@@ -108,6 +111,7 @@ class PublicationCreationServiceTest {
 
         Artefact returnedArtefact = publicationCreationService.createPublication(artefact, PAYLOAD);
 
+        verify(artefactSearchService).artefactSearchStore(returnedArtefact, PAYLOAD);
         verify(azureArtefactBlobService, never()).deleteBlob(anyString());
         assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, ROWID_RETURNS_UUID);
     }
@@ -122,6 +126,7 @@ class PublicationCreationServiceTest {
 
         Artefact returnedArtefact = publicationCreationService.createPublication(artefact, PAYLOAD);
 
+        verify(artefactSearchService).artefactSearchStore(returnedArtefact, PAYLOAD);
         verify(azureArtefactBlobService, never()).deleteBlob(anyString());
         assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, ROWID_RETURNS_UUID);
     }
@@ -162,6 +167,7 @@ class PublicationCreationServiceTest {
 
         Artefact returnedArtefact = publicationCreationService.createPublication(artefact, PAYLOAD);
 
+        verify(artefactSearchService).artefactSearchStore(returnedArtefact, PAYLOAD);
         verify(azureArtefactBlobService).deleteBlob(anyString());
         assertEquals(artefactToBeCreated, returnedArtefact, ROWID_RETURNS_UUID);
     }
@@ -201,6 +207,7 @@ class PublicationCreationServiceTest {
 
         Artefact returnedArtefact = publicationCreationService.createPublication(artefactToBeCreated, PAYLOAD);
 
+        verify(artefactSearchService).artefactSearchStore(returnedArtefact, PAYLOAD);
         verify(azureArtefactBlobService).deleteBlob(anyString());
         verify(publicationFileManagementService).deleteFiles(artefactToBeCreated.getArtefactId(),
                                                          artefactToBeCreated.getListType(),
