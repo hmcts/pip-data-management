@@ -109,10 +109,6 @@ configurations {
   smokeTestImplementation.extendsFrom functionalTestImplementation
   smokeTestRuntimeOnly.extendsFrom runtimeOnly
 
-  all {
-    // required for Spring Boot 4 upgrade
-    // exclude group: 'commons-logging', module: 'commons-logging'
-  }
 }
 
 jacoco {
