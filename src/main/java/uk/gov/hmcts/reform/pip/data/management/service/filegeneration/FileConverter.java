@@ -6,6 +6,7 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.QuoteMode;
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.slf4j.Logger;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
@@ -33,6 +34,10 @@ public interface FileConverter {
      * @return The converted Excel spreadsheet as a byte array.
      */
     default byte[] convertToExcel(JsonNode artefact, ListType listType) throws IOException {
+        return new byte[0];
+    }
+
+    default byte[] convertToExcel(JsonNode artefact, ListType listType, Language language) throws IOException {
         return new byte[0];
     }
 

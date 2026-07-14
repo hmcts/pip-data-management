@@ -101,7 +101,7 @@ public class PublicationFileGenerationService {
             }
             byte[] excel = new byte[0];
             if (publicationRetrievalService.payloadWithinExcelLimit(artefact.getPayloadSize())) {
-                excel = fileConverter.get().convertToExcel(topLevelNode, listType);
+                excel = fileConverter.get().convertToExcel(topLevelNode, listType, artefact.getLanguage());
             }
 
             Pair<byte[], byte[]> pdfs = Pair.of(new byte[0], new byte[0]);

@@ -55,16 +55,29 @@ public class SjpPublicListFileConverter extends ExcelAbstractList implements Fil
      * @return The converted Excel spreadsheet as a byte array.
      */
     @Override
-    public byte[] convertToExcel(JsonNode artefact, ListType listType) throws IOException {
+    public byte[] convertToExcel(JsonNode artefact, ListType listType, Language language) throws IOException {
+        Map<String, Object> i18n = LanguageResourceHelper.readResourcesFromPath(
+            "sjpPublicList",
+            language
+        );
+
+        List<String> tableHeadings = Optional.ofNullable(i18n.get("tableHeadings"))
+            .filter(List.class::isInstance)
+            .map(value -> (List<?>) value)
+            .map(list -> list.stream()
+                .map(item -> item == null ? "" : item.toString().trim())
+                .toList())
+            .orElse(List.of("Name", "Postcode", "Offence", "Prosecutor"));
+
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet(listType.getFriendlyName());
             CellStyle boldStyle = createBoldStyle(workbook);
             AtomicInteger rowIdx = new AtomicInteger();
             Row headingRow = sheet.createRow(rowIdx.getAndIncrement());
-            setCellValue(headingRow, 0, "Name", boldStyle);
-            setCellValue(headingRow, 1, "Postcode", boldStyle);
-            setCellValue(headingRow, 2, "Offence", boldStyle);
-            setCellValue(headingRow, 3, "Prosecutor", boldStyle);
+            setCellValue(headingRow, 0, !tableHeadings.isEmpty() ? tableHeadings.get(0) : "Name", boldStyle);
+            setCellValue(headingRow, 1, tableHeadings.size() > 1 ? tableHeadings.get(1) : "Postcode", boldStyle);
+            setCellValue(headingRow, 2, tableHeadings.size() > 2 ? tableHeadings.get(2) : "Offence", boldStyle);
+            setCellValue(headingRow, 3, tableHeadings.size() > 3 ? tableHeadings.get(3) : "Prosecutor", boldStyle);
 
             processRawListData(artefact).forEach(entry -> {
                 Row dataRow = sheet.createRow(rowIdx.getAndIncrement());
@@ -74,7 +87,6 @@ public class SjpPublicListFileConverter extends ExcelAbstractList implements Fil
                 setCellValue(dataRow, 3, entry.getProsecutor());
             });
             autoSizeSheet(sheet);
-
             return convertToByteArray(workbook);
         }
     }

@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -80,7 +81,20 @@ public class SjpPressListFileConverter extends ExcelAbstractList implements File
      * @return The converted Excel spreadsheet as a byte array.
      */
     @Override
-    public byte[] convertToExcel(JsonNode artefact, ListType listType) throws IOException {
+    public byte[] convertToExcel(JsonNode artefact, ListType listType, Language language) throws IOException {
+        Map<String, Object> i18n = LanguageResourceHelper.readResourcesFromPath(
+            "sjpPressList",
+            language
+        );
+
+        List<String> tableHeadings = Optional.ofNullable(i18n.get("tableHeadings"))
+            .filter(List.class::isInstance)
+            .map(value -> (List<?>) value)
+            .map(list -> list.stream()
+                .map(item -> item == null ? "" : item.toString().trim())
+                .toList())
+            .orElse(List.of("Address", "Case URN", "Date of Birth", "Defendant Name"));
+
         try (Workbook workbook = new XSSFWorkbook()) {
             final List<SjpPressList> cases = processRawJson(artefact);
 
@@ -89,10 +103,10 @@ public class SjpPressListFileConverter extends ExcelAbstractList implements File
 
             int rowIdx = 0;
             Row headingRow = sheet.createRow(rowIdx++);
-            setCellValue(headingRow, 0, "Address", boldStyle);
-            setCellValue(headingRow, 1, "Case URN", boldStyle);
-            setCellValue(headingRow, 2, "Date of Birth", boldStyle);
-            setCellValue(headingRow, 3, "Defendant Name", boldStyle);
+            setCellValue(headingRow, 0, !tableHeadings.isEmpty() ? tableHeadings.getFirst() : "Address", boldStyle);
+            setCellValue(headingRow, 1, tableHeadings.size() > 1 ? tableHeadings.get(1) : "Case URN", boldStyle);
+            setCellValue(headingRow, 2, tableHeadings.size() > 2 ? tableHeadings.get(2) : "Date of Birth", boldStyle);
+            setCellValue(headingRow, 3, tableHeadings.size() > 3 ? tableHeadings.get(3) : "Defendant Name", boldStyle);
 
             // Write out column headings for the max number of offences a defendant may have
             Integer maxOffences =
