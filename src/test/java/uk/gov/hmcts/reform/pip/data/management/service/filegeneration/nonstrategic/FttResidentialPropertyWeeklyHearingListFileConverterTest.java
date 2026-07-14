@@ -181,18 +181,30 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Important information");
 
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
-            .as(BODY_MESSAGE)
-            .isEqualTo("Members of the public wishing to observe a hearing or representatives "
-                           + "of the media may, on their request, join any telephone or video hearing "
-                           + "remotely while they are taking place by sending an email in advance to "
-                           + "the tribunal at [insert office email] with the following details in the "
-                           + "subject line “[OBSERVER/MEDIA] REQUEST – [case reference] – [hearing date]” "
-                           + "and appropriate arrangements will be made to allow access where reasonably practicable.");
 
         if ("FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST".equals(listName)) {
+            softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
+                .as(BODY_MESSAGE)
+                .isEqualTo("Members of the public wishing to observe a hearing or representatives "
+                               + "of the media may, on their request, join any telephone or video hearing "
+                               + "remotely while they are taking place by sending an email in advance to "
+                               + "the tribunal at marketrents@justice.gov.uk with the following details in the "
+                               + "subject line “[OBSERVER/MEDIA] REQUEST – [case reference] – [hearing date]” "
+                               + "and appropriate arrangements will be made to allow access where reasonably "
+                               + "practicable.");
+
             softly.assertThat(document.text())
                 .contains("For Market Rent applications received before 16 March 2026");
+        } else {
+            softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
+                .as(BODY_MESSAGE)
+                .isEqualTo("Members of the public wishing to observe a hearing or representatives "
+                               + "of the media may, on their request, join any telephone or video hearing "
+                               + "remotely while they are taking place by sending an email in advance to "
+                               + "the tribunal at [insert office email] with the following details in the "
+                               + "subject line “[OBSERVER/MEDIA] REQUEST – [case reference] – [hearing date]” "
+                               + "and appropriate arrangements will be made to allow access where reasonably "
+                               + "practicable.");
         }
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
@@ -274,20 +286,31 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Gwybodaeth bwysig");
 
-        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
-            .as(BODY_MESSAGE)
-            .isEqualTo("Gall aelodau o’r cyhoedd sy’n dymuno arsylwi gwrandawiad neu "
-                           + "gynrychiolwyr y cyfryngau ymuno ag unrhyw wrandawiad dros y ffôn "
-                           + "neu drwy fideo o bell ar gais tra’u bod yn cael eu cynnal drwy anfon "
-                           + "e-bost ymlaen llaw at y tribiwnlys yn [insert office email] gyda’r "
-                           + "manylion canlynol yn y llinell bwnc “CAIS [ARSYLLWR/CYFRYNGAU] – "
-                           + "[cyfeirnod yr achos] – [dyddiad y gwrandawiad] (angen cynnwys unrhyw "
-                           + "wybodaeth arall sy’n ofynnol gan y tribiwnlys)” a gwneir trefniadau priodol i "
-                           + "ganiatáu mynediad lle bo hynny’n rhesymol ymarferol.");
-
         if ("FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST".equals(listName)) {
+            softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
+                .as(BODY_MESSAGE)
+                .isEqualTo("Gall aelodau o’r cyhoedd sy’n dymuno arsylwi gwrandawiad neu "
+                               + "gynrychiolwyr y cyfryngau ymuno ag unrhyw wrandawiad dros y ffôn "
+                               + "neu drwy fideo o bell ar gais tra’u bod yn cael eu cynnal drwy anfon "
+                               + "e-bost ymlaen llaw at y tribiwnlys yn marketrents@justice.gov.uk gyda’r "
+                               + "manylion canlynol yn y llinell bwnc “CAIS [ARSYLLWR/CYFRYNGAU] – "
+                               + "[cyfeirnod yr achos] – [dyddiad y gwrandawiad] (angen cynnwys unrhyw "
+                               + "wybodaeth arall sy’n ofynnol gan y tribiwnlys)” a gwneir trefniadau priodol i "
+                               + "ganiatáu mynediad lle bo hynny’n rhesymol ymarferol.");
+
             softly.assertThat(document.text())
                 .contains("Ar gyfer ceisiadau Rhenti’r Farchnad a ddaeth i law cyn 16 Mawrth 2026");
+        } else {
+            softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
+                .as(BODY_MESSAGE)
+                .isEqualTo("Gall aelodau o’r cyhoedd sy’n dymuno arsylwi gwrandawiad neu "
+                               + "gynrychiolwyr y cyfryngau ymuno ag unrhyw wrandawiad dros y ffôn "
+                               + "neu drwy fideo o bell ar gais tra’u bod yn cael eu cynnal drwy anfon "
+                               + "e-bost ymlaen llaw at y tribiwnlys yn [insert office email] gyda’r "
+                               + "manylion canlynol yn y llinell bwnc “CAIS [ARSYLLWR/CYFRYNGAU] – "
+                               + "[cyfeirnod yr achos] – [dyddiad y gwrandawiad] (angen cynnwys unrhyw "
+                               + "wybodaeth arall sy’n ofynnol gan y tribiwnlys)” a gwneir trefniadau priodol i "
+                               + "ganiatáu mynediad lle bo hynny’n rhesymol ymarferol.");
         }
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
