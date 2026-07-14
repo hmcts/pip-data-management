@@ -96,6 +96,9 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
     private static final String APPELLANT = "appellant";
     private static final String HEARING_TYPE = "hearingType";
     private static final String VENUE = "venue";
+    private static final String CASE_TYPE = "caseType";
+    private static final String JUDGES = "judges";
+    private static final String MEMBERS = "members";
 
     private static final Map<ListType, List<String>> LIST_TYPE_SUMMARY_FIELDS = Map.ofEntries(
         Map.entry(CST_WEEKLY_HEARING_LIST, List.of(DATE, CASE_NAME)),
@@ -167,7 +170,8 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
                                                                             CASE_DETAILS)),
         Map.entry(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, HEARING_TYPE, CASE_DETAILS)),
         Map.entry(CIC_WEEKLY_HEARING_LIST, List.of(DATE, HEARING_TIME, CASE_REFERENCE_NUMBER, CASE_NAME)),
-        Map.entry(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST, List.of(DATE, TIME, CASE_REFERENCE_NUMBER))
+        Map.entry(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST, List.of(DATE, TIME, VENUE, CASE_TYPE, CASE_REFERENCE_NUMBER,
+                                                                    JUDGES, MEMBERS))
     );
 
     private final ListType listType;

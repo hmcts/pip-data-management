@@ -21,9 +21,13 @@
       <p th:text="${i18n.importantInformationHeading}" class="govuk-details__summary-text"/>
     </summary>
     <div class="govuk-details__text">
-      <p id="contact-message" class="govuk-body" th:text="${i18n.contactMessage}"/>
+      <p id="contact-message" class="govuk-body"
+        th:text="${i18n.containsKey('officeEmail')
+          ? #strings.replace(i18n.contactMessage, '[insert office email]', i18n.officeEmail)
+          : i18n.contactMessage}">
+      </p>
       <a id="observe-hearing" th:href="${i18n.observeHearingLink}" class="govuk-link" th:title="${i18n.observeHearingLinkText}" th:text="${i18n.observeHearingLinkText}" />
-      <p id="market-rent-text" class="govuk-heading-s" th:if="${i18n.containsKey('marketRentText')}" th:text="${i18n['marketRentText']}"></p>
+      <p id="market-rent-text" class="govuk-!-font-weight-bold" th:if="${i18n.containsKey('marketRentText')}" th:text="${i18n['marketRentText']}"></p>
     </div>
   </details>
 
