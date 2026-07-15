@@ -11,5 +11,4 @@ public class PublicationFileSizes {
     private Long primaryPdf;
     private Long additionalPdf;
     private Long excel;
-    private Long csv;
 }
