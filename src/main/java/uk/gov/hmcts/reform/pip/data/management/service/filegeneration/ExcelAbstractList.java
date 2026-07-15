@@ -19,7 +19,7 @@ public abstract class ExcelAbstractList {
     /**
      * Set a given cells value with a given value.
      */
-    protected void setCellValue(Row row, int cellNumber, String value) {
+    protected static void setCellValue(Row row, int cellNumber, String value) {
         Cell cell = row.createCell(cellNumber);
         cell.setCellValue(value);
     }
@@ -27,7 +27,7 @@ public abstract class ExcelAbstractList {
     /**
      * Set a given cells value with a given value and style.
      */
-    protected void setCellValue(Row row, int cellNumber, String value, CellStyle style) {
+    protected static void setCellValue(Row row, int cellNumber, String value, CellStyle style) {
         Cell cell = row.createCell(cellNumber);
         cell.setCellValue(value);
         cell.setCellStyle(style);
@@ -36,7 +36,7 @@ public abstract class ExcelAbstractList {
     /**
      * Create a bold style for a cell.
      */
-    protected CellStyle createBoldStyle(Workbook wb) {
+    protected static CellStyle createBoldStyle(Workbook wb) {
         CellStyle cellStyle =  wb.createCellStyle();
         Font font = wb.createFont();
         font.setBold(true);
@@ -47,7 +47,7 @@ public abstract class ExcelAbstractList {
     /**
      * Autosize the spreadsheet.
      */
-    protected void autoSizeSheet(Sheet sheet) {
+    protected static void autoSizeSheet(Sheet sheet) {
         if (sheet.getPhysicalNumberOfRows() > 0) {
             Row row = sheet.getRow(sheet.getFirstRowNum());
             Iterator<Cell> cellIterator = row.cellIterator();
@@ -62,7 +62,7 @@ public abstract class ExcelAbstractList {
     /**
      * Convert the spreadsheet to a byte array to send with notify.
      */
-    protected byte[] convertToByteArray(Workbook workbook) throws IOException {
+    protected static byte[] convertToByteArray(Workbook workbook) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         workbook.write(baos);
         return baos.toByteArray();

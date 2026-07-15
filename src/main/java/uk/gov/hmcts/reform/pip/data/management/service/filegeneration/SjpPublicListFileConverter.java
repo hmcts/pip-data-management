@@ -52,6 +52,7 @@ public class SjpPublicListFileConverter extends ExcelAbstractList implements Fil
      *
      * @param artefact Tree object model for artefact.
      * @param listType The list type of the publication.
+     * @param language The language of the publication.
      * @return The converted Excel spreadsheet as a byte array.
      */
     @Override
@@ -87,6 +88,7 @@ public class SjpPublicListFileConverter extends ExcelAbstractList implements Fil
                 setCellValue(dataRow, 3, entry.getProsecutor());
             });
             autoSizeSheet(sheet);
+
             return convertToByteArray(workbook);
         }
     }

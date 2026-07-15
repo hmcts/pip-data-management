@@ -31,8 +31,6 @@ class SjpPressListFileConverterTest {
     private static final String LINK_CLASS = "govuk-link";
     private static final String HREF = "href";
     private static final String BODY_CLASS = "govuk-body";
-    private static final String ENGLISH_LANGUAGE = "ENGLISH";
-    private static final String WELSH_LANGUAGE = "WELSH";
 
     private static final String LINK_MESSAGE = "Link does not match";
 
@@ -240,9 +238,8 @@ class SjpPressListFileConverterTest {
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {"SJP_PRESS_LIST", "SJP_DELTA_PRESS_LIST"})
     void testExcelConversionEnglishTableHeaders(ListType listType) throws IOException {
-        byte[] result = sjpPressListConverter.convertToExcel(getInput("/mocks/sjpPressList.json"), listType,
-                                                             Language.valueOf(ENGLISH_LANGUAGE)
-        );
+        byte[] result = sjpPressListConverter
+            .convertToExcel(getInput("/mocks/sjpPressList.json"), listType, Language.ENGLISH);
 
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
@@ -306,8 +303,7 @@ class SjpPressListFileConverterTest {
     @EnumSource(value = ListType.class, names = {"SJP_PRESS_LIST", "SJP_DELTA_PRESS_LIST"})
     void testExcelConversionWelshTableHeaders(ListType listType) throws IOException {
         byte[] result = sjpPressListConverter.convertToExcel(getInput("/mocks/sjpPressList.json"), listType,
-                                                             Language.valueOf(WELSH_LANGUAGE)
-        );
+                                                             Language.WELSH);
 
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
@@ -370,8 +366,8 @@ class SjpPressListFileConverterTest {
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {"SJP_PRESS_LIST", "SJP_DELTA_PRESS_LIST"})
     void testExcelConversionTableValues(ListType listType) throws IOException {
-        byte[] result = sjpPressListConverter.convertToExcel(getInput("/mocks/sjpPressList.json"), listType,
-                                                             Language.valueOf(ENGLISH_LANGUAGE));
+        byte[] result = sjpPressListConverter
+            .convertToExcel(getInput("/mocks/sjpPressList.json"), listType, Language.ENGLISH);
 
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);

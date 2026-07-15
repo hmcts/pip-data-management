@@ -1,21 +1,24 @@
 package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.csv.QuoteMode;
-import org.apache.commons.io.output.StringBuilderWriter;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
+
+import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @FunctionalInterface
 public interface FileConverter {
@@ -33,38 +36,47 @@ public interface FileConverter {
      *
      * @return The converted Excel spreadsheet as a byte array.
      */
-    default byte[] convertToExcel(JsonNode artefact, ListType listType) throws IOException {
-        return new byte[0];
-    }
-
     default byte[] convertToExcel(JsonNode artefact, ListType listType, Language language) throws IOException {
-        return new byte[0];
-    }
+        Map<String, Object> languageResources = LanguageResourceHelper.getLanguageResources(listType,
+                                                                                            language);
+        List<String> headers = getExcelHeaders(artefact, languageResources);
+        List<List<String>> rows = getExcelRows(artefact, languageResources);
 
-    /**
-     * Interface method that captures the conversion of an artefact to CSV.
-     *
-     * @return The converted Excel spreadsheet as a byte array.
-     */
-    default byte[] convertToCsv(List<String> headers, List<List<String>> rows) throws IOException {
-        Writer writer = new StringBuilderWriter();
-        CSVFormat csvFormat = CSVFormat.DEFAULT.withQuote('"')
-            .withEscape('\\')
-            .withQuoteMode(QuoteMode.ALL)
-            .builder()
-            .setHeader(headers.stream().toArray(String[]::new))
-            .build();
-
-        try (final CSVPrinter printer = new CSVPrinter(writer, csvFormat)) {
-            rows.forEach((row -> {
-                try {
-                    printer.printRecord(row);
-                } catch (IOException e) {
-                    log.error(writeLog("Unable to write CSV record: " + row));
-                }
-            }));
+        if (headers.isEmpty() && rows.isEmpty()) {
+            return new byte[0];
         }
 
-        return writer.toString().getBytes();
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet(listType.getFriendlyName());
+            CellStyle boldStyle = ExcelAbstractList.createBoldStyle(workbook);
+
+            int rowIdx = 0;
+            Row headingRow = sheet.createRow(rowIdx++);
+            for (int i = 0; i < headers.size(); i++) {
+                ExcelAbstractList.setCellValue(headingRow, i, headers.get(i), boldStyle);
+            }
+
+            for (List<String> rowData : rows) {
+                Row dataRow = sheet.createRow(rowIdx++);
+                for (int i = 0; i < rowData.size(); i++) {
+                    ExcelAbstractList.setCellValue(dataRow, i, rowData.get(i));
+                }
+            }
+
+            ExcelAbstractList.autoSizeSheet(sheet);
+            return ExcelAbstractList.convertToByteArray(workbook);
+        }
+    }
+
+    default List<String> getExcelHeaders(Map<String, Object> languageResources) {
+        return new ArrayList<>();
+    }
+
+    default List<String> getExcelHeaders(JsonNode artefact, Map<String, Object> languageResources) {
+        return getExcelHeaders(languageResources);
+    }
+
+    default List<List<String>> getExcelRows(JsonNode artefact, Map<String, Object> languageResources) {
+        return new ArrayList<>();
     }
 }
