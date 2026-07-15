@@ -4,6 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.assertj.core.api.SoftAssertions;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -11,13 +15,18 @@ import org.jsoup.select.Elements;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MagistratesStandardListFileConverterTest {
@@ -479,5 +488,31 @@ class MagistratesStandardListFileConverterTest {
             .anyMatch(element -> element.text().contains("Data Source: provenance"));
 
         softly.assertAll();
+    }
+
+    @Test
+    void testSuccessfulExcelConversion() throws IOException {
+        byte[] result = converter.convertToExcel(inputJson, ListType.MAGISTRATES_STANDARD_LIST, Language.ENGLISH);
+        ByteArrayInputStream file = new ByteArrayInputStream(result);
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheetAt(0);
+        Row headingRow = sheet.getRow(0);
+
+        assertEquals(ListType.MAGISTRATES_STANDARD_LIST.getFriendlyName(), sheet.getSheetName(),
+                     "Sheet name does not match");
+        assertEquals("Court House", headingRow.getCell(0).getStringCellValue(),
+                     "Court House column is different");
+        assertEquals("LJA", headingRow.getCell(1).getStringCellValue(),
+                     "LJA column is different");
+        assertEquals("Court Room", headingRow.getCell(2).getStringCellValue(),
+                     "Court Room column is different");
+
+        Row dataRow = sheet.getRow(1);
+        assertEquals("PRESTON", dataRow.getCell(0).getStringCellValue(),
+                     "Court House name value is different");
+        assertEquals("Local Justice Area A", dataRow.getCell(1).getStringCellValue(),
+                     "LJA value is different");
+        assertEquals("Courtroom 1: Test Name, Test Name", dataRow.getCell(2).getStringCellValue(),
+                     "Court Room name value is different");
     }
 }
