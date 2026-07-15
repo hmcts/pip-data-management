@@ -52,10 +52,11 @@ public class SjpPublicListFileConverter extends ExcelAbstractList implements Fil
      *
      * @param artefact Tree object model for artefact.
      * @param listType The list type of the publication.
+     * @param language The language of the publication.
      * @return The converted Excel spreadsheet as a byte array.
      */
     @Override
-    public byte[] convertToExcel(JsonNode artefact, ListType listType) throws IOException {
+    public byte[] convertToExcel(JsonNode artefact, ListType listType, Language language) throws IOException {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet(listType.getFriendlyName());
             CellStyle boldStyle = createBoldStyle(workbook);
