@@ -4,12 +4,19 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.assertj.core.api.SoftAssertions;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Test;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -21,6 +28,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MagistratesPublicListFileConverterTest {
 
@@ -232,5 +240,101 @@ class MagistratesPublicListFileConverterTest {
                 "Reporting Restrictions:",
                 "Press/Publication restrictions apply to this case"
             );
+    }
+
+    @Test
+    void testSuccessfulExcelConversion() throws IOException {
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(Files.newInputStream(Paths.get("src/test/resources/mocks/",
+                                                    "magistratesPublicList.json")), writer,
+                     Charset.defaultCharset()
+        );
+        JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
+
+        byte[] result = magistratesPublicListFileConverter
+            .convertToExcel(inputJson, ListType.MAGISTRATES_PUBLIC_LIST, Language.ENGLISH);
+        ByteArrayInputStream file = new ByteArrayInputStream(result);
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheetAt(0);
+        Row headingRow = sheet.getRow(0);
+
+        assertEquals(ListType.MAGISTRATES_PUBLIC_LIST.getFriendlyName(), sheet.getSheetName(),
+                     "Sheet name does not match");
+        assertEquals("Court House", headingRow.getCell(0).getStringCellValue(),
+                     "Court House column is different");
+        assertEquals("Court Room", headingRow.getCell(1).getStringCellValue(),
+                     "Court Room column is different");
+        assertEquals("Sitting at", headingRow.getCell(2).getStringCellValue(),
+                     "Sitting at column is different");
+        assertEquals("URN", headingRow.getCell(3).getStringCellValue(),
+                     "URN column is different");
+        assertEquals("Name", headingRow.getCell(4).getStringCellValue(),
+                     "Name column is different");
+        assertEquals("Hearing Type", headingRow.getCell(5).getStringCellValue(),
+                     "Hearing Type column is different");
+        assertEquals("Prosecuting Authority", headingRow.getCell(6).getStringCellValue(),
+                     "Prosecuting Authority column is different");
+        assertEquals("Offence Details", headingRow.getCell(7).getStringCellValue(),
+                     "Offence Details column is different");
+        assertEquals("Reporting Restrictions", headingRow.getCell(8).getStringCellValue(),
+                     "Reporting Restrictions column is different");
+
+        Row dataRow = sheet.getRow(1);
+        assertEquals("", dataRow.getCell(0).getStringCellValue(),
+                     "Court House value is different");
+        assertEquals("CourtRoom 1: Judge KnownAs, Judge KnownAs 2", dataRow.getCell(1).getStringCellValue(),
+                     "Court Room value is different");
+        assertEquals("10:40am", dataRow.getCell(2).getStringCellValue(),
+                     "Sitting at value is different");
+        assertEquals("12345678", dataRow.getCell(3).getStringCellValue(),
+                     "URN value is different");
+        assertEquals("Surname 2, Forename 2", dataRow.getCell(4).getStringCellValue(),
+                     "Name value is different");
+        assertEquals("FHDRA1 (First Hearing and Dispute Resolution Appointment)",
+                     dataRow.getCell(5).getStringCellValue(), "Hearing type value is different");
+        assertEquals("Pro_Auth", dataRow.getCell(6).getStringCellValue(),
+                     "Prosecuting authority value is different");
+        assertEquals("Test offence 1", dataRow.getCell(7).getStringCellValue(),
+                     "Offence details value is different");
+        assertEquals("Press/Publication restrictions apply to this case",
+                     dataRow.getCell(8).getStringCellValue(), "Reporting restrictions value is different");
+    }
+
+    @Test
+    void testWelshExcelConversion() throws IOException {
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(Files.newInputStream(Paths.get("src/test/resources/mocks/",
+                                                    "magistratesPublicList.json")), writer,
+                     Charset.defaultCharset()
+        );
+        JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
+
+        byte[] result = magistratesPublicListFileConverter
+            .convertToExcel(inputJson, ListType.MAGISTRATES_PUBLIC_LIST, Language.WELSH);
+        ByteArrayInputStream file = new ByteArrayInputStream(result);
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheetAt(0);
+        Row headingRow = sheet.getRow(0);
+
+        assertEquals(ListType.MAGISTRATES_PUBLIC_LIST.getFriendlyName(), sheet.getSheetName(),
+                     "Sheet name does not match");
+        assertEquals("Llys", headingRow.getCell(0).getStringCellValue(),
+                     "Court House column is different");
+        assertEquals("Ystafell Llys", headingRow.getCell(1).getStringCellValue(),
+                     "Court Room column is different");
+        assertEquals("Yn eistedd yn", headingRow.getCell(2).getStringCellValue(),
+                     "Sitting at column is different");
+        assertEquals("URN", headingRow.getCell(3).getStringCellValue(),
+                     "URN column is different");
+        assertEquals("Enw", headingRow.getCell(4).getStringCellValue(),
+                     "Name column is different");
+        assertEquals("Math o Wrandawiad", headingRow.getCell(5).getStringCellValue(),
+                     "Hearing Type column is different");
+        assertEquals("Yr Awdurdod sy'n Erlyn", headingRow.getCell(6).getStringCellValue(),
+                     "Prosecuting Authority column is different");
+        assertEquals("Manylion yr Trosedd", headingRow.getCell(7).getStringCellValue(),
+                     "Offence Details column is different");
+        assertEquals("Cyfyngiadau Riportio", headingRow.getCell(8).getStringCellValue(),
+                     "Reporting Restrictions column is different");
     }
 }

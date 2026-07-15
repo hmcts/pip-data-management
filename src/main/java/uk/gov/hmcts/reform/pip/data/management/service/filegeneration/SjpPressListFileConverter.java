@@ -61,7 +61,7 @@ public class SjpPressListFileConverter extends ExcelAbstractList implements File
             false,
             true
         );
-        List<SjpPressList> caseList = processRawJson(jsonBody);
+        List<SjpPressList> caseList = processRawListData(jsonBody);
         context.setVariable("contentDate", metadata.get("contentDate"));
         context.setVariable("i18n", language);
         context.setVariable("publishedDate", publishedDate);
@@ -77,12 +77,13 @@ public class SjpPressListFileConverter extends ExcelAbstractList implements File
      *
      * @param artefact Tree object model for artefact.
      * @param listType The list type of the publication.
+     * @param language The language of the publication.
      * @return The converted Excel spreadsheet as a byte array.
      */
     @Override
-    public byte[] convertToExcel(JsonNode artefact, ListType listType) throws IOException {
+    public byte[] convertToExcel(JsonNode artefact, ListType listType, Language language) throws IOException {
         try (Workbook workbook = new XSSFWorkbook()) {
-            final List<SjpPressList> cases = processRawJson(artefact);
+            final List<SjpPressList> cases = processRawListData(artefact);
 
             Sheet sheet = workbook.createSheet(listType.getFriendlyName());
             CellStyle boldStyle = createBoldStyle(workbook);
@@ -146,7 +147,7 @@ public class SjpPressListFileConverter extends ExcelAbstractList implements File
      * @param jsonBody The raw json to process.
      * @return A list of SjpPressList.
      */
-    List<SjpPressList> processRawJson(JsonNode jsonBody) {
+    private List<SjpPressList> processRawListData(JsonNode jsonBody) {
         List<SjpPressList> caseList = new ArrayList<>();
 
         jsonBody.get("courtLists").forEach(

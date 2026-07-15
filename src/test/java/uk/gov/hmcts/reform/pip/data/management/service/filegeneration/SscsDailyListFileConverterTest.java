@@ -9,6 +9,7 @@ import org.jsoup.nodes.Element;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
@@ -235,7 +236,7 @@ class SscsDailyListFileConverterTest {
         JsonNode inputJson = OBJECT_MAPPER.readTree(writer.toString());
 
         assertEquals(0, listConversionFactory.getFileConverter(listType)
-                         .get().convertToExcel(inputJson, listType).length,
+                         .get().convertToExcel(inputJson, listType, Language.ENGLISH).length,
                      "byte array wasn't empty"
         );
     }
