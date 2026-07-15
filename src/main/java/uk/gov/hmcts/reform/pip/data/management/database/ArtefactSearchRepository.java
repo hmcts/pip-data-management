@@ -28,6 +28,15 @@ public interface ArtefactSearchRepository extends JpaRepository<ArtefactSearch, 
 
     @Query(value = "SELECT DISTINCT ars.* FROM artefact_search ars "
         + "INNER JOIN artefact a ON ars.artefact_id = a.artefact_id "
+        + "WHERE LOWER(ars.case_name) = LOWER(CONCAT(:caseName)) "
+        + "AND a.display_from < :curr_date "
+        + "AND (a.display_to > :curr_date OR a.display_to IS NULL)",
+        nativeQuery = true)
+    List<ArtefactSearch> findByCaseNameIgnoreCase(@Param("caseName") String caseName,
+                                                                 @Param("curr_date") LocalDateTime currentDate);
+
+    @Query(value = "SELECT DISTINCT ars.* FROM artefact_search ars "
+        + "INNER JOIN artefact a ON ars.artefact_id = a.artefact_id "
         + "WHERE LOWER(ars.case_name) LIKE LOWER(CONCAT('%', :caseName, '%')) "
         + "AND a.display_from < :curr_date "
         + "AND (a.display_to > :curr_date OR a.display_to IS NULL) "

@@ -131,6 +131,22 @@ class ArtefactSearchRepositoryTest {
 
     @Test
     void shouldFindByCaseNameIgnoreCase() {
+        List<ArtefactSearch> results = artefactSearchRepository.findByCaseNameIgnoreCase(
+            CASE_NAME_SUBSET, LocalDateTime.now()
+        );
+        assertThat(results).isEmpty();
+
+        results = artefactSearchRepository.findByCaseNameIgnoreCase(CASE_NAME, LocalDateTime.now());
+        assertThat(results)
+            .hasSize(1);
+        assertThat(results.get(0).getArtefactId())
+            .isEqualTo(ARTEFACT_SEARCH2.getArtefactId());
+        assertThat(results.get(0).getCaseName())
+            .isEqualTo(CASE_NAME);
+    }
+
+    @Test
+    void shouldFindByCaseNameFuzzySearchIgnoreCase() {
         List<ArtefactSearch> results = artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(
             CASE_NAME_SUBSET, LocalDateTime.now()
         );

@@ -222,11 +222,11 @@ class PublicationSearchControllerTest {
     @Test
     void testGetCasesByCaseNameReturnsOk() {
         ArtefactCaseInfo caseInfo = new ArtefactCaseInfo("123", TEST_STRING);
-        when(publicationSearchService.findCasesByCaseName(TEST_STRING))
+        when(publicationSearchService.findCasesByCaseName(TEST_STRING, false))
             .thenReturn(List.of(caseInfo));
 
         ResponseEntity<List<ArtefactCaseInfo>> result =
-            publicationSearchController.getCasesByCaseName(TEST_STRING, USER_ID);
+            publicationSearchController.getCasesByCaseName(TEST_STRING, false, USER_ID);
 
         assertThat(result.getStatusCode())
             .as(STATUS_CODE_MATCH)

@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.Artefact
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateListSearchConfigConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
@@ -194,13 +195,17 @@ public class PublicationSearchService {
     /**
      * Get all case number/name pairs from the artefact_search table matching the given case name.
      *
-     * @param caseName the case name to search for (partial match, case-insensitive)
+     * @param caseName the case name to search for (case-insensitive)
      * @return list of ArtefactCaseInfo containing case number and case name pairs (only the top 50 matches are
-     *         returned)
+     *         returned for fuzzy search)
      */
-    public List<ArtefactCaseInfo> findCasesByCaseName(String caseName) {
+    public List<ArtefactCaseInfo> findCasesByCaseName(String caseName, boolean fuzzySearch) {
         LocalDateTime currDate = LocalDateTime.now();
-        return artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(caseName, currDate).stream()
+        List<ArtefactSearch> results = fuzzySearch
+            ? artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(caseName, currDate)
+            : artefactSearchRepository.findByCaseNameIgnoreCase(caseName, currDate);
+
+        return results.stream()
             .map(r -> new ArtefactCaseInfo(r.getCaseNumber(), r.getCaseName()))
             .toList();
     }

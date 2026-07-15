@@ -164,8 +164,9 @@ public class PublicationSearchController {
     @PreAuthorize("@authorisationService.userCanSearchInPublicationData(#requesterId)")
     public ResponseEntity<List<ArtefactCaseInfo>> getCasesByCaseName(
         @RequestParam @Size(min = 3) String searchValue,
+        @RequestParam(required = false) boolean fuzzySearch,
         @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
-        return ResponseEntity.ok(publicationSearchService.findCasesByCaseName(searchValue));
+        return ResponseEntity.ok(publicationSearchService.findCasesByCaseName(searchValue, fuzzySearch));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching the given locationId and "

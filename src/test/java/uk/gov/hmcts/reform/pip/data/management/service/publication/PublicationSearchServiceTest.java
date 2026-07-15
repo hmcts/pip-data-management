@@ -584,7 +584,26 @@ class PublicationSearchServiceTest {
     }
 
     @Test
-    void testFindCasesByCaseName() {
+    void testFindCasesByCaseNameExactSearch() {
+        ArtefactSearch artefactSearch = ArtefactSearch.builder()
+            .caseNumber("123")
+            .caseName(TEST_VALUE)
+            .build();
+
+        when(artefactSearchRepository.findByCaseNameIgnoreCase(eq(TEST_VALUE), any()))
+            .thenReturn(List.of(artefactSearch));
+
+        List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseName(TEST_VALUE, false);
+
+        assertEquals(1, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
+        assertEquals(TEST_VALUE, results.get(0).getCaseName(), VALIDATION_ARTEFACT_NOT_MATCH);
+
+        verify(artefactSearchRepository).findByCaseNameIgnoreCase(eq(TEST_VALUE), any());
+        verify(artefactSearchRepository, never()).findTop50ByCaseNameContainingIgnoreCase(eq(TEST_VALUE), any());
+    }
+
+    @Test
+    void testFindCasesByCaseNameFuzzySearch() {
         ArtefactSearch artefactSearch = ArtefactSearch.builder()
             .caseNumber("123")
             .caseName(TEST_VALUE)
@@ -593,17 +612,20 @@ class PublicationSearchServiceTest {
         when(artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(eq(TEST_VALUE), any()))
             .thenReturn(List.of(artefactSearch));
 
-        List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseName(TEST_VALUE);
+        List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseName(TEST_VALUE, true);
 
         assertEquals(1, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
         assertEquals(TEST_VALUE, results.get(0).getCaseName(), VALIDATION_ARTEFACT_NOT_MATCH);
+
+        verify(artefactSearchRepository, never()).findByCaseNameIgnoreCase(eq(TEST_VALUE), any());
+        verify(artefactSearchRepository).findTop50ByCaseNameContainingIgnoreCase(eq(TEST_VALUE), any());
     }
 
     @Test
     void testFindCasesByCaseNameReturnsEmptyListWhenNotFound() {
         when(artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(any(), any())).thenReturn(List.of());
 
-        List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseName("not found");
+        List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseName("not found", true);
         assertEquals(0, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 }
