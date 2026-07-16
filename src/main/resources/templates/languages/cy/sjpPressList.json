@@ -25,5 +25,9 @@
     "Cyfyngiad adrodd"
   ],
   "titleText": "Gweithdrefn Un Ynad - Rhestr Wasg (Rhestr Lawn) ",
-  "subHeader": "Achosion Gweithdrefn Un Ynad sy'n barod ar gyfer gwrandawiad"
+  "subHeader": "Achosion Gweithdrefn Un Ynad sy'n barod ar gyfer gwrandawiad",
+  "address": "Cyfeiriad",
+  "saseURN": "Cyfeirnod yr achos",
+  "dateOfBirth": "Dyddiad geni",
+  "defendantName": "Enw'r Diffynnydd"
 }

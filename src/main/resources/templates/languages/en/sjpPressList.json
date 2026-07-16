@@ -25,5 +25,9 @@
     "Reporting Restriction"
   ],
   "titleText": "Single Justice Procedure - Press List (Full list) ",
-  "subHeader": "Single Justice Procedure cases that are ready for hearing"
+  "subHeader": "Single Justice Procedure cases that are ready for hearing",
+  "address": "Address",
+  "saseURN": "Case URN",
+  "dateOfBirth": "Date of Birth",
+  "defendantName": "Defendant Name"
 }
