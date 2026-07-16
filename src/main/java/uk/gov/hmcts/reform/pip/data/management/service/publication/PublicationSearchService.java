@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.ListSearchConfigRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateListSearchConfigConflictException;
@@ -13,6 +14,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
+import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.time.LocalDateTime;
@@ -25,14 +27,17 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 @Service
 public class PublicationSearchService {
     private final ArtefactRepository artefactRepository;
+    private final ArtefactSearchRepository artefactSearchRepository;
     private final ListSearchConfigRepository listSearchConfigRepository;
     private final PublicationRetrievalService publicationRetrievalService;
 
     @Autowired
     public PublicationSearchService(ArtefactRepository artefactRepository,
+                                    ArtefactSearchRepository artefactSearchRepository,
                                     ListSearchConfigRepository listSearchConfigRepository,
                                     PublicationRetrievalService publicationRetrievalService) {
         this.artefactRepository = artefactRepository;
+        this.artefactSearchRepository = artefactSearchRepository;
         this.listSearchConfigRepository = listSearchConfigRepository;
         this.publicationRetrievalService = publicationRetrievalService;
     }
@@ -149,6 +154,7 @@ public class PublicationSearchService {
      * @param userId      represents the user ID of the user who is making the request
      * @return list of Artefacts
      */
+    @Deprecated
     public List<Artefact> findAllBySearch(CaseSearchTerm searchTerm, String searchValue, UUID userId) {
         LocalDateTime currDate = LocalDateTime.now();
         List<Artefact> artefacts;
@@ -170,5 +176,32 @@ public class PublicationSearchService {
             ));
         }
         return artefacts;
+    }
+
+    /**
+     * Get all case number/name pairs from the artefact_search table matching the given case number.
+     *
+     * @param caseNumber the case number to search for (exact match, case-insensitive)
+     * @return list of ArtefactCaseInfo containing case number and case name pairs
+     */
+    public List<ArtefactCaseInfo> findCasesByCaseNumber(String caseNumber) {
+        LocalDateTime currDate = LocalDateTime.now();
+        return artefactSearchRepository.findByCaseNumberIgnoreCase(caseNumber, currDate).stream()
+            .map(r -> new ArtefactCaseInfo(r.getCaseNumber(), r.getCaseName()))
+            .toList();
+    }
+
+    /**
+     * Get all case number/name pairs from the artefact_search table matching the given case name.
+     *
+     * @param caseName the case name to search for (partial match, case-insensitive)
+     * @return list of ArtefactCaseInfo containing case number and case name pairs (only the top 50 matches are
+     *         returned)
+     */
+    public List<ArtefactCaseInfo> findCasesByCaseName(String caseName) {
+        LocalDateTime currDate = LocalDateTime.now();
+        return artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(caseName, currDate).stream()
+            .map(r -> new ArtefactCaseInfo(r.getCaseNumber(), r.getCaseName()))
+            .toList();
     }
 }

@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSearchService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
+import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -194,5 +195,49 @@ class PublicationSearchControllerTest {
 
         assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
         assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
+    }
+
+    @Test
+    void testGetCasesByCaseNumberReturnsOk() {
+        ArtefactCaseInfo caseInfo = new ArtefactCaseInfo(TEST_STRING, "Test Case Name");
+        when(publicationSearchService.findCasesByCaseNumber(TEST_STRING))
+            .thenReturn(List.of(caseInfo));
+
+        ResponseEntity<List<ArtefactCaseInfo>> result =
+            publicationSearchController.getCasesByCaseNumber(TEST_STRING, USER_ID);
+
+        assertThat(result.getStatusCode())
+            .as(STATUS_CODE_MATCH)
+            .isEqualTo(HttpStatus.OK);
+
+        assertThat(result.getBody())
+            .as(MESSAGES_MATCH)
+            .hasSize(1);
+
+        assertThat(result.getBody().get(0).getCaseNumber())
+            .as(MESSAGES_MATCH)
+            .isEqualTo(TEST_STRING);
+    }
+
+    @Test
+    void testGetCasesByCaseNameReturnsOk() {
+        ArtefactCaseInfo caseInfo = new ArtefactCaseInfo("123", TEST_STRING);
+        when(publicationSearchService.findCasesByCaseName(TEST_STRING))
+            .thenReturn(List.of(caseInfo));
+
+        ResponseEntity<List<ArtefactCaseInfo>> result =
+            publicationSearchController.getCasesByCaseName(TEST_STRING, USER_ID);
+
+        assertThat(result.getStatusCode())
+            .as(STATUS_CODE_MATCH)
+            .isEqualTo(HttpStatus.OK);
+
+        assertThat(result.getBody())
+            .as(MESSAGES_MATCH)
+            .hasSize(1);
+
+        assertThat(result.getBody().get(0).getCaseName())
+            .as(MESSAGES_MATCH)
+            .isEqualTo(TEST_STRING);
     }
 }

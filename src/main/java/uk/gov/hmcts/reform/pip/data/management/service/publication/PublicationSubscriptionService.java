@@ -4,15 +4,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ProcessingException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.ArtefactSummaryData;
+import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -28,17 +31,20 @@ public class PublicationSubscriptionService {
     private final PublicationSummaryGenerationService publicationSummaryGenerationService;
     private final ListConversionFactory listConversionFactory;
     private final ArtefactRepository artefactRepository;
+    private final ArtefactSearchRepository artefactSearchRepository;
     private final AccountManagementService accountManagementService;
 
     public PublicationSubscriptionService(PublicationRetrievalService publicationRetrievalService,
                                           PublicationSummaryGenerationService publicationSummaryGenerationService,
                                           ListConversionFactory listConversionFactory,
                                           ArtefactRepository artefactRepository,
+                                          ArtefactSearchRepository artefactSearchRepository,
                                           AccountManagementService accountManagementService) {
         this.publicationRetrievalService = publicationRetrievalService;
         this.publicationSummaryGenerationService = publicationSummaryGenerationService;
         this.listConversionFactory = listConversionFactory;
         this.artefactRepository = artefactRepository;
+        this.artefactSearchRepository = artefactSearchRepository;
         this.accountManagementService = accountManagementService;
     }
 
@@ -53,9 +59,9 @@ public class PublicationSubscriptionService {
             // For scheduled subscription list types, send to API subscribers only during publication upload.
             // Notify email subscribers once a day only at a scheduled time.
             if (artefact.getListType().isScheduledSubscription()) {
-                accountManagementService.sendArtefactForApiSubscription(artefact);
+                accountManagementService.sendArtefactForApiSubscription(convertArtefactToSharedModel(artefact));
             } else {
-                accountManagementService.sendArtefactForAllSubscriptions(artefact);
+                accountManagementService.sendArtefactForAllSubscriptionsV2(convertArtefactToSharedModel(artefact));
             }
         }
     }
@@ -78,19 +84,25 @@ public class PublicationSubscriptionService {
             });
             artefacts = artefactRepository.findActiveArtefactsByListTypeIn(listTypesToTrigger, LocalDate.now(),
                                                                            LocalDateTime.now());
-            artefacts.forEach(accountManagementService::sendArtefactForEmailSubscription);
+            artefacts.forEach(artefact -> accountManagementService.sendArtefactForEmailSubscriptionV2(
+                convertArtefactToSharedModel(artefact)
+            ));
         } else {
             artefacts = artefactRepository.findArtefactsByDisplayFrom(LocalDate.now(), LocalDateTime.now())
                 .stream()
                 .toList();
             artefacts.forEach(a -> {
                 if (a.getListType().isScheduledSubscription()) {
-                    accountManagementService.sendArtefactForApiSubscription(a);
+                    accountManagementService.sendArtefactForApiSubscription(convertArtefactToSharedModel(a));
                 } else {
-                    accountManagementService.sendArtefactForAllSubscriptions(a);
+                    accountManagementService.sendArtefactForAllSubscriptionsV2(convertArtefactToSharedModel(a));
                 }
             });
         }
+    }
+
+    public void sendDeleteArtefactForApiSubscription(Artefact artefact) {
+        accountManagementService.sendDeletedArtefactForThirdParties(convertArtefactToSharedModel(artefact));
     }
 
     /**
@@ -117,5 +129,34 @@ public class PublicationSubscriptionService {
         } catch (JsonProcessingException ex) {
             throw new ProcessingException(String.format("Failed to generate summary for artefact id %s", artefactId));
         }
+    }
+
+    public uk.gov.hmcts.reform.pip.model.publication.Artefact convertArtefactToSharedModel(Artefact artefact) {
+        List<ArtefactCaseInfo> artefactCaseInfo = new ArrayList<>();
+        artefactSearchRepository.findByArtefactId(artefact.getArtefactId()).forEach(row -> {
+            artefactCaseInfo.add(ArtefactCaseInfo.builder()
+                .caseNumber(row.getCaseNumber())
+                .caseName(row.getCaseName())
+                .build());
+        });
+
+        return uk.gov.hmcts.reform.pip.model.publication.Artefact.builder()
+            .artefactId(artefact.getArtefactId())
+            .listType(artefact.getListType())
+            .locationId(artefact.getLocationId())
+            .isFlatFile(artefact.getIsFlatFile())
+            .payload(artefact.getPayload())
+            .provenance(artefact.getProvenance())
+            .sourceArtefactId(artefact.getSourceArtefactId())
+            .type(artefact.getType())
+            .contentDate(artefact.getContentDate())
+            .sensitivity(artefact.getSensitivity())
+            .language(artefact.getLanguage())
+            .displayFrom(artefact.getDisplayFrom())
+            .displayTo(artefact.getDisplayTo())
+            .payloadSize(artefact.getPayloadSize())
+            .supersededCount(artefact.getSupersededCount())
+            .caseInfoList(artefactCaseInfo)
+            .build();
     }
 }

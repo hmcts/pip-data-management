@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConf
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSearchService;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
+import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.List;
@@ -133,10 +135,37 @@ public class PublicationSearchController {
     @GetMapping("/search")
     @JsonView(ArtefactView.Internal.class)
     @PreAuthorize("@authorisationService.userCanSearchInPublicationData(#requesterId)")
+    @Deprecated
     public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(
             @RequestParam CaseSearchTerm searchTerm, @RequestParam String searchValue,
             @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
         return ResponseEntity.ok(publicationSearchService.findAllBySearch(searchTerm, searchValue, requesterId));
+    }
+
+    @ApiResponse(responseCode = OK_CODE, description = "List of case number/name pairs matching"
+        + " a given case number")
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
+    @Operation(summary = "Get a series of case number/name pairs matching a given case number (exact match)")
+    @GetMapping("/search/caseNumber")
+    @PreAuthorize("@authorisationService.userCanSearchInPublicationData(#requesterId)")
+    public ResponseEntity<List<ArtefactCaseInfo>> getCasesByCaseNumber(
+        @RequestParam String searchValue,
+        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
+        return ResponseEntity.ok(publicationSearchService.findCasesByCaseNumber(searchValue));
+    }
+
+    @ApiResponse(responseCode = OK_CODE, description = "List of case number/name pairs matching"
+        + " a given case name")
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
+    @Operation(summary = "Get a series of case number/name pairs matching a given case name (partial match)")
+    @GetMapping("/search/caseName")
+    @PreAuthorize("@authorisationService.userCanSearchInPublicationData(#requesterId)")
+    public ResponseEntity<List<ArtefactCaseInfo>> getCasesByCaseName(
+        @RequestParam @Size(min = 3) String searchValue,
+        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
+        return ResponseEntity.ok(publicationSearchService.findCasesByCaseName(searchValue));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching the given locationId and "

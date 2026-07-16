@@ -1,14 +1,17 @@
 package uk.gov.hmcts.reform.pip.data.management.database;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,9 +22,53 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DataJpaTest
 class ArtefactSearchRepositoryTest {
+    private static final ArtefactSearch ARTEFACT_SEARCH = new ArtefactSearch();
+    private static final ArtefactSearch ARTEFACT_SEARCH2 = new ArtefactSearch();
+    private static final ArtefactSearch ARTEFACT_SEARCH3 = new ArtefactSearch();
+    private static final Artefact ARTEFACT = new Artefact();
+    private static final Artefact ARTEFACT2 = new Artefact();
+    private static final Artefact ARTEFACT3 = new Artefact();
+    private static final String CASE_NUMBER = "caseNumber";
+    private static final String CASE_NAME = "caseName";
+    private static final String CASE_NAME_SUBSET = "case";
 
     @Autowired
     private ArtefactSearchRepository artefactSearchRepository;
+
+    @Autowired
+    private ArtefactRepository artefactRepository;
+
+    @BeforeAll
+    void setup() {
+        // ARTEFACT: not yet active (display_from in future)
+        ARTEFACT.setDisplayFrom(LocalDateTime.now().plusDays(1));
+        ARTEFACT.setDisplayTo(LocalDateTime.now().plusDays(2));
+
+        // ARTEFACT2: currently active
+        ARTEFACT2.setDisplayFrom(LocalDateTime.now().minusDays(1));
+        ARTEFACT2.setDisplayTo(LocalDateTime.now().plusDays(1));
+
+        // ARTEFACT3: expired (display_to in the past)
+        ARTEFACT3.setDisplayFrom(LocalDateTime.now().minusDays(2));
+        ARTEFACT3.setDisplayTo(LocalDateTime.now().minusDays(1));
+
+        // Save artefacts first to obtain DB-generated artefact IDs
+        List<Artefact> savedArtefacts = artefactRepository.saveAll(List.of(ARTEFACT, ARTEFACT2, ARTEFACT3));
+
+        ARTEFACT_SEARCH.setArtefactId(savedArtefacts.get(0).getArtefactId());
+        ARTEFACT_SEARCH.setCaseNumber(CASE_NUMBER);
+        ARTEFACT_SEARCH.setCaseName(CASE_NAME);
+
+        ARTEFACT_SEARCH2.setArtefactId(savedArtefacts.get(1).getArtefactId());
+        ARTEFACT_SEARCH2.setCaseNumber(CASE_NUMBER);
+        ARTEFACT_SEARCH2.setCaseName(CASE_NAME);
+
+        ARTEFACT_SEARCH3.setArtefactId(savedArtefacts.get(2).getArtefactId());
+        ARTEFACT_SEARCH3.setCaseNumber(CASE_NUMBER);
+        ARTEFACT_SEARCH3.setCaseName(CASE_NAME);
+
+        artefactSearchRepository.saveAll(List.of(ARTEFACT_SEARCH, ARTEFACT_SEARCH2, ARTEFACT_SEARCH3));
+    }
 
     @Test
     @DisplayName("should load repository bean")
@@ -66,6 +113,34 @@ class ArtefactSearchRepositoryTest {
 
         assertThat(artefactSearchRepository.findByArtefactId(artefactIdToDelete)).isEmpty();
         assertThat(artefactSearchRepository.findByArtefactId(artefactIdToKeep)).isNotEmpty();
+    }
+
+    @Test
+    void shouldFindByCaseNumberIgnoreCase() {
+        List<ArtefactSearch> results = artefactSearchRepository.findByCaseNumberIgnoreCase(
+            CASE_NUMBER, LocalDateTime.now()
+        );
+
+        assertThat(results)
+            .hasSize(1);
+        assertThat(results.get(0).getArtefactId())
+            .isEqualTo(ARTEFACT_SEARCH2.getArtefactId());
+        assertThat(results.get(0).getCaseNumber())
+            .isEqualTo(CASE_NUMBER);
+    }
+
+    @Test
+    void shouldFindByCaseNameIgnoreCase() {
+        List<ArtefactSearch> results = artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(
+            CASE_NAME_SUBSET, LocalDateTime.now()
+        );
+
+        assertThat(results)
+            .hasSize(1);
+        assertThat(results.get(0).getArtefactId())
+            .isEqualTo(ARTEFACT_SEARCH2.getArtefactId());
+        assertThat(results.get(0).getCaseName())
+            .isEqualTo(CASE_NAME);
     }
 
     private ArtefactSearch createArtefactSearch(UUID artefactId) {
