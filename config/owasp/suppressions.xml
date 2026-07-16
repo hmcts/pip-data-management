@@ -199,13 +199,5 @@
   <suppress>
     <notes>kotlin suppression</notes>
     <cve>CVE-2026-53914</cve>
-    <cve>CVE-2026-41854</cve>
-    <cve>CVE-2026-41853</cve>
-    <cve>CVE-2026-47838</cve>
-    <cve>CVE-2026-41706</cve>
-  </suppress>
-  <suppress>
-    <notes>kotlin suppression</notes>
-    <cve>CVE-2026-53914</cve>
   </suppress>
 </suppressions>
