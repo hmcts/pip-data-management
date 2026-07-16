@@ -12,6 +12,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.ByteArrayInputStream;
@@ -134,7 +135,7 @@ class SjpPublicListFileConverterTest {
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {"SJP_PUBLIC_LIST", "SJP_DELTA_PUBLIC_LIST"})
     void testSuccessfulExcelConversion(ListType listType) throws IOException {
-        byte[] result = converter.convertToExcel(getInput("/mocks/sjpPublicList.json"), listType);
+        byte[] result = converter.convertToExcel(getInput("/mocks/sjpPublicList.json"), listType, Language.ENGLISH);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);

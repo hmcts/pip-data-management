@@ -17,9 +17,6 @@ import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.Magistrat
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.MagistratesStandardListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.NonStrategicListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.SscsDailyListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.CsvData;
-import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.MagistratesPublicListCsvData;
-import uk.gov.hmcts.reform.pip.data.management.service.csvprocessing.MagistratesStandardListCsvData;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CivilAndFamilyDailyCauseListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CivilDailyCauseListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CopDailyCauseListFileConverter;
@@ -139,10 +136,8 @@ public class ListConversionFactory {
         Map.entry(SJP_PRESS_LIST, new ConversionConfig(new SjpPressListFileConverter())),
         Map.entry(SJP_DELTA_PRESS_LIST, new ConversionConfig(new SjpPressListFileConverter())),
         Map.entry(MAGISTRATES_STANDARD_LIST, new ConversionConfig(new MagistratesStandardListFileConverter(),
-                                                                  new MagistratesStandardListCsvData(),
                                                                   new MagistratesStandardListSummaryData())),
         Map.entry(MAGISTRATES_PUBLIC_LIST, new ConversionConfig(new MagistratesPublicListFileConverter(),
-                                                                new MagistratesPublicListCsvData(),
                                                                 new MagistratesPublicListSummaryData())),
         Map.entry(CIVIL_DAILY_CAUSE_LIST, new ConversionConfig(new CivilDailyCauseListFileConverter(),
                                                                new CivilDailyCauseListSummaryData())),
@@ -454,13 +449,7 @@ public class ListConversionFactory {
     static class ConversionConfig {
 
         private final FileConverter fileConverter;
-        private CsvData csvData;
         private ArtefactSummaryData artefactSummaryData;
-
-        public ConversionConfig(FileConverter fileConverter, ArtefactSummaryData artefactSummaryData) {
-            this.fileConverter = fileConverter;
-            this.artefactSummaryData = artefactSummaryData;
-        }
 
         public ConversionConfig(FileConverter fileConverter) {
             this.fileConverter = fileConverter;
@@ -470,13 +459,6 @@ public class ListConversionFactory {
     public Optional<FileConverter> getFileConverter(ListType listType) {
         if (LIST_MAP.containsKey(listType) && LIST_MAP.get(listType).getFileConverter() != null) {
             return Optional.of(LIST_MAP.get(listType).getFileConverter());
-        }
-        return Optional.empty();
-    }
-
-    public Optional<CsvData> getCsvData(ListType listType) {
-        if (LIST_MAP.containsKey(listType) && LIST_MAP.get(listType).getCsvData() != null) {
-            return Optional.of(LIST_MAP.get(listType).getCsvData());
         }
         return Optional.empty();
     }

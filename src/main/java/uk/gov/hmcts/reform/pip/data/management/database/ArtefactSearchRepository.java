@@ -35,5 +35,4 @@ public interface ArtefactSearchRepository extends JpaRepository<ArtefactSearch, 
         nativeQuery = true)
     List<ArtefactSearch> findTop50ByCaseNameContainingIgnoreCase(@Param("caseName") String caseName,
                                                                  @Param("curr_date") LocalDateTime currentDate);
-
 }
