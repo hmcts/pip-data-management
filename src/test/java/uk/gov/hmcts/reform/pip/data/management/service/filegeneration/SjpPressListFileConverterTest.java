@@ -326,15 +326,15 @@ class SjpPressListFileConverterTest {
 
         softly.assertThat(headingRow.getCell(1).getStringCellValue())
             .as("Case URN column is different")
-            .isEqualTo("Case URN");
+            .isEqualTo("Cyfeirnod yr achos");
 
         softly.assertThat(headingRow.getCell(2).getStringCellValue())
             .as("Date of Birth column is different")
-            .isEqualTo("Date of Birth");
+            .isEqualTo("Dyddiad geni");
 
         softly.assertThat(headingRow.getCell(3).getStringCellValue())
             .as("Defendant Name column is different")
-            .isEqualTo("Defendant Name");
+            .isEqualTo("Enw'r Diffynnydd");
 
         softly.assertThat(headingRow.getCell(4).getStringCellValue())
             .as("Offence 1 Press Restriction Requested column is different")

@@ -1,25 +1,18 @@
 package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.SjpPublicList;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.SjpPublicListHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
-import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class SjpPublicListFileConverter extends ExcelAbstractList implements FileConverter {
     /**
@@ -47,50 +40,32 @@ public class SjpPublicListFileConverter extends ExcelAbstractList implements Fil
         return TemplateEngine.processTemplate(metadata.get("listType"), context);
     }
 
-    /**
-     * Create SJP public list Excel spreadsheet from list data.
-     *
-     * @param artefact Tree object model for artefact.
-     * @param listType The list type of the publication.
-     * @param language The language of the publication.
-     * @return The converted Excel spreadsheet as a byte array.
-     */
     @Override
-    public byte[] convertToExcel(JsonNode artefact, ListType listType, Language language) throws IOException {
-        Map<String, Object> i18n = LanguageResourceHelper.readResourcesFromPath(
-            "sjpPublicList",
-            language
-        );
+    public List<String> getExcelHeaders(JsonNode artefact, Map<String, Object> languageResources) {
+        List<String> headers = new ArrayList<>();
 
-        List<String> tableHeadings = Optional.ofNullable(i18n.get("tableHeadings"))
-            .filter(List.class::isInstance)
-            .map(value -> (List<?>) value)
-            .map(list -> list.stream()
-                .map(item -> item == null ? "" : item.toString().trim())
-                .toList())
-            .orElse(List.of("Name", "Postcode", "Offence", "Prosecutor"));
+        headers.add(languageResources.get("name").toString());
+        headers.add(languageResources.get("postcode").toString());
+        headers.add(languageResources.get("offence").toString());
+        headers.add(languageResources.get("prosecutor").toString());
 
-        try (Workbook workbook = new XSSFWorkbook()) {
-            Sheet sheet = workbook.createSheet(listType.getFriendlyName());
-            CellStyle boldStyle = createBoldStyle(workbook);
-            AtomicInteger rowIdx = new AtomicInteger();
-            Row headingRow = sheet.createRow(rowIdx.getAndIncrement());
-            setCellValue(headingRow, 0, !tableHeadings.isEmpty() ? tableHeadings.get(0) : "Name", boldStyle);
-            setCellValue(headingRow, 1, tableHeadings.size() > 1 ? tableHeadings.get(1) : "Postcode", boldStyle);
-            setCellValue(headingRow, 2, tableHeadings.size() > 2 ? tableHeadings.get(2) : "Offence", boldStyle);
-            setCellValue(headingRow, 3, tableHeadings.size() > 3 ? tableHeadings.get(3) : "Prosecutor", boldStyle);
+        return headers;
+    }
 
-            processRawListData(artefact).forEach(entry -> {
-                Row dataRow = sheet.createRow(rowIdx.getAndIncrement());
-                setCellValue(dataRow, 0, entry.getName());
-                setCellValue(dataRow, 1, entry.getPostcode());
-                setCellValue(dataRow, 2, entry.getOffence());
-                setCellValue(dataRow, 3, entry.getProsecutor());
-            });
-            autoSizeSheet(sheet);
+    @Override
+    public List<List<String>> getExcelRows(JsonNode artefact, Map<String, Object> languageResources) {
+        List<List<String>> rows = new ArrayList<>();
 
-            return convertToByteArray(workbook);
-        }
+        processRawListData(artefact).forEach(entry -> {
+            List<String> row = new ArrayList<>();
+            row.add(entry.getName());
+            row.add(entry.getPostcode());
+            row.add(entry.getOffence());
+            row.add(entry.getProsecutor());
+            rows.add(row);
+        });
+
+        return rows;
     }
 
     private List<SjpPublicList> processRawListData(JsonNode data) {

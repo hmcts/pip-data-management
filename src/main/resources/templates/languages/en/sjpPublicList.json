@@ -14,5 +14,9 @@
     "Offence",
     "Prosecutor"
   ],
-  "endText": "Thank you for reading this document thoroughly."
+  "endText": "Thank you for reading this document thoroughly.",
+  "name": "Name",
+  "postcode": "Postcode",
+  "offence": "Offence",
+  "prosecutor": "Prosecutor"
 }

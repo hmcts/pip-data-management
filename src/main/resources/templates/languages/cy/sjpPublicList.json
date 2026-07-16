@@ -14,5 +14,9 @@
     "Trosedd",
     "Erylnydd"
   ],
-  "endText": "Diolch am ddarllen y ddogfen hon yn fanwl."
+  "endText": "Diolch am ddarllen y ddogfen hon yn fanwl.",
+  "name": "Enw",
+  "postcode": "Cod post",
+  "offence": "Trosedd",
+  "prosecutor": "Erylnydd"
 }
