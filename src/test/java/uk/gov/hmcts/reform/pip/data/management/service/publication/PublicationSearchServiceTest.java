@@ -12,13 +12,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository.CaseSearchResult;
 import uk.gov.hmcts.reform.pip.data.management.database.ListSearchConfigRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateListSearchConfigConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
@@ -39,6 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -560,13 +561,12 @@ class PublicationSearchServiceTest {
 
     @Test
     void testFindCasesByCaseNumber() {
-        ArtefactSearch artefactSearch = ArtefactSearch.builder()
-            .caseNumber(TEST_VALUE)
-            .caseName("Test Case Name")
-            .build();
+        CaseSearchResult caseSearchResult = mock(CaseSearchResult.class);
+        when(caseSearchResult.getCaseNumber()).thenReturn(TEST_VALUE);
+        when(caseSearchResult.getCaseName()).thenReturn("Test Case Name");
 
         when(artefactSearchRepository.findByCaseNumberIgnoreCase(eq(TEST_VALUE), any()))
-            .thenReturn(List.of(artefactSearch));
+            .thenReturn(List.of(caseSearchResult));
 
         List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseNumber(TEST_VALUE);
 
@@ -585,13 +585,12 @@ class PublicationSearchServiceTest {
 
     @Test
     void testFindCasesByCaseNameExactSearch() {
-        ArtefactSearch artefactSearch = ArtefactSearch.builder()
-            .caseNumber("123")
-            .caseName(TEST_VALUE)
-            .build();
+        CaseSearchResult caseSearchResult = mock(CaseSearchResult.class);
+        when(caseSearchResult.getCaseNumber()).thenReturn("123");
+        when(caseSearchResult.getCaseName()).thenReturn(TEST_VALUE);
 
         when(artefactSearchRepository.findByCaseNameIgnoreCase(eq(TEST_VALUE), any()))
-            .thenReturn(List.of(artefactSearch));
+            .thenReturn(List.of(caseSearchResult));
 
         List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseName(TEST_VALUE, false);
 
@@ -604,13 +603,12 @@ class PublicationSearchServiceTest {
 
     @Test
     void testFindCasesByCaseNameFuzzySearch() {
-        ArtefactSearch artefactSearch = ArtefactSearch.builder()
-            .caseNumber("123")
-            .caseName(TEST_VALUE)
-            .build();
+        CaseSearchResult caseSearchResult = mock(CaseSearchResult.class);
+        when(caseSearchResult.getCaseNumber()).thenReturn("123");
+        when(caseSearchResult.getCaseName()).thenReturn(TEST_VALUE);
 
         when(artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(eq(TEST_VALUE), any()))
-            .thenReturn(List.of(artefactSearch));
+            .thenReturn(List.of(caseSearchResult));
 
         List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseName(TEST_VALUE, true);
 

@@ -6,12 +6,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository.CaseSearchResult;
 import uk.gov.hmcts.reform.pip.data.management.database.ListSearchConfigRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateListSearchConfigConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
@@ -201,7 +201,7 @@ public class PublicationSearchService {
      */
     public List<ArtefactCaseInfo> findCasesByCaseName(String caseName, boolean fuzzySearch) {
         LocalDateTime currDate = LocalDateTime.now();
-        List<ArtefactSearch> results = fuzzySearch
+        List<CaseSearchResult> results = fuzzySearch
             ? artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(caseName, currDate)
             : artefactSearchRepository.findByCaseNameIgnoreCase(caseName, currDate);
 

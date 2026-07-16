@@ -13,35 +13,43 @@ import java.util.UUID;
 @Repository
 public interface ArtefactSearchRepository extends JpaRepository<ArtefactSearch, UUID> {
 
+    interface CaseSearchResult {
+        String getCaseNumber();
+        String getCaseName();
+    }
+
     List<ArtefactSearch> findByArtefactId(UUID artefactId);
 
     void deleteByArtefactId(UUID artefactId);
 
-    @Query(value = "SELECT DISTINCT ars.* FROM artefact_search ars "
+    @Query(value = "SELECT DISTINCT ars.case_number AS caseNumber, ars.case_name AS caseName "
+        + "FROM artefact_search ars "
         + "INNER JOIN artefact a ON ars.artefact_id = a.artefact_id "
         + "WHERE LOWER(ars.case_number) = LOWER(:caseNumber) "
         + "AND a.display_from < :curr_date "
         + "AND (a.display_to > :curr_date OR a.display_to IS NULL)",
         nativeQuery = true)
-    List<ArtefactSearch> findByCaseNumberIgnoreCase(@Param("caseNumber") String caseNumber,
-                                                    @Param("curr_date") LocalDateTime currentDate);
+    List<CaseSearchResult> findByCaseNumberIgnoreCase(@Param("caseNumber") String caseNumber,
+                                                      @Param("curr_date") LocalDateTime currentDate);
 
-    @Query(value = "SELECT DISTINCT ars.* FROM artefact_search ars "
+    @Query(value = "SELECT DISTINCT ars.case_number AS caseNumber, ars.case_name AS caseName "
+        + "FROM artefact_search ars "
         + "INNER JOIN artefact a ON ars.artefact_id = a.artefact_id "
         + "WHERE LOWER(ars.case_name) = LOWER(CONCAT(:caseName)) "
         + "AND a.display_from < :curr_date "
         + "AND (a.display_to > :curr_date OR a.display_to IS NULL)",
         nativeQuery = true)
-    List<ArtefactSearch> findByCaseNameIgnoreCase(@Param("caseName") String caseName,
-                                                                 @Param("curr_date") LocalDateTime currentDate);
+    List<CaseSearchResult> findByCaseNameIgnoreCase(@Param("caseName") String caseName,
+                                                    @Param("curr_date") LocalDateTime currentDate);
 
-    @Query(value = "SELECT DISTINCT ars.* FROM artefact_search ars "
+    @Query(value = "SELECT DISTINCT ars.case_number AS caseNumber, ars.case_name AS caseName "
+        + "FROM artefact_search ars "
         + "INNER JOIN artefact a ON ars.artefact_id = a.artefact_id "
         + "WHERE LOWER(ars.case_name) LIKE LOWER(CONCAT('%', :caseName, '%')) "
         + "AND a.display_from < :curr_date "
         + "AND (a.display_to > :curr_date OR a.display_to IS NULL) "
         + "LIMIT 50",
         nativeQuery = true)
-    List<ArtefactSearch> findTop50ByCaseNameContainingIgnoreCase(@Param("caseName") String caseName,
-                                                                 @Param("curr_date") LocalDateTime currentDate);
+    List<CaseSearchResult> findTop50ByCaseNameContainingIgnoreCase(@Param("caseName") String caseName,
+                                                                   @Param("curr_date") LocalDateTime currentDate);
 }

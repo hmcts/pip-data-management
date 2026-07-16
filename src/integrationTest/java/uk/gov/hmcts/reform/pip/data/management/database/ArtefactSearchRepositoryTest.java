@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository.CaseSearchResult;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch;
 
@@ -117,21 +118,55 @@ class ArtefactSearchRepositoryTest {
 
     @Test
     void shouldFindByCaseNumberIgnoreCase() {
-        List<ArtefactSearch> results = artefactSearchRepository.findByCaseNumberIgnoreCase(
+        List<CaseSearchResult> results = artefactSearchRepository.findByCaseNumberIgnoreCase(
             CASE_NUMBER, LocalDateTime.now()
         );
 
         assertThat(results)
             .hasSize(1);
-        assertThat(results.get(0).getArtefactId())
-            .isEqualTo(ARTEFACT_SEARCH2.getArtefactId());
         assertThat(results.get(0).getCaseNumber())
             .isEqualTo(CASE_NUMBER);
     }
 
     @Test
+    void shouldFindByCaseNumberIgnoreCaseDeduplicates() {
+        Artefact activeArtefact1 = new Artefact();
+        activeArtefact1.setDisplayFrom(LocalDateTime.now().minusDays(1));
+        activeArtefact1.setDisplayTo(LocalDateTime.now().plusDays(1));
+
+        Artefact activeArtefact2 = new Artefact();
+        activeArtefact2.setDisplayFrom(LocalDateTime.now().minusDays(1));
+        activeArtefact2.setDisplayTo(LocalDateTime.now().plusDays(1));
+
+        List<Artefact> savedArtefacts = artefactRepository.saveAll(List.of(activeArtefact1, activeArtefact2));
+
+        ArtefactSearch search1 = new ArtefactSearch();
+        search1.setArtefactId(savedArtefacts.get(0).getArtefactId());
+        search1.setCaseNumber(CASE_NUMBER);
+        search1.setCaseName(CASE_NAME);
+
+        ArtefactSearch search2 = new ArtefactSearch();
+        search2.setArtefactId(savedArtefacts.get(1).getArtefactId());
+        search2.setCaseNumber(CASE_NUMBER);
+        search2.setCaseName(CASE_NAME);
+
+        artefactSearchRepository.saveAll(List.of(search1, search2));
+
+        List<CaseSearchResult> results = artefactSearchRepository.findByCaseNumberIgnoreCase(
+            CASE_NUMBER, LocalDateTime.now()
+        );
+
+        assertThat(results)
+            .hasSize(1);
+        assertThat(results.get(0).getCaseNumber())
+            .isEqualTo(CASE_NUMBER);
+        assertThat(results.get(0).getCaseName())
+            .isEqualTo(CASE_NAME);
+    }
+
+    @Test
     void shouldFindByCaseNameIgnoreCase() {
-        List<ArtefactSearch> results = artefactSearchRepository.findByCaseNameIgnoreCase(
+        List<CaseSearchResult> results = artefactSearchRepository.findByCaseNameIgnoreCase(
             CASE_NAME_SUBSET, LocalDateTime.now()
         );
         assertThat(results).isEmpty();
@@ -139,22 +174,86 @@ class ArtefactSearchRepositoryTest {
         results = artefactSearchRepository.findByCaseNameIgnoreCase(CASE_NAME, LocalDateTime.now());
         assertThat(results)
             .hasSize(1);
-        assertThat(results.get(0).getArtefactId())
-            .isEqualTo(ARTEFACT_SEARCH2.getArtefactId());
+        assertThat(results.get(0).getCaseName())
+            .isEqualTo(CASE_NAME);
+    }
+
+    @Test
+    void shouldFindByCaseNameIgnoreCaseDeduplicates() {
+        Artefact activeArtefact1 = new Artefact();
+        activeArtefact1.setDisplayFrom(LocalDateTime.now().minusDays(1));
+        activeArtefact1.setDisplayTo(LocalDateTime.now().plusDays(1));
+
+        Artefact activeArtefact2 = new Artefact();
+        activeArtefact2.setDisplayFrom(LocalDateTime.now().minusDays(1));
+        activeArtefact2.setDisplayTo(LocalDateTime.now().plusDays(1));
+
+        List<Artefact> savedArtefacts = artefactRepository.saveAll(List.of(activeArtefact1, activeArtefact2));
+
+        ArtefactSearch search1 = new ArtefactSearch();
+        search1.setArtefactId(savedArtefacts.get(0).getArtefactId());
+        search1.setCaseNumber(CASE_NUMBER);
+        search1.setCaseName(CASE_NAME);
+
+        ArtefactSearch search2 = new ArtefactSearch();
+        search2.setArtefactId(savedArtefacts.get(1).getArtefactId());
+        search2.setCaseNumber(CASE_NUMBER);
+        search2.setCaseName(CASE_NAME);
+
+        artefactSearchRepository.saveAll(List.of(search1, search2));
+
+        List<CaseSearchResult> results = artefactSearchRepository.findByCaseNameIgnoreCase(
+            CASE_NAME, LocalDateTime.now()
+        );
+
+        assertThat(results)
+            .hasSize(1);
         assertThat(results.get(0).getCaseName())
             .isEqualTo(CASE_NAME);
     }
 
     @Test
     void shouldFindByCaseNameFuzzySearchIgnoreCase() {
-        List<ArtefactSearch> results = artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(
+        List<CaseSearchResult> results = artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(
             CASE_NAME_SUBSET, LocalDateTime.now()
         );
 
         assertThat(results)
             .hasSize(1);
-        assertThat(results.get(0).getArtefactId())
-            .isEqualTo(ARTEFACT_SEARCH2.getArtefactId());
+        assertThat(results.get(0).getCaseName())
+            .isEqualTo(CASE_NAME);
+    }
+
+    @Test
+    void shouldFindByCaseNameFuzzySearchIgnoreCaseDeduplicates() {
+        Artefact activeArtefact1 = new Artefact();
+        activeArtefact1.setDisplayFrom(LocalDateTime.now().minusDays(1));
+        activeArtefact1.setDisplayTo(LocalDateTime.now().plusDays(1));
+
+        Artefact activeArtefact2 = new Artefact();
+        activeArtefact2.setDisplayFrom(LocalDateTime.now().minusDays(1));
+        activeArtefact2.setDisplayTo(LocalDateTime.now().plusDays(1));
+
+        List<Artefact> savedArtefacts = artefactRepository.saveAll(List.of(activeArtefact1, activeArtefact2));
+
+        ArtefactSearch search1 = new ArtefactSearch();
+        search1.setArtefactId(savedArtefacts.get(0).getArtefactId());
+        search1.setCaseNumber(CASE_NUMBER);
+        search1.setCaseName(CASE_NAME);
+
+        ArtefactSearch search2 = new ArtefactSearch();
+        search2.setArtefactId(savedArtefacts.get(1).getArtefactId());
+        search2.setCaseNumber(CASE_NUMBER);
+        search2.setCaseName(CASE_NAME);
+
+        artefactSearchRepository.saveAll(List.of(search1, search2));
+
+        List<CaseSearchResult> results = artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(
+            CASE_NAME_SUBSET, LocalDateTime.now()
+        );
+
+        assertThat(results)
+            .hasSize(1);
         assertThat(results.get(0).getCaseName())
             .isEqualTo(CASE_NAME);
     }
