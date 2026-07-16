@@ -126,6 +126,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_STATUTOR
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_T_AND_CC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST;
 
 @Component
 public class ListConversionFactory {
@@ -438,6 +439,10 @@ public class ListConversionFactory {
         Map.entry(CROWN_WARNED_PDDA_LIST, new ConversionConfig(
             new CrownWarnedPddaListFileConverter(),
             new CrownWarnedPddaListSummaryData()
+        )),
+        Map.entry(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST, new ConversionConfig(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST)
         ))
     );
 
