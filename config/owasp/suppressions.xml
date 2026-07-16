@@ -81,6 +81,17 @@
     <cve>CVE-2026-50229</cve>
     <cve>CVE-2026-55276</cve>
     <cve>CVE-2026-53434</cve>
+    <cve>CVE-2026-59083</cve>
+    <cve>CVE-2026-59084</cve>
+  </suppress>
+  <suppress>
+    <notes>Tomcat 10.1.54</notes>
+    <cve>CVE-2026-53404</cve>
+    <cve>CVE-2026-55956</cve>
+    <cve>CVE-2026-55955</cve>
+    <cve>CVE-2026-50229</cve>
+    <cve>CVE-2026-55276</cve>
+    <cve>CVE-2026-53434</cve>
   </suppress>
   <suppress>
     <notes>PDFBox and XMPBox</notes>
@@ -95,6 +106,7 @@
     <cve>CVE-2026-34478</cve>
     <cve>CVE-2026-34480</cve>
     <cve>CVE-2026-34481</cve>
+    <cve>CVE-2026-49844</cve>
   </suppress>
   <suppress>
     <notes>
@@ -125,6 +137,7 @@
     <cve>CVE-2026-22740</cve>
     <cve>CVE-2026-22745</cve>
     <cve>CVE-2026-22741</cve>
+    <cve>CVE-2026-41839</cve>
     <!-- Spring Boot -->
     <cve>CVE-2026-40972</cve>
     <cve>CVE-2026-40975</cve>
