@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository.CaseSearchResult;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchCaseResult;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch;
 
@@ -118,7 +118,7 @@ class ArtefactSearchRepositoryTest {
 
     @Test
     void shouldFindByCaseNumberIgnoreCase() {
-        List<CaseSearchResult> results = artefactSearchRepository.findByCaseNumberIgnoreCase(
+        List<ArtefactSearchCaseResult> results = artefactSearchRepository.findByCaseNumberIgnoreCase(
             CASE_NUMBER, LocalDateTime.now()
         );
 
@@ -152,7 +152,7 @@ class ArtefactSearchRepositoryTest {
 
         artefactSearchRepository.saveAll(List.of(search1, search2));
 
-        List<CaseSearchResult> results = artefactSearchRepository.findByCaseNumberIgnoreCase(
+        List<ArtefactSearchCaseResult> results = artefactSearchRepository.findByCaseNumberIgnoreCase(
             CASE_NUMBER, LocalDateTime.now()
         );
 
@@ -166,7 +166,7 @@ class ArtefactSearchRepositoryTest {
 
     @Test
     void shouldFindByCaseNameIgnoreCase() {
-        List<CaseSearchResult> results = artefactSearchRepository.findByCaseNameIgnoreCase(
+        List<ArtefactSearchCaseResult> results = artefactSearchRepository.findByCaseNameIgnoreCase(
             CASE_NAME_SUBSET, LocalDateTime.now()
         );
         assertThat(results).isEmpty();
@@ -202,7 +202,7 @@ class ArtefactSearchRepositoryTest {
 
         artefactSearchRepository.saveAll(List.of(search1, search2));
 
-        List<CaseSearchResult> results = artefactSearchRepository.findByCaseNameIgnoreCase(
+        List<ArtefactSearchCaseResult> results = artefactSearchRepository.findByCaseNameIgnoreCase(
             CASE_NAME, LocalDateTime.now()
         );
 
@@ -214,7 +214,7 @@ class ArtefactSearchRepositoryTest {
 
     @Test
     void shouldFindByCaseNameFuzzySearchIgnoreCase() {
-        List<CaseSearchResult> results = artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(
+        List<ArtefactSearchCaseResult> results = artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(
             CASE_NAME_SUBSET, LocalDateTime.now()
         );
 
@@ -248,7 +248,7 @@ class ArtefactSearchRepositoryTest {
 
         artefactSearchRepository.saveAll(List.of(search1, search2));
 
-        List<CaseSearchResult> results = artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(
+        List<ArtefactSearchCaseResult> results = artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(
             CASE_NAME_SUBSET, LocalDateTime.now()
         );
 

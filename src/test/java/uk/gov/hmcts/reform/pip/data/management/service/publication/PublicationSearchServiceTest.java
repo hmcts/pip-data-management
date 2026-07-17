@@ -12,7 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository;
-import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository.CaseSearchResult;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchCaseResult;
 import uk.gov.hmcts.reform.pip.data.management.database.ListSearchConfigRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateListSearchConfigConflictException;
@@ -561,7 +561,7 @@ class PublicationSearchServiceTest {
 
     @Test
     void testFindCasesByCaseNumber() {
-        CaseSearchResult caseSearchResult = mock(CaseSearchResult.class);
+        ArtefactSearchCaseResult caseSearchResult = mock(ArtefactSearchCaseResult.class);
         when(caseSearchResult.getCaseNumber()).thenReturn(TEST_VALUE);
         when(caseSearchResult.getCaseName()).thenReturn("Test Case Name");
 
@@ -585,7 +585,7 @@ class PublicationSearchServiceTest {
 
     @Test
     void testFindCasesByCaseNameExactSearch() {
-        CaseSearchResult caseSearchResult = mock(CaseSearchResult.class);
+        ArtefactSearchCaseResult caseSearchResult = mock(ArtefactSearchCaseResult.class);
         when(caseSearchResult.getCaseNumber()).thenReturn("123");
         when(caseSearchResult.getCaseName()).thenReturn(TEST_VALUE);
 
@@ -603,7 +603,7 @@ class PublicationSearchServiceTest {
 
     @Test
     void testFindCasesByCaseNameFuzzySearch() {
-        CaseSearchResult caseSearchResult = mock(CaseSearchResult.class);
+        ArtefactSearchCaseResult caseSearchResult = mock(ArtefactSearchCaseResult.class);
         when(caseSearchResult.getCaseNumber()).thenReturn("123");
         when(caseSearchResult.getCaseName()).thenReturn(TEST_VALUE);
 

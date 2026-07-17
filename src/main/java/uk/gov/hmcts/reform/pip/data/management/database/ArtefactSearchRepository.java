@@ -13,11 +13,6 @@ import java.util.UUID;
 @Repository
 public interface ArtefactSearchRepository extends JpaRepository<ArtefactSearch, UUID> {
 
-    interface CaseSearchResult {
-        String getCaseNumber();
-        String getCaseName();
-    }
-
     List<ArtefactSearch> findByArtefactId(UUID artefactId);
 
     void deleteByArtefactId(UUID artefactId);
@@ -29,8 +24,10 @@ public interface ArtefactSearchRepository extends JpaRepository<ArtefactSearch, 
         + "AND a.display_from < :curr_date "
         + "AND (a.display_to > :curr_date OR a.display_to IS NULL)",
         nativeQuery = true)
-    List<CaseSearchResult> findByCaseNumberIgnoreCase(@Param("caseNumber") String caseNumber,
-                                                      @Param("curr_date") LocalDateTime currentDate);
+    List<ArtefactSearchCaseResult> findByCaseNumberIgnoreCase(
+        @Param("caseNumber") String caseNumber,
+        @Param("curr_date") LocalDateTime currentDate
+    );
 
     @Query(value = "SELECT DISTINCT ars.case_number AS caseNumber, ars.case_name AS caseName "
         + "FROM artefact_search ars "
@@ -39,8 +36,10 @@ public interface ArtefactSearchRepository extends JpaRepository<ArtefactSearch, 
         + "AND a.display_from < :curr_date "
         + "AND (a.display_to > :curr_date OR a.display_to IS NULL)",
         nativeQuery = true)
-    List<CaseSearchResult> findByCaseNameIgnoreCase(@Param("caseName") String caseName,
-                                                    @Param("curr_date") LocalDateTime currentDate);
+    List<ArtefactSearchCaseResult> findByCaseNameIgnoreCase(
+        @Param("caseName") String caseName,
+        @Param("curr_date") LocalDateTime currentDate
+    );
 
     @Query(value = "SELECT DISTINCT ars.case_number AS caseNumber, ars.case_name AS caseName "
         + "FROM artefact_search ars "
@@ -50,6 +49,8 @@ public interface ArtefactSearchRepository extends JpaRepository<ArtefactSearch, 
         + "AND (a.display_to > :curr_date OR a.display_to IS NULL) "
         + "LIMIT 50",
         nativeQuery = true)
-    List<CaseSearchResult> findTop50ByCaseNameContainingIgnoreCase(@Param("caseName") String caseName,
-                                                                   @Param("curr_date") LocalDateTime currentDate);
+    List<ArtefactSearchCaseResult> findTop50ByCaseNameContainingIgnoreCase(
+        @Param("caseName") String caseName,
+        @Param("curr_date") LocalDateTime currentDate
+    );
 }
