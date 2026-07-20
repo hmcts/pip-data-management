@@ -1,11 +1,13 @@
 package uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.CrownPddaList;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.HearingInfo;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.SittingInfo;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.ArrayList;
@@ -70,6 +72,31 @@ public final class CrownPddaListHelper {
             });
 
         return results;
+    }
+
+    public static void processDateInfo(Context context, JsonNode listNode, Language language) {
+        JsonNode listHeader = listNode.get("ListHeader");
+        String publicationDateTime = listHeader.get("PublishedTime").asText();
+        context.setVariable("publicationDate",
+                            DateHelper.formatTimeStampToBst(publicationDateTime, language, false, false));
+        context.setVariable("publicationTime",
+                            DateHelper.formatTimeStampToBst(publicationDateTime, language, true, false));
+
+        String startDate = listHeader.get("StartDate").asText();
+        context.setVariable("startDate", DateHelper.convertDateFormat(startDate, "yyyy-MM-dd"));
+
+        String endDate = GeneralHelper.findAndReturnNodeText(listHeader, "EndDate");
+        if (!endDate.isEmpty()) {
+            context.setVariable("endDate", DateHelper.convertDateFormat(endDate, "yyyy-MM-dd"));
+        }
+    }
+
+    public static void processVenueAddress(Context context, JsonNode listNode) {
+        JsonNode crownCourt = listNode.get("CrownCourt");
+        if (crownCourt.has("CourtHouseAddress")) {
+            context.setVariable("venueAddress",
+                                CrownPddaListHelper.formatAddress(crownCourt.get("CourtHouseAddress")));
+        }
     }
 
     public static String constructCourtRoomInfo(SittingInfo sitting, Map<String, Object> languageResources) {

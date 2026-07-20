@@ -30,8 +30,8 @@ public class CrownDailyPddaListFileConverter extends ExcelAbstractList implement
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
 
         JsonNode listNode = artefact.get("DailyList");
-        processDateInfo(context, listNode, language);
-        processVenueAddress(context, listNode);
+        CrownPddaListHelper.processDateInfo(context, listNode, language);
+        CrownPddaListHelper.processVenueAddress(context, listNode);
 
         context.setVariable("version", listNode.get(LIST_HEADER).get("Version").asText());
         context.setVariable("listData", CrownPddaListHelper.processPayload(artefact, ListType.CROWN_DAILY_PDDA_LIST));
@@ -110,5 +110,4 @@ public class CrownDailyPddaListFileConverter extends ExcelAbstractList implement
                                 CrownPddaListHelper.formatAddress(crownCourt.get("CourtHouseAddress")));
         }
     }
-
 }

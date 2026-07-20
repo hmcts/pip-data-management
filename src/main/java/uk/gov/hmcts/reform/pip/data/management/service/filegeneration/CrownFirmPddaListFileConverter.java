@@ -30,8 +30,8 @@ public class CrownFirmPddaListFileConverter extends ExcelAbstractList implements
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
 
         JsonNode listNode = artefact.get("FirmList");
-        processDateInfo(context, listNode, language);
-        processVenueAddress(context, listNode);
+        CrownPddaListHelper.processDateInfo(context, listNode, language);
+        CrownPddaListHelper.processVenueAddress(context, listNode);
 
         context.setVariable("version", listNode.get(LIST_HEADER).get("Version").asText());
         context.setVariable("listData", CrownPddaListHelper.processPayload(artefact, ListType.CROWN_FIRM_PDDA_LIST));

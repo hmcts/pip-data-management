@@ -419,35 +419,6 @@ class CrownWarnedPddaListFileConverterTest {
             .as(EXCEL_TABLE_HEADER_MESSAGE)
             .isEqualTo("Listing Notes");
 
-        Row dataRow = sheet.getRow(1);
-        softly.assertThat(dataRow.getCell(0).getStringCellValue())
-            .as(EXCEL_CELL_VALUE_MESSAGE)
-            .isEqualTo("TestHearingDescription");
-
-        softly.assertThat(dataRow.getCell(1).getStringCellValue())
-            .as(EXCEL_CELL_VALUE_MESSAGE)
-            .isEqualTo("01/01/2024");
-
-        softly.assertThat(dataRow.getCell(2).getStringCellValue())
-            .as(EXCEL_CELL_VALUE_MESSAGE)
-            .isEqualTo("T00112233");
-
-        softly.assertThat(dataRow.getCell(3).getStringCellValue())
-            .as(EXCEL_CELL_VALUE_MESSAGE)
-            .isEqualTo("TestDefendantRequestedName");
-
-        softly.assertThat(dataRow.getCell(4).getStringCellValue())
-            .as(EXCEL_CELL_VALUE_MESSAGE)
-            .isEqualTo("Crown Prosecution Service");
-
-        softly.assertThat(dataRow.getCell(5).getStringCellValue())
-            .as(EXCEL_CELL_VALUE_MESSAGE)
-            .isEqualTo("TestLinkedCaseNumber");
-
-        softly.assertThat(dataRow.getCell(6).getStringCellValue())
-            .as(EXCEL_CELL_VALUE_MESSAGE)
-            .isEqualTo("TestListNote");
-
         softly.assertAll();
     }
 
@@ -496,4 +467,47 @@ class CrownWarnedPddaListFileConverterTest {
 
         softly.assertAll();
     }
+
+    @Test
+    void testCrownWarnedListExcelTableContents() throws IOException {
+        byte[] result = crownWarnedPddaListConverter.convertToExcel(inputJson, CROWN_WARNED_PDDA_LIST,
+                                                                    Language.ENGLISH);
+        ByteArrayInputStream file = new ByteArrayInputStream(result);
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheetAt(0);
+
+        SoftAssertions softly = new SoftAssertions();
+
+        Row dataRow = sheet.getRow(1);
+        softly.assertThat(dataRow.getCell(0).getStringCellValue())
+            .as(EXCEL_CELL_VALUE_MESSAGE)
+            .isEqualTo("TestHearingDescription");
+
+        softly.assertThat(dataRow.getCell(1).getStringCellValue())
+            .as(EXCEL_CELL_VALUE_MESSAGE)
+            .isEqualTo("01/01/2024");
+
+        softly.assertThat(dataRow.getCell(2).getStringCellValue())
+            .as(EXCEL_CELL_VALUE_MESSAGE)
+            .isEqualTo("T00112233");
+
+        softly.assertThat(dataRow.getCell(3).getStringCellValue())
+            .as(EXCEL_CELL_VALUE_MESSAGE)
+            .isEqualTo("TestDefendantRequestedName");
+
+        softly.assertThat(dataRow.getCell(4).getStringCellValue())
+            .as(EXCEL_CELL_VALUE_MESSAGE)
+            .isEqualTo("Crown Prosecution Service");
+
+        softly.assertThat(dataRow.getCell(5).getStringCellValue())
+            .as(EXCEL_CELL_VALUE_MESSAGE)
+            .isEqualTo("TestLinkedCaseNumber");
+
+        softly.assertThat(dataRow.getCell(6).getStringCellValue())
+            .as(EXCEL_CELL_VALUE_MESSAGE)
+            .isEqualTo("TestListNote");
+
+        softly.assertAll();
+    }
+
 }
