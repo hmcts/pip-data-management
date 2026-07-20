@@ -2,42 +2,40 @@ package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.thymeleaf.context.Context;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.CrownWarnedPddaList;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.CrownPddaList;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownPddaListHelper;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownWarnedPddaListHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class CrownWarnedPddaListFileConverter extends ExcelAbstractList implements FileConverter {
+public class CrownDailyPddaListFileConverter extends ExcelAbstractList implements FileConverter {
     private static final String LIST_HEADER = "ListHeader";
-    private static final String WARNED_LIST = "WarnedList";
 
     @Override
     public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources)
         throws IOException {
         Context context = new Context();
-        Language language = Language.valueOf(metadata.get("language"));
-        context.setVariable("contentDate",
-            CrownWarnedPddaListHelper.formatContentDate(metadata.get("contentDate"), language.toString()));
-        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
-        context.setVariable("i18n", languageResources);
+        context.setVariable("metadata", metadata);
         context.setVariable("locationName", metadata.get("locationName"));
         context.setVariable("provenance", metadata.get("provenance"));
+        context.setVariable("i18n", languageResources);
+        Language language = Language.valueOf(metadata.get("language"));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
 
-        JsonNode listNode = artefact.get(WARNED_LIST);
-
-        processDateInfo(context, listNode, metadata);
+        JsonNode listNode = artefact.get("DailyList");
+        processDateInfo(context, listNode, language);
         processVenueAddress(context, listNode);
 
-        context.setVariable("listData", CrownWarnedPddaListHelper.processPayload(artefact));
         context.setVariable("version", listNode.get(LIST_HEADER).get("Version").asText());
+        context.setVariable("listData", CrownPddaListHelper.processPayload(artefact, ListType.CROWN_DAILY_PDDA_LIST));
+
         return TemplateEngine.processTemplate(metadata.get("listType"), context);
     }
 
@@ -47,7 +45,11 @@ public class CrownWarnedPddaListFileConverter extends ExcelAbstractList implemen
         List<String> tableHeaders = (List<String>) languageResources.get("tableHeaders");
 
         return List.of(
-            languageResources.get("hearingDescription").toString(),
+            languageResources.get("courtHouse").toString(),
+            languageResources.get("courtAddress").toString(),
+            languageResources.get("courtPhone").toString(),
+            languageResources.get("courtRoom").toString(),
+            languageResources.get("sittingAt").toString(),
             tableHeaders.get(0),
             tableHeaders.get(1),
             tableHeaders.get(2),
@@ -60,31 +62,31 @@ public class CrownWarnedPddaListFileConverter extends ExcelAbstractList implemen
     @Override
     public List<List<String>> getExcelRows(JsonNode json, Map<String, Object> languageResources) {
         List<List<String>> rows = new ArrayList<>();
-        Map<String, List<CrownWarnedPddaList>> processedData = CrownWarnedPddaListHelper.processPayload(json);
+        List<CrownPddaList> processedData = CrownPddaListHelper.processPayload(json, ListType.CROWN_DAILY_PDDA_LIST);
 
         processedData.forEach(
-            (hearingDescription, cases) -> cases.forEach(
-                hearingCase -> rows.add(List.of(
-                    getHearingDescription(hearingDescription, languageResources),
-                    hearingCase.getFixedDate(),
-                    hearingCase.getCaseReference(),
-                    hearingCase.getDefendantNames(),
-                    hearingCase.getProsecutingAuthority(),
-                    hearingCase.getLinkedCases(),
-                    hearingCase.getListingNotes()
-                ))
-            ));
+            data -> data.getSittings().forEach(sitting -> {
+                String courtRoomInfo = CrownPddaListHelper.constructCourtRoomInfo(sitting, languageResources);
+                sitting.getHearings().forEach(
+                    hearing -> rows.add(List.of(
+                        data.getCourtName(),
+                        String.join(", ", data.getCourtAddress()),
+                        data.getCourtPhone(),
+                        courtRoomInfo,
+                        sitting.getSittingAt(),
+                        hearing.getHearingTime(),
+                        hearing.getCaseNumber(),
+                        hearing.getDefendantName(),
+                        hearing.getHearingType(),
+                        hearing.getProsecutingAuthority(),
+                        hearing.getListNote()
+                    )));
+            }));
+
         return rows;
     }
 
-    private String getHearingDescription(String hearingDescription, Map<String, Object> languageResources) {
-        return "To be allocated".equalsIgnoreCase(hearingDescription)
-            ? languageResources.get("toBeAllocatedText").toString()
-            : hearingDescription;
-    }
-
-    private void processDateInfo(Context context, JsonNode listNode, Map<String, String> metadata) {
-        Language language = Language.valueOf(metadata.get("language"));
+    private void processDateInfo(Context context, JsonNode listNode, Language language) {
         JsonNode listHeader = listNode.get(LIST_HEADER);
         String publicationDateTime = listHeader.get("PublishedTime").asText();
         context.setVariable("publicationDate",
@@ -108,4 +110,5 @@ public class CrownWarnedPddaListFileConverter extends ExcelAbstractList implemen
                                 CrownPddaListHelper.formatAddress(crownCourt.get("CourtHouseAddress")));
         }
     }
+
 }

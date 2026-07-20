@@ -4,13 +4,20 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.assertj.core.api.SoftAssertions;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -22,6 +29,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_WARNED_PDDA_LIST;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CrownWarnedPddaListFileConverterTest {
@@ -41,12 +49,28 @@ class CrownWarnedPddaListFileConverterTest {
     private static final String BODY_MESSAGE = "Body does not match";
     private static final String CONTACT_MESSAGE = "Contact information does not match";
     private static final String LINK_MESSAGE = "Link does not match";
+    private static final String EXCEL_SHEET_NAME_MESSAGE = "Excel sheet name does not match";
+    private static final String EXCEL_TABLE_HEADER_MESSAGE = "Excel table header does not match";
+    private static final String EXCEL_CELL_VALUE_MESSAGE = "Excel cell value does not match";
 
     private static final Map<String, String> COMMON_METADATA = Map.of("contentDate", CONTENT_DATE,
                                                                       "provenance", "MANUAL_UPLOAD",
                                                                       "locationName", "location",
-                                                                      LIST_TYPE, "CROWN_WARNED_PDDA_LIST"
+                                                                      LIST_TYPE, CROWN_WARNED_PDDA_LIST.name()
     );
+
+    private JsonNode inputJson;
+    private CrownWarnedPddaListFileConverter crownWarnedPddaListConverter = new CrownWarnedPddaListFileConverter();
+
+    @BeforeAll
+    void setup() throws IOException {
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(
+            Files.newInputStream(Paths.get(TEST_FILE_PATH, "crownWarnedPddaList.json")),
+            writer, Charset.defaultCharset()
+        );
+        inputJson = new ObjectMapper().readTree(writer.toString());
+    }
 
     @Test
     void testCrownWarnedPddaListTemplateEnglish() throws IOException {
@@ -58,16 +82,9 @@ class CrownWarnedPddaListFileConverterTest {
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
         }
-        StringWriter writer = new StringWriter();
-        IOUtils.copy(
-            Files.newInputStream(Paths.get(TEST_FILE_PATH, "crownWarnedPddaList.json")),
-            writer, Charset.defaultCharset()
-        );
+
         Map<String, String> metadataMap = new ConcurrentHashMap<>(COMMON_METADATA);
         metadataMap.put(LANGUAGE, "ENGLISH");
-
-        JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
-        CrownWarnedPddaListFileConverter crownWarnedPddaListConverter = new CrownWarnedPddaListFileConverter();
 
         String outputHtml = crownWarnedPddaListConverter.convert(inputJson, metadataMap, language);
         Document document = Jsoup.parse(outputHtml);
@@ -200,16 +217,9 @@ class CrownWarnedPddaListFileConverterTest {
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
         }
-        StringWriter writer = new StringWriter();
-        IOUtils.copy(
-            Files.newInputStream(Paths.get(TEST_FILE_PATH, "crownWarnedPddaList.json")),
-            writer, Charset.defaultCharset()
-        );
+
         Map<String, String> metadataMap = new ConcurrentHashMap<>(COMMON_METADATA);
         metadataMap.put(LANGUAGE, "WELSH");
-
-        JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
-        CrownWarnedPddaListFileConverter crownWarnedPddaListConverter = new CrownWarnedPddaListFileConverter();
 
         String outputHtml = crownWarnedPddaListConverter.convert(inputJson, metadataMap, language);
         Document document = Jsoup.parse(outputHtml);
@@ -346,16 +356,9 @@ class CrownWarnedPddaListFileConverterTest {
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
         }
-        StringWriter writer = new StringWriter();
-        IOUtils.copy(
-            Files.newInputStream(Paths.get(TEST_FILE_PATH, "crownWarnedPddaList.json")),
-            writer, Charset.defaultCharset()
-        );
+
         Map<String, String> metadataMap = new ConcurrentHashMap<>(COMMON_METADATA);
         metadataMap.put(LANGUAGE, "ENGLISH");
-
-        JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
-        CrownWarnedPddaListFileConverter crownWarnedPddaListConverter = new CrownWarnedPddaListFileConverter();
 
         String outputHtml = crownWarnedPddaListConverter.convert(inputJson, metadataMap, language);
         Document document = Jsoup.parse(outputHtml);
@@ -371,5 +374,126 @@ class CrownWarnedPddaListFileConverterTest {
                 "TestLinkedCaseNumber",
                 "TestListNote"
             );
+    }
+
+    @Test
+    void testCrownWarnedListExcelConversion() throws IOException {
+        byte[] result = crownWarnedPddaListConverter.convertToExcel(inputJson, CROWN_WARNED_PDDA_LIST,
+                                                                    Language.ENGLISH);
+        ByteArrayInputStream file = new ByteArrayInputStream(result);
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheetAt(0);
+        Row headingRow = sheet.getRow(0);
+
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(sheet.getSheetName())
+            .as(EXCEL_SHEET_NAME_MESSAGE)
+            .isEqualTo(CROWN_WARNED_PDDA_LIST.getFriendlyName());
+
+        softly.assertThat(headingRow.getCell(0).getStringCellValue())
+            .as(EXCEL_TABLE_HEADER_MESSAGE)
+            .isEqualTo("Hearing Description");
+
+        softly.assertThat(headingRow.getCell(1).getStringCellValue())
+            .as(EXCEL_TABLE_HEADER_MESSAGE)
+            .isEqualTo("Fixed For");
+
+        softly.assertThat(headingRow.getCell(2).getStringCellValue())
+            .as(EXCEL_TABLE_HEADER_MESSAGE)
+            .isEqualTo("Case Reference");
+
+        softly.assertThat(headingRow.getCell(3).getStringCellValue())
+            .as(EXCEL_TABLE_HEADER_MESSAGE)
+            .isEqualTo("Defendant Name(s)");
+
+        softly.assertThat(headingRow.getCell(4).getStringCellValue())
+            .as(EXCEL_TABLE_HEADER_MESSAGE)
+            .isEqualTo("Prosecuting Authority");
+
+        softly.assertThat(headingRow.getCell(5).getStringCellValue())
+            .as(EXCEL_TABLE_HEADER_MESSAGE)
+            .isEqualTo("Linked Cases");
+
+        softly.assertThat(headingRow.getCell(6).getStringCellValue())
+            .as(EXCEL_TABLE_HEADER_MESSAGE)
+            .isEqualTo("Listing Notes");
+
+        Row dataRow = sheet.getRow(1);
+        softly.assertThat(dataRow.getCell(0).getStringCellValue())
+            .as(EXCEL_CELL_VALUE_MESSAGE)
+            .isEqualTo("TestHearingDescription");
+
+        softly.assertThat(dataRow.getCell(1).getStringCellValue())
+            .as(EXCEL_CELL_VALUE_MESSAGE)
+            .isEqualTo("01/01/2024");
+
+        softly.assertThat(dataRow.getCell(2).getStringCellValue())
+            .as(EXCEL_CELL_VALUE_MESSAGE)
+            .isEqualTo("T00112233");
+
+        softly.assertThat(dataRow.getCell(3).getStringCellValue())
+            .as(EXCEL_CELL_VALUE_MESSAGE)
+            .isEqualTo("TestDefendantRequestedName");
+
+        softly.assertThat(dataRow.getCell(4).getStringCellValue())
+            .as(EXCEL_CELL_VALUE_MESSAGE)
+            .isEqualTo("Crown Prosecution Service");
+
+        softly.assertThat(dataRow.getCell(5).getStringCellValue())
+            .as(EXCEL_CELL_VALUE_MESSAGE)
+            .isEqualTo("TestLinkedCaseNumber");
+
+        softly.assertThat(dataRow.getCell(6).getStringCellValue())
+            .as(EXCEL_CELL_VALUE_MESSAGE)
+            .isEqualTo("TestListNote");
+
+        softly.assertAll();
+    }
+
+    @Test
+    void testCrownWarnedListWelshExcelConversion() throws IOException {
+        byte[] result = crownWarnedPddaListConverter.convertToExcel(inputJson, CROWN_WARNED_PDDA_LIST,
+                                                                    Language.WELSH);
+        ByteArrayInputStream file = new ByteArrayInputStream(result);
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheetAt(0);
+        Row headingRow = sheet.getRow(0);
+
+        SoftAssertions softly = new SoftAssertions();
+
+        softly.assertThat(sheet.getSheetName())
+            .as(EXCEL_SHEET_NAME_MESSAGE)
+            .isEqualTo(CROWN_WARNED_PDDA_LIST.getFriendlyName());
+
+        softly.assertThat(headingRow.getCell(0).getStringCellValue())
+            .as(EXCEL_TABLE_HEADER_MESSAGE)
+            .isEqualTo("Disgrifiad o'r Gwrandawiad");
+
+        softly.assertThat(headingRow.getCell(1).getStringCellValue())
+            .as(EXCEL_TABLE_HEADER_MESSAGE)
+            .isEqualTo("Pennu ar gyfer");
+
+        softly.assertThat(headingRow.getCell(2).getStringCellValue())
+            .as(EXCEL_TABLE_HEADER_MESSAGE)
+            .isEqualTo("Cyfeirnod yr Achos");
+
+        softly.assertThat(headingRow.getCell(3).getStringCellValue())
+            .as(EXCEL_TABLE_HEADER_MESSAGE)
+            .isEqualTo("Enw'r Diffynnydd");
+
+        softly.assertThat(headingRow.getCell(4).getStringCellValue())
+            .as(EXCEL_TABLE_HEADER_MESSAGE)
+            .isEqualTo("Yr Awdurdod sy'n Erlyn");
+
+        softly.assertThat(headingRow.getCell(5).getStringCellValue())
+            .as(EXCEL_TABLE_HEADER_MESSAGE)
+            .isEqualTo("Achosion cysylltiedig");
+
+        softly.assertThat(headingRow.getCell(6).getStringCellValue())
+            .as(EXCEL_TABLE_HEADER_MESSAGE)
+            .isEqualTo("Nodiadau rhestru");
+
+        softly.assertAll();
     }
 }

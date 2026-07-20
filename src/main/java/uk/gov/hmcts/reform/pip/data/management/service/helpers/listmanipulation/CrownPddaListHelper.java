@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public final class CrownPddaListHelper {
 
@@ -69,6 +70,13 @@ public final class CrownPddaListHelper {
             });
 
         return results;
+    }
+
+    public static String constructCourtRoomInfo(SittingInfo sitting, Map<String, Object> languageResources) {
+        String courtRoom = languageResources.get("courtRoomPrefix").toString() + sitting.getCourtRoomNumber();
+        return sitting.getJudgeName().isEmpty()
+            ? courtRoom
+            : courtRoom + ": " + sitting.getJudgeName();
     }
 
     public static List<String> formatAddress(JsonNode address) {
