@@ -85,29 +85,4 @@ public class CrownDailyPddaListFileConverter extends ExcelAbstractList implement
 
         return rows;
     }
-
-    private void processDateInfo(Context context, JsonNode listNode, Language language) {
-        JsonNode listHeader = listNode.get(LIST_HEADER);
-        String publicationDateTime = listHeader.get("PublishedTime").asText();
-        context.setVariable("publicationDate",
-                            DateHelper.formatTimeStampToBst(publicationDateTime, language, false, false));
-        context.setVariable("publicationTime",
-                            DateHelper.formatTimeStampToBst(publicationDateTime, language, true, false));
-
-        String startDate = listHeader.get("StartDate").asText();
-        context.setVariable("startDate", DateHelper.convertDateFormat(startDate, "yyyy-MM-dd"));
-
-        String endDate = GeneralHelper.findAndReturnNodeText(listHeader, "EndDate");
-        if (!endDate.isEmpty()) {
-            context.setVariable("endDate", DateHelper.convertDateFormat(endDate, "yyyy-MM-dd"));
-        }
-    }
-
-    private void processVenueAddress(Context context, JsonNode listNode) {
-        JsonNode crownCourt = listNode.get("CrownCourt");
-        if (crownCourt.has("CourtHouseAddress")) {
-            context.setVariable("venueAddress",
-                                CrownPddaListHelper.formatAddress(crownCourt.get("CourtHouseAddress")));
-        }
-    }
 }
