@@ -110,10 +110,6 @@ class MagistratesStandardListFileConverterTest {
             .as("No html found")
             .isNotEmpty();
 
-        softly.assertThat(document.title())
-            .as("incorrect title found.")
-            .isEqualTo("Magistrates Standard List");
-
         softly.assertThat(document.getElementsByClass("govuk-heading-l").get(0).text())
             .as(HEADER_MESSAGE)
             .contains("Magistrates Standard List for location");

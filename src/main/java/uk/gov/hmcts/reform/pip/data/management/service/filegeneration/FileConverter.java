@@ -8,7 +8,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
-
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
@@ -46,7 +45,8 @@ public interface FileConverter {
         }
 
         try (Workbook workbook = new XSSFWorkbook()) {
-            Sheet sheet = workbook.createSheet(listType.getFriendlyName());
+            // The sheet name can only be 31 characters long, so we will use a generic name for the sheet.
+            Sheet sheet = workbook.createSheet("Sheet1");
             CellStyle boldStyle = ExcelAbstractList.createBoldStyle(workbook);
 
             int rowIdx = 0;

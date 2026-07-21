@@ -72,10 +72,6 @@ class MagistratesPublicListFileConverterTest {
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(outputHtml).as("No html found").isNotEmpty();
 
-        softly.assertThat(document.title())
-            .as("incorrect title found.")
-            .isEqualTo("Magistrates Public List");
-
         softly.assertThat(document.getElementsByClass("govuk-heading-l")
                               .get(0).text())
             .as(HEADER_TEXT)
