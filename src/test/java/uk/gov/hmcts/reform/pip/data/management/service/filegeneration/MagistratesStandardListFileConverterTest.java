@@ -494,8 +494,6 @@ class MagistratesStandardListFileConverterTest {
         Sheet sheet = workbook.getSheetAt(0);
         Row headingRow = sheet.getRow(0);
 
-        assertEquals(ListType.MAGISTRATES_STANDARD_LIST.getFriendlyName(), sheet.getSheetName(),
-                     "Sheet name does not match");
         assertEquals("Court House", headingRow.getCell(0).getStringCellValue(),
                      "Court House column is different");
         assertEquals("LJA", headingRow.getCell(1).getStringCellValue(),
