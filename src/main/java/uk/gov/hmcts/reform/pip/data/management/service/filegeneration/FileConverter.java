@@ -39,7 +39,7 @@ public interface FileConverter {
         Map<String, Object> languageResources = LanguageResourceHelper.getLanguageResources(listType,
                                                                                             language);
         List<String> headers = getExcelHeaders(artefact, languageResources);
-        List<List<String>> rows = getExcelRows(artefact, languageResources);
+        List<List<String>> rows = getExcelRows(artefact, languageResources, language);
 
         if (headers.isEmpty() && rows.isEmpty()) {
             return new byte[0];
@@ -75,7 +75,8 @@ public interface FileConverter {
         return getExcelHeaders(languageResources);
     }
 
-    default List<List<String>> getExcelRows(JsonNode artefact, Map<String, Object> languageResources) {
+    default List<List<String>> getExcelRows(JsonNode artefact, Map<String, Object> languageResources,
+                                            Language language) {
         return new ArrayList<>();
     }
 }
