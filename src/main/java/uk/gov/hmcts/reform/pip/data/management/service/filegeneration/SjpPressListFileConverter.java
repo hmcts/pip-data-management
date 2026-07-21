@@ -81,12 +81,12 @@ public class SjpPressListFileConverter extends ExcelAbstractList implements File
         Integer maxOffences =
             cases.stream().map(SjpPressList::getNumberOfOffences).reduce(Integer::max).orElse(0);
         for (int i = 1; i <= maxOffences; i++) {
-            headers.add(String.format("Offence %d Press Restriction Requested", i));
-            headers.add(String.format("Offence %d Title", i));
-            headers.add(String.format("Offence %d Wording", i));
+            headers.add(String.format(languageResources.get("OffencePressRestriction").toString(), i));
+            headers.add(String.format(languageResources.get("OffenceTitle").toString(), i));
+            headers.add(String.format(languageResources.get("OffenceWording").toString(), i));
         }
 
-        headers.add("Prosecutor Name");
+        headers.add(languageResources.get("ProsecutorName").toString());
 
         return headers;
     }

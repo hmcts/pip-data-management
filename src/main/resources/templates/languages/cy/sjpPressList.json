@@ -29,5 +29,9 @@
   "address": "Cyfeiriad",
   "caseURN": "Cyfeirnod yr achos",
   "dateOfBirth": "Dyddiad geni",
-  "defendantName": "Enw'r Diffynnydd"
+  "defendantName": "Enw'r Diffynnydd",
+  "OffencePressRestriction": "Gofynnwyd am gyfyngiad i'r wasg parthed y drosedd %d",
+  "OffenceTitle": "Teitl y drosedd %d",
+  "OffenceWording": "Geiriad y drosedd %d",
+  "ProsecutorName": "Enw'r erlynydd"
 }

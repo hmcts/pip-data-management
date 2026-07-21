@@ -29,5 +29,9 @@
   "address": "Address",
   "caseURN": "Case URN",
   "dateOfBirth": "Date of Birth",
-  "defendantName": "Defendant Name"
+  "defendantName": "Defendant Name",
+  "OffencePressRestriction": "Offence %d Press Restriction Requested",
+  "OffenceTitle": "Offence %d Title",
+  "OffenceWording": "Offence %d Wording",
+  "ProsecutorName": "Prosecutor Name"
 }

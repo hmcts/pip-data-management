@@ -296,6 +296,10 @@ class SjpPressListFileConverterTest {
             .as("Offence 2 Wording column is different")
             .isEqualTo("Offence 2 Wording");
 
+        softly.assertThat(headingRow.getCell(10).getStringCellValue())
+            .as("Prosecutor name column is different")
+            .isEqualTo("Prosecutor Name");
+
         softly.assertAll();
     }
 
@@ -338,27 +342,31 @@ class SjpPressListFileConverterTest {
 
         softly.assertThat(headingRow.getCell(4).getStringCellValue())
             .as("Offence 1 Press Restriction Requested column is different")
-            .isEqualTo("Offence 1 Press Restriction Requested");
+            .isEqualTo("Gofynnwyd am gyfyngiad i'r wasg parthed y drosedd 1");
 
         softly.assertThat(headingRow.getCell(5).getStringCellValue())
             .as("Offence 1 Title column is different")
-            .isEqualTo("Offence 1 Title");
+            .isEqualTo("Teitl y drosedd 1");
 
         softly.assertThat(headingRow.getCell(6).getStringCellValue())
             .as("Offence 1 Wording column is different")
-            .isEqualTo("Offence 1 Wording");
+            .isEqualTo("Geiriad y drosedd 1");
 
         softly.assertThat(headingRow.getCell(7).getStringCellValue())
             .as("Offence 2 Press Restriction Requested column is different")
-            .isEqualTo("Offence 2 Press Restriction Requested");
+            .isEqualTo("Gofynnwyd am gyfyngiad i'r wasg parthed y drosedd 2");
 
         softly.assertThat(headingRow.getCell(8).getStringCellValue())
             .as("Offence 2 Title column is different")
-            .isEqualTo("Offence 2 Title");
+            .isEqualTo("Teitl y drosedd 2");
 
         softly.assertThat(headingRow.getCell(9).getStringCellValue())
             .as("Offence 2 Wording column is different")
-            .isEqualTo("Offence 2 Wording");
+            .isEqualTo("Geiriad y drosedd 2");
+
+        softly.assertThat(headingRow.getCell(10).getStringCellValue())
+            .as("Prosecutor Name column is different")
+            .isEqualTo("Enw'r erlynydd");
 
         softly.assertAll();
     }
