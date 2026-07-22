@@ -13,14 +13,14 @@
   "endText": "Diolch am ddarllen y ddogfen hon yn fanwl.",
   "listFor": "Rhestr ar gyfer ",
   "tableHeaders": [
-    "Cyfeiriad",
-    "Cyfeirnod yr achos",
-    "Dyddiad geni",
     "Enw'r Diffynnydd",
-    "Gofynnwyd am gyfyngiad i'r wasg parthed y drosedd %d",
+    "Dyddiad geni",
+    "Cyfeiriad",
+    "Enw'r erlynydd",
+    "Cyfeirnod yr achos",
     "Teitl y drosedd %d",
     "Geiriad y drosedd %d",
-    "Enw'r erlynydd"
+    "Gofynnwyd am gyfyngiad i'r wasg parthed y drosedd %d"
   ],
   "offenceHeaders": [
     "Trosedd",

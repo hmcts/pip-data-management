@@ -77,6 +77,7 @@ public class SjpPressListFileConverter extends ExcelAbstractList implements File
         headers.add(tableHeaders.get(1));
         headers.add(tableHeaders.get(2));
         headers.add(tableHeaders.get(3));
+        headers.add(tableHeaders.get(4));
 
 
         // Write out column headings for the max number of offences a defendant may have
@@ -85,12 +86,10 @@ public class SjpPressListFileConverter extends ExcelAbstractList implements File
             cases.stream().map(SjpPressList::getNumberOfOffences).reduce(Integer::max).orElse(0);
 
         for (int i = 1; i <= maxOffences; i++) {
-            headers.add(String.format(tableHeaders.get(4), i));
             headers.add(String.format(tableHeaders.get(5), i));
             headers.add(String.format(tableHeaders.get(6), i));
+            headers.add(String.format(tableHeaders.get(7), i));
         }
-
-        headers.add(tableHeaders.get(7));
 
         return headers;
     }
@@ -108,18 +107,17 @@ public class SjpPressListFileConverter extends ExcelAbstractList implements File
                 : String.join(" ", entry.getReferenceRemainder());
             String accusedDob = getAccusedDob(entry);
 
-            row.add(concatenateStrings(entry.getAddressLine1(), addressRemainder));
-            row.add(concatenateStrings(entry.getReference1(), referenceRemainder));
-            row.add(accusedDob);
             row.add(entry.getName());
+            row.add(accusedDob);
+            row.add(concatenateStrings(entry.getAddressLine1(), addressRemainder));
+            row.add(entry.getProsecutor());
+            row.add(concatenateStrings(entry.getReference1(), referenceRemainder));
 
             for (Map<String, String> offence : entry.getOffences()) {
-                row.add(offence.get(offence.get(REPORTING_RESTRICTION)));
                 row.add(offence.get(OFFENCE));
                 row.add(offence.get("wording"));
+                row.add(offence.get(REPORTING_RESTRICTION));
             }
-
-            row.add(entry.getProsecutor());
             rows.add(row);
         }
 
