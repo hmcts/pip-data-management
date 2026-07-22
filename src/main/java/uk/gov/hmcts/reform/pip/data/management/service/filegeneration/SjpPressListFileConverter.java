@@ -70,23 +70,27 @@ public class SjpPressListFileConverter extends ExcelAbstractList implements File
     public List<String> getExcelHeaders(JsonNode artefact, Map<String, Object> languageResources) {
         List<String> headers = new ArrayList<>();
 
-        headers.add(languageResources.get("address").toString());
-        headers.add(languageResources.get("caseURN").toString());
-        headers.add(languageResources.get("dateOfBirth").toString());
-        headers.add(languageResources.get("defendantName").toString());
+        @SuppressWarnings("unchecked")
+        List<String> tableHeaders = (List<String>) languageResources.get("tableHeaders");
+
+        headers.add(tableHeaders.get(0));
+        headers.add(tableHeaders.get(1));
+        headers.add(tableHeaders.get(2));
+        headers.add(tableHeaders.get(3));
 
 
         // Write out column headings for the max number of offences a defendant may have
         final List<SjpPressList> cases = processRawListData(artefact);
         Integer maxOffences =
             cases.stream().map(SjpPressList::getNumberOfOffences).reduce(Integer::max).orElse(0);
+
         for (int i = 1; i <= maxOffences; i++) {
-            headers.add(String.format(languageResources.get("OffencePressRestriction").toString(), i));
-            headers.add(String.format(languageResources.get("OffenceTitle").toString(), i));
-            headers.add(String.format(languageResources.get("OffenceWording").toString(), i));
+            headers.add(String.format(tableHeaders.get(4), i));
+            headers.add(String.format(tableHeaders.get(5), i));
+            headers.add(String.format(tableHeaders.get(6), i));
         }
 
-        headers.add(languageResources.get("ProsecutorName").toString());
+        headers.add(tableHeaders.get(7));
 
         return headers;
     }

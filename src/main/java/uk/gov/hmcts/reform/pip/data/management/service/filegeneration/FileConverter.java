@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 
 import uk.gov.hmcts.reform.pip.model.publication.Language;
-import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;

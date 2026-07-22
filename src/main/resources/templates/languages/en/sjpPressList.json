@@ -13,11 +13,14 @@
   "endText": "Thank you for reading this document thoroughly.",
   "listFor": "List for ",
   "tableHeaders": [
-    "Name",
-    "Date of Birth",
     "Address",
-    "Prosecutor",
-    "Case Reference(s)"
+    "Case URN",
+    "Date of Birth",
+    "Defendant Name",
+    "Offence %d Press Restriction Requested",
+    "Offence %d Title",
+    "Offence %d Wording",
+    "Prosecutor Name"
   ],
   "offenceHeaders": [
     "Offence Title",
@@ -25,13 +28,5 @@
     "Reporting Restriction"
   ],
   "titleText": "Single Justice Procedure - Press List (Full list) ",
-  "subHeader": "Single Justice Procedure cases that are ready for hearing",
-  "address": "Address",
-  "caseURN": "Case URN",
-  "dateOfBirth": "Date of Birth",
-  "defendantName": "Defendant Name",
-  "OffencePressRestriction": "Offence %d Press Restriction Requested",
-  "OffenceTitle": "Offence %d Title",
-  "OffenceWording": "Offence %d Wording",
-  "ProsecutorName": "Prosecutor Name"
+  "subHeader": "Single Justice Procedure cases that are ready for hearing"
 }

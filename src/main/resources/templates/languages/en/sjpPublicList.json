@@ -8,15 +8,11 @@
   "listFor": "List for ",
   "published": "Published: ",
   "subHeader": "Single Justice Procedure cases that are ready for hearing",
-  "tableHeadings": [
+  "tableHeaders": [
     "Name",
     "Postcode",
     "Offence",
     "Prosecutor"
   ],
-  "endText": "Thank you for reading this document thoroughly.",
-  "name": "Name",
-  "postcode": "Postcode",
-  "offence": "Offence",
-  "prosecutor": "Prosecutor"
+  "endText": "Thank you for reading this document thoroughly."
 }

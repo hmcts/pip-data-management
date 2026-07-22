@@ -8,15 +8,11 @@
   "listFor": "Rhestr ar gyfer ",
   "published": "Cyhoeddwyd: ",
   "subHeader": "Achosion Gweithdrefn Un Ynad sy'n barod ar gyfer gwrandawiad",
-  "tableHeadings": [
+  "tableHeaders": [
     "Enw",
     "Cod post",
     "Trosedd",
     "Erylnydd"
   ],
-  "endText": "Diolch am ddarllen y ddogfen hon yn fanwl.",
-  "name": "Enw",
-  "postcode": "Cod post",
-  "offence": "Trosedd",
-  "prosecutor": "Erylnydd"
+  "endText": "Diolch am ddarllen y ddogfen hon yn fanwl."
 }

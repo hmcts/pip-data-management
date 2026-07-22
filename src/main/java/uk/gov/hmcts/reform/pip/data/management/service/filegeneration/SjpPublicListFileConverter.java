@@ -44,10 +44,13 @@ public class SjpPublicListFileConverter extends ExcelAbstractList implements Fil
     public List<String> getExcelHeaders(JsonNode artefact, Map<String, Object> languageResources) {
         List<String> headers = new ArrayList<>();
 
-        headers.add(languageResources.get("name").toString());
-        headers.add(languageResources.get("postcode").toString());
-        headers.add(languageResources.get("offence").toString());
-        headers.add(languageResources.get("prosecutor").toString());
+        @SuppressWarnings("unchecked")
+        List<String> tableHeaders = (List<String>) languageResources.get("tableHeaders");
+
+        headers.add(tableHeaders.get(0));
+        headers.add(tableHeaders.get(1));
+        headers.add(tableHeaders.get(2));
+        headers.add(tableHeaders.get(3));
 
         return headers;
     }

@@ -13,11 +13,14 @@
   "endText": "Diolch am ddarllen y ddogfen hon yn fanwl.",
   "listFor": "Rhestr ar gyfer ",
   "tableHeaders": [
-    "Enw",
-    "Dyddiad geni",
     "Cyfeiriad",
-    "Erylnydd",
-    "Cyfeirnod yr achos"
+    "Cyfeirnod yr achos",
+    "Dyddiad geni",
+    "Enw'r Diffynnydd",
+    "Gofynnwyd am gyfyngiad i'r wasg parthed y drosedd %d",
+    "Teitl y drosedd %d",
+    "Geiriad y drosedd %d",
+    "Enw'r erlynydd"
   ],
   "offenceHeaders": [
     "Trosedd",
@@ -25,13 +28,5 @@
     "Cyfyngiad adrodd"
   ],
   "titleText": "Gweithdrefn Un Ynad - Rhestr Wasg (Rhestr Lawn) ",
-  "subHeader": "Achosion Gweithdrefn Un Ynad sy'n barod ar gyfer gwrandawiad",
-  "address": "Cyfeiriad",
-  "caseURN": "Cyfeirnod yr achos",
-  "dateOfBirth": "Dyddiad geni",
-  "defendantName": "Enw'r Diffynnydd",
-  "OffencePressRestriction": "Gofynnwyd am gyfyngiad i'r wasg parthed y drosedd %d",
-  "OffenceTitle": "Teitl y drosedd %d",
-  "OffenceWording": "Geiriad y drosedd %d",
-  "ProsecutorName": "Enw'r erlynydd"
+  "subHeader": "Achosion Gweithdrefn Un Ynad sy'n barod ar gyfer gwrandawiad"
 }
