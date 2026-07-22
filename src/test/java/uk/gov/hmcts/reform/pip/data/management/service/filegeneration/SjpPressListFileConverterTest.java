@@ -257,24 +257,24 @@ class SjpPressListFileConverterTest {
             .isEqualTo(expectedSheetName);
 
         softly.assertThat(headingRow.getCell(0).getStringCellValue())
-            .as("Address column is different")
-            .isEqualTo("Address");
-
-        softly.assertThat(headingRow.getCell(1).getStringCellValue())
-            .as("Case URN column is different")
-            .isEqualTo("Case URN");
-
-        softly.assertThat(headingRow.getCell(2).getStringCellValue())
-            .as("Date of Birth column is different")
-            .isEqualTo("Date of Birth");
-
-        softly.assertThat(headingRow.getCell(3).getStringCellValue())
             .as("Defendant Name column is different")
             .isEqualTo("Defendant Name");
 
+        softly.assertThat(headingRow.getCell(1).getStringCellValue())
+            .as("Date of Birth column is different")
+            .isEqualTo("Date of Birth");
+
+        softly.assertThat(headingRow.getCell(2).getStringCellValue())
+            .as("Address column is different")
+            .isEqualTo("Address");
+
+        softly.assertThat(headingRow.getCell(3).getStringCellValue())
+            .as("Prosecutor name column is different")
+            .isEqualTo("Prosecutor Name");
+
         softly.assertThat(headingRow.getCell(4).getStringCellValue())
-            .as("Offence 1 Press Restriction Requested column is different")
-            .isEqualTo("Offence 1 Press Restriction Requested");
+            .as("Case URN column is different")
+            .isEqualTo("Case URN");
 
         softly.assertThat(headingRow.getCell(5).getStringCellValue())
             .as("Offence 1 Title column is different")
@@ -285,8 +285,8 @@ class SjpPressListFileConverterTest {
             .isEqualTo("Offence 1 Wording");
 
         softly.assertThat(headingRow.getCell(7).getStringCellValue())
-            .as("Offence 2 Press Restriction Requested column is different")
-            .isEqualTo("Offence 2 Press Restriction Requested");
+            .as("Offence 1 Press Restriction Requested column is different")
+            .isEqualTo("Offence 1 Press Restriction Requested");
 
         softly.assertThat(headingRow.getCell(8).getStringCellValue())
             .as("Offence 2 Title column is different")
@@ -297,8 +297,8 @@ class SjpPressListFileConverterTest {
             .isEqualTo("Offence 2 Wording");
 
         softly.assertThat(headingRow.getCell(10).getStringCellValue())
-            .as("Prosecutor name column is different")
-            .isEqualTo("Prosecutor Name");
+            .as("Offence 2 Press Restriction Requested column is different")
+            .isEqualTo("Offence 2 Press Restriction Requested");
 
         softly.assertAll();
     }
@@ -325,24 +325,24 @@ class SjpPressListFileConverterTest {
             .isEqualTo(expectedSheetName);
 
         softly.assertThat(headingRow.getCell(0).getStringCellValue())
-            .as("Address column is different")
-            .isEqualTo("Cyfeiriad");
-
-        softly.assertThat(headingRow.getCell(1).getStringCellValue())
-            .as("Case URN column is different")
-            .isEqualTo("Cyfeirnod yr achos");
-
-        softly.assertThat(headingRow.getCell(2).getStringCellValue())
-            .as("Date of Birth column is different")
-            .isEqualTo("Dyddiad geni");
-
-        softly.assertThat(headingRow.getCell(3).getStringCellValue())
             .as("Defendant Name column is different")
             .isEqualTo("Enw'r Diffynnydd");
 
+        softly.assertThat(headingRow.getCell(1).getStringCellValue())
+            .as("Date of Birth column is different")
+            .isEqualTo("Dyddiad geni");
+
+        softly.assertThat(headingRow.getCell(2).getStringCellValue())
+            .as("Address column is different")
+            .isEqualTo("Cyfeiriad");
+
+        softly.assertThat(headingRow.getCell(3).getStringCellValue())
+            .as("Prosecutor Name column is different")
+            .isEqualTo("Enw'r erlynydd");
+
         softly.assertThat(headingRow.getCell(4).getStringCellValue())
-            .as("Offence 1 Press Restriction Requested column is different")
-            .isEqualTo("Gofynnwyd am gyfyngiad i'r wasg parthed y drosedd 1");
+            .as("Case URN column is different")
+            .isEqualTo("Cyfeirnod yr achos");
 
         softly.assertThat(headingRow.getCell(5).getStringCellValue())
             .as("Offence 1 Title column is different")
@@ -353,8 +353,8 @@ class SjpPressListFileConverterTest {
             .isEqualTo("Geiriad y drosedd 1");
 
         softly.assertThat(headingRow.getCell(7).getStringCellValue())
-            .as("Offence 2 Press Restriction Requested column is different")
-            .isEqualTo("Gofynnwyd am gyfyngiad i'r wasg parthed y drosedd 2");
+            .as("Offence 1 Press Restriction Requested column is different")
+            .isEqualTo("Gofynnwyd am gyfyngiad i'r wasg parthed y drosedd 1");
 
         softly.assertThat(headingRow.getCell(8).getStringCellValue())
             .as("Offence 2 Title column is different")
@@ -365,8 +365,8 @@ class SjpPressListFileConverterTest {
             .isEqualTo("Geiriad y drosedd 2");
 
         softly.assertThat(headingRow.getCell(10).getStringCellValue())
-            .as("Prosecutor Name column is different")
-            .isEqualTo("Enw'r erlynydd");
+            .as("Offence 2 Press Restriction Requested column is different")
+            .isEqualTo("Gofynnwyd am gyfyngiad i'r wasg parthed y drosedd 2");
 
         softly.assertAll();
     }
@@ -384,22 +384,22 @@ class SjpPressListFileConverterTest {
 
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(headingRow.getCell(10).getStringCellValue())
+        softly.assertThat(headingRow.getCell(3).getStringCellValue())
             .as("Prosecutor Name column is different")
             .isEqualTo("Prosecutor Name");
 
         Row row = sheet.getRow(1);
-        softly.assertThat(row.getCell(2).getStringCellValue())
+        softly.assertThat(row.getCell(1).getStringCellValue())
             .as("DOB and age should be present")
             .isEqualTo("01/01/1800 (50)");
 
         row = sheet.getRow(3);
-        softly.assertThat(row.getCell(2).getStringCellValue())
+        softly.assertThat(row.getCell(1).getStringCellValue())
             .as("DOB only should be present (for missing age fields)")
             .isEqualTo("01/01/1980");
 
         row = sheet.getRow(4);
-        softly.assertThat(row.getCell(2).getStringCellValue())
+        softly.assertThat(row.getCell(1).getStringCellValue())
             .as("DOB and age should be empty (for missing DOB and age fields)")
             .isEmpty();
 
