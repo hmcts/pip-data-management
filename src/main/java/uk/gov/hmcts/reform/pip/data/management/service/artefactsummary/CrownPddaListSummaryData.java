@@ -17,8 +17,6 @@ public class CrownPddaListSummaryData implements ArtefactSummaryData {
 
     @Override
     public Map<String, List<Map<String, String>>> get(JsonNode payload) {
-        CrownPddaListHelper.processPayload(payload, listType);
-
         List<Map<String, String>> summaryCases = new ArrayList<>();
         CrownPddaListHelper.processPayload(payload, listType).forEach(
             item -> item.getSittings().forEach(
