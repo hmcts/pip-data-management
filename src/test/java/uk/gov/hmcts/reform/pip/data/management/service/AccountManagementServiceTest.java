@@ -9,8 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.reactive.function.client.WebClient;
-import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
+import uk.gov.hmcts.reform.pip.model.publication.Artefact;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
@@ -134,6 +134,24 @@ class AccountManagementServiceTest {
     }
 
     @Test
+    void testSendArtefactForEmailSubscriptionV2Success() {
+        mockAccountManagementEndpoint.enqueue(new MockResponse()
+                                                  .setResponseCode(OK.value()));
+        accountManagementService.sendArtefactForEmailSubscriptionV2(ARTEFACT);
+        assertTrue(logCaptor.getErrorLogs().isEmpty());
+    }
+
+    @Test
+    void testSendArtefactForEmailSubscriptionV2Failed() {
+        mockAccountManagementEndpoint.enqueue(new MockResponse()
+                                                  .setResponseCode(BAD_REQUEST.value()));
+        accountManagementService.sendArtefactForEmailSubscriptionV2(ARTEFACT);
+        assertTrue(logCaptor.getErrorLogs().get(0)
+                       .contains("Request to send artefact to Account Management for email subscriptions failed "
+                                     + "with error:"));
+    }
+
+    @Test
     void testSendArtefactForApiSubscriptionSuccess() {
         mockAccountManagementEndpoint.enqueue(new MockResponse()
                                                   .setResponseCode(OK.value()));
@@ -164,6 +182,25 @@ class AccountManagementServiceTest {
         mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(BAD_REQUEST.value()));
         mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(OK.value()));
         accountManagementService.sendArtefactForAllSubscriptions(ARTEFACT);
+        assertEquals(1, logCaptor.getErrorLogs().size());
+        assertTrue(logCaptor.getErrorLogs().get(0)
+                       .contains("Request to send artefact to Account Management for email subscriptions failed "
+                                     + "with error:"));
+    }
+
+    @Test
+    void testSendArtefactForAllSubscriptionsV2Success() {
+        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(OK.value()));
+        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(OK.value()));
+        accountManagementService.sendArtefactForAllSubscriptionsV2(ARTEFACT);
+        assertTrue(logCaptor.getErrorLogs().isEmpty());
+    }
+
+    @Test
+    void testSendArtefactForAllSubscriptionsV2PartiallyFailed() {
+        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(BAD_REQUEST.value()));
+        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(OK.value()));
+        accountManagementService.sendArtefactForAllSubscriptionsV2(ARTEFACT);
         assertEquals(1, logCaptor.getErrorLogs().size());
         assertTrue(logCaptor.getErrorLogs().get(0)
                        .contains("Request to send artefact to Account Management for email subscriptions failed "
