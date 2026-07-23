@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.json.JSONArray;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,18 +17,22 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.util.MultiValueMap;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PublicationIntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
+import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,6 +63,8 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     private static final String SEARCH_BY_COURT_URL = PUBLICATION_URL + "/locationId";
     private static final String SEARCH_URL = PUBLICATION_URL + "/search";
     private static final String SEARCH_CONFIG_URL = PUBLICATION_URL + "/search/config";
+    private static final String SEARCH_CASE_NUMBER_URL = SEARCH_URL + "/caseNumber";
+    private static final String SEARCH_CASE_NAME_URL = SEARCH_URL + "/caseName";
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final String COURT_ID = "1";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
@@ -70,8 +77,10 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     private static final String ADMIN = "admin";
     private static final String SEARCH_TERM_PARAM = "searchTerm";
     private static final String SEARCH_VALUE_PARAM = "searchValue";
+    private static final String FUZZY_SEARCH_PARAM = "fuzzySearch";
     private static final String CASE_ID_SEARCH_VALUE = "45684548";
-    private static final String CASE_NAME_SEARCH_VALUE = "Smith";
+    private static final String CASE_NAME_SEARCH_VALUE = "A Vs B";
+    private static final String CASE_NAME_SUBSET_SEARCH_VALUE = "A Vs";
     private static final String CASE_NUMBER_FIELD_NAME = "caseNumber";
     private static final String CASE_NAME_FIELD_NAME = "caseName";
     private static final String UPDATED_CASE_NUMBER_FIELD_NAME = "updatedCaseNumber";
@@ -755,5 +764,129 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
         mockMvc.perform(mockHttpServletRequestBuilder)
             .andExpect(status().isForbidden())
             .andReturn();
+    }
+
+    @Test
+    void testGetCasesByCaseNumberReturnsResults() throws Exception {
+        setupMockListSearchConfig();
+        createDailyList(Sensitivity.PUBLIC);
+
+        MvcResult response = mockMvc.perform(get(SEARCH_CASE_NUMBER_URL)
+                                                 .param(SEARCH_VALUE_PARAM, CASE_ID_SEARCH_VALUE)
+                                                 .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<ArtefactCaseInfo> results = OBJECT_MAPPER.readValue(
+            response.getResponse().getContentAsString(), new TypeReference<>() {}
+        );
+
+        assertThat(results)
+            .isNotEmpty();
+        assertThat(results.get(0).getCaseNumber())
+            .isEqualTo(CASE_ID_SEARCH_VALUE);
+    }
+
+    @Test
+    void testGetCasesByCaseNumberReturnsEmptyListWhenNotFound() throws Exception {
+        MvcResult response = mockMvc.perform(get(SEARCH_CASE_NUMBER_URL)
+                                                 .param(SEARCH_VALUE_PARAM, "nonExistentCaseNumber")
+                                                 .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<ArtefactCaseInfo> results = OBJECT_MAPPER.readValue(
+            response.getResponse().getContentAsString(), new TypeReference<>() {}
+        );
+
+        assertThat(results)
+            .isEmpty();
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testGetCasesByCaseNumberForbidden() throws Exception {
+        mockMvc.perform(get(SEARCH_CASE_NUMBER_URL)
+                            .param(SEARCH_VALUE_PARAM, CASE_ID_SEARCH_VALUE)
+                            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testGetCasesByCaseNameReturnsResults() throws Exception {
+        setupMockListSearchConfig();
+        createDailyList(Sensitivity.PUBLIC);
+
+        MvcResult response = mockMvc.perform(get(SEARCH_CASE_NAME_URL)
+                                                 .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
+                                                 .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<ArtefactCaseInfo> results = OBJECT_MAPPER.readValue(
+            response.getResponse().getContentAsString(), new TypeReference<>() {}
+        );
+
+        assertThat(results)
+            .isNotEmpty();
+        assertThat(results.get(0).getCaseName())
+            .containsIgnoringCase(CASE_NAME_SEARCH_VALUE);
+    }
+
+    @Test
+    void testGetCasesByCaseNameFuzzySearchReturnsResults() throws Exception {
+        setupMockListSearchConfig();
+        createDailyList(Sensitivity.PUBLIC);
+
+        MvcResult response = mockMvc.perform(get(SEARCH_CASE_NAME_URL)
+                                                 .params(MultiValueMap.fromSingleValue(Map.of(
+                                                     SEARCH_VALUE_PARAM, CASE_NAME_SUBSET_SEARCH_VALUE,
+                                                     FUZZY_SEARCH_PARAM, "true"
+                                                 )))
+                                                 .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<ArtefactCaseInfo> results = OBJECT_MAPPER.readValue(
+            response.getResponse().getContentAsString(), new TypeReference<>() {}
+        );
+
+        assertThat(results)
+            .isNotEmpty();
+        assertThat(results.get(0).getCaseName())
+            .containsIgnoringCase(CASE_NAME_SEARCH_VALUE);
+    }
+
+    @Test
+    void testGetCasesByCaseNameReturnsEmptyListWhenNotFound() throws Exception {
+        MvcResult response = mockMvc.perform(get(SEARCH_CASE_NAME_URL)
+                                                 .param(SEARCH_VALUE_PARAM, CASE_NAME_SUBSET_SEARCH_VALUE)
+                                                 .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<ArtefactCaseInfo> results = OBJECT_MAPPER.readValue(
+            response.getResponse().getContentAsString(), new TypeReference<>() {}
+        );
+
+        assertThat(results)
+            .isEmpty();
+    }
+
+    @Test
+    void testGetCasesByCaseNameReturnsBadRequestWhenTooShort() throws Exception {
+        mockMvc.perform(get(SEARCH_CASE_NAME_URL)
+                            .param(SEARCH_VALUE_PARAM, "ab")
+                            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testGetCasesByCaseNameForbidden() throws Exception {
+        mockMvc.perform(get(SEARCH_CASE_NAME_URL)
+                            .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
+                            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID))
+            .andExpect(status().isForbidden());
     }
 }

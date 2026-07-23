@@ -11,6 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchCaseResult;
 import uk.gov.hmcts.reform.pip.data.management.database.ListSearchConfigRepository;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateListSearchConfigConflictException;
@@ -19,6 +21,7 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelpe
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
+import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
@@ -36,6 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -68,6 +72,9 @@ class PublicationSearchServiceTest {
 
     @Mock
     private ArtefactRepository artefactRepository;
+
+    @Mock
+    private ArtefactSearchRepository artefactSearchRepository;
 
     @Mock
     private ListSearchConfigRepository listSearchConfigRepository;
@@ -550,5 +557,73 @@ class PublicationSearchServiceTest {
         assertEquals(List.of(artefact), publicationSearchService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, true),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
+    }
+
+    @Test
+    void testFindCasesByCaseNumber() {
+        ArtefactSearchCaseResult caseSearchResult = mock(ArtefactSearchCaseResult.class);
+        when(caseSearchResult.getCaseNumber()).thenReturn(TEST_VALUE);
+        when(caseSearchResult.getCaseName()).thenReturn("Test Case Name");
+
+        when(artefactSearchRepository.findByCaseNumberIgnoreCase(eq(TEST_VALUE), any()))
+            .thenReturn(List.of(caseSearchResult));
+
+        List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseNumber(TEST_VALUE);
+
+        assertEquals(1, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
+        assertEquals(TEST_VALUE, results.get(0).getCaseNumber(), VALIDATION_ARTEFACT_NOT_MATCH);
+        assertEquals("Test Case Name", results.get(0).getCaseName(), VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
+    void testFindCasesByCaseNumberReturnsEmptyListWhenNotFound() {
+        when(artefactSearchRepository.findByCaseNumberIgnoreCase(any(), any())).thenReturn(List.of());
+
+        List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseNumber("not found");
+        assertEquals(0, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
+    void testFindCasesByCaseNameExactSearch() {
+        ArtefactSearchCaseResult caseSearchResult = mock(ArtefactSearchCaseResult.class);
+        when(caseSearchResult.getCaseNumber()).thenReturn("123");
+        when(caseSearchResult.getCaseName()).thenReturn(TEST_VALUE);
+
+        when(artefactSearchRepository.findByCaseNameIgnoreCase(eq(TEST_VALUE), any()))
+            .thenReturn(List.of(caseSearchResult));
+
+        List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseName(TEST_VALUE, false);
+
+        assertEquals(1, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
+        assertEquals(TEST_VALUE, results.get(0).getCaseName(), VALIDATION_ARTEFACT_NOT_MATCH);
+
+        verify(artefactSearchRepository).findByCaseNameIgnoreCase(eq(TEST_VALUE), any());
+        verify(artefactSearchRepository, never()).findTop50ByCaseNameContainingIgnoreCase(eq(TEST_VALUE), any());
+    }
+
+    @Test
+    void testFindCasesByCaseNameFuzzySearch() {
+        ArtefactSearchCaseResult caseSearchResult = mock(ArtefactSearchCaseResult.class);
+        when(caseSearchResult.getCaseNumber()).thenReturn("123");
+        when(caseSearchResult.getCaseName()).thenReturn(TEST_VALUE);
+
+        when(artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(eq(TEST_VALUE), any()))
+            .thenReturn(List.of(caseSearchResult));
+
+        List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseName(TEST_VALUE, true);
+
+        assertEquals(1, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
+        assertEquals(TEST_VALUE, results.get(0).getCaseName(), VALIDATION_ARTEFACT_NOT_MATCH);
+
+        verify(artefactSearchRepository, never()).findByCaseNameIgnoreCase(eq(TEST_VALUE), any());
+        verify(artefactSearchRepository).findTop50ByCaseNameContainingIgnoreCase(eq(TEST_VALUE), any());
+    }
+
+    @Test
+    void testFindCasesByCaseNameReturnsEmptyListWhenNotFound() {
+        when(artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(any(), any())).thenReturn(List.of());
+
+        List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseName("not found", true);
+        assertEquals(0, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 }

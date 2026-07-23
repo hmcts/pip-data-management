@@ -38,12 +38,14 @@ public class PublicationRemovalService {
     private final ArtefactArchivedRepository artefactArchivedRepository;
     private final ArtefactSearchRepository artefactSearchRepository;
     private final PublicationFileManagementService publicationFileManagementService;
+    private final PublicationSubscriptionService publicationSubscriptionService;
     private final AzureArtefactBlobService azureArtefactBlobService;
     private final AccountManagementService accountManagementService;
     private final SystemAdminNotificationService systemAdminNotificationService;
 
     public PublicationRemovalService(ArtefactRepository artefactRepository, LocationRepository locationRepository,
                                      PublicationFileManagementService publicationFileManagementService,
+                                     PublicationSubscriptionService publicationSubscriptionService,
                                      AzureArtefactBlobService azureArtefactBlobService,
                                      AccountManagementService accountManagementService,
                                      SystemAdminNotificationService systemAdminNotificationService,
@@ -52,6 +54,7 @@ public class PublicationRemovalService {
         this.artefactRepository = artefactRepository;
         this.locationRepository = locationRepository;
         this.publicationFileManagementService = publicationFileManagementService;
+        this.publicationSubscriptionService = publicationSubscriptionService;
         this.azureArtefactBlobService = azureArtefactBlobService;
         this.accountManagementService = accountManagementService;
         this.systemAdminNotificationService = systemAdminNotificationService;
@@ -72,7 +75,7 @@ public class PublicationRemovalService {
 
         handleArtefactArchiving(artefactToArchive, isManuallyDeleted);
         if (!NoMatchArtefactHelper.isNoMatchLocationId(artefactToArchive.getLocationId())) {
-            accountManagementService.sendDeletedArtefactForThirdParties(artefactToArchive);
+            publicationSubscriptionService.sendDeleteArtefactForApiSubscription(artefactToArchive);
         }
         log.info(writeLog(String.format("Artefact archived by %s, with artefact id: %s", requesterId, artefactId)));
     }
@@ -150,7 +153,7 @@ public class PublicationRemovalService {
         artefactSearchRepository.deleteByArtefactId(artefact.getArtefactId());
         artefactRepository.delete(artefact);
         if (!NoMatchArtefactHelper.isNoMatchLocationId(artefact.getLocationId())) {
-            accountManagementService.sendDeletedArtefactForThirdParties(artefact);
+            publicationSubscriptionService.sendDeleteArtefactForApiSubscription(artefact);
         }
     }
 
