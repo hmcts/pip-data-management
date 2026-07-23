@@ -11,6 +11,7 @@ public final class NonStrategicTestCasesConfigurations {
     private static final String CASE_NAME_FIELD = "Case name";
     private static final String CASE_DETAILS_FIELD = "Case details";
     private static final String HEARING_TIME_FIELD = "Hearing time";
+    private static final String HEARING_TIME_FIELD_2 = "Time";
     private static final String CASE_REFERENCE_NUMBER_FIELD = "Case reference number";
     private static final String DATE_FIELD = "Date";
     private static final String APPEAL_REFERENCE_NUMBER_FIELD = "Appeal reference number";
@@ -22,6 +23,7 @@ public final class NonStrategicTestCasesConfigurations {
     private static final String DIRECTIONS_TEXT = "Directions A";
     private static final String APPELLANT_TEXT = "Appellant A";
     private static final String VENUE_TEXT = "Venue A";
+    private static final String VENUE_TEXT_2 = "This is a venue name";
     private static final String CASE_NUMBER_TEXT = "12345";
     private static final String TIME_TEXT_1 = "9am";
     private static final String TIME_TEXT_2 = "10:30am";
@@ -30,6 +32,17 @@ public final class NonStrategicTestCasesConfigurations {
     private static final String CASE_REFERENCE_NUMBER_TEXT_1 = "1234";
     private static final String CASE_REFERENCE_NUMBER_TEXT_2 = "1234567";
     private static final String DATE_TEXT = "16 December 2024";
+    private static final String VENUE_FIELD = "Venue";
+    private static final String CASE_TYPE_FIELD = "Case type";
+    private static final String CASE_TYPE_TEXT = "1234";
+    private static final String JUDGES_FIELD = "Judges";
+    private static final String JUDGES_TEXT = "Judge A";
+    private static final String MEMBERS_FIELD = "Members";
+    private static final String MEMBERS_TEXT = "Member A";
+    private static final String HEARING_METHOD_FIELD = "Hearing method";
+    private static final String HEARING_METHOD_TEXT = "Hearing Method A";
+    private static final String ADDITIONAL_INFORMATION_FIELD = "Additional information";
+    private static final String ADDITIONAL_INFORMATION_TEXT = "This is additional information";
 
     private static final String ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON =
         "administrativeCourtDailyCauseList.json";
@@ -248,6 +261,17 @@ public final class NonStrategicTestCasesConfigurations {
                 3,
                 List.of(DATE_FIELD, TIME_FIELD, CASE_REFERENCE_NUMBER_FIELD),
                 List.of(DATE_TEXT, TIME_TEXT_4, CASE_REFERENCE_NUMBER_TEXT_1)
+            ),
+            new ArtefactSummaryTestInput(
+                FTT_RP_WEEKLY_HEARING_LIST_JSON,
+                ListType.FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST,
+                1,
+                2,
+                9,
+                List.of(DATE_FIELD, HEARING_TIME_FIELD_2, VENUE_FIELD, CASE_TYPE_FIELD, CASE_REFERENCE_NUMBER_FIELD,
+                        JUDGES_FIELD, MEMBERS_FIELD, HEARING_METHOD_FIELD, ADDITIONAL_INFORMATION_FIELD),
+                List.of(DATE_TEXT, TIME_TEXT_4, VENUE_TEXT_2, CASE_TYPE_TEXT, CASE_REFERENCE_NUMBER_TEXT_1, JUDGES_TEXT,
+                        MEMBERS_TEXT, HEARING_METHOD_TEXT, ADDITIONAL_INFORMATION_TEXT)
             ),
             new ArtefactSummaryTestInput(
                 "fttTaxWeeklyHearingList.json",
