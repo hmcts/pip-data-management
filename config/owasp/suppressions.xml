@@ -18,6 +18,13 @@
   <suppress>
     <notes>Vulnerability in jackson-databind</notes>
     <cve>CVE-2026-29062</cve>
+    <cve>CVE-2026-54512</cve>
+    <cve>CVE-2026-54513</cve>
+    <cve>CVE-2026-54518</cve>
+    <cve>CVE-2026-54514</cve>
+    <cve>CVE-2026-54515</cve>
+    <cve>CVE-2026-54516</cve>
+    <cve>CVE-2026-54517</cve>
   </suppress>
   <suppress>
     <notes>Vulnerability in org.apache.pdfbox</notes>
@@ -62,6 +69,29 @@
     <cve>CVE-2026-43513</cve>
     <cve>CVE-2026-42498</cve>
     <cve>CVE-2026-43514</cve>
+    <cve>CVE-2026-53434</cve>
+    <cve>CVE-2026-55276</cve>
+    <cve>CVE-2026-53404</cve>
+    <cve>CVE-2026-55955</cve>
+    <cve>CVE-2026-55956</cve>
+    <cve>CVE-2026-50229</cve>
+    <cve>CVE-2026-53404</cve>
+    <cve>CVE-2026-55956</cve>
+    <cve>CVE-2026-55955</cve>
+    <cve>CVE-2026-50229</cve>
+    <cve>CVE-2026-55276</cve>
+    <cve>CVE-2026-53434</cve>
+    <cve>CVE-2026-59083</cve>
+    <cve>CVE-2026-59084</cve>
+  </suppress>
+  <suppress>
+    <notes>Tomcat 10.1.54</notes>
+    <cve>CVE-2026-53404</cve>
+    <cve>CVE-2026-55956</cve>
+    <cve>CVE-2026-55955</cve>
+    <cve>CVE-2026-50229</cve>
+    <cve>CVE-2026-55276</cve>
+    <cve>CVE-2026-53434</cve>
   </suppress>
   <suppress>
     <notes>PDFBox and XMPBox</notes>
@@ -76,6 +106,7 @@
     <cve>CVE-2026-34478</cve>
     <cve>CVE-2026-34480</cve>
     <cve>CVE-2026-34481</cve>
+    <cve>CVE-2026-49844</cve>
   </suppress>
   <suppress>
     <notes>
@@ -101,10 +132,12 @@
   <suppress>
     <notes>PostgreSQL, Spring Boot, Spring Framework, and Spring Security vulnerabilities – false positives or accepted risk</notes>
     <cve>CVE-2026-42198</cve>
+    <cve>CVE-2026-54291</cve>
     <!-- Spring Framework -->
     <cve>CVE-2026-22740</cve>
     <cve>CVE-2026-22745</cve>
     <cve>CVE-2026-22741</cve>
+    <cve>CVE-2026-41839</cve>
     <!-- Spring Boot -->
     <cve>CVE-2026-40972</cve>
     <cve>CVE-2026-40975</cve>
@@ -159,11 +192,18 @@
     <cve>CVE-2026-41843</cve>
     <cve>CVE-2026-41852</cve>
     <cve>CVE-2026-41853</cve>
+    <cve>CVE-2026-41855</cve>
   </suppress>
   <suppress>
     <notes>spring security suppression</notes>
     <cve>CVE-2026-40988</cve>
     <cve>CVE-2026-41003</cve>
     <cve>CVE-2026-41694</cve>
+    <cve>CVE-2026-47838</cve>
+    <cve>CVE-2026-41706</cve>
+  </suppress>
+  <suppress>
+    <notes>kotlin suppression</notes>
+    <cve>CVE-2026-53914</cve>
   </suppress>
 </suppressions>

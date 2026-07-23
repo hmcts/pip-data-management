@@ -92,7 +92,7 @@ service-to-service:
 payload:
   json:
     max-size-search: ${JSON_SEARCH_MAX_INBOUND_SIZE:256}
-    max-size-excel: ${EXCEL_MAX_INBOUND_SIZE:4096}
+    max-size-excel: ${EXCEL_MAX_INBOUND_SIZE:10240}
     max-size-pdf: ${PDF_MAX_INBOUND_SIZE:256}
     party-search-config:
       hearings-path: "$['courtLists'][*]['courtHouse']['courtRoom'][*]['session'][*]['sittings'][*]['hearing'][*]"
@@ -143,6 +143,7 @@ validations:
     RPT_MIDLANDS_WEEKLY_HEARING_LIST: "schemas/non-strategic/ftt-residential-property-tribunal-weekly-hearing-list.json"
     RPT_NORTHERN_WEEKLY_HEARING_LIST: "schemas/non-strategic/ftt-residential-property-tribunal-weekly-hearing-list.json"
     RPT_SOUTHERN_WEEKLY_HEARING_LIST: "schemas/non-strategic/ftt-residential-property-tribunal-weekly-hearing-list.json"
+    FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST: "schemas/non-strategic/ftt-residential-property-tribunal-weekly-hearing-list.json"
     UT_T_AND_CC_DAILY_HEARING_LIST: "schemas/non-strategic/ut_tax_and_chancery_chamber_daily_hearing_list.json"
     UT_LC_DAILY_HEARING_LIST: "schemas/non-strategic/ut_lands_chamber_daily_hearing_list.json"
     UT_AAC_DAILY_HEARING_LIST: "schemas/non-strategic/ut_administrative_appeals_chamber_daily_hearing_list.json"

@@ -268,6 +268,47 @@ class AuthorisationServiceTest {
     }
 
     @Test
+    void testSystemAdminUserCanAccessListSearchConfig() {
+        when(accountManagementService.getUserById(TEST_UUID))
+            .thenReturn(createUser(Roles.SYSTEM_ADMIN));
+        List<GrantedAuthority> authorities = List.of(
+            new SimpleGrantedAuthority(ADMIN_ROLE)
+        );
+        Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        when(securityContext.getAuthentication()).thenReturn(auth);
+
+        assertTrue(authorisationService.userCanAccessListSearchConfig(TEST_UUID),
+                   "System admin should be able to access list search config");
+    }
+
+    @Test
+    void testVerifiedUserCannotAccessListSearchConfig() {
+        when(accountManagementService.getUserById(TEST_UUID))
+            .thenReturn(createUser(Roles.VERIFIED));
+        List<GrantedAuthority> authorities = List.of(
+            new SimpleGrantedAuthority(ADMIN_ROLE)
+        );
+        Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        when(securityContext.getAuthentication()).thenReturn(auth);
+
+        assertFalse(authorisationService.userCanAccessListSearchConfig(TEST_UUID),
+                    "Verified user should not be able to access list search config");
+    }
+
+    @Test
+    void testUserCannotAccessListSearchConfigWhenNotOAuthAdminRole() {
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(authentication.getAuthorities()).thenReturn(Collections.emptyList());
+
+        assertFalse(authorisationService.userCanAccessListSearchConfig(TEST_UUID),
+                    "Should not be able to access list search config without OAuth admin role");
+    }
+
+    @Test
     void testVerifiedUserCanSearchInPublicationData() {
         when(accountManagementService.getUserById(TEST_UUID))
             .thenReturn(createUser(Roles.VERIFIED));

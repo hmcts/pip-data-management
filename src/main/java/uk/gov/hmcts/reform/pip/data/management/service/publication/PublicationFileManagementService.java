@@ -17,7 +17,6 @@ import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 import java.util.Base64;
 import java.util.UUID;
 
-import static uk.gov.hmcts.reform.pip.model.publication.FileType.CSV;
 import static uk.gov.hmcts.reform.pip.model.publication.FileType.EXCEL;
 import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 
@@ -62,10 +61,6 @@ public class PublicationFileManagementService {
 
                 if (files.getExcel().length > 0) {
                     azureBlobService.uploadFile(artefactId + EXCEL.getExtension(), files.getExcel());
-                }
-
-                if (files.getCsv().length > 0) {
-                    azureBlobService.uploadFile(artefactId + CSV.getExtension(), files.getCsv());
                 }
             });
     }
@@ -120,10 +115,6 @@ public class PublicationFileManagementService {
         if (listType.hasExcel()) {
             azureBlobService.deleteBlobFile(artefactId + EXCEL.getExtension());
         }
-
-        if (listType.hasCsv()) {
-            azureBlobService.deleteBlobFile(artefactId + CSV.getExtension());
-        }
     }
 
     /**
@@ -135,8 +126,7 @@ public class PublicationFileManagementService {
     public boolean fileExists(UUID artefactId) {
         return azureBlobService.blobFileExists(artefactId + PDF.getExtension())
             || azureBlobService.blobFileExists(artefactId + ADDITIONAL_PDF_SUFFIX + PDF.getExtension())
-            || azureBlobService.blobFileExists(artefactId + EXCEL.getExtension())
-            || azureBlobService.blobFileExists(artefactId + CSV.getExtension());
+            || azureBlobService.blobFileExists(artefactId + EXCEL.getExtension());
     }
 
     /**
@@ -149,8 +139,7 @@ public class PublicationFileManagementService {
         return new PublicationFileSizes(
             azureBlobService.getBlobSize(artefactId + PDF.getExtension()),
             azureBlobService.getBlobSize(artefactId + ADDITIONAL_PDF_SUFFIX + PDF.getExtension()),
-            azureBlobService.getBlobSize(artefactId + EXCEL.getExtension()),
-            azureBlobService.getBlobSize(artefactId + CSV.getExtension())
+            azureBlobService.getBlobSize(artefactId + EXCEL.getExtension())
         );
     }
 
