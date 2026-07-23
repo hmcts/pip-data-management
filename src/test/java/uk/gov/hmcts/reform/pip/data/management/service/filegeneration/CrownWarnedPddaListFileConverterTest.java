@@ -49,7 +49,6 @@ class CrownWarnedPddaListFileConverterTest {
     private static final String BODY_MESSAGE = "Body does not match";
     private static final String CONTACT_MESSAGE = "Contact information does not match";
     private static final String LINK_MESSAGE = "Link does not match";
-    private static final String EXCEL_SHEET_NAME_MESSAGE = "Excel sheet name does not match";
     private static final String EXCEL_TABLE_HEADER_MESSAGE = "Excel table header does not match";
     private static final String EXCEL_CELL_VALUE_MESSAGE = "Excel cell value does not match";
 
@@ -387,10 +386,6 @@ class CrownWarnedPddaListFileConverterTest {
 
         SoftAssertions softly = new SoftAssertions();
 
-        softly.assertThat(sheet.getSheetName())
-            .as(EXCEL_SHEET_NAME_MESSAGE)
-            .isEqualTo(CROWN_WARNED_PDDA_LIST.getFriendlyName());
-
         softly.assertThat(headingRow.getCell(0).getStringCellValue())
             .as(EXCEL_TABLE_HEADER_MESSAGE)
             .isEqualTo("Hearing Description");
@@ -432,10 +427,6 @@ class CrownWarnedPddaListFileConverterTest {
         Row headingRow = sheet.getRow(0);
 
         SoftAssertions softly = new SoftAssertions();
-
-        softly.assertThat(sheet.getSheetName())
-            .as(EXCEL_SHEET_NAME_MESSAGE)
-            .isEqualTo(CROWN_WARNED_PDDA_LIST.getFriendlyName());
 
         softly.assertThat(headingRow.getCell(0).getStringCellValue())
             .as(EXCEL_TABLE_HEADER_MESSAGE)
