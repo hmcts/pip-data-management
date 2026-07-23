@@ -56,7 +56,8 @@ public class SjpPublicListFileConverter extends ExcelAbstractList implements Fil
     }
 
     @Override
-    public List<List<String>> getExcelRows(JsonNode artefact, Map<String, Object> languageResources) {
+    public List<List<String>> getExcelRows(JsonNode artefact, Map<String, Object> languageResources,
+                                           Language language) {
         List<List<String>> rows = new ArrayList<>();
 
         processRawListData(artefact).forEach(entry -> {

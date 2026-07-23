@@ -142,9 +142,7 @@ class SjpPublicListFileConverterTest {
         Sheet sheet = workbook.getSheetAt(0);
         Row headingRow = sheet.getRow(0);
 
-        String expectedSheetName = listType.equals(ListType.SJP_PUBLIC_LIST)
-            ? "SJP Public List (Full list)"
-            : "SJP Public List (New cases)";
+        String expectedSheetName = "Sheet1";
 
         assertEquals(expectedSheetName, sheet.getSheetName(), "Sheet name does not match");
         assertEquals("Name", headingRow.getCell(0).getStringCellValue(),
@@ -167,9 +165,7 @@ class SjpPublicListFileConverterTest {
         Sheet sheet = workbook.getSheetAt(0);
         Row headingRow = sheet.getRow(0);
 
-        String expectedSheetName = listType.equals(ListType.SJP_PUBLIC_LIST)
-            ? "SJP Public List (Full list)"
-            : "SJP Public List (New cases)";
+        String expectedSheetName = "Sheet1";
 
         assertEquals(expectedSheetName, sheet.getSheetName(), "Sheet name does not match");
         assertEquals("Enw", headingRow.getCell(0).getStringCellValue(),

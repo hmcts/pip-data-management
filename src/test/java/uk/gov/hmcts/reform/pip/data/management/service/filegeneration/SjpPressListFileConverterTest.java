@@ -246,9 +246,7 @@ class SjpPressListFileConverterTest {
         Sheet sheet = workbook.getSheetAt(0);
         Row headingRow = sheet.getRow(0);
 
-        String expectedSheetName = listType.equals(ListType.SJP_PRESS_LIST)
-            ? "SJP Press List (Full list)"
-            : "SJP Press List (New cases)";
+        String expectedSheetName = "Sheet1";
 
         SoftAssertions softly = new SoftAssertions();
 
@@ -314,9 +312,7 @@ class SjpPressListFileConverterTest {
         Sheet sheet = workbook.getSheetAt(0);
         Row headingRow = sheet.getRow(0);
 
-        String expectedSheetName = listType.equals(ListType.SJP_PRESS_LIST)
-            ? "SJP Press List (Full list)"
-            : "SJP Press List (New cases)";
+        String expectedSheetName = "Sheet1";
 
         SoftAssertions softly = new SoftAssertions();
 

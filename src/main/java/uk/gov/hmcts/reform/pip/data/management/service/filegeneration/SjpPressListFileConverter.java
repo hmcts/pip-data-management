@@ -95,7 +95,8 @@ public class SjpPressListFileConverter extends ExcelAbstractList implements File
     }
 
     @Override
-    public List<List<String>> getExcelRows(JsonNode artefact, Map<String, Object> languageResources) {
+    public List<List<String>> getExcelRows(JsonNode artefact, Map<String, Object> languageResources,
+                                           Language language) {
         List<SjpPressList> cases = processRawListData(artefact);
         List<List<String>> rows = new ArrayList<>();
 
