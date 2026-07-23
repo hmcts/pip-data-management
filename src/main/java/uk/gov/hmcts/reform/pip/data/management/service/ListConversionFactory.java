@@ -29,6 +29,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FamilyDail
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.IacDailyListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesAdultCourtListFileConverter;
+import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesPublicAdultCourtListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesPublicListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesStandardListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
@@ -414,19 +415,19 @@ public class ListConversionFactory {
             new NonStrategicListSummaryData(CIC_WEEKLY_HEARING_LIST)
         )),
         Map.entry(MAGISTRATES_ADULT_COURT_LIST_DAILY, new ConversionConfig(
-            new MagistratesAdultCourtListFileConverter(true),
+            new MagistratesAdultCourtListFileConverter(),
             new MagistratesAdultCourtListSummaryData(true)
         )),
         Map.entry(MAGISTRATES_ADULT_COURT_LIST_FUTURE, new ConversionConfig(
-            new MagistratesAdultCourtListFileConverter(true),
+            new MagistratesAdultCourtListFileConverter(),
             new MagistratesAdultCourtListSummaryData(true)
         )),
         Map.entry(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, new ConversionConfig(
-            new MagistratesAdultCourtListFileConverter(false),
+            new MagistratesPublicAdultCourtListFileConverter(),
             new MagistratesAdultCourtListSummaryData(false)
         )),
         Map.entry(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE, new ConversionConfig(
-            new MagistratesAdultCourtListFileConverter(false),
+            new MagistratesPublicAdultCourtListFileConverter(),
             new MagistratesAdultCourtListSummaryData(false)
         )),
         Map.entry(CROWN_DAILY_PDDA_LIST, new ConversionConfig(
