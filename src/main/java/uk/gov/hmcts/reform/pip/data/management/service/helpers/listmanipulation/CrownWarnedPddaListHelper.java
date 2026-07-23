@@ -46,10 +46,10 @@ public final class CrownWarnedPddaListHelper {
             }));
 
         // Sort cases by fixed date within each group
-        groupedData.forEach((key, cases) -> {
+        groupedData.forEach((key, cases) ->
             cases.sort(Comparator.comparing(CrownWarnedPddaList::getFixedDateAsLocalDate,
-                                            Comparator.nullsLast(Comparator.naturalOrder())));
-        });
+                                            Comparator.nullsLast(Comparator.naturalOrder())))
+        );
 
         return groupedData;
     }
