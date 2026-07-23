@@ -71,8 +71,8 @@ public class MagistratesStandardListFileConverter extends ExcelAbstractList impl
     }
 
     @Override
-    public List<List<String>> getExcelRows(JsonNode artefact,
-                                            Map<String, Object> languageResources) {
+    public List<List<String>> getExcelRows(JsonNode artefact, Map<String, Object> languageResources,
+                                           Language language) {
 
         List<MagistratesStandardList> cases = processRawListData(artefact);
         List<List<String>> rows = new ArrayList<>();

@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class MagistratesAdultCourtListFileConverterTest {
+class MagistratesPublicAdultCourtListFileConverterTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static final String CONTENT_DATE = "contentDate";
@@ -50,15 +50,17 @@ class MagistratesAdultCourtListFileConverterTest {
     private static final String EXCEL_TABLE_HEADER_MESSAGE = "Excel table header does not match";
     private static final String EXCEL_CELL_VALUE_MESSAGE = "Excel cell value does not match";
 
-    private static final String MAGISTRATES_ADULT_COURT_LIST_DAILY = "MAGISTRATES_ADULT_COURT_LIST_DAILY";
-    private static final String MAGISTRATES_ADULT_COURT_LIST_FUTURE = "MAGISTRATES_ADULT_COURT_LIST_FUTURE";
+    private static final String MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY = "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY";
+    private static final String MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE =
+        "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE";
 
     private static final String GOVUK_HEADING_L = "govuk-heading-l";
     private static final String BODY_CLASS = "govuk-body";
     private static final String LINK_CLASS = "govuk-link";
     private static final String HREF = "href";
 
-    private final MagistratesAdultCourtListFileConverter converter = new MagistratesAdultCourtListFileConverter();
+    private final MagistratesPublicAdultCourtListFileConverter converter =
+        new MagistratesPublicAdultCourtListFileConverter();
 
     private JsonNode inputJson;
     private Map<String, Object> englishLanguageResource;
@@ -66,14 +68,14 @@ class MagistratesAdultCourtListFileConverterTest {
 
     @BeforeAll
     void setup() throws IOException {
-        try (InputStream inputStream = getClass().getResourceAsStream("/mocks/magistratesAdultCourtList.json")) {
+        try (InputStream inputStream = getClass().getResourceAsStream("/mocks/magistratesPublicAdultCourtList.json")) {
             String inputRaw = IOUtils.toString(inputStream, Charset.defaultCharset());
             inputJson = OBJECT_MAPPER.readTree(inputRaw);
         }
 
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/en/magistratesAdultCourtListDaily.json")) {
+            .getResourceAsStream("templates/languages/en/magistratesPublicAdultCourtListDaily.json")) {
             englishLanguageResource = OBJECT_MAPPER.readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -81,7 +83,7 @@ class MagistratesAdultCourtListFileConverterTest {
 
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/cy/magistratesAdultCourtListDaily.json")) {
+            .getResourceAsStream("templates/languages/cy/magistratesPublicAdultCourtListDaily.json")) {
             welshLanguageResource = OBJECT_MAPPER.readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -99,9 +101,9 @@ class MagistratesAdultCourtListFileConverterTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
-        MAGISTRATES_ADULT_COURT_LIST_FUTURE})
-    void testStandardGeneralListInformationInEnglish(ListType listType) throws IOException {
+    @EnumSource(value = ListType.class, names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+        MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testPublicGeneralListInformationInEnglish(ListType listType) throws IOException {
         Map<String, String> metadata = createMetaDataMap(listType, Language.ENGLISH);
         String outputHtml = converter.convert(inputJson, metadata, englishLanguageResource);
         Document document = Jsoup.parse(outputHtml);
@@ -113,11 +115,11 @@ class MagistratesAdultCourtListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Magistrates Standard List");
+            .isEqualTo("Magistrates Public List");
 
         softly.assertThat(document.getElementsByClass(GOVUK_HEADING_L).get(0).text())
             .as(HEADER_MESSAGE)
-            .contains("Magistrates Standard List for location");
+            .contains("Magistrates Public List for location");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
                               .getElementsByTag("a").get(0)
@@ -146,9 +148,9 @@ class MagistratesAdultCourtListFileConverterTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
-        MAGISTRATES_ADULT_COURT_LIST_FUTURE})
-    void testStandardGeneralListInformationInWelsh(ListType listType) throws IOException {
+    @EnumSource(value = ListType.class, names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+        MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testPublicGeneralListInformationInWelsh(ListType listType) throws IOException {
         Map<String, String> metadata = createMetaDataMap(listType, Language.WELSH);
         String outputHtml = converter.convert(inputJson, metadata, welshLanguageResource);
         Document document = Jsoup.parse(outputHtml);
@@ -160,11 +162,11 @@ class MagistratesAdultCourtListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Rhestr Safonol y Llys Ynadon");
+            .isEqualTo("Rhestr Gyhoeddus y Llys Ynadon");
 
         softly.assertThat(document.getElementsByClass(GOVUK_HEADING_L).get(0).text())
             .as(HEADER_MESSAGE)
-            .contains("Rhestr Safonol y Llys Ynadon ar gyfer location");
+            .contains("Rhestr Gyhoeddus y Llys Ynadon ar gyfer location");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
                               .getElementsByTag("a").get(0)
@@ -193,9 +195,9 @@ class MagistratesAdultCourtListFileConverterTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
-        MAGISTRATES_ADULT_COURT_LIST_FUTURE})
-    void testStandardSessionHeadings(ListType listType) throws IOException {
+    @EnumSource(value = ListType.class, names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+        MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testPublicSessionHeadings(ListType listType) throws IOException {
         Map<String, String> metadata = createMetaDataMap(listType, Language.ENGLISH);
         String result = converter.convert(inputJson, metadata, englishLanguageResource);
         Document document = Jsoup.parse(result);
@@ -204,7 +206,7 @@ class MagistratesAdultCourtListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass("site-header"))
             .as("Session heading count does not match")
-            .hasSize(8);
+            .hasSize(6);
 
         String firstSessionHeading = document.getElementsByClass("site-header").get(0).text();
         softly.assertThat(firstSessionHeading)
@@ -227,73 +229,47 @@ class MagistratesAdultCourtListFileConverterTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
-        MAGISTRATES_ADULT_COURT_LIST_FUTURE})
-    void testStandardPdfTableHeaders(ListType listType) throws IOException {
+    @EnumSource(value = ListType.class, names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+        MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testPdfPublicTableHeaders(ListType listType) throws IOException {
         Map<String, String> metadata = createMetaDataMap(listType, Language.ENGLISH);
         String outputHtml = converter.convert(inputJson, metadata, englishLanguageResource);
         Document document = Jsoup.parse(outputHtml);
 
         assertThat(document.getElementsByClass("govuk-table__head").get(0)
-                              .getElementsByTag("th"))
+                       .getElementsByTag("th"))
             .as("Incorrect table headers")
-            .hasSize(8)
+            .hasSize(3)
             .extracting(Element::text)
             .containsExactly(
-                "Block Start",
+                "Listing Time",
                 "Defendant Name",
-                "Date of Birth",
-                "Address",
-                "Age",
-                "Informant",
-                "Case Number",
-                "Offence Code"
+                "Case Number"
             );
     }
 
     @ParameterizedTest
-    @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
-        MAGISTRATES_ADULT_COURT_LIST_FUTURE})
-    void testStandardPdfTableContents(ListType listType) throws IOException {
+    @EnumSource(value = ListType.class, names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+        MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
+    void testPdfPublicTableContents(ListType listType) throws IOException {
         Map<String, String> metadata = createMetaDataMap(listType, Language.ENGLISH);
         String outputHtml = converter.convert(inputJson, metadata, englishLanguageResource);
         Document document = Jsoup.parse(outputHtml);
         assertThat(document.getElementsByClass("govuk-table__body").get(0)
                        .getElementsByTag("td"))
             .as("Incorrect table body")
-            .hasSize(24)
+            .hasSize(6)
             .extracting(Element::text)
             .contains(
                 "9am",
                 "Mr Test User",
-                "06/11/1975",
-                "1 High Street, London, SW1A 1AA",
-                "50",
-                "POL01",
-                "1000000000",
-                "TH68001",
-                "Offence Title",
-                "Offence title 1",
-                "Offence Summary",
-                "Offence summary 1",
-                "9am",
-                "Mr Test User",
-                "01/07/1981",
-                "1 High Street, London, SW1A 1AA",
-                "44",
-                "",
-                "1000000001",
-                "TH68002",
-                "Offence Title",
-                "Offence title 2",
-                "Offence Summary",
-                "Offence summary 2"
+                "1000000000"
             );
     }
 
     @ParameterizedTest
-    @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
-        MAGISTRATES_ADULT_COURT_LIST_FUTURE})
+    @EnumSource(value = ListType.class, names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+        MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
     void testStandardExcelConversion(ListType listType) throws IOException {
         byte[] result = converter.convertToExcel(inputJson, listType, Language.ENGLISH);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
@@ -321,7 +297,7 @@ class MagistratesAdultCourtListFileConverterTest {
 
         softly.assertThat(headingRow.getCell(4).getStringCellValue())
             .as(EXCEL_TABLE_HEADER_MESSAGE)
-            .isEqualTo("Block Start");
+            .isEqualTo("Listing Time");
 
         softly.assertThat(headingRow.getCell(5).getStringCellValue())
             .as(EXCEL_TABLE_HEADER_MESSAGE)
@@ -329,42 +305,14 @@ class MagistratesAdultCourtListFileConverterTest {
 
         softly.assertThat(headingRow.getCell(6).getStringCellValue())
             .as(EXCEL_TABLE_HEADER_MESSAGE)
-            .isEqualTo("Date of Birth");
-
-        softly.assertThat(headingRow.getCell(7).getStringCellValue())
-            .as(EXCEL_TABLE_HEADER_MESSAGE)
-            .isEqualTo("Address");
-
-        softly.assertThat(headingRow.getCell(8).getStringCellValue())
-            .as(EXCEL_TABLE_HEADER_MESSAGE)
-            .isEqualTo("Age");
-
-        softly.assertThat(headingRow.getCell(9).getStringCellValue())
-            .as(EXCEL_TABLE_HEADER_MESSAGE)
-            .isEqualTo("Informant");
-
-        softly.assertThat(headingRow.getCell(10).getStringCellValue())
-            .as(EXCEL_TABLE_HEADER_MESSAGE)
             .isEqualTo("Case Number");
-
-        softly.assertThat(headingRow.getCell(11).getStringCellValue())
-            .as(EXCEL_TABLE_HEADER_MESSAGE)
-            .isEqualTo("Offence Code");
-
-        softly.assertThat(headingRow.getCell(12).getStringCellValue())
-            .as(EXCEL_TABLE_HEADER_MESSAGE)
-            .isEqualTo("Offence Title");
-
-        softly.assertThat(headingRow.getCell(13).getStringCellValue())
-            .as(EXCEL_TABLE_HEADER_MESSAGE)
-            .isEqualTo("Offence Summary");
 
         softly.assertAll();
     }
 
     @ParameterizedTest
-    @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
-        MAGISTRATES_ADULT_COURT_LIST_FUTURE})
+    @EnumSource(value = ListType.class, names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+        MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
     void testStandardWelshExcelConversion(ListType listType) throws IOException {
         byte[] result = converter.convertToExcel(inputJson, listType, Language.WELSH);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
@@ -392,7 +340,7 @@ class MagistratesAdultCourtListFileConverterTest {
 
         softly.assertThat(headingRow.getCell(4).getStringCellValue())
             .as(EXCEL_TABLE_HEADER_MESSAGE)
-            .isEqualTo("Amser Cychwyn y Bloc");
+            .isEqualTo("Amser rhestru");
 
         softly.assertThat(headingRow.getCell(5).getStringCellValue())
             .as(EXCEL_TABLE_HEADER_MESSAGE)
@@ -400,42 +348,14 @@ class MagistratesAdultCourtListFileConverterTest {
 
         softly.assertThat(headingRow.getCell(6).getStringCellValue())
             .as(EXCEL_TABLE_HEADER_MESSAGE)
-            .isEqualTo("Dyddiad Geni");
-
-        softly.assertThat(headingRow.getCell(7).getStringCellValue())
-            .as(EXCEL_TABLE_HEADER_MESSAGE)
-            .isEqualTo("Cyfeiriad");
-
-        softly.assertThat(headingRow.getCell(8).getStringCellValue())
-            .as(EXCEL_TABLE_HEADER_MESSAGE)
-            .isEqualTo("Oedran");
-
-        softly.assertThat(headingRow.getCell(9).getStringCellValue())
-            .as(EXCEL_TABLE_HEADER_MESSAGE)
-            .isEqualTo("Hysbysydd");
-
-        softly.assertThat(headingRow.getCell(10).getStringCellValue())
-            .as(EXCEL_TABLE_HEADER_MESSAGE)
             .isEqualTo("Cyfeirnod yr Achos");
-
-        softly.assertThat(headingRow.getCell(11).getStringCellValue())
-            .as(EXCEL_TABLE_HEADER_MESSAGE)
-            .isEqualTo("Cod y Drosedd");
-
-        softly.assertThat(headingRow.getCell(12).getStringCellValue())
-            .as(EXCEL_TABLE_HEADER_MESSAGE)
-            .isEqualTo("Teitl y Drosedd");
-
-        softly.assertThat(headingRow.getCell(13).getStringCellValue())
-            .as(EXCEL_TABLE_HEADER_MESSAGE)
-            .isEqualTo("Crynodeb o’r Drosedd");
 
         softly.assertAll();
     }
 
     @ParameterizedTest
-    @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
-        MAGISTRATES_ADULT_COURT_LIST_FUTURE})
+    @EnumSource(value = ListType.class, names = {MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY,
+        MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE})
     void testStandardExcelTableContents(ListType listType) throws IOException {
         byte[] result = converter.convertToExcel(inputJson, listType, Language.ENGLISH);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
@@ -470,22 +390,6 @@ class MagistratesAdultCourtListFileConverterTest {
             .isEqualTo("Mr Test User");
 
         softly.assertThat(dataRow.getCell(6).getStringCellValue())
-            .as(EXCEL_CELL_VALUE_MESSAGE)
-            .isEqualTo("06/11/1975");
-
-        softly.assertThat(dataRow.getCell(7).getStringCellValue())
-            .as(EXCEL_CELL_VALUE_MESSAGE)
-            .isEqualTo("1 High Street, London, SW1A 1AA");
-
-        softly.assertThat(dataRow.getCell(8).getStringCellValue())
-            .as(EXCEL_CELL_VALUE_MESSAGE)
-            .isEqualTo("50");
-
-        softly.assertThat(dataRow.getCell(9).getStringCellValue())
-            .as(EXCEL_CELL_VALUE_MESSAGE)
-            .isEqualTo("POL01");
-
-        softly.assertThat(dataRow.getCell(10).getStringCellValue())
             .as(EXCEL_CELL_VALUE_MESSAGE)
             .isEqualTo("1000000000");
 
