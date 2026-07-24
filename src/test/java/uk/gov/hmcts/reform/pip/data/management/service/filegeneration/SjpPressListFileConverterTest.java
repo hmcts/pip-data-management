@@ -255,8 +255,8 @@ class SjpPressListFileConverterTest {
             .isEqualTo(expectedSheetName);
 
         softly.assertThat(headingRow.getCell(0).getStringCellValue())
-            .as("Defendant Name column is different")
-            .isEqualTo("Defendant Name");
+            .as("Name column is different")
+            .isEqualTo("Name");
 
         softly.assertThat(headingRow.getCell(1).getStringCellValue())
             .as("Date of Birth column is different")
@@ -267,8 +267,8 @@ class SjpPressListFileConverterTest {
             .isEqualTo("Address");
 
         softly.assertThat(headingRow.getCell(3).getStringCellValue())
-            .as("Prosecutor name column is different")
-            .isEqualTo("Prosecutor Name");
+            .as("Prosecutor column is different")
+            .isEqualTo("Prosecutor");
 
         softly.assertThat(headingRow.getCell(4).getStringCellValue())
             .as("Case URN column is different")
@@ -321,8 +321,8 @@ class SjpPressListFileConverterTest {
             .isEqualTo(expectedSheetName);
 
         softly.assertThat(headingRow.getCell(0).getStringCellValue())
-            .as("Defendant Name column is different")
-            .isEqualTo("Enw'r Diffynnydd");
+            .as("Name column is different")
+            .isEqualTo("Enw");
 
         softly.assertThat(headingRow.getCell(1).getStringCellValue())
             .as("Date of Birth column is different")
@@ -333,8 +333,8 @@ class SjpPressListFileConverterTest {
             .isEqualTo("Cyfeiriad");
 
         softly.assertThat(headingRow.getCell(3).getStringCellValue())
-            .as("Prosecutor Name column is different")
-            .isEqualTo("Enw'r erlynydd");
+            .as("Prosecutor column is different")
+            .isEqualTo("Erlynydd");
 
         softly.assertThat(headingRow.getCell(4).getStringCellValue())
             .as("Case URN column is different")
@@ -381,8 +381,8 @@ class SjpPressListFileConverterTest {
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(headingRow.getCell(3).getStringCellValue())
-            .as("Prosecutor Name column is different")
-            .isEqualTo("Prosecutor Name");
+            .as("Prosecutor column is different")
+            .isEqualTo("Prosecutor");
 
         Row row = sheet.getRow(1);
         softly.assertThat(row.getCell(1).getStringCellValue())
