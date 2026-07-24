@@ -174,7 +174,7 @@ class SjpPublicListFileConverterTest {
                      "Postcode column is different");
         assertEquals("Trosedd", headingRow.getCell(2).getStringCellValue(),
                      "Offence column is different");
-        assertEquals("Erylnydd", headingRow.getCell(3).getStringCellValue(),
+        assertEquals("Erlynydd", headingRow.getCell(3).getStringCellValue(),
                      "Prosecutor column is different");
     }
 }
