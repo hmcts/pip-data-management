@@ -13,10 +13,10 @@
   "endText": "Diolch am ddarllen y ddogfen hon yn fanwl.",
   "listFor": "Rhestr ar gyfer ",
   "tableHeaders": [
-    "Enw'r Diffynnydd",
+    "Enw",
     "Dyddiad geni",
     "Cyfeiriad",
-    "Enw'r erlynydd",
+    "Erlynydd",
     "Cyfeirnod yr achos",
     "Teitl y drosedd %d",
     "Geiriad y drosedd %d",

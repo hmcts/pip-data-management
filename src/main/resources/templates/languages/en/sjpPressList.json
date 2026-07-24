@@ -13,10 +13,10 @@
   "endText": "Thank you for reading this document thoroughly.",
   "listFor": "List for ",
   "tableHeaders": [
-    "Defendant Name",
+    "Name",
     "Date of Birth",
     "Address",
-    "Prosecutor Name",
+    "Prosecutor",
     "Case URN",
     "Offence %d Title",
     "Offence %d Wording",
