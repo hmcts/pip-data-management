@@ -134,16 +134,15 @@ class SjpPublicListFileConverterTest {
 
     @ParameterizedTest
     @EnumSource(value = ListType.class, names = {"SJP_PUBLIC_LIST", "SJP_DELTA_PUBLIC_LIST"})
-    void testSuccessfulExcelConversion(ListType listType) throws IOException {
-        byte[] result = converter.convertToExcel(getInput("/mocks/sjpPublicList.json"), listType, Language.ENGLISH);
+    void testSuccessfulExcelEnglishHeaderConversion(ListType listType) throws IOException {
+        byte[] result = converter.convertToExcel(getInput("/mocks/sjpPublicList.json"), listType,
+                                                 Language.ENGLISH);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
         Row headingRow = sheet.getRow(0);
 
-        String expectedSheetName = listType.equals(ListType.SJP_PUBLIC_LIST)
-            ? "SJP Public List (Full list)"
-            : "SJP Public List (New cases)";
+        String expectedSheetName = "Sheet1";
 
         assertEquals(expectedSheetName, sheet.getSheetName(), "Sheet name does not match");
         assertEquals("Name", headingRow.getCell(0).getStringCellValue(),
@@ -153,6 +152,29 @@ class SjpPublicListFileConverterTest {
         assertEquals("Offence", headingRow.getCell(2).getStringCellValue(),
                      "Offence column is different");
         assertEquals("Prosecutor", headingRow.getCell(3).getStringCellValue(),
+                     "Prosecutor column is different");
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"SJP_PUBLIC_LIST", "SJP_DELTA_PUBLIC_LIST"})
+    void testSuccessfulExcelWelshHeaderConversion(ListType listType) throws IOException {
+        byte[] result = converter.convertToExcel(getInput("/mocks/sjpPublicList.json"), listType,
+                                                 Language.WELSH);
+        ByteArrayInputStream file = new ByteArrayInputStream(result);
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheetAt(0);
+        Row headingRow = sheet.getRow(0);
+
+        String expectedSheetName = "Sheet1";
+
+        assertEquals(expectedSheetName, sheet.getSheetName(), "Sheet name does not match");
+        assertEquals("Enw", headingRow.getCell(0).getStringCellValue(),
+                     "Name column is different");
+        assertEquals("Cod post", headingRow.getCell(1).getStringCellValue(),
+                     "Postcode column is different");
+        assertEquals("Trosedd", headingRow.getCell(2).getStringCellValue(),
+                     "Offence column is different");
+        assertEquals("Erlynydd", headingRow.getCell(3).getStringCellValue(),
                      "Prosecutor column is different");
     }
 }
