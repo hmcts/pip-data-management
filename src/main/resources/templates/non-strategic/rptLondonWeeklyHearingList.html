@@ -1,33 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <style th:replace="~{css/template-styles :: page-govuk-classes}"></style>
-  <style th:replace="~{css/template-styles :: body-classes}"></style>
+  <style th:replace="~{css/template-styles :: page-govuk-classes}" />
+  <style th:replace="~{css/template-styles :: body-classes}" />
   <meta charset="UTF-8"/>
-  <meta name="subject" content="Accessible PDF template"/>
-  <meta name="author" content="HMCTS Court and Tribunal Hearings"/>
-  <meta name="description" content="Document description - vital for compliance."/>
+  <meta name="subject" content="Accessible PDF template" />
+  <meta name="author" content="HMCTS Court and Tribunal Hearings" />
+  <meta name="description" content="Document description - vital for compliance." />
   <title th:text="${i18n.listName}" />
 </head>
 <body>
 <div>
-  <h2 id="page-heading" class="govuk-heading-l" th:text="${i18n.listName}"/>
+  <h2 id="page-heading" class="govuk-heading-l" th:text="${i18n.listName}" />
   <p class="govuk-body"> <a class="govuk-link" th:href="${i18n.factLink}" th:text="${i18n.factLinkText1}"></a><span th:text="${i18n.factLinkText2}"></span></p>
-  <p id="list-date" class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" th:text="${i18n.weeklyListDate + contentDate}"/>
-  <p id="last-updated-date" class="govuk-body" th:text="${i18n.lastUpdated + lastUpdatedDate + i18n.at + lastUpdatedTime}"/>
+  <p id="list-date" class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1" th:text="${i18n.weeklyListDate + contentDate}" />
+  <p id="last-updated-date" class="govuk-body" th:text="${i18n.lastUpdated + lastUpdatedDate + i18n.at + lastUpdatedTime}" />
 
   <details class="govuk-details" data-module="govuk-details" open="">
     <summary class="govuk-details__summary">
-      <p th:text="${i18n.importantInformationHeading}" class="govuk-details__summary-text"/>
+      <p th:text="${i18n.importantInformationHeading}" class="govuk-details__summary-text" />
     </summary>
     <div class="govuk-details__text">
       <p id="contact-message" class="govuk-body"
-        th:text="${i18n.containsKey('officeEmail')
-          ? #strings.replace(i18n.contactMessage, '[insert office email]', i18n.officeEmail)
-          : i18n.contactMessage}">
+        th:text="${#strings.replace(i18n.contactMessageLine1, '[insert office email]', i18n.officeEmail)}">
       </p>
+      <p id="contact-message-2" class="govuk-body" th:text="${i18n.contactMessageLine2}" />
       <a id="observe-hearing" th:href="${i18n.observeHearingLink}" class="govuk-link" th:title="${i18n.observeHearingLinkText}" th:text="${i18n.observeHearingLinkText}" />
-      <p id="market-rent-text" class="govuk-!-font-weight-bold" th:if="${i18n.containsKey('marketRentText')}" th:text="${i18n['marketRentText']}"></p>
+      <p id="market-rent-text" class="govuk-!-font-weight-bold" th:if="${i18n.containsKey('marketRentText')}" th:text="${i18n['marketRentText']}" />
     </div>
   </details>
 
@@ -36,17 +35,17 @@
       <thead class="govuk-table__header">
       <tr>
         <th:block th:each="heading: ${i18n.tableHeaders}">
-          <th th:text="${heading}" scope="col" class="govuk-table__header"/>
+          <th th:text="${heading}" scope="col" class="govuk-table__header" />
         </th:block>
       </tr>
       </thead>
       <tbody class="govuk-table__body">
       <tr th:each="hearing : ${data}">
-        <td class="govuk-table__cell" th:text="${hearing.get('date')}"/>
-        <td class="govuk-table__cell" th:text="${hearing.get('time')}"/>
-        <td class="govuk-table__cell" th:text="${hearing.get('venue')}"/>
-        <td class="govuk-table__cell" th:text="${hearing.get('caseType')}"/>
-        <td class="govuk-table__cell" th:text="${hearing.get('caseReferenceNumber')}"/>
+        <td class="govuk-table__cell" th:text="${hearing.get('date')}" />
+        <td class="govuk-table__cell" th:text="${hearing.get('time')}" />
+        <td class="govuk-table__cell" th:text="${hearing.get('venue')}" />
+        <td class="govuk-table__cell" th:text="${hearing.get('caseType')}" />
+        <td class="govuk-table__cell" th:text="${hearing.get('caseReferenceNumber')}" />
         <td class="govuk-table__cell" th:text="${hearing.get('judges')}" />
         <td class="govuk-table__cell" th:text="${hearing.get('members')}" />
         <td class="govuk-table__cell" th:text="${hearing.get('hearingMethod')}" />

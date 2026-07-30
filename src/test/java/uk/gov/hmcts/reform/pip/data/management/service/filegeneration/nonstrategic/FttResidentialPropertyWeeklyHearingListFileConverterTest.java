@@ -59,6 +59,7 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
     private static final String LIST_DATE_ELEMENT = "list-date";
     private static final String LAST_UPDATED_DATE_ELEMENT = "last-updated-date";
     private static final String CONTACT_MESSAGE_ELEMENT = "contact-message";
+    private static final String CONTACT_MESSAGE2_ELEMENT = "contact-message-2";
     private static final String OBSERVE_HEARING_ELEMENT =  "observe-hearing";
     private static final String SUMMARY_TEXT_CLASS = "govuk-details__summary-text";
     private static final String LINK_CLASS = "govuk-link";
@@ -82,37 +83,49 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
     private static Stream<Arguments> parametersEnglish() {
         return Stream.of(
             Arguments.of("RPT_EASTERN_WEEKLY_HEARING_LIST", "rptEasternWeeklyHearingList.json",
-                         "First-tier Tribunal (Residential Property Tribunal): Eastern region Weekly Hearing List"),
+                         "First-tier Tribunal (Residential Property Tribunal): Eastern region Weekly Hearing List",
+                         "RPEastern@justice.gov.uk"),
             Arguments.of("RPT_LONDON_WEEKLY_HEARING_LIST", "rptLondonWeeklyHearingList.json",
-                         "First-tier Tribunal (Residential Property Tribunal): London region Weekly Hearing List"),
+                         "First-tier Tribunal (Residential Property Tribunal): London region Weekly Hearing List",
+                         "London.Rap@justice.gov.uk"),
             Arguments.of("RPT_MIDLANDS_WEEKLY_HEARING_LIST", "rptMidlandsWeeklyHearingList.json",
-                         "First-tier Tribunal (Residential Property Tribunal): Midlands region Weekly Hearing List"),
+                         "First-tier Tribunal (Residential Property Tribunal): Midlands region Weekly Hearing List",
+                         "rpmidland@justice.gov.uk"),
             Arguments.of("RPT_NORTHERN_WEEKLY_HEARING_LIST", "rptNorthernWeeklyHearingList.json",
-                         "First-tier Tribunal (Residential Property Tribunal): Northern region Weekly Hearing List"),
+                         "First-tier Tribunal (Residential Property Tribunal): Northern region Weekly Hearing List",
+                         "rpnorthern@justice.gov.uk"),
             Arguments.of("RPT_SOUTHERN_WEEKLY_HEARING_LIST", "rptSouthernWeeklyHearingList.json",
-                         "First-tier Tribunal (Residential Property Tribunal): Southern region Weekly Hearing List"),
+                         "First-tier Tribunal (Residential Property Tribunal): Southern region Weekly Hearing List",
+                         "RPSouthern@justice.gov.uk"),
             Arguments.of("FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST",
                          "fttRptMarketRentsWeeklyHearingList.json",
-                         "First-tier Tribunal (Residential Property Tribunal): Market Rents Weekly Hearing List")
+                         "First-tier Tribunal (Residential Property Tribunal): Market Rents Weekly Hearing List",
+                         "marketrents@justice.gov.uk")
         );
     }
 
     private static Stream<Arguments> parametersWelsh() {
         return Stream.of(
             Arguments.of("RPT_EASTERN_WEEKLY_HEARING_LIST", "rptEasternWeeklyHearingList.json",
-                         COMMON_WELSH_HEADER_TEXT + "Dwyrain Lloegr"),
+                         COMMON_WELSH_HEADER_TEXT + "Dwyrain Lloegr",
+                         "RPEastern@justice.gov.uk"),
             Arguments.of("RPT_LONDON_WEEKLY_HEARING_LIST", "rptLondonWeeklyHearingList.json",
-                         COMMON_WELSH_HEADER_TEXT + "Llundain"),
+                         COMMON_WELSH_HEADER_TEXT + "Llundain",
+                         "London.Rap@justice.gov.uk"),
             Arguments.of("RPT_MIDLANDS_WEEKLY_HEARING_LIST", "rptMidlandsWeeklyHearingList.json",
-                         COMMON_WELSH_HEADER_TEXT + "Canolbarth Lloegr"),
+                         COMMON_WELSH_HEADER_TEXT + "Canolbarth Lloegr",
+                         "rpmidland@justice.gov.uk"),
             Arguments.of("RPT_NORTHERN_WEEKLY_HEARING_LIST", "rptNorthernWeeklyHearingList.json",
-                         COMMON_WELSH_HEADER_TEXT + "Gogledd Lloegr"),
+                         COMMON_WELSH_HEADER_TEXT + "Gogledd Lloegr",
+                         "rpnorthern@justice.gov.uk"),
             Arguments.of("RPT_SOUTHERN_WEEKLY_HEARING_LIST", "rptSouthernWeeklyHearingList.json",
-                         COMMON_WELSH_HEADER_TEXT + "De Lloegr"),
+                         COMMON_WELSH_HEADER_TEXT + "De Lloegr",
+                         "RPSouthern@justice.gov.uk"),
             Arguments.of("FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST",
                          "fttRptMarketRentsWeeklyHearingList.json",
                          "Tribiwnlys Haen Gyntaf (Tribiwnlys Eiddo Preswyl): "
-                         + "Rhestr Gwrandawiadau Wythnosol Rhenti’r Farchnad")
+                         + "Rhestr Gwrandawiadau Wythnosol Rhenti’r Farchnad",
+                         "marketrents@justice.gov.uk")
         );
     }
 
@@ -128,7 +141,7 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
     @ParameterizedTest
     @MethodSource("parametersEnglish")
     void testFttResidentialPropertyWeeklyHearingListFileConversionInEnglish(String listName,
-        String languageFilename, String listDisplayName) throws IOException {
+        String languageFilename, String listDisplayName, String officeEmail) throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
@@ -181,31 +194,20 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Important information");
 
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
+            .as(BODY_MESSAGE)
+            .isEqualTo("Members of the public wishing to observe a hearing or representatives of the media "
+                           + "may, on their request, join any video hearing remotely while they are taking place by "
+                           + "sending an email in advance to the tribunal at "
+                           + officeEmail
+                           + " with the following details in the subject line “[OBSERVER/MEDIA] REQUEST – [case "
+                           + "reference] – [hearing date]” and appropriate arrangements will be made to allow access "
+                           + "where reasonably practicable.");
 
-        if ("FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST".equals(listName)) {
-            softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
-                .as(BODY_MESSAGE)
-                .isEqualTo("Members of the public wishing to observe a hearing or representatives "
-                               + "of the media may, on their request, join any telephone or video hearing "
-                               + "remotely while they are taking place by sending an email in advance to "
-                               + "the tribunal at marketrents@justice.gov.uk with the following details in the "
-                               + "subject line “[OBSERVER/MEDIA] REQUEST – [case reference] – [hearing date]” "
-                               + "and appropriate arrangements will be made to allow access where reasonably "
-                               + "practicable.");
-
-            softly.assertThat(document.text())
-                .contains("For Market Rent applications received before 16 March 2026");
-        } else {
-            softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
-                .as(BODY_MESSAGE)
-                .isEqualTo("Members of the public wishing to observe a hearing or representatives "
-                               + "of the media may, on their request, join any telephone or video hearing "
-                               + "remotely while they are taking place by sending an email in advance to "
-                               + "the tribunal at [insert office email] with the following details in the "
-                               + "subject line “[OBSERVER/MEDIA] REQUEST – [case reference] – [hearing date]” "
-                               + "and appropriate arrangements will be made to allow access where reasonably "
-                               + "practicable.");
-        }
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE2_ELEMENT).text())
+            .as(BODY_MESSAGE)
+            .isEqualTo("Listings often change at short notice, and therefore if you wish to observe a hearing, "
+                           + "you may wish to contact the office first to check it is proceeding.");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
@@ -233,7 +235,7 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
     @ParameterizedTest
     @MethodSource("parametersWelsh")
     void testFttResidentialPropertyWeeklyHearingListFileConversionInWelsh(String listName,
-        String languageFilename, String listDisplayName) throws IOException {
+        String languageFilename, String listDisplayName, String officeEmail) throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
@@ -286,32 +288,22 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Gwybodaeth bwysig");
 
-        if ("FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST".equals(listName)) {
-            softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
-                .as(BODY_MESSAGE)
-                .isEqualTo("Gall aelodau o’r cyhoedd sy’n dymuno arsylwi gwrandawiad neu "
-                               + "gynrychiolwyr y cyfryngau ymuno ag unrhyw wrandawiad dros y ffôn "
-                               + "neu drwy fideo o bell ar gais tra’u bod yn cael eu cynnal drwy anfon "
-                               + "e-bost ymlaen llaw at y tribiwnlys yn marketrents@justice.gov.uk gyda’r "
-                               + "manylion canlynol yn y llinell bwnc “CAIS [ARSYLLWR/CYFRYNGAU] – "
-                               + "[cyfeirnod yr achos] – [dyddiad y gwrandawiad] (angen cynnwys unrhyw "
-                               + "wybodaeth arall sy’n ofynnol gan y tribiwnlys)” a gwneir trefniadau priodol i "
-                               + "ganiatáu mynediad lle bo hynny’n rhesymol ymarferol.");
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
+            .as(BODY_MESSAGE)
+            .isEqualTo("Gall aelodau o’r cyhoedd sy’n dymuno arsylwi gwrandawiad neu gynrychiolwyr y "
+                           + "cyfryngau ymuno ag unrhyw wrandawiad dros y ffôn neu drwy fideo o bell ar gais tra’u "
+                           + "bod yn cael eu cynnal drwy anfon e-bost ymlaen llaw at y tribiwnlys yn "
+                           + officeEmail
+                           + " gyda’r manylion canlynol yn y llinell bwnc “CAIS [ARSYLLWR/CYFRYNGAU] – [cyfeirnod yr "
+                           + "achos] – [dyddiad y gwrandawiad] (angen cynnwys unrhyw wybodaeth arall sy’n ofynnol gan "
+                           + "y tribiwnlys)” a gwneir trefniadau priodol i ganiatáu mynediad lle bo hynny’n rhesymol "
+                           + "ymarferol.");
 
-            softly.assertThat(document.text())
-                .contains("Ar gyfer ceisiadau Rhenti’r Farchnad a ddaeth i law cyn 16 Mawrth 2026");
-        } else {
-            softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
-                .as(BODY_MESSAGE)
-                .isEqualTo("Gall aelodau o’r cyhoedd sy’n dymuno arsylwi gwrandawiad neu "
-                               + "gynrychiolwyr y cyfryngau ymuno ag unrhyw wrandawiad dros y ffôn "
-                               + "neu drwy fideo o bell ar gais tra’u bod yn cael eu cynnal drwy anfon "
-                               + "e-bost ymlaen llaw at y tribiwnlys yn [insert office email] gyda’r "
-                               + "manylion canlynol yn y llinell bwnc “CAIS [ARSYLLWR/CYFRYNGAU] – "
-                               + "[cyfeirnod yr achos] – [dyddiad y gwrandawiad] (angen cynnwys unrhyw "
-                               + "wybodaeth arall sy’n ofynnol gan y tribiwnlys)” a gwneir trefniadau priodol i "
-                               + "ganiatáu mynediad lle bo hynny’n rhesymol ymarferol.");
-        }
+        softly.assertThat(document.getElementById(CONTACT_MESSAGE2_ELEMENT).text())
+            .as(BODY_MESSAGE)
+            .isEqualTo("Mae rhestrau'n aml yn newid ar fyr rubydd, ac felly os ydych yn dymuno arsylwi "
+                           + "gwrandawiad, efallai yr hoffech gysylltu â'r swyddfa gyntaf i wirio a yw'n mynd yn ei "
+                           + "flaen.");
 
         softly.assertThat(document.getElementById(OBSERVE_HEARING_ELEMENT).text())
             .as(BODY_MESSAGE)
