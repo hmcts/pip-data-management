@@ -380,7 +380,7 @@ class MagistratesAdultCourtListFileConverterTest {
 
         softly.assertThat(headingRow.getCell(1).getStringCellValue())
             .as(EXCEL_TABLE_HEADER_MESSAGE)
-            .isEqualTo("Yn eistedd yn");
+            .isEqualTo("Yn eistedd yn: ");
 
         softly.assertThat(headingRow.getCell(2).getStringCellValue())
             .as(EXCEL_TABLE_HEADER_MESSAGE)
