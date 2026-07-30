@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MagistratesAdultCourtListFileConverter extends ExcelAbstractList implements FileConverter {
-
+public class MagistratesPublicAdultCourtListFileConverter extends ExcelAbstractList implements FileConverter {
     @Override
     public String convert(JsonNode payload, Map<String, String> metadata,
                           Map<String, Object> languageResources) throws IOException {
@@ -29,7 +28,7 @@ public class MagistratesAdultCourtListFileConverter extends ExcelAbstractList im
         Language language = Language.valueOf(metadata.get("language"));
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
         context.setVariable("listData",
-                            MagistratesAdultCourtListHelper.processPayload(payload, language, true));
+                            MagistratesAdultCourtListHelper.processPayload(payload, language, false));
 
         return TemplateEngine.processTemplate(metadata.get("listType"), context);
     }
@@ -46,14 +45,7 @@ public class MagistratesAdultCourtListFileConverter extends ExcelAbstractList im
             languageResources.get("sessionStart").toString(),
             tableHeaders.get(0),
             tableHeaders.get(1),
-            tableHeaders.get(2),
-            tableHeaders.get(3),
-            tableHeaders.get(4),
-            tableHeaders.get(5),
-            tableHeaders.get(6),
-            tableHeaders.get(7),
-            languageResources.get("offenceTitle").toString(),
-            languageResources.get("offenceSummary").toString()
+            tableHeaders.get(2)
         );
     }
 
@@ -61,7 +53,7 @@ public class MagistratesAdultCourtListFileConverter extends ExcelAbstractList im
     public List<List<String>> getExcelRows(JsonNode json, Map<String, Object> languageResources, Language language) {
         List<List<String>> rows = new ArrayList<>();
         List<MagistratesAdultCourtList> processedData = MagistratesAdultCourtListHelper.processPayload(
-            json, language, true
+            json, language, false
         );
 
         processedData.forEach(
@@ -73,14 +65,7 @@ public class MagistratesAdultCourtListFileConverter extends ExcelAbstractList im
                     data.getSessionStartTime(),
                     hearingCase.getBlockStartTime(),
                     hearingCase.getDefendantName(),
-                    hearingCase.getDefendantDob(),
-                    hearingCase.getDefendantAddress(),
-                    hearingCase.getDefendantAge(),
-                    hearingCase.getInformant(),
-                    hearingCase.getCaseNumber(),
-                    hearingCase.getOffence().getOffenceCode(),
-                    hearingCase.getOffence().getOffenceTitle(),
-                    hearingCase.getOffence().getOffenceSummary()
+                    hearingCase.getCaseNumber()
                 ))));
 
         return rows;

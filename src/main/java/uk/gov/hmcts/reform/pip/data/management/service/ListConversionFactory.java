@@ -20,7 +20,8 @@ import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.SscsDaily
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CivilAndFamilyDailyCauseListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CivilDailyCauseListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CopDailyCauseListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownPddaListFileConverter;
+import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownDailyPddaListFileConverter;
+import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownFirmPddaListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownWarnedPddaListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.EtDailyListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.EtFortnightlyPressListFileConverter;
@@ -28,6 +29,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FamilyDail
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.IacDailyListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesAdultCourtListFileConverter;
+import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesPublicAdultCourtListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesPublicListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesStandardListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
@@ -66,6 +68,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.FAMILY_DAILY_CA
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FINANCIAL_LIST_CHD_KB_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_LR_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_TAX_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.IAC_DAILY_LIST;
@@ -126,7 +129,6 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_STATUTOR
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_T_AND_CC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST;
 
 @Component
 public class ListConversionFactory {
@@ -413,27 +415,27 @@ public class ListConversionFactory {
             new NonStrategicListSummaryData(CIC_WEEKLY_HEARING_LIST)
         )),
         Map.entry(MAGISTRATES_ADULT_COURT_LIST_DAILY, new ConversionConfig(
-            new MagistratesAdultCourtListFileConverter(true),
+            new MagistratesAdultCourtListFileConverter(),
             new MagistratesAdultCourtListSummaryData(true)
         )),
         Map.entry(MAGISTRATES_ADULT_COURT_LIST_FUTURE, new ConversionConfig(
-            new MagistratesAdultCourtListFileConverter(true),
+            new MagistratesAdultCourtListFileConverter(),
             new MagistratesAdultCourtListSummaryData(true)
         )),
         Map.entry(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_DAILY, new ConversionConfig(
-            new MagistratesAdultCourtListFileConverter(false),
+            new MagistratesPublicAdultCourtListFileConverter(),
             new MagistratesAdultCourtListSummaryData(false)
         )),
         Map.entry(MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE, new ConversionConfig(
-            new MagistratesAdultCourtListFileConverter(false),
+            new MagistratesPublicAdultCourtListFileConverter(),
             new MagistratesAdultCourtListSummaryData(false)
         )),
         Map.entry(CROWN_DAILY_PDDA_LIST, new ConversionConfig(
-            new CrownPddaListFileConverter(CROWN_DAILY_PDDA_LIST),
+            new CrownDailyPddaListFileConverter(),
             new CrownPddaListSummaryData(CROWN_DAILY_PDDA_LIST)
         )),
         Map.entry(CROWN_FIRM_PDDA_LIST, new ConversionConfig(
-            new CrownPddaListFileConverter(CROWN_FIRM_PDDA_LIST),
+            new CrownFirmPddaListFileConverter(),
             new CrownPddaListSummaryData(CROWN_FIRM_PDDA_LIST)
         )),
         Map.entry(CROWN_WARNED_PDDA_LIST, new ConversionConfig(

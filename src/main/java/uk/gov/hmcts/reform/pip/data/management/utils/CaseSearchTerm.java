@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.utils;
 
+@Deprecated
 public enum CaseSearchTerm {
 
     CASE_URN("caseUrn"),

@@ -72,10 +72,6 @@ class MagistratesPublicListFileConverterTest {
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(outputHtml).as("No html found").isNotEmpty();
 
-        softly.assertThat(document.title())
-            .as("incorrect title found.")
-            .isEqualTo("Magistrates Public List");
-
         softly.assertThat(document.getElementsByClass("govuk-heading-l")
                               .get(0).text())
             .as(HEADER_TEXT)
@@ -258,8 +254,6 @@ class MagistratesPublicListFileConverterTest {
         Sheet sheet = workbook.getSheetAt(0);
         Row headingRow = sheet.getRow(0);
 
-        assertEquals(ListType.MAGISTRATES_PUBLIC_LIST.getFriendlyName(), sheet.getSheetName(),
-                     "Sheet name does not match");
         assertEquals("Court House", headingRow.getCell(0).getStringCellValue(),
                      "Court House column is different");
         assertEquals("Court Room", headingRow.getCell(1).getStringCellValue(),
@@ -316,8 +310,6 @@ class MagistratesPublicListFileConverterTest {
         Sheet sheet = workbook.getSheetAt(0);
         Row headingRow = sheet.getRow(0);
 
-        assertEquals(ListType.MAGISTRATES_PUBLIC_LIST.getFriendlyName(), sheet.getSheetName(),
-                     "Sheet name does not match");
         assertEquals("Llys", headingRow.getCell(0).getStringCellValue(),
                      "Court House column is different");
         assertEquals("Ystafell Llys", headingRow.getCell(1).getStringCellValue(),

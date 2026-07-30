@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -20,7 +21,10 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 class CrownPddaListHelperTest {
@@ -180,5 +184,17 @@ class CrownPddaListHelperTest {
         }
 
         softly.assertAll();
+    }
+
+    @Test
+    void testConstructCourtRoomInfo() {
+        Map<String, Object> languageResources = Map.of("courtRoomPrefix", "Court room ");
+        SittingInfo sittingInfo = new SittingInfo();
+        sittingInfo.setCourtRoomNumber("1");
+        sittingInfo.setJudgeName("test judge name");
+
+        assertThat(CrownPddaListHelper.constructCourtRoomInfo(sittingInfo, languageResources))
+            .as("Constructed court room info does not match")
+            .isEqualTo("Court room 1: test judge name");
     }
 }
