@@ -357,7 +357,7 @@ class CrownFirmPddaListFileConverterTest {
 
         softly.assertThat(headingRow.getCell(5).getStringCellValue())
             .as(EXCEL_TABLE_HEADER_MESSAGE)
-            .isEqualTo("Yn eistedd yn");
+            .isEqualTo("Yn eistedd yn: ");
 
         softly.assertThat(headingRow.getCell(6).getStringCellValue())
             .as(EXCEL_TABLE_HEADER_MESSAGE)
