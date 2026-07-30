@@ -291,13 +291,12 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
         softly.assertThat(document.getElementById(CONTACT_MESSAGE_ELEMENT).text())
             .as(BODY_MESSAGE)
             .isEqualTo("Gall aelodau o’r cyhoedd sy’n dymuno arsylwi gwrandawiad neu gynrychiolwyr y "
-                           + "cyfryngau ymuno ag unrhyw wrandawiad dros y ffôn neu drwy fideo o bell ar gais tra’u "
-                           + "bod yn cael eu cynnal drwy anfon e-bost ymlaen llaw at y tribiwnlys yn "
+                           + "cyfryngau ymuno ag unrhyw wrandawiad fideo o bell ar gais tra maent yn cael eu cynnal "
+                           + "drwy anfon e-bost ymlaen llaw at y tribiwnlys yn "
                            + officeEmail
                            + " gyda’r manylion canlynol yn y llinell bwnc “CAIS [ARSYLLWR/CYFRYNGAU] – [cyfeirnod yr "
-                           + "achos] – [dyddiad y gwrandawiad] (angen cynnwys unrhyw wybodaeth arall sy’n ofynnol gan "
-                           + "y tribiwnlys)” a gwneir trefniadau priodol i ganiatáu mynediad lle bo hynny’n rhesymol "
-                           + "ymarferol.");
+                           + "achos] – [dyddiad y gwrandawiad]” a gwneir trefniadau priodol i ganiatáu mynediad lle "
+                           + "bo hynny’n rhesymol ymarferol.");
 
         softly.assertThat(document.getElementById(CONTACT_MESSAGE2_ELEMENT).text())
             .as(BODY_MESSAGE)
