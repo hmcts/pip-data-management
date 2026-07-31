@@ -166,7 +166,7 @@ class CivilDailyCauseListFileConverterTest {
             .as("Incorrect first page p elements")
             .hasSize(9)
             .extracting(Element::text)
-            .contains("The venue line 1 town name AAA AAA",
+            .contains("The venue line 1 AAA AAA",
                       "List for 20 August 2023",
                       "Last updated 21 August 2023 at 2:01am"
             );

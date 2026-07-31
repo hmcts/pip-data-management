@@ -5,12 +5,15 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.CaseHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.JudiciaryHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LocationHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.PartyRoleHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.SittingHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST;
@@ -20,6 +23,9 @@ public final class CftListHelper {
     private static final String DOCUMENT = "document";
     private static final String VERSION = "version";
     private static final String VENUE = "venue";
+    private static final String VENUE_ADDRESS = "venueAddress";
+    private static final String LINE = "line";
+    private static final String POSTCODE = "postCode";
     private static final String VENUE_CONTACT = "venueContact";
     private static final String COURT_HOUSE = "courtHouse";
     private static final String COURT_ROOM = "courtRoom";
@@ -50,7 +56,7 @@ public final class CftListHelper {
         context.setVariable("contentDate", metadata.get("contentDate"));
         context.setVariable("locationName", metadata.get("locationName"));
         context.setVariable("provenance", metadata.get("provenance"));
-        context.setVariable("venueAddress", LocationHelper.formatFullVenueAddress(artefact));
+        context.setVariable(VENUE_ADDRESS, formatVenueAddress(artefact));
         context.setVariable("artefact", artefact);
         if (artefact.get(DOCUMENT).has(VERSION)) {
             context.setVariable(VERSION, artefact.get(DOCUMENT).get(VERSION).asText());
@@ -102,5 +108,24 @@ public final class CftListHelper {
                 })
             )
         );
+    }
+
+    private static List<String> formatVenueAddress(JsonNode artefact) {
+        List<String> address = new ArrayList<>();
+        JsonNode venueNode = artefact.get(VENUE);
+
+        if (venueNode.has(VENUE_ADDRESS)) {
+            JsonNode arrayNode = venueNode.get(VENUE_ADDRESS).get(LINE);
+            for (JsonNode jsonNode : arrayNode) {
+                if (!jsonNode.asText().isEmpty()) {
+                    address.add(jsonNode.asText());
+                }
+            }
+        }
+
+        if (!GeneralHelper.findAndReturnNodeText(venueNode.get(VENUE_ADDRESS), POSTCODE).isEmpty()) {
+            address.add(artefact.get(VENUE).get(VENUE_ADDRESS).get(POSTCODE).asText());
+        }
+        return address;
     }
 }
