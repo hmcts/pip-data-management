@@ -103,4 +103,19 @@ public final class CftListHelper {
             )
         );
     }
+
+    public static String buildParty(JsonNode caseNode, String partyField, String representativeField) {
+        String party = caseNode.path(partyField).asText();
+        String rep = caseNode.path(representativeField).asText();
+
+        if (rep.isEmpty()) {
+            return party;
+        }
+
+        if (party.isEmpty()) {
+            return "Legal advisor: " + rep;
+        }
+
+        return party + ", Legal advisor: " + rep;
+    }
 }
