@@ -30,7 +30,7 @@ public class SjpPublicListFileConverter extends ExcelAbstractList implements Fil
      * @return the HTML representation of the SJP public cases
      */
     @Override
-    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String,Object> language)
+    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> language)
         throws IOException {
         Context context = new Context();
         String publicationDate = DateHelper.formatTimeStampToBst(
@@ -52,11 +52,12 @@ public class SjpPublicListFileConverter extends ExcelAbstractList implements Fil
      *
      * @param artefact Tree object model for artefact.
      * @param listType The list type of the publication.
-     * @param language The language of the publication.
+     * @param metadata The metadata of the publication.
      * @return The converted Excel spreadsheet as a byte array.
      */
     @Override
-    public byte[] convertToExcel(JsonNode artefact, ListType listType, Language language) throws IOException {
+    public byte[] convertToExcel(JsonNode artefact, ListType listType, Map<String, String> metadata)
+        throws IOException {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet(listType.getFriendlyName());
             CellStyle boldStyle = createBoldStyle(workbook);

@@ -14,7 +14,6 @@ import org.jsoup.select.Elements;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import uk.gov.hmcts.reform.pip.data.management.service.ListConversionFactory;
-import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.ByteArrayInputStream;
@@ -239,7 +238,8 @@ class SjpPressListFileConverterTest {
     @EnumSource(value = ListType.class, names = {"SJP_PRESS_LIST", "SJP_DELTA_PRESS_LIST"})
     void testExcelConversionTableHeaders(ListType listType) throws IOException {
         byte[] result = sjpPressListConverter
-            .convertToExcel(getInput("/mocks/sjpPressList.json"), listType, Language.ENGLISH);
+            .convertToExcel(getInput("/mocks/sjpPressList.json"), listType,
+                            Map.of("language", "ENGLISH"));
 
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
@@ -303,7 +303,8 @@ class SjpPressListFileConverterTest {
     @EnumSource(value = ListType.class, names = {"SJP_PRESS_LIST", "SJP_DELTA_PRESS_LIST"})
     void testExcelConversionTableValues(ListType listType) throws IOException {
         byte[] result = sjpPressListConverter
-            .convertToExcel(getInput("/mocks/sjpPressList.json"), listType, Language.ENGLISH);
+            .convertToExcel(getInput("/mocks/sjpPressList.json"), listType,
+                            Map.of("language", "ENGLISH"));
 
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
