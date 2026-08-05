@@ -15,11 +15,11 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
-import java.util.UUID;
-import java.util.Optional;
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;

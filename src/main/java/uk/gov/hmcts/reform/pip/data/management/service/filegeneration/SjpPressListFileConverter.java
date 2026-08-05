@@ -2,11 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.SjpPressList;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
@@ -14,7 +9,6 @@ import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.PartyRoleHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
-import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -72,73 +66,63 @@ public class SjpPressListFileConverter extends ExcelAbstractList implements File
         return TemplateEngine.processTemplate(metadata.get("listType"), context);
     }
 
-    /**
-     * Create SJP press list or SJP delta press list Excel spreadsheet from list data.
-     *
-     * @param artefact Tree object model for artefact.
-     * @param listType The list type of the publication.
-     * @param language The language of the publication.
-     * @return The converted Excel spreadsheet as a byte array.
-     */
     @Override
-    public byte[] convertToExcel(JsonNode artefact, ListType listType, Language language) throws IOException {
-        try (Workbook workbook = new XSSFWorkbook()) {
-            final List<SjpPressList> cases = processRawListData(artefact);
+    public List<String> getExcelHeaders(JsonNode artefact, Map<String, Object> languageResources) {
+        List<String> headers = new ArrayList<>();
 
-            Sheet sheet = workbook.createSheet(listType.getFriendlyName());
-            CellStyle boldStyle = createBoldStyle(workbook);
+        @SuppressWarnings("unchecked")
+        List<String> tableHeaders = (List<String>) languageResources.get("tableHeaders");
 
-            int rowIdx = 0;
-            Row headingRow = sheet.createRow(rowIdx++);
-            setCellValue(headingRow, 0, "Address", boldStyle);
-            setCellValue(headingRow, 1, "Case URN", boldStyle);
-            setCellValue(headingRow, 2, "Date of Birth", boldStyle);
-            setCellValue(headingRow, 3, "Defendant Name", boldStyle);
+        headers.add(tableHeaders.get(0));
+        headers.add(tableHeaders.get(1));
+        headers.add(tableHeaders.get(2));
+        headers.add(tableHeaders.get(3));
+        headers.add(tableHeaders.get(4));
 
-            // Write out column headings for the max number of offences a defendant may have
-            Integer maxOffences =
-                cases.stream().map(SjpPressList::getNumberOfOffences).reduce(Integer::max).orElse(0);
-            int offenceHeadingsIdx = 4;
 
-            for (int i = 1; i <= maxOffences; i++) {
-                setCellValue(headingRow, offenceHeadingsIdx,
-                             String.format("Offence %o Press Restriction Requested", i),boldStyle);
-                setCellValue(headingRow, ++offenceHeadingsIdx,
-                             String.format("Offence %o Title", i), boldStyle);
-                setCellValue(headingRow, ++offenceHeadingsIdx,
-                             String.format("Offence %o Wording", i), boldStyle);
-                offenceHeadingsIdx++;
-            }
-            setCellValue(headingRow, offenceHeadingsIdx, "Prosecutor Name", boldStyle);
+        // Write out column headings for the max number of offences a defendant may have
+        final List<SjpPressList> cases = processRawListData(artefact);
+        Integer maxOffences =
+            cases.stream().map(SjpPressList::getNumberOfOffences).reduce(Integer::max).orElse(0);
 
-            // Write out the data to the sheet
-            for (SjpPressList entry : cases) {
-                Row dataRow = sheet.createRow(rowIdx++);
-                String addressRemainder = entry.getAddressRemainder() == null ? ""
-                    : String.join(" ", entry.getAddressRemainder());
-                String referenceRemainder = entry.getReferenceRemainder() == null ? ""
-                    : String.join(" ", entry.getReferenceRemainder());
-                String accusedDob = getAccusedDob(entry);
-
-                setCellValue(dataRow, 0, concatenateStrings(entry.getAddressLine1(), addressRemainder));
-                setCellValue(dataRow, 1, concatenateStrings(entry.getReference1(), referenceRemainder));
-                setCellValue(dataRow, 2, accusedDob);
-                setCellValue(dataRow, 3, entry.getName());
-
-                int offenceColumnIdx = 4;
-
-                for (Map<String, String> offence : entry.getOffences()) {
-                    setCellValue(dataRow, offenceColumnIdx, offence.get(REPORTING_RESTRICTION));
-                    setCellValue(dataRow, ++offenceColumnIdx, offence.get(OFFENCE));
-                    setCellValue(dataRow, ++offenceColumnIdx, offence.get("wording"));
-                    ++offenceColumnIdx;
-                }
-                setCellValue(dataRow, offenceHeadingsIdx, entry.getProsecutor());
-            }
-            autoSizeSheet(sheet);
-
-            return convertToByteArray(workbook);
+        for (int i = 1; i <= maxOffences; i++) {
+            headers.add(String.format(tableHeaders.get(5), i));
+            headers.add(String.format(tableHeaders.get(6), i));
+            headers.add(String.format(tableHeaders.get(7), i));
         }
+
+        return headers;
+    }
+
+    @Override
+    public List<List<String>> getExcelRows(JsonNode artefact, Map<String, Object> languageResources,
+                                           Language language) {
+        List<SjpPressList> cases = processRawListData(artefact);
+        List<List<String>> rows = new ArrayList<>();
+
+        for (SjpPressList entry : cases) {
+            List<String> row = new ArrayList<>();
+            String addressRemainder = entry.getAddressRemainder() == null ? ""
+                : String.join(" ", entry.getAddressRemainder());
+            String referenceRemainder = entry.getReferenceRemainder() == null ? ""
+                : String.join(" ", entry.getReferenceRemainder());
+            String accusedDob = getAccusedDob(entry);
+
+            row.add(entry.getName());
+            row.add(accusedDob);
+            row.add(concatenateStrings(entry.getAddressLine1(), addressRemainder));
+            row.add(entry.getProsecutor());
+            row.add(concatenateStrings(entry.getReference1(), referenceRemainder));
+
+            for (Map<String, String> offence : entry.getOffences()) {
+                row.add(offence.get(OFFENCE));
+                row.add(offence.get("wording"));
+                row.add(offence.get(REPORTING_RESTRICTION));
+            }
+            rows.add(row);
+        }
+
+        return rows;
     }
 
     /**
