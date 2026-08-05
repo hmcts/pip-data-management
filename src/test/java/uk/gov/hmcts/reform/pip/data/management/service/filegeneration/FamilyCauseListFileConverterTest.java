@@ -167,7 +167,7 @@ class FamilyCauseListFileConverterTest {
     void testTableContents() throws IOException {
         Map<String, Object> language;
         try (InputStream languageFile = Thread.currentThread()
-            .getContextClassLoader().getResourceAsStream("templates/languages/en/civilAndFamilyDailyCauseList.json")) {
+            .getContextClassLoader().getResourceAsStream("templates/languages/en/familyDailyCauseList.json")) {
             language = OBJECT_MAPPER.readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -183,7 +183,7 @@ class FamilyCauseListFileConverterTest {
             .hasSize(27)
             .extracting(Element::text)
             .startsWith("Time",
-                        "Case Ref",
+                        "Case ID",
                         "Case Name",
                         "Case Type",
                         "Hearing Type",
@@ -342,7 +342,7 @@ class FamilyCauseListFileConverterTest {
         IOUtils.copy(
             Files.newInputStream(Paths.get(
                 "src/test/resources/mocks/",
-                "FamilyDailyCauseList.json"
+                "familyDailyCauseList.json"
             )), writer,
             Charset.defaultCharset()
         );
