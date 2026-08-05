@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.CivilAndFamilyList;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.*;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CftListHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.FamilyMixedListHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -17,8 +17,10 @@ public class CivilAndFamilyDailyCauseListFileConverter extends ExcelAbstractList
     public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources)
         throws IOException {
         Language language = Language.valueOf(metadata.get("language"));
-        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/openJusticeStatement", language));
-        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath(
+            "common/openJusticeStatement", language));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath(
+            "common/linkToFact", language));
 
         return TemplateEngine.processTemplate(
             metadata.get("listType"),
@@ -94,7 +96,8 @@ public class CivilAndFamilyDailyCauseListFileConverter extends ExcelAbstractList
                                     caseNode, "applicant", "applicantRepresentative"));
                                 thisCase.setRespondent(CftListHelper.buildParty(
                                     caseNode, "respondent", "respondentRepresentative"));
-                                thisCase.setReportingRestriction(caseNode.path("formattedReportingRestriction").asText());
+                                thisCase.setReportingRestriction(caseNode.path(
+                                    "formattedReportingRestriction").asText());
                                 caseList.add(thisCase);
                             });
                         })

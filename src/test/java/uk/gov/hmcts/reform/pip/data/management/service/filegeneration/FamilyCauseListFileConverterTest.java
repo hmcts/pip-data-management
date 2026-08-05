@@ -4,12 +4,19 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.assertj.core.api.SoftAssertions;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Test;
+import uk.gov.hmcts.reform.pip.model.publication.Language;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -22,10 +29,11 @@ import java.util.Map;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 class FamilyCauseListFileConverterTest {
 
-    private final FamilyDailyCauseListFileConverter familyDailyCauseListConverter
+    private final FileConverter familyDailyCauseListConverter
         = new FamilyDailyCauseListFileConverter();
 
     private static final String HEADER_TEXT = "Incorrect header text";
@@ -247,5 +255,128 @@ class FamilyCauseListFileConverterTest {
         );
 
         return OBJECT_MAPPER.readTree(writer.toString());
+    }
+
+
+    @Test
+    void testExcelTableHeaderEnglish() throws IOException {
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(Files.newInputStream(Paths.get("src/test/resources/mocks/",
+                                                    "familyDailyCauseList.json")), writer,
+                     Charset.defaultCharset()
+        );
+        JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
+
+        byte[] result = familyDailyCauseListConverter.convertToExcel(inputJson,
+                                                                   ListType.FAMILY_DAILY_CAUSE_LIST, Language.ENGLISH);
+        ByteArrayInputStream file = new ByteArrayInputStream(result);
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheetAt(0);
+        Row headingRow = sheet.getRow(0);
+
+        assertEquals("Sheet name does not match", "Sheet1", sheet.getSheetName());
+        assertEquals("Time column is different", "Time",
+                     headingRow.getCell(0).getStringCellValue());
+        assertEquals("Case ref column is different", "Case ID",
+                     headingRow.getCell(1).getStringCellValue());
+        assertEquals("Case name column is different", "Case Name",
+                     headingRow.getCell(2).getStringCellValue());
+        assertEquals("Case type column is different", "Case Type",
+                     headingRow.getCell(3).getStringCellValue());
+        assertEquals("Hearing type column is different", "Hearing Type",
+                     headingRow.getCell(4).getStringCellValue());
+        assertEquals("Location column is different", "Location",
+                     headingRow.getCell(5).getStringCellValue());
+        assertEquals("Duration column is different", "Duration",
+                     headingRow.getCell(6).getStringCellValue());
+        assertEquals("Applicant/Petitioner column is different", "Applicant/Petitioner",
+                     headingRow.getCell(7).getStringCellValue());
+        assertEquals("Respondent column is different", "Respondent",
+                     headingRow.getCell(8).getStringCellValue());
+        assertEquals("Reporting Restrictions column is different", "Reporting Restriction: ",
+                     headingRow.getCell(9).getStringCellValue());
+    }
+
+    @Test
+    void testExcelTableHeaderWelsh() throws IOException {
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(Files.newInputStream(Paths.get("src/test/resources/mocks/",
+                                                    "familyDailyCauseList.json")), writer,
+                     Charset.defaultCharset()
+        );
+        JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
+
+        byte[] result = familyDailyCauseListConverter.convertToExcel(inputJson,
+                                                                   ListType.FAMILY_DAILY_CAUSE_LIST, Language.WELSH);
+        ByteArrayInputStream file = new ByteArrayInputStream(result);
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheetAt(0);
+        Row headingRow = sheet.getRow(0);
+
+        assertEquals("Sheet name does not match", "Sheet1", sheet.getSheetName());
+        assertEquals("Time column is different", "Amser",
+                     headingRow.getCell(0).getStringCellValue());
+        assertEquals("Case ref column is different", "Cyfeirnod yr Achos",
+                     headingRow.getCell(1).getStringCellValue());
+        assertEquals("Case name at column is different", "Enw'r achos",
+                     headingRow.getCell(2).getStringCellValue());
+        assertEquals("Case type column is different", "Math o achos",
+                     headingRow.getCell(3).getStringCellValue());
+        assertEquals("Hearing type column is different", "Math o wrandawiad",
+                     headingRow.getCell(4).getStringCellValue());
+        assertEquals("Location column is different", "Lleoliad",
+                     headingRow.getCell(5).getStringCellValue());
+        assertEquals("Duration column is different", "Hyd",
+                     headingRow.getCell(6).getStringCellValue());
+        assertEquals("Applicant/Petitioner column is different", "Ceisydd/Deisebydd",
+                     headingRow.getCell(7).getStringCellValue());
+        assertEquals("Respondent column is different", "Atebydd",
+                     headingRow.getCell(8).getStringCellValue());
+        assertEquals("Reporting Restrictions column is different", "Cyfyngiad adrodd: ",
+                     headingRow.getCell(9).getStringCellValue());
+    }
+
+    @Test
+    void testExcelTableRows() throws IOException {
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(
+            Files.newInputStream(Paths.get(
+                "src/test/resources/mocks/",
+                "FamilyDailyCauseList.json"
+            )), writer,
+            Charset.defaultCharset()
+        );
+        JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
+
+        byte[] result = familyDailyCauseListConverter.convertToExcel(
+            inputJson,
+            ListType.FAMILY_DAILY_CAUSE_LIST, Language.ENGLISH
+        );
+        ByteArrayInputStream file = new ByteArrayInputStream(result);
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheetAt(0);
+        Row dataRow = sheet.getRow(1);
+        assertEquals("Time value is different", "10:30am",
+                     dataRow.getCell(0).getStringCellValue());
+        assertEquals("Case ref value is different", "12341234",
+                     dataRow.getCell(1).getStringCellValue());
+        assertEquals("Case name value is different","This is a case name [2 of 3]",
+                     dataRow.getCell(2).getStringCellValue());
+        assertEquals("Case type value is different", "normal",
+                     dataRow.getCell(3).getStringCellValue());
+        assertEquals("Hearing type value is different", "Directions",
+                     dataRow.getCell(4).getStringCellValue());
+        assertEquals("Location value is different", "Teams, Attended",
+                     dataRow.getCell(5).getStringCellValue());
+        assertEquals("Duration value is different", "1 hour 25 mins",
+                     dataRow.getCell(6).getStringCellValue());
+        assertEquals("Applicant/Petitioner value is different",
+                     "Applicant Surname 1, Legal advisor: Mr Rep Forenames 1 Rep Middlename 1 Rep Surname 1",
+                     dataRow.getCell(7).getStringCellValue());
+        assertEquals("Respondent value is different", "Respondent Surname 1",
+                     dataRow.getCell(8).getStringCellValue());
+        assertEquals("Reporting Restrictions value is different",
+                     "Reporting restriction 1, Reporting restriction 2",
+                     dataRow.getCell(9).getStringCellValue());
     }
 }

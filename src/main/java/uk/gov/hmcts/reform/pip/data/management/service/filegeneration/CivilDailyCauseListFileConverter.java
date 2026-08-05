@@ -1,9 +1,8 @@
 package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.CivilDailyList;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.*;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CftListHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
@@ -18,8 +17,10 @@ public class CivilDailyCauseListFileConverter extends ExcelAbstractList implemen
     public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources)
         throws IOException {
         Language language = Language.valueOf(metadata.get("language"));
-        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/openJusticeStatement", language));
-        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath(
+            "common/openJusticeStatement", language));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath(
+            "common/linkToFact", language));
 
         return TemplateEngine.processTemplate(
             metadata.get("listType"),
