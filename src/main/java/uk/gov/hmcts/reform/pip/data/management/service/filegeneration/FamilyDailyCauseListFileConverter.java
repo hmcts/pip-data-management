@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.CivilAndFamilyList;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.FamilyMixedList;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CftListHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.FamilyMixedListHelper;
@@ -54,7 +54,7 @@ public class FamilyDailyCauseListFileConverter extends ExcelAbstractList impleme
     public List<List<String>> getExcelRows(JsonNode json, Map<String, Object> languageResources, Language language) {
         CftListHelper.manipulatedListData(json, language, true);
         List<List<String>> rows = new ArrayList<>();
-        List<CivilAndFamilyList> processedData = processRawListData(json, language);
+        List<FamilyMixedList> processedData = processRawListData(json, language);
 
         processedData.forEach(list -> {
             rows.add(List.of(
@@ -74,39 +74,11 @@ public class FamilyDailyCauseListFileConverter extends ExcelAbstractList impleme
         return rows;
     }
 
-    private List<CivilAndFamilyList> processRawListData(JsonNode jsonBody, Language language) {
-        List<CivilAndFamilyList> caseList = new ArrayList<>();
-        FamilyMixedListHelper.manipulatedListData(jsonBody, language);
-
-        jsonBody.get("courtLists").forEach(
-            courtList -> courtList.get("courtHouse").get("courtRoom").forEach(
-                courtRoom -> courtRoom.get("session").forEach(
-                    session -> session.get("sittings").forEach(
-                        sitting -> sitting.get("hearing").forEach(hearing -> {
-                            hearing.get("case").forEach(caseNode -> {
-                                CivilAndFamilyList thisCase = new CivilAndFamilyList();
-
-                                thisCase.setTime(sitting.path("time").asText());
-                                thisCase.setCaseRef(caseNode.path("caseNumber").asText());
-                                thisCase.setCaseName(caseNode.path("formattedCaseName").asText());
-                                thisCase.setCaseType(caseNode.path("caseType").asText());
-                                thisCase.setHearingType(hearing.path("hearingType").asText());
-                                thisCase.setLocation(sitting.path("caseHearingChannel").asText());
-                                thisCase.setDuration(sitting.path("formattedDuration").asText());
-                                thisCase.setApplicant(CftListHelper.buildParty(
-                                    caseNode, "applicant", "applicantRepresentative"));
-                                thisCase.setRespondent(CftListHelper.buildParty(
-                                    caseNode, "respondent", "respondentRepresentative"));
-                                thisCase.setReportingRestriction(caseNode.path(
-                                    "formattedReportingRestriction").asText());
-                                caseList.add(thisCase);
-                            });
-                        })
-                    )
-                )
-            )
+    private List<FamilyMixedList> processRawListData(JsonNode jsonBody, Language language) {
+        return CftListHelper.processCases(
+            jsonBody,
+            body -> FamilyMixedListHelper.manipulatedListData(body, language),
+            FamilyMixedListHelper::buildFamilyMixedList
         );
-
-        return caseList;
     }
 }

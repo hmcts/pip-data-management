@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CivilAndFamilyList {
+public class FamilyMixedList {
     private String time;
     private String caseRef;
     private String caseName;

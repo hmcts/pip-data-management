@@ -66,32 +66,22 @@ public class CivilDailyCauseListFileConverter extends ExcelAbstractList implemen
     }
 
     private List<CivilDailyList> processRawListData(JsonNode jsonBody, Language language) {
-        List<CivilDailyList> caseList = new ArrayList<>();
-        CftListHelper.manipulatedListData(jsonBody, language, false);
+        return CftListHelper.processCases(
+            jsonBody,
+            body -> CftListHelper.manipulatedListData(body, language, false),
+            (sitting, hearing, caseNode) -> {
+                CivilDailyList thisCase = new CivilDailyList();
 
-        jsonBody.get("courtLists").forEach(
-            courtList -> courtList.get("courtHouse").get("courtRoom").forEach(
-                courtRoom -> courtRoom.get("session").forEach(
-                    session -> session.get("sittings").forEach(
-                        sitting -> sitting.get("hearing").forEach(hearing -> {
-                            hearing.get("case").forEach(caseNode -> {
-                                CivilDailyList thisCase = new CivilDailyList();
+                thisCase.setTime(sitting.path("time").asText());
+                thisCase.setCaseId(caseNode.path("caseNumber").asText());
+                thisCase.setCaseName(caseNode.path("formattedCaseName").asText());
+                thisCase.setCaseType(caseNode.path("caseType").asText());
+                thisCase.setHearingType(hearing.path("hearingType").asText());
+                thisCase.setLocation(sitting.path("caseHearingChannel").asText());
+                thisCase.setDuration(sitting.path("formattedDuration").asText());
 
-                                thisCase.setTime(sitting.path("time").asText());
-                                thisCase.setCaseId(caseNode.path("caseNumber").asText());
-                                thisCase.setCaseName(caseNode.path("formattedCaseName").asText());
-                                thisCase.setCaseType(caseNode.path("caseType").asText());
-                                thisCase.setHearingType(hearing.path("hearingType").asText());
-                                thisCase.setLocation(sitting.path("caseHearingChannel").asText());
-                                thisCase.setDuration(sitting.path("formattedDuration").asText());
-                                caseList.add(thisCase);
-                            });
-                        })
-                    )
-                )
-            )
+                return thisCase;
+            }
         );
-
-        return caseList;
     }
 }
