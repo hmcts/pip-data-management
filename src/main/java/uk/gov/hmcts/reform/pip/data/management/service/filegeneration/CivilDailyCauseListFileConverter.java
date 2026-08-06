@@ -32,8 +32,6 @@ public class CivilDailyCauseListFileConverter extends ExcelAbstractList implemen
     public List<String> getExcelHeaders(Map<String, Object> languageResources) {
         @SuppressWarnings("unchecked")
         List<String> tableHeaders = (List<String>) languageResources.get("headerValuesWrap");
-        @SuppressWarnings("unchecked")
-        List<String> tableHeadersUnwrap = (List<String>) languageResources.get("headerValuesUnwrap");
 
         return List.of(
             tableHeaders.get(0),
