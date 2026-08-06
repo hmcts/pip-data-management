@@ -99,6 +99,7 @@
     <cve>CVE-2026-50229</cve>
     <cve>CVE-2026-55276</cve>
     <cve>CVE-2026-53434</cve>
+    <cve>CVE-2026-66299</cve>
   </suppress>
   <suppress>
     <notes>PDFBox and XMPBox</notes>
