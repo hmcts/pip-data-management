@@ -32,21 +32,27 @@ public final class LocationHelper {
         return address;
     }
 
-    public static List<String> formatFullVenueAddress(JsonNode artefact) {
+    public static List<String> formatFullVenueAddress(JsonNode artefact, boolean isCftList) {
         List<String> address = addAddressLines(artefact);
 
-        if (!GeneralHelper.findAndReturnNodeText(artefact.get(VENUE).get(VENUE_ADDRESS), TOWN).isEmpty()) {
-            address.add(artefact.get(VENUE).get(VENUE_ADDRESS).get(TOWN).asText());
-        }
+        if (!isCftList) {
+            if (!GeneralHelper.findAndReturnNodeText(artefact.get(VENUE).get(VENUE_ADDRESS), TOWN).isEmpty()) {
+                address.add(artefact.get(VENUE).get(VENUE_ADDRESS).get(TOWN).asText());
+            }
 
-        if (!GeneralHelper.findAndReturnNodeText(artefact.get(VENUE).get(VENUE_ADDRESS), COUNTY).isEmpty()) {
-            address.add(artefact.get(VENUE).get(VENUE_ADDRESS).get(COUNTY).asText());
+            if (!GeneralHelper.findAndReturnNodeText(artefact.get(VENUE).get(VENUE_ADDRESS), COUNTY).isEmpty()) {
+                address.add(artefact.get(VENUE).get(VENUE_ADDRESS).get(COUNTY).asText());
+            }
         }
 
         if (!GeneralHelper.findAndReturnNodeText(artefact.get(VENUE).get(VENUE_ADDRESS), POSTCODE).isEmpty()) {
             address.add(artefact.get(VENUE).get(VENUE_ADDRESS).get(POSTCODE).asText());
         }
         return address;
+    }
+
+    public static List<String> formatFullVenueAddress(JsonNode artefact) {
+        return formatFullVenueAddress(artefact, false);
     }
 
     public static void formatCourtAddress(JsonNode artefact, String delimiter, boolean addCourtHouseName) {
