@@ -63,6 +63,7 @@ class FileGenerationTest extends FunctionalTestBase {
     private static final LocalDateTime DISPLAY_FROM = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     private static final String COURT_ID = randomLocationId();
     private static final String COURT_NAME = "TestLocation" + COURT_ID;
+    private static final String CROWN_DAILY_PDDA_LIST_FILE = "data/crownDailyPddaList.json";
     private static final String CIVIL_CAUSE_LIST_FILE = "data/civilDailyCauseList.json";
     private static final String SJP_PUBLIC_LIST_FILE = "data/sjpPublicList.json";
     private static final String X_SYSTEM_FILE_HEADER = "x-system";
@@ -148,8 +149,8 @@ class FileGenerationTest extends FunctionalTestBase {
 
     @Test
     void shouldGenerateAPdfOnPublicationUpload() throws Exception {
-        Artefact artefact = uploadPublication(ListType.CIVIL_DAILY_CAUSE_LIST,
-                                              CIVIL_CAUSE_LIST_FILE,
+        Artefact artefact = uploadPublication(ListType.CROWN_DAILY_PDDA_LIST,
+                                              CROWN_DAILY_PDDA_LIST_FILE,
                                               Language.ENGLISH, Sensitivity.PUBLIC
         );
 
@@ -203,8 +204,8 @@ class FileGenerationTest extends FunctionalTestBase {
 
     @Test
     void shouldGenerateAWelshPdfOnPublicationUpload() throws Exception {
-        Artefact artefact = uploadPublication(ListType.CIVIL_DAILY_CAUSE_LIST,
-                                              CIVIL_CAUSE_LIST_FILE,
+        Artefact artefact = uploadPublication(ListType.CROWN_DAILY_PDDA_LIST,
+                                              CROWN_DAILY_PDDA_LIST_FILE,
                                               Language.WELSH, Sensitivity.PUBLIC);
 
         Response sizesResponse = doGetRequest(String.format(FILE_SIZES_URL, artefact.getArtefactId()), headerMap);
