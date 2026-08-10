@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class FamilyDailyCauseListFileConverter extends ExcelAbstractList implements FileConverter {
-
+public class FamilyMixedDailyCauseListFileConverter extends ExcelAbstractList implements FileConverter {
     @Override
     public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources)
         throws IOException {
