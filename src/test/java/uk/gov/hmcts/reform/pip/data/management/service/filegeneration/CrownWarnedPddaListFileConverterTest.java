@@ -15,7 +15,6 @@ import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import uk.gov.hmcts.reform.pip.model.publication.Language;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -378,7 +377,7 @@ class CrownWarnedPddaListFileConverterTest {
     @Test
     void testCrownWarnedListExcelConversion() throws IOException {
         byte[] result = crownWarnedPddaListConverter.convertToExcel(inputJson, CROWN_WARNED_PDDA_LIST,
-                                                                    Language.ENGLISH);
+                                                                    Map.of("language", "ENGLISH"));
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -420,7 +419,7 @@ class CrownWarnedPddaListFileConverterTest {
     @Test
     void testCrownWarnedListWelshExcelConversion() throws IOException {
         byte[] result = crownWarnedPddaListConverter.convertToExcel(inputJson, CROWN_WARNED_PDDA_LIST,
-                                                                    Language.WELSH);
+                                                                    Map.of("language", "WELSH"));
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -462,7 +461,7 @@ class CrownWarnedPddaListFileConverterTest {
     @Test
     void testCrownWarnedListExcelTableContents() throws IOException {
         byte[] result = crownWarnedPddaListConverter.convertToExcel(inputJson, CROWN_WARNED_PDDA_LIST,
-                                                                    Language.ENGLISH);
+                                                                    Map.of("language", "ENGLISH"));
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
