@@ -15,7 +15,6 @@ import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import uk.gov.hmcts.reform.pip.model.publication.Language;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -249,7 +248,7 @@ class CrownDailyPddaListFileConverterTest {
     @Test
     void testCrownDailyListExcelConversion() throws IOException {
         byte[] result = crownDailyPddaListConverter.convertToExcel(inputJson, CROWN_DAILY_PDDA_LIST,
-                                                                   Language.ENGLISH);
+                                                                   Map.of("language", "ENGLISH"));
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -307,7 +306,7 @@ class CrownDailyPddaListFileConverterTest {
     @Test
     void testCrownDailyListWelshExcelConversion() throws IOException {
         byte[] result = crownDailyPddaListConverter.convertToExcel(inputJson, CROWN_DAILY_PDDA_LIST,
-                                                                   Language.WELSH);
+                                                                   Map.of("language", "WELSH"));
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -365,7 +364,7 @@ class CrownDailyPddaListFileConverterTest {
     @Test
     void testCrownDailyListExcelTableContents() throws IOException {
         byte[] result = crownDailyPddaListConverter.convertToExcel(inputJson, CROWN_DAILY_PDDA_LIST,
-                                                                   Language.ENGLISH);
+                                                                   Map.of("language", "ENGLISH"));
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);

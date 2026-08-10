@@ -58,10 +58,11 @@ public class MagistratesAdultCourtListFileConverter extends ExcelAbstractList im
     }
 
     @Override
-    public List<List<String>> getExcelRows(JsonNode json, Map<String, Object> languageResources, Language language) {
+    public List<List<String>> getExcelRows(JsonNode json, Map<String, Object> languageResources,
+                                           Map<String, String> metadata) {
         List<List<String>> rows = new ArrayList<>();
         List<MagistratesAdultCourtList> processedData = MagistratesAdultCourtListHelper.processPayload(
-            json, language, true
+            json, Language.valueOf(metadata.get("language")), true
         );
 
         processedData.forEach(
