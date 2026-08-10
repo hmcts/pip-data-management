@@ -65,6 +65,17 @@ class LocationHelperTest {
             .containsExactly("Address Line 1", "Venue Town", "Venue County", "AA1 AA1");
     }
 
+    @Test
+    void testFormatFullVenueAddressIsCft() {
+        List<String> venueAddress = LocationHelper.formatFullVenueAddress(inputJson, true);
+
+        assertThat(venueAddress)
+            .as(VENUE_ADDRESS_ERROR)
+            .hasSize(2)
+            .containsExactly("Address Line 1", "AA1 AA1");
+    }
+
+
     private static Stream<Arguments> parameterForFormatCourtAddress() {
         return Stream.of(
             Arguments.of(DELIMITER, false),
