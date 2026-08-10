@@ -23,7 +23,7 @@ public class SjpPublicListFileConverter extends ExcelAbstractList implements Fil
      * @return the HTML representation of the SJP public cases
      */
     @Override
-    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String,Object> language)
+    public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> language)
         throws IOException {
         Context context = new Context();
         String publicationDate = DateHelper.formatTimeStampToBst(
@@ -57,7 +57,7 @@ public class SjpPublicListFileConverter extends ExcelAbstractList implements Fil
 
     @Override
     public List<List<String>> getExcelRows(JsonNode artefact, Map<String, Object> languageResources,
-                                           Language language) {
+                                           Map<String, String> metadata) {
         List<List<String>> rows = new ArrayList<>();
 
         processRawListData(artefact).forEach(entry -> {
