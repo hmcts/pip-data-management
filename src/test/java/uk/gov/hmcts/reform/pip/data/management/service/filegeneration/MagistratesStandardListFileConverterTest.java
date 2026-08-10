@@ -459,15 +459,24 @@ class MagistratesStandardListFileConverterTest {
     }
 
     @Test
-    void testAdjournedFromIsEmptyWhenNotSet() throws IOException {
+    void testTableRowIsSkippedWhenEmptyValue() throws IOException {
         String result = converter.convert(inputJson, englishMetadata, englishLanguageResource);
         Document document = Jsoup.parse(result);
         SoftAssertions softly = new SoftAssertions();
 
         Elements tableCell = document.getElementsByClass("govuk-table__cell");
-        softly.assertThat(tableCell.get(27).text())
-            .as(OFFENCE_MESSAGE)
-            .isEmpty();
+        int beginningOfSecondSetOfOffenceDetails = 15;
+        int endOfSecondSetOfOffenceDetails = 30;
+
+        for (int i = beginningOfSecondSetOfOffenceDetails; i < endOfSecondSetOfOffenceDetails; i++) {
+            softly.assertThat(tableCell.get(i).text())
+                .as(OFFENCE_MESSAGE)
+                .isNotEmpty();
+
+            softly.assertThat(tableCell.get(i).text())
+                .as(OFFENCE_MESSAGE)
+                .isNotEqualTo("Adjourned from");
+        }
 
         softly.assertAll();
     }
