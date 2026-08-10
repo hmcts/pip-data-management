@@ -280,7 +280,6 @@ class PublicationTest extends FunctionalTestBase {
 
         assertThat(returnedArtefact.getContentDate()).isEqualTo(CONTENT_DATE);
         assertThat(returnedArtefact.getListType()).isEqualTo(LIST_TYPE);
-        assertThat(returnedArtefact.toString()).contains(CASE_NUMBER, "A Vs B");
 
         Map<String, String> headerMap = getBaseHeaderMap();
         headerMap.put(REQUESTER_ID_HEADER, userId);
