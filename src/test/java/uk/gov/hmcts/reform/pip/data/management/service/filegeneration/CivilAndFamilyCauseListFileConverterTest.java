@@ -54,7 +54,7 @@ class CivilAndFamilyCauseListFileConverterTest {
     );
 
     @Test
-    void testFamilyCauseListTemplate() throws IOException {
+    void testCivilAndFamilyCauseListTemplate() throws IOException {
         Map<String, Object> language;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader().getResourceAsStream("templates/languages/en/civilAndFamilyDailyCauseList.json")) {
@@ -84,6 +84,10 @@ class CivilAndFamilyCauseListFileConverterTest {
             .as(LINK_MESSAGE)
             .isEqualTo("Find contact details and other information about courts and tribunals in England "
                            + "and Wales, and some non-devolved tribunals in Scotland.");
+
+        assertThat(document.getElementsByClass(BODY_CLASS)
+                       .get(1).text())
+            .as(HEADER_TEXT).contains("Address Line 1 AA1 AA1");
 
         assertThat(document.getElementsByClass(BODY_CLASS)
                        .get(3).text())
