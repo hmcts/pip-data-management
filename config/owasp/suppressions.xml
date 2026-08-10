@@ -31,6 +31,15 @@
     <cve>CVE-2026-23907</cve>
   </suppress>
   <suppress>
+    <notes>Vulnerability in org.apache.qpid/proton-j</notes>
+    <cve>CVE-2026-66257</cve>
+    <cve>CVE-2026-66273</cve>
+    <cve>CVE-2026-66274</cve>
+    <cve>CVE-2026-66275</cve>
+    <cve>CVE-2026-66276</cve>
+    <cve>CVE-2026-66277</cve>
+  </suppress>
+  <suppress>
     <notes>Vulnerability in json-schema-validator</notes>
     <cve>CVE-2025-15104</cve>
   </suppress>
