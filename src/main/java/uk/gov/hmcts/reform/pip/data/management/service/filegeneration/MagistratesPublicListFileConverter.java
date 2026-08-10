@@ -48,8 +48,9 @@ public class MagistratesPublicListFileConverter extends ExcelAbstractList implem
 
     @Override
     public List<List<String>> getExcelRows(JsonNode artefact, Map<String, Object> languageResources,
-                                           Language language) {
-        List<MagistratesPublicList> cases = processRawListData(artefact, languageResources);
+                                           Map<String, String> metadata) {
+        List<MagistratesPublicList> cases = processRawListData(artefact, languageResources,
+                                                               metadata.get("locationName"));
 
         List<List<String>> rows = new ArrayList<>();
         cases.forEach(caseItem -> rows.add(List.of(
@@ -66,14 +67,15 @@ public class MagistratesPublicListFileConverter extends ExcelAbstractList implem
         return rows;
     }
 
-    private List<MagistratesPublicList> processRawListData(JsonNode artefact, Map<String, Object> languageResources) {
+    private List<MagistratesPublicList> processRawListData(JsonNode artefact, Map<String, Object> languageResources,
+                                                           String locationName) {
         List<MagistratesPublicList> cases = new ArrayList<>();
         List<CourtRoom> processedData = MagistratesPublicListHelper.processRawListData(artefact);
 
         processedData.forEach(courtRoom -> courtRoom.getSittings().forEach(sitting ->
             sitting.getHearings().forEach(hearing ->
                 cases.add(new MagistratesPublicList(
-                    "",
+                    locationName,
                     courtRoom.getFormattedCourtRoomName(),
                     sitting.getTime(),
                     hearing.getCaseUrn(),

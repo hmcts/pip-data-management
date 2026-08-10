@@ -34,11 +34,12 @@ public interface FileConverter {
      *
      * @return The converted Excel spreadsheet as a byte array.
      */
-    default byte[] convertToExcel(JsonNode artefact, ListType listType, Language language) throws IOException {
-        Map<String, Object> languageResources = LanguageResourceHelper.getLanguageResources(listType,
-                                                                                            language);
+    default byte[] convertToExcel(JsonNode artefact, ListType listType, Map<String, String> metadata)
+        throws IOException {
+        Language language = Language.valueOf(metadata.get("language"));
+        Map<String, Object> languageResources = LanguageResourceHelper.getLanguageResources(listType, language);
         List<String> headers = getExcelHeaders(artefact, languageResources);
-        List<List<String>> rows = getExcelRows(artefact, languageResources, language);
+        List<List<String>> rows = getExcelRows(artefact, languageResources, metadata);
 
         if (headers.isEmpty() && rows.isEmpty()) {
             return new byte[0];
@@ -76,7 +77,7 @@ public interface FileConverter {
     }
 
     default List<List<String>> getExcelRows(JsonNode artefact, Map<String, Object> languageResources,
-                                            Language language) {
+                                            Map<String, String> metadata) {
         return new ArrayList<>();
     }
 }
