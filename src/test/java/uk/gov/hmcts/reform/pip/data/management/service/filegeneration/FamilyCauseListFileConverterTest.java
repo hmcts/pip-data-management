@@ -92,6 +92,10 @@ class FamilyCauseListFileConverterTest {
             .as(TITLE_TEXT).contains("How to observe a court or tribunal hearing");
 
         assertThat(document.getElementsByClass(BODY_CLASS)
+                       .get(1).text())
+            .as(HEADER_TEXT).contains("Address Line 1 AA1 AA1");
+
+        assertThat(document.getElementsByClass(BODY_CLASS)
                        .get(3).text())
             .as(HEADER_TEXT).contains("Last updated 21 July 2022");
 
