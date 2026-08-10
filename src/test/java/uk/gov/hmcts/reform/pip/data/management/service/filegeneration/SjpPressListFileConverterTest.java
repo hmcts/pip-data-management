@@ -305,7 +305,7 @@ class SjpPressListFileConverterTest {
     @EnumSource(value = ListType.class, names = {"SJP_PRESS_LIST", "SJP_DELTA_PRESS_LIST"})
     void testExcelConversionWelshTableHeaders(ListType listType) throws IOException {
         byte[] result = sjpPressListConverter.convertToExcel(getInput("/mocks/sjpPressList.json"), listType,
-                                                             Language.WELSH);
+                                                             Map.of("language", "WELSH"));
 
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
