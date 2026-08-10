@@ -15,7 +15,6 @@ import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import uk.gov.hmcts.reform.pip.model.publication.Language;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -261,7 +260,7 @@ class CrownFirmPddaListFileConverterTest {
     @Test
     void testCrownFirmListExcelConversion() throws IOException {
         byte[] result = crownFirmPddaListConverter.convertToExcel(inputJson, CROWN_FIRM_PDDA_LIST,
-                                                                   Language.ENGLISH);
+                                                                  Map.of("language", "ENGLISH"));
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -327,7 +326,7 @@ class CrownFirmPddaListFileConverterTest {
     @Test
     void testCrownFirmListWelshExcelConversion() throws IOException {
         byte[] result = crownFirmPddaListConverter.convertToExcel(inputJson, CROWN_FIRM_PDDA_LIST,
-                                                                   Language.WELSH);
+                                                                  Map.of("language", "WELSH"));
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -393,7 +392,7 @@ class CrownFirmPddaListFileConverterTest {
     @Test
     void testCrownFirmListExcelTableContents() throws IOException {
         byte[] result = crownFirmPddaListConverter.convertToExcel(inputJson, CROWN_FIRM_PDDA_LIST,
-                                                                  Language.ENGLISH);
+                                                                  Map.of("language", "ENGLISH"));
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
