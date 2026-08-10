@@ -12,7 +12,6 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSearchService;
-import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -22,15 +21,11 @@ import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_VALUES;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_KEY;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_VALUE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.MESSAGES_MATCH;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.STATUS_CODE_MATCH;
 
@@ -46,7 +41,6 @@ class PublicationSearchControllerTest {
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now();
     private static final String PAYLOAD_URL = "This is a test payload";
     private static final String EMPTY_FIELD = "";
-    private static final CaseSearchTerm SEARCH_TERM = CaseSearchTerm.CASE_ID;
     private static final String TEST_STRING = "test";
     private static final String VALIDATION_EXPECTED_MESSAGE =
         "The expected exception does not contain the correct message";
@@ -63,7 +57,6 @@ class PublicationSearchControllerTest {
         .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
         .locationId(LOCATION_ID)
         .contentDate(CONTENT_DATE)
-        .search(new ConcurrentHashMap<>())
         .payloadSize(10f)
         .build();
 
@@ -79,7 +72,6 @@ class PublicationSearchControllerTest {
 
     @BeforeAll
     static void setup() {
-        SEARCH_VALUES.put(TEST_KEY, List.of(TEST_VALUE));
         LIST_SEARCH_CONFIG.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         LIST_SEARCH_CONFIG.setCaseNumberFieldName(CASE_NUMBER_FIELD_NAME);
         LIST_SEARCH_CONFIG.setCaseNameFieldName(CASE_NAME_FIELD_NAME);
@@ -162,27 +154,6 @@ class PublicationSearchControllerTest {
             .as(MESSAGES_MATCH)
             .isEqualTo(CASE_NAME_FIELD_NAME);
 
-    }
-
-    @Test
-    void testGetArtefactsBySearchV2ReturnsWhenTrue() {
-        when(publicationSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID))
-            .thenReturn(List.of(ARTEFACT_WITH_ID));
-        assertEquals(HttpStatus.OK, publicationSearchController
-                         .getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING, USER_ID).getStatusCode(),
-                     STATUS_CODE_MATCH
-        );
-    }
-
-    @Test
-    void testGetArtefactsBySearchV2ReturnsWhenFalse() {
-        when(publicationSearchService.findAllBySearch(SEARCH_TERM, TEST_STRING, USER_ID))
-            .thenReturn(List.of(ARTEFACT_WITH_ID));
-        assertEquals(HttpStatus.OK, publicationSearchController
-                         .getAllRelevantArtefactsBySearchValue(SEARCH_TERM, TEST_STRING, USER_ID)
-                         .getStatusCode(),
-                     STATUS_CODE_MATCH
-        );
     }
 
     @Test

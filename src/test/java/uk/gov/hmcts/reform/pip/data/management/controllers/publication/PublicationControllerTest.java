@@ -39,7 +39,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -153,7 +152,6 @@ class PublicationControllerTest {
             .listType(LIST_TYPE)
             .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
-            .search(new ConcurrentHashMap<>())
             .payloadSize(PAYLOAD_SIZE)
             .build();
 
@@ -170,7 +168,6 @@ class PublicationControllerTest {
             .listType(LIST_TYPE)
             .locationId(NO_MATCH + LOCATION_ID)
             .contentDate(CONTENT_DATE)
-            .search(new ConcurrentHashMap<>())
             .payloadSize(PAYLOAD_SIZE)
             .build();
 
@@ -185,7 +182,6 @@ class PublicationControllerTest {
             .listType(LIST_TYPE)
             .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
-            .search(new ConcurrentHashMap<>())
             .payloadSize(PAYLOAD_SIZE)
             .isFlatFile(true)
             .build();
@@ -194,7 +190,7 @@ class PublicationControllerTest {
     @Test
     void testCreationOfPublication() {
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithId);
+        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
@@ -219,7 +215,7 @@ class PublicationControllerTest {
         "CROWN_WARNED_PDDA_LIST"})
     void shouldNotValidateMasterSchemaForMagistratesAdultCourtLists(ListType listType) {
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithId);
+        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
@@ -237,7 +233,7 @@ class PublicationControllerTest {
     @Test
     void testCreationOfPublicationWithNonExistentLocationId() {
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithNoMatchLocationId);
+        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithNoMatchLocationId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
@@ -347,11 +343,9 @@ class PublicationControllerTest {
     void testCreatePublicationMultipartFile() {
         Map<String, List<Object>> search = new HashMap<>();
         search.put("location-id", List.of(LOCATION_ID));
-        artefact.setSearch(search);
         artefact.setIsFlatFile(true);
         artefact.setPayloadSize(0f);
         artefactWithId.setIsFlatFile(true);
-        artefactWithId.setSearch(search);
         artefactWithId.setPayloadSize(0f);
 
         when(validationService.validateHeaders(any())).thenReturn(headers);
@@ -372,11 +366,9 @@ class PublicationControllerTest {
     void testCreatePublicationMultipartFileWithNonExistentLocationId() {
         Map<String, List<Object>> search = new HashMap<>();
         search.put("location-id", List.of(LOCATION_ID));
-        artefact.setSearch(search);
         artefact.setIsFlatFile(true);
         artefact.setPayloadSize(0f);
         artefactWithNoMatchLocationId.setIsFlatFile(true);
-        artefactWithNoMatchLocationId.setSearch(search);
         artefactWithNoMatchLocationId.setPayloadSize(0f);
 
         when(validationService.validateHeaders(any())).thenReturn(headers);
@@ -400,7 +392,7 @@ class PublicationControllerTest {
 
         when(validationService.validateHeaders(any())).thenReturn(headers);
         when(excelConversionService.convert(file)).thenReturn(PAYLOAD);
-        when(publicationCreationRunner.run(artefact, PAYLOAD, false)).thenReturn(artefactWithId);
+        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.nonStrategicUploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO,
@@ -420,8 +412,7 @@ class PublicationControllerTest {
 
         when(validationService.validateHeaders(any())).thenReturn(headers);
         when(excelConversionService.convert(file)).thenReturn(PAYLOAD);
-        when(publicationCreationRunner.run(artefact, PAYLOAD, false))
-            .thenReturn(artefactWithNoMatchLocationId);
+        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithNoMatchLocationId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.nonStrategicUploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO,
@@ -436,8 +427,6 @@ class PublicationControllerTest {
 
     @Test
     void testUploadHtmlFileToS3BucketSuccess() {
-
-        artefactWithoutId.setSearch(null);
         artefactWithoutId.setIsFlatFile(true);
         artefactWithoutId.setPayloadSize(0f);
         artefactWithoutId.setType(ArtefactType.LCSU);
@@ -492,7 +481,7 @@ class PublicationControllerTest {
     @Test
     void testCreatePublicationLogsWhenHeaderIsPresent() throws IOException {
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithId);
+        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithId);
 
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationController.class)) {
             publicationController.uploadPublication(

@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.FunctionalTestBase;
 import uk.gov.hmcts.reform.pip.data.management.utils.OAuthClient;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
@@ -59,7 +58,6 @@ class PublicationTest extends FunctionalTestBase {
     private static final String PUBLICATION_URL = "/publication";
     private static final String NON_STRATEGIC_UPLOAD_PUBLICATION_URL = PUBLICATION_URL + "/non-strategic";
     private static final String ARTEFACT_BY_LOCATION_ID_URL = PUBLICATION_URL + "/locationId/";
-    private static final String ARTEFACT_BY_SEARCH_VALUE_URL = PUBLICATION_URL + "/search";
     private static final String DELETE_ARTEFACTS_BY_LOCATION_ID = PUBLICATION_URL + "/%s/deleteArtefacts";
     private static final String MI_DATA_URL = PUBLICATION_URL + "/mi-data";
 
@@ -78,8 +76,6 @@ class PublicationTest extends FunctionalTestBase {
     private static final String BASE_COURT_NAME = "TestLocation-PublicationTest";
     private static final String CASE_NUMBER = "4568454842";
     private static final String EMAIL = "test@hmcts.net";
-    private static final String SEARCH_TERM_PARAM = "searchTerm";
-    private static final String SEARCH_VALUE_PARAM = "searchValue";
 
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
         .truncatedTo(ChronoUnit.SECONDS);
@@ -296,16 +292,6 @@ class PublicationTest extends FunctionalTestBase {
         assertThat(responseGetArtefactPayload.getStatusCode()).isEqualTo(OK.value());
         assertThat(responseGetArtefactPayload.asString()).isEqualTo(jsonString);
 
-        final Response responseGetAllRelevantArtefactsBySearchValue = doGetRequest(
-            ARTEFACT_BY_SEARCH_VALUE_URL, headerMap,
-            Map.of(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID, SEARCH_VALUE_PARAM, randomCaseNumber)
-        );
-        assertThat(responseGetAllRelevantArtefactsBySearchValue.getStatusCode()).isEqualTo(OK.value());
-
-        Artefact[] returnedGetAllRelevantArtefactsBySearchValue = responseGetAllRelevantArtefactsBySearchValue.as(
-            Artefact[].class);
-        assertThat(returnedGetAllRelevantArtefactsBySearchValue[0].getArtefactId().toString()).isEqualTo(artefactId);
-
         final Response responseGetArtefactMetadata = doGetRequest(
             PUBLICATION_URL + '/' + artefactId, headerMap
         );
@@ -501,69 +487,6 @@ class PublicationTest extends FunctionalTestBase {
         );
 
         assertThat(responseGetArtefactMetadata.getStatusCode()).isEqualTo(FORBIDDEN.value());
-    }
-
-    @Test
-    void testGetArtefactsBySearchValueWhenUserIsUnauthorised() throws IOException {
-        String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
-        uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
-
-        Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(REQUESTER_ID_HEADER, userId);
-
-        final Response searchValueResponse = doGetRequest(
-            ARTEFACT_BY_SEARCH_VALUE_URL, headerMap,
-            Map.of(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID, SEARCH_VALUE_PARAM, randomCaseNumber)
-        );
-        assertThat(searchValueResponse.getStatusCode()).isEqualTo(NOT_FOUND.value());
-    }
-
-    @Test
-    void testGetArtefactsBySearchValueWhenUserDoesNotExist() throws IOException {
-        String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
-        uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
-
-        Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(REQUESTER_ID_HEADER, UUID.randomUUID().toString());
-
-        final Response searchValueResponse = doGetRequest(
-            ARTEFACT_BY_SEARCH_VALUE_URL, headerMap,
-            Map.of(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID, SEARCH_VALUE_PARAM, randomCaseNumber)
-        );
-        assertThat(searchValueResponse.getStatusCode())
-            .isEqualTo(FORBIDDEN.value());
-    }
-
-    @Test
-    void testGetArtefactsBySearchValueWhenRequesterIsUnauthorised() throws IOException {
-        String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
-        uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
-
-        Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(REQUESTER_ID_HEADER, systemAdminUserId);
-
-        final Response searchValueResponse = doGetRequest(
-            ARTEFACT_BY_SEARCH_VALUE_URL, headerMap,
-            Map.of(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID, SEARCH_VALUE_PARAM, randomCaseNumber)
-        );
-        assertThat(searchValueResponse.getStatusCode())
-            .isEqualTo(FORBIDDEN.value());
-    }
-
-    @Test
-    void testGetArtefactsBySearchValueWhenRequesterDoesNotExist() throws IOException {
-        String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
-        uploadArtefact(getJsonString(randomCaseNumber), courtId, Sensitivity.CLASSIFIED, PROVENANCE);
-
-        Map<String, String> headerMap = getBaseHeaderMap();
-        headerMap.put(REQUESTER_ID_HEADER, UUID.randomUUID().toString());
-
-        final Response searchValueResponse = doGetRequest(
-            ARTEFACT_BY_SEARCH_VALUE_URL, headerMap,
-            Map.of(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID, SEARCH_VALUE_PARAM, randomCaseNumber)
-        );
-        assertThat(searchValueResponse.getStatusCode())
-            .isEqualTo(FORBIDDEN.value());
     }
 
     @Test

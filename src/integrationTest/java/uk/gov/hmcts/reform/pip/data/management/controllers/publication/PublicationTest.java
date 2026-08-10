@@ -2,9 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
 import com.azure.core.util.BinaryData;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.microsoft.applicationinsights.web.dependencies.apachecommons.io.IOUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +35,6 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -1199,46 +1195,6 @@ class PublicationTest extends PublicationIntegrationTestBase {
                 .contains("No artefacts found with the location ID " + 11),
             "Artefact not found error message"
         );
-    }
-
-    @Test
-    void testGenerateNoSearchWhenFileTooBig() throws Exception {
-        when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        when(accountManagementService.getIsAuthorised(any(), any(), any())).thenReturn(true);
-        try (InputStream mockFile = this.getClass().getClassLoader()
-            .getResourceAsStream("data/civil-daily-cause-list/civilDailyCauseList.json")) {
-
-            JsonElement jsonParser = JsonParser.parseReader(new InputStreamReader(mockFile));
-            JsonArray jsonArray = jsonParser.getAsJsonObject().get("courtLists").getAsJsonArray();
-            JsonElement jsonElement = jsonArray.get(0);
-            for (int i = 0; i <= 200; i++) {
-                jsonArray.add(jsonElement);
-            }
-
-            MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-                .post(PUBLICATION_URL)
-                .header(PublicationConfiguration.TYPE_HEADER, ARTEFACT_TYPE)
-                .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
-                .header(PublicationConfiguration.SOURCE_ARTEFACT_ID_HEADER, SOURCE_ARTEFACT_ID)
-                .header(PublicationConfiguration.DISPLAY_FROM_HEADER, DISPLAY_FROM)
-                .header(PublicationConfiguration.DISPLAY_TO_HEADER, DISPLAY_TO.plusMonths(1))
-                .header(PublicationConfiguration.COURT_ID, COURT_ID)
-                .header(PublicationConfiguration.LIST_TYPE, ListType.CIVIL_DAILY_CAUSE_LIST)
-                .header(PublicationConfiguration.CONTENT_DATE, CONTENT_DATE)
-                .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
-                .header(PublicationConfiguration.LANGUAGE_HEADER, LANGUAGE)
-                .header(PublicationConfiguration.REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
-                .content(jsonParser.toString())
-                .contentType(MediaType.APPLICATION_JSON);
-
-            MvcResult response = mockMvc.perform(mockHttpServletRequestBuilder)
-                .andExpect(status().isCreated()).andReturn();
-
-            Artefact artefact = OBJECT_MAPPER.readValue(
-                response.getResponse().getContentAsString(), Artefact.class);
-
-            assertTrue(artefact.getSearch().isEmpty(), "Search has been generated when file size is too big");
-        }
     }
 
     @Test

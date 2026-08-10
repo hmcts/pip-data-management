@@ -5,15 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
-import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchCaseResult;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.ListSearchConfigRepository;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateListSearchConfigConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
-import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.enums.UserActions;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -145,38 +143,6 @@ public class PublicationSearchService {
         return isAdmin
             ? artefactRepository.findArtefactsByLocationIdAdmin(locationId, currDate)
                 : findAllByLocationId(locationId, userId);
-    }
-
-    /**
-     * Get all relevant Artefacts based on search values stored in the Artefact.
-     *
-     * @param searchTerm  the search term checking against, e.g. CASE_ID or CASE_URN
-     * @param searchValue the search value to look for
-     * @param userId      represents the user ID of the user who is making the request
-     * @return list of Artefacts
-     */
-    @Deprecated
-    public List<Artefact> findAllBySearch(CaseSearchTerm searchTerm, String searchValue, UUID userId) {
-        LocalDateTime currDate = LocalDateTime.now();
-        List<Artefact> artefacts;
-
-        switch (searchTerm) {
-            case CASE_ID, CASE_URN ->
-                artefacts = artefactRepository.findArtefactBySearch(searchTerm.dbValue, searchValue, currDate);
-            case CASE_NAME -> artefacts = artefactRepository.findArtefactByCaseName(searchValue, currDate);
-            default -> throw new IllegalArgumentException(String.format("Invalid search term: %s", searchTerm));
-        }
-
-        artefacts = artefacts.stream()
-            .filter(artefact -> publicationRetrievalService.isAuthorised(artefact, userId))
-            .toList();
-
-        if (artefacts.isEmpty()) {
-            throw new ArtefactNotFoundException(String.format("No Artefacts found with for %s with the value: %s",
-                                                              searchTerm, searchValue
-            ));
-        }
-        return artefacts;
     }
 
     /**
