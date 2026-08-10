@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.CrownPddaList;
-
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownPddaListHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -59,7 +58,8 @@ public class CrownDailyPddaListFileConverter extends ExcelAbstractList implement
     }
 
     @Override
-    public List<List<String>> getExcelRows(JsonNode json, Map<String, Object> languageResources, Language language) {
+    public List<List<String>> getExcelRows(JsonNode json, Map<String, Object> languageResources,
+                                           Map<String, String> metadata) {
         List<List<String>> rows = new ArrayList<>();
         List<CrownPddaList> processedData = CrownPddaListHelper.processPayload(json, ListType.CROWN_DAILY_PDDA_LIST);
 
