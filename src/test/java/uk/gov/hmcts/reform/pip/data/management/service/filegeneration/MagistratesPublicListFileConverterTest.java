@@ -13,7 +13,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Test;
-import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.ByteArrayInputStream;
@@ -39,6 +38,7 @@ class MagistratesPublicListFileConverterTest {
     private static final String LINK_MESSAGE = "Link does not match";
 
     private static final String PROVENANCE = "provenance";
+    private static final String LOCATION_NAME = "locationName";
 
     private static final String BODY_CLASS = "govuk-body";
     private static final String LINK_CLASS = "govuk-link";
@@ -246,9 +246,10 @@ class MagistratesPublicListFileConverterTest {
                      Charset.defaultCharset()
         );
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
+        Map<String, String> metadata = Map.of("language", "ENGLISH", LOCATION_NAME, LOCATION_NAME);
 
-        byte[] result = magistratesPublicListFileConverter
-            .convertToExcel(inputJson, ListType.MAGISTRATES_PUBLIC_LIST, Language.ENGLISH);
+        byte[] result = magistratesPublicListFileConverter.convertToExcel(inputJson, ListType.MAGISTRATES_PUBLIC_LIST,
+                                                                          metadata);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -274,7 +275,7 @@ class MagistratesPublicListFileConverterTest {
                      "Reporting Restrictions column is different");
 
         Row dataRow = sheet.getRow(1);
-        assertEquals("", dataRow.getCell(0).getStringCellValue(),
+        assertEquals(LOCATION_NAME, dataRow.getCell(0).getStringCellValue(),
                      "Court House value is different");
         assertEquals("CourtRoom 1: Judge KnownAs, Judge KnownAs 2", dataRow.getCell(1).getStringCellValue(),
                      "Court Room value is different");
@@ -302,9 +303,10 @@ class MagistratesPublicListFileConverterTest {
                      Charset.defaultCharset()
         );
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
+        Map<String, String> metadata = Map.of("language", "WELSH", LOCATION_NAME, LOCATION_NAME);
 
-        byte[] result = magistratesPublicListFileConverter
-            .convertToExcel(inputJson, ListType.MAGISTRATES_PUBLIC_LIST, Language.WELSH);
+        byte[] result = magistratesPublicListFileConverter.convertToExcel(inputJson, ListType.MAGISTRATES_PUBLIC_LIST,
+                                                                          metadata);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
