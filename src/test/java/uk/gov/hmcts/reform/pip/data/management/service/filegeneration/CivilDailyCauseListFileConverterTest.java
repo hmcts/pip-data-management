@@ -14,7 +14,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.ByteArrayInputStream;
@@ -46,6 +45,14 @@ class CivilDailyCauseListFileConverterTest {
         "locationName", OXFORD_COURT,
         "provenance", MANUAL_UPLOAD,
         "language", "ENGLISH",
+        "listType", "CIVIL_DAILY_CAUSE_LIST"
+    );
+
+    private static final Map<String, String> METADATA_WELSH = Map.of(
+        "contentDate", "20 August 2023",
+        "locationName", OXFORD_COURT,
+        "provenance", MANUAL_UPLOAD,
+        "language", "WELSH",
         "listType", "CIVIL_DAILY_CAUSE_LIST"
     );
     private static final int NUMBER_OF_TABLES = 2;
@@ -277,7 +284,7 @@ class CivilDailyCauseListFileConverterTest {
         );
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
 
-        byte[] result = converter.convertToExcel(inputJson, ListType.CIVIL_DAILY_CAUSE_LIST, Language.ENGLISH);
+        byte[] result = converter.convertToExcel(inputJson, ListType.CIVIL_DAILY_CAUSE_LIST, METADATA);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -309,7 +316,7 @@ class CivilDailyCauseListFileConverterTest {
         );
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
 
-        byte[] result = converter.convertToExcel(inputJson, ListType.CIVIL_DAILY_CAUSE_LIST, Language.WELSH);
+        byte[] result = converter.convertToExcel(inputJson, ListType.CIVIL_DAILY_CAUSE_LIST, METADATA_WELSH);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -346,7 +353,7 @@ class CivilDailyCauseListFileConverterTest {
 
         byte[] result = converter.convertToExcel(
             inputJson,
-            ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST, Language.ENGLISH
+            ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST, METADATA
         );
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);

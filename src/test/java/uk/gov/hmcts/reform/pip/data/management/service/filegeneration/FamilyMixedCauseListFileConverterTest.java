@@ -13,7 +13,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Test;
-import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.ByteArrayInputStream;
@@ -437,7 +436,7 @@ class FamilyMixedCauseListFileConverterTest {
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
 
         byte[] result = familyMixedDailyCauseListConverter.convertToExcel(inputJson,
-                                           ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST, Language.ENGLISH);
+                                           ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST, METADATA);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -476,7 +475,7 @@ class FamilyMixedCauseListFileConverterTest {
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
 
         byte[] result = familyMixedDailyCauseListConverter.convertToExcel(inputJson,
-                                                           ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST, Language.WELSH);
+                                                           ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST, WELSH_METADATA);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -519,7 +518,7 @@ class FamilyMixedCauseListFileConverterTest {
 
         byte[] result = familyMixedDailyCauseListConverter.convertToExcel(
             inputJson,
-            ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST, Language.ENGLISH
+            ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST, METADATA
         );
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
@@ -559,7 +558,7 @@ class FamilyMixedCauseListFileConverterTest {
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
 
         byte[] result = familyMixedDailyCauseListConverter.convertToExcel(
-            inputJson, ListType.FAMILY_DAILY_CAUSE_LIST, Language.ENGLISH);
+            inputJson, ListType.FAMILY_DAILY_CAUSE_LIST, METADATA2);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -598,7 +597,7 @@ class FamilyMixedCauseListFileConverterTest {
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
 
         byte[] result = familyMixedDailyCauseListConverter.convertToExcel(inputJson,
-                                                                     ListType.FAMILY_DAILY_CAUSE_LIST, Language.WELSH);
+                                                                     ListType.FAMILY_DAILY_CAUSE_LIST, WELSH_METADATA2);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -641,7 +640,7 @@ class FamilyMixedCauseListFileConverterTest {
 
         byte[] result = familyMixedDailyCauseListConverter.convertToExcel(
             inputJson,
-            ListType.FAMILY_DAILY_CAUSE_LIST, Language.ENGLISH
+            ListType.FAMILY_DAILY_CAUSE_LIST, METADATA2
         );
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);

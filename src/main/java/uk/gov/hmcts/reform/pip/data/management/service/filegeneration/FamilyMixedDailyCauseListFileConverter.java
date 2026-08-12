@@ -50,10 +50,11 @@ public class FamilyMixedDailyCauseListFileConverter extends ExcelAbstractList im
     }
 
     @Override
-    public List<List<String>> getExcelRows(JsonNode json, Map<String, Object> languageResources, Language language) {
-        CftListHelper.manipulatedListData(json, language, true);
+    public List<List<String>> getExcelRows(JsonNode json, Map<String, Object> languageResources,
+                                           Map<String, String> metadata) {
+        CftListHelper.manipulatedListData(json, Language.valueOf(metadata.get("language")), true);
         List<List<String>> rows = new ArrayList<>();
-        List<FamilyMixedList> processedData = processRawListData(json, language);
+        List<FamilyMixedList> processedData = processRawListData(json, Language.valueOf(metadata.get("language")));
 
         processedData.forEach(list -> {
             rows.add(List.of(
