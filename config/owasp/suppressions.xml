@@ -33,6 +33,7 @@
     <cve>CVE-2026-50229</cve>
     <cve>CVE-2026-59083</cve>
     <cve>CVE-2026-59084</cve>
+    <cve>CVE-2026-66299</cve>
   </suppress>
   <suppress>
     <notes>PDFBox and XMPBox</notes>
@@ -58,9 +59,26 @@
     <cve>CVE-2026-56745</cve>
     <cve>CVE-2026-56820</cve>
     <cve>CVE-2026-55851</cve>
+    <cve>CVE-2026-59919</cve>
+    <cve>CVE-2026-59899</cve>
+    <cve>CVE-2026-59921</cve>
+    <cve>CVE-2026-59900</cve>
+    <cve>CVE-2026-59901</cve>
+    <cve>CVE-2026-56822</cve>
+    <cve>CVE-2026-56821</cve>
+    <cve>CVE-2026-59898</cve>
+    <cve>CVE-2026-59920</cve>
   </suppress>
   <suppress>
     <notes>kotlin suppression</notes>
     <cve>CVE-2026-53914</cve>
+  </suppress>
+  <suppress>
+    <notes>proton-j 0.34.1</notes>
+    <cve>CVE-2026-66273</cve>
+    <cve>CVE-2026-66276</cve>
+    <cve>CVE-2026-66275</cve>
+    <cve>CVE-2026-66277</cve>
+    <cve>CVE-2026-66257</cve>
   </suppress>
 </suppressions>
