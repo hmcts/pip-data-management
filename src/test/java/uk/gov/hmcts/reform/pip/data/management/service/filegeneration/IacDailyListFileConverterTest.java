@@ -60,7 +60,7 @@ class IacDailyListFileConverterTest {
             .extracting(Element::text)
             .containsExactly(
                 "First-tier Tribunal: Immigration and Asylum Chamber",
-                "Location Name Daily List" + (listType.equals(ListType.IAC_DAILY_LIST_ADDITIONAL_CASES)
+                "This is the venue name Daily List" + (listType.equals(ListType.IAC_DAILY_LIST_ADDITIONAL_CASES)
                     ? " - Additional Cases" : "")
             );
 

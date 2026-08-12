@@ -53,7 +53,7 @@ public final class CftListHelper {
         context.setVariable("contentDate", metadata.get("contentDate"));
         context.setVariable("locationName", metadata.get("locationName"));
         context.setVariable("provenance", metadata.get("provenance"));
-        context.setVariable("venueAddress", LocationHelper.formatFullVenueAddress(artefact));
+        context.setVariable("venueAddress", LocationHelper.formatFullVenueAddress(artefact, true));
         context.setVariable("artefact", artefact);
         if (artefact.get(DOCUMENT).has(VERSION)) {
             context.setVariable(VERSION, artefact.get(DOCUMENT).get(VERSION).asText());
