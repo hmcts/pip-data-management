@@ -27,8 +27,7 @@ public class IacDailyListFileConverter implements FileConverter {
         context.setVariable("provenance", metadata.get("provenance"));
         context.setVariable("artefact", artefact);
         context.setVariable("contentDate", metadata.get("contentDate"));
-
-        context.setVariable("locationName", metadata.get("locationName"));
+        context.setVariable("locationName", artefact.get("venue").get("venueName").asText());
         String publicationDate = artefact.get("document").get("publicationDate").asText();
         Language language = Language.valueOf(metadata.get("language"));
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
