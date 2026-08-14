@@ -97,8 +97,8 @@ public class PublicationServicesService {
         }
     }
 
-    private HttpHeaders createFileHeaders(MultipartFile file) {
-        HttpHeaders headers = new HttpHeaders();
+    private MultiValueMap<String, String> createFileHeaders(MultipartFile file) {
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add(HttpHeaders.CONTENT_TYPE,
                     MediaType.parseMediaType(Objects.requireNonNull(file.getContentType())).toString());
         headers.add(HttpHeaders.CONTENT_DISPOSITION,
