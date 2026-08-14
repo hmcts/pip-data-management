@@ -4,7 +4,7 @@ import com.azure.core.util.BinaryData;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -12,7 +12,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.controllers.publication.summary.configurations.PublicationSummaryTestInput;
@@ -96,7 +96,7 @@ class NonStrategicPublicationSummaryTest extends PublicationIntegrationTestBase 
 
     private Artefact createNonStrategicPublication(ListType listType, String filePath) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = multipart("/publication/non-strategic")
+        MockMultipartHttpServletRequestBuilder mockHttpServletRequestBuilder = multipart("/publication/non-strategic")
             .file(getMockMultipartFile(filePath))
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
             .header(PublicationConfiguration.PROVENANCE_HEADER, PROVENANCE)
