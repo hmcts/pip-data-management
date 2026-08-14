@@ -8,7 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,7 +17,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.AbstractMockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
@@ -106,7 +106,7 @@ class PublicationInvalidHeadersTest extends IntegrationBasicTestBase {
             .getResourceAsStream("data/non-strategic/cst-weekly-hearing-list/cstWeeklyHearingList.xlsx")) {
             return new MockMultipartFile(
                 "file", "TestFileName.xlsx", EXCEL_FILE_TYPE,
-                org.apache.commons.io.IOUtils.toByteArray(inputStream)
+                org.testcontainers.shaded.org.apache.commons.io.IOUtils.toByteArray(inputStream)
             );
         }
     }
@@ -116,8 +116,7 @@ class PublicationInvalidHeadersTest extends IntegrationBasicTestBase {
     @MethodSource(PARAMETERS)
     void testInvalidArtefactType(String path, Object content, MediaType mediaType, ListType listType)
         throws Exception {
-        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
-            = MediaType.APPLICATION_JSON.equals(mediaType)
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
@@ -143,8 +142,7 @@ class PublicationInvalidHeadersTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @MethodSource(PARAMETERS)
     void testInvalidDisplayTo(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
-        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
-            = MediaType.APPLICATION_JSON.equals(mediaType)
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
@@ -170,8 +168,7 @@ class PublicationInvalidHeadersTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @MethodSource(PARAMETERS)
     void testInvalidDisplayFrom(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
-        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
-            = MediaType.APPLICATION_JSON.equals(mediaType)
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
@@ -197,8 +194,7 @@ class PublicationInvalidHeadersTest extends IntegrationBasicTestBase {
     @ParameterizedTest
     @MethodSource(PARAMETERS)
     void testInvalidContentDate(String path, Object content, MediaType mediaType, ListType listType) throws Exception {
-        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
-            = MediaType.APPLICATION_JSON.equals(mediaType)
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
@@ -225,8 +221,7 @@ class PublicationInvalidHeadersTest extends IntegrationBasicTestBase {
     @MethodSource(PARAMETERS)
     void testInvalidLanguageHeader(String path, Object content, MediaType mediaType, ListType listType)
         throws Exception {
-        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
-            = MediaType.APPLICATION_JSON.equals(mediaType)
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
@@ -254,8 +249,7 @@ class PublicationInvalidHeadersTest extends IntegrationBasicTestBase {
     @MethodSource(PARAMETERS)
     void testInvalidSensitivityHeader(String path, Object content, MediaType mediaType, ListType listType)
         throws Exception {
-        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder
-            = MediaType.APPLICATION_JSON.equals(mediaType)
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MediaType.APPLICATION_JSON.equals(mediaType)
             ? MockMvcRequestBuilders.post(path).content((String) content)
             : MockMvcRequestBuilders.multipart(path).file((MockMultipartFile) content);
 
