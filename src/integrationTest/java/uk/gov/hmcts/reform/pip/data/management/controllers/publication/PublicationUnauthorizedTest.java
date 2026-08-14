@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -15,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
@@ -121,7 +122,7 @@ class PublicationUnauthorizedTest extends IntegrationTestBase {
                                                        MediaType.APPLICATION_PDF_VALUE,
                                                        "test content".getBytes(StandardCharsets.UTF_8));
 
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+        MockMultipartHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(PUBLICATION_URL)
             .file(file)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
@@ -149,7 +150,7 @@ class PublicationUnauthorizedTest extends IntegrationTestBase {
             "test content".getBytes(StandardCharsets.UTF_8)
         );
 
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+        MockMultipartHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(NON_STRATEGIC_PUBLICATION_URL)
             .file(file)
             .header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LIST)
