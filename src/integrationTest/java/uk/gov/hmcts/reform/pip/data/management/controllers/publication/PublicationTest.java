@@ -11,7 +11,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,7 +21,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.AbstractMockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
@@ -138,7 +140,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
     @DisplayName("File endpoint should return the file when artefact exists")
     void retrieveFileFromAnArtefactWhereFound() throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+        MockMultipartHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(PUBLICATION_URL)
             .file(file);
 
@@ -179,7 +181,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
     @DisplayName("File endpoint should return the file when artefact exists")
     void retrieveFileFromAnArtefactWhereAdmin() throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+        MockMultipartHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(PUBLICATION_URL)
             .file(file);
 
@@ -222,7 +224,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
     @DisplayName("File endpoint should not return the file when user not supplied")
     void retrieveFileOfAnArtefactWhereUserNotSupplied() throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+        MockMultipartHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(PUBLICATION_URL)
             .file(file);
 
@@ -261,7 +263,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
             LIST_TYPE, Sensitivity.CLASSIFIED)).thenReturn(true);
         when(blobClient.downloadContent()).thenReturn(BinaryData.fromString(new String(file.getBytes())));
 
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+        MockMultipartHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(PUBLICATION_URL)
             .file(file);
 
@@ -300,7 +302,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
         when(accountManagementService.getIsAuthorised(any(), any(), any())).thenReturn(false);
 
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+        MockMultipartHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(PUBLICATION_URL)
             .file(file);
 
@@ -673,7 +675,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
     @DisplayName("Metadata endpoint should return the artefact when artefact exists")
     void retrieveMetadataOfAnArtefactWhereFoundWhenVerified(boolean isJson) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+        AbstractMockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -725,7 +727,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
     @DisplayName("Metadata endpoint should return the artefact when artefact exists when unverified")
     void retrieveMetadataOfAnArtefactWhereFoundWhenUnverified(boolean isJson) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+        AbstractMockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -777,7 +779,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
     @DisplayName("Metadata endpoint should return the artefact when artefact exists")
     void retrieveMetadataOfAnArtefactWhereOutOfDateRangeAndVerified(boolean isJson) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+        AbstractMockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -819,7 +821,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
     @DisplayName("Metadata endpoint should return the artefact when artefact exists")
     void retrieveMetadataOfAnArtefactWhereOutOfDateRangeAndUnverified(boolean isJson) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -861,7 +863,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
     @DisplayName("Metadata endpoint should not return the artefact when user not supplied")
     void retrieveMetadataOfAnArtefactWhereUserNotSupplied(boolean isJson) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -904,7 +906,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
         when(blobClient.downloadContent())
             .thenReturn(BinaryData.fromString(isJson ? payload : new String(file.getBytes())));
 
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+        AbstractMockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -946,7 +948,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
     void retrieveMetadataOfAnArtefactWhereUserNotAuthorized(boolean isJson) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
 
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -1201,7 +1203,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
     void uploadHtmlToS3Bucket() throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
         when(accountManagementService.getIsAuthorised(any(), any(), any())).thenReturn(true);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder =
+        MockMultipartHttpServletRequestBuilder mockHttpServletRequestBuilder =
             MockMvcRequestBuilders.multipart(PUBLICATION_URL).file(htmlFile);
         mockHttpServletRequestBuilder.header(PublicationConfiguration.TYPE_HEADER, ArtefactType.LCSU)
             .header(PublicationConfiguration.SENSITIVITY_HEADER, SENSITIVITY)
@@ -1265,7 +1267,7 @@ class PublicationTest extends PublicationIntegrationTestBase {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
         when(accountManagementService.getIsAuthorised(any(), any(), any())).thenReturn(true);
 
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+        MockMultipartHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(PUBLICATION_URL)
             .file(file);
 
