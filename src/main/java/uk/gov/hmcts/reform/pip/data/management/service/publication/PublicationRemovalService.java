@@ -119,17 +119,17 @@ public class PublicationRemovalService {
      * @param requesterId   The ID of the admin user who is attempting to delete the artefact.
      */
     public void deleteArtefactById(String artefactId, UUID requesterId) {
-        System.out.println("*****deleteArtefactById: before find artefact");
+        log.info(writeLog("*****deleteArtefactById: before find artefact"));
         Artefact artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId)
             .orElseThrow(() -> new ArtefactNotFoundException("No artefact found with the ID: " + artefactId));
-        System.out.println("*****deleteArtefactById: before delete artefact");
+        log.info(writeLog("*****leteArtefactById: before delete artefact"));
         handleArtefactDeletion(artefactToDelete);
         log.info(writeLog(requesterId, UserActions.REMOVE, artefactId));
     }
 
     public void deleteArtefactByLocation(List<Artefact> artefactsToDelete, Integer locationId, UUID requesterId)
         throws JsonProcessingException {
-        System.out.println("*****deleteArtefactByLocation: before delete artefact");
+        log.info(writeLog("*****deleteArtefactByLocation: before delete artefact"));
         artefactsToDelete.forEach(artefact -> {
             handleArtefactDeletion(artefact);
             log.info(writeLog(
@@ -137,13 +137,13 @@ public class PublicationRemovalService {
                         requesterId, artefact.getArtefactId())
             ));
         });
-        System.out.println("*****deleteArtefactByLocation: before get location");
+        log.info(writeLog("*****deleteArtefactByLocation: before get location"));
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
 
-        System.out.println("*****deleteArtefactByLocation: before get user");
+        log.info(writeLog("*****deleteArtefactByLocation: before get user"));
         PiUser userInfo = accountManagementService.getUserById(requesterId);
         String locationName = location.isPresent() ? location.get().getName() : "";
-        System.out.println("*****deleteArtefactByLocation: before send email");
+        log.info(writeLog("*****deleteArtefactByLocation: before send email"));
         systemAdminNotificationService.sendEmailNotification(userInfo.getEmail(), requesterId, ActionResult.SUCCEEDED,
                 String.format("Total %s artefact(s) for location %s", artefactsToDelete.size(), locationName),
                 ChangeType.DELETE_LOCATION_ARTEFACT);
@@ -155,12 +155,12 @@ public class PublicationRemovalService {
 
     public void handleArtefactDeletion(Artefact artefact) {
         deleteDataFromBlobStore(artefact);
-        System.out.println("*****handleArtefactDeletion: before delete artefact search");
+        log.info(writeLog("*****handleArtefactDeletion: before delete artefact search"));
         artefactSearchRepository.deleteByArtefactId(artefact.getArtefactId());
-        System.out.println("*****handleArtefactDeletion: before delete artefact");
+        log.info(writeLog("*****handleArtefactDeletion: before delete artefact"));
         artefactRepository.delete(artefact);
         if (!NoMatchArtefactHelper.isNoMatchLocationId(artefact.getLocationId())) {
-            System.out.println("*****handleArtefactDeletion: before send delete artefact for third-party");
+            log.info(writeLog("*****handleArtefactDeletion: before send delete artefact for third-party"));
             publicationSubscriptionService.sendDeleteArtefactForApiSubscription(artefact);
         }
     }
