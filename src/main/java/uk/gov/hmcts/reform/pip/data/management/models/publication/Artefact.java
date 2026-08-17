@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.models.publication;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.Nulls;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
