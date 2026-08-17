@@ -5,14 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationTestConfiguration;
@@ -89,7 +89,7 @@ class NonStrategicPublicationUploadTest extends PublicationIntegrationTestBase {
             .getResourceAsStream(fileName)) {
             return new MockMultipartFile(
                 "file", "TestFileName.xlsx", EXCEL_FILE_TYPE,
-                org.apache.commons.io.IOUtils.toByteArray(inputStream)
+                org.testcontainers.shaded.org.apache.commons.io.IOUtils.toByteArray(inputStream)
             );
         }
     }
@@ -97,7 +97,7 @@ class NonStrategicPublicationUploadTest extends PublicationIntegrationTestBase {
     @Test
     void testNonStrategicPublicationUpload() throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockMultipartHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(NON_STRATEGIC_PUBLICATION_URL)
             .file(excelFile);
 
@@ -142,7 +142,7 @@ class NonStrategicPublicationUploadTest extends PublicationIntegrationTestBase {
             "data/non-strategic/other-test-files/" + fileName);
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
 
-        MockMultipartHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(NON_STRATEGIC_PUBLICATION_URL)
             .file(fileWithBlankRows);
 
@@ -170,7 +170,7 @@ class NonStrategicPublicationUploadTest extends PublicationIntegrationTestBase {
     @Test
     void testNonStrategicUploadOfExistingPublication() throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockMultipartHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(NON_STRATEGIC_PUBLICATION_URL)
             .file(excelFile);
 
@@ -229,7 +229,7 @@ class NonStrategicPublicationUploadTest extends PublicationIntegrationTestBase {
     @Test
     void testNonStrategicPublicationUploadWithIncorrectFileType() throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockMultipartHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(NON_STRATEGIC_PUBLICATION_URL)
             .file(file);
 
@@ -257,7 +257,7 @@ class NonStrategicPublicationUploadTest extends PublicationIntegrationTestBase {
     @Test
     void testNonStrategicPublicationUploadWhenFileContainsMultipleSheets() throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockMultipartHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
             .multipart(NON_STRATEGIC_PUBLICATION_URL)
             .file(excelFileMultiSheet);
 

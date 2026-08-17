@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -16,7 +16,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.AbstractMockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
@@ -115,7 +114,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
     @DisplayName("Should create a valid artefact and return the created artefact to the user")
     void creationOfAValidArtefact(boolean isJson) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder;
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -173,7 +172,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
     @ValueSource(booleans = {true, false})
     void creationOfAValidArtefactWithOnlyMandatoryFields(boolean isJson) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder;
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -213,7 +212,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
     @ValueSource(booleans = {true, false})
     void testPopulateDefaultDateFrom(boolean isJson) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder;
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -247,7 +246,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
     @ValueSource(booleans = {true, false})
     void testPopulateDefaultSensitivity(boolean isJson) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder;
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -281,7 +280,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
     @ValueSource(booleans = {true, false})
     void updatingOfAnArtefactThatAlreadyExists(boolean isJson) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder;
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -370,7 +369,7 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
     @ValueSource(booleans = {true, false})
     void checkStatusUpdatesWithNullDateTo(boolean isJson) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        AbstractMockHttpServletRequestBuilder<?> mockHttpServletRequestBuilder;
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
 
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);

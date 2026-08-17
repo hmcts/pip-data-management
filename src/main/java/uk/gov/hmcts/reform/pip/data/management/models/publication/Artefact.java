@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.models.publication;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.Nulls;
 import jakarta.persistence.Column;
@@ -134,7 +133,6 @@ public class Artefact {
      */
     @JsonView(ArtefactView.Internal.class)
     @Column(nullable = false, columnDefinition = "INTEGER DEFAULT 0")
-    @JsonSetter(nulls = Nulls.AS_EMPTY)
     private int supersededCount;
 
     /**
