@@ -18,21 +18,6 @@ class PublicationRetrievalServiceTest extends IntegrationBasicTestBase {
     PublicationRetrievalService publicationRetrievalService;
 
     @Test
-    void shouldGenerateJsonSearchIfPayloadSizeWithinLimit() {
-        assertTrue(publicationRetrievalService.payloadWithinJsonSearchLimit(49f), PAYLOAD_LIMIT_MESSAGE);
-    }
-
-    @Test
-    void shouldGenerateJsonSearchIfNoPayloadSize() {
-        assertTrue(publicationRetrievalService.payloadWithinJsonSearchLimit(null), PAYLOAD_LIMIT_MESSAGE);
-    }
-
-    @Test
-    void shouldNotGenerateJsonSearchIfPayloadSizeOverLimit() {
-        assertFalse(publicationRetrievalService.payloadWithinJsonSearchLimit(50f), PAYLOAD_LIMIT_MESSAGE);
-    }
-
-    @Test
     void shouldGenerateExcelIfPayloadSizeWithinLimit() {
         assertTrue(publicationRetrievalService.payloadWithinExcelLimit(99f), PAYLOAD_LIMIT_MESSAGE);
     }

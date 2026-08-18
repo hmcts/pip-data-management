@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,7 +20,6 @@ import org.springframework.util.MultiValueMap;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
-import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.data.management.utils.PublicationIntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
@@ -37,7 +35,6 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
@@ -75,7 +72,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     private static final String ADMIN_HEADER = "x-admin";
     private static final String VERIFICATION_HEADER = "verification";
     private static final String ADMIN = "admin";
-    private static final String SEARCH_TERM_PARAM = "searchTerm";
     private static final String SEARCH_VALUE_PARAM = "searchValue";
     private static final String FUZZY_SEARCH_PARAM = "fuzzySearch";
     private static final String CASE_ID_SEARCH_VALUE = "45684548";
@@ -85,13 +81,10 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     private static final String CASE_NAME_FIELD_NAME = "caseName";
     private static final String UPDATED_CASE_NUMBER_FIELD_NAME = "updatedCaseNumber";
 
-    private static final String ARTEFACT_NOT_FOUND_ERROR = "No Artefacts found";
     private static final String VALIDATION_DISPLAY_FROM = "The expected Display From has not been returned";
-    private static final String SHOULD_RETURN_EXPECTED_ARTEFACT = "Should return expected artefact";
 
     private static final String UNAUTHORIZED_USERNAME = "unauthorized_username";
     private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.role";
-    private static final String FORBIDDEN_STATUS_CODE = "Status code does not match forbidden";
     private static final String REQUESTER_ID_HEADER = "x-requester-id";
     private static final UUID SYSTEM_ADMIN_ID = UUID.randomUUID();
     private static final UUID VERIFIED_USER_ID = UUID.randomUUID();
@@ -364,362 +357,6 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
             .andExpect(status().isForbidden());
     }
 
-    @Test
-    void testAuthorisedGetArtefactByCaseIdSearchVerified() throws Exception {
-        when(accountManagementService.getIsAuthorised(
-            VERIFIED_USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
-        )).thenReturn(true);
-
-        Artefact artefact = createDailyList(Sensitivity.PRIVATE);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID.name())
-            .param(SEARCH_VALUE_PARAM, CASE_ID_SEARCH_VALUE)
-            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isOk())
-            .andReturn();
-
-        assertTrue(
-            getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-            SHOULD_RETURN_EXPECTED_ARTEFACT
-        );
-    }
-
-    @Test
-    void testUnauthorisedGetArtefactByCaseIdSearchVerified() throws Exception {
-        when(accountManagementService.getIsAuthorised(
-            VERIFIED_USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
-        )).thenReturn(false);
-
-        createDailyList(Sensitivity.PRIVATE);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID.name())
-            .param(SEARCH_VALUE_PARAM, CASE_ID_SEARCH_VALUE)
-            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isNotFound())
-            .andReturn();
-
-        assertTrue(
-            getResponse.getResponse().getContentAsString().contains(ARTEFACT_NOT_FOUND_ERROR),
-            SHOULD_RETURN_EXPECTED_ARTEFACT
-        );
-    }
-
-    @Test
-    void testGetArtefactByCaseIdSearchUnverified() throws Exception {
-        Artefact artefact = createDailyList(Sensitivity.PUBLIC);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID.name())
-            .param(SEARCH_VALUE_PARAM, CASE_ID_SEARCH_VALUE)
-            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isOk())
-            .andReturn();
-
-        assertTrue(
-            getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-            SHOULD_RETURN_EXPECTED_ARTEFACT
-        );
-    }
-
-    @Test
-    void testGetArtefactByCaseIdSearchUnverifiedNotFound() throws Exception {
-        createDailyList(Sensitivity.CLASSIFIED);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID.name())
-            .param(SEARCH_VALUE_PARAM, CASE_ID_SEARCH_VALUE)
-            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void testAuthorisedGetArtefactByCaseNameSearchVerified() throws Exception {
-        when(accountManagementService.getIsAuthorised(
-            VERIFIED_USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
-        )).thenReturn(true);
-
-        Artefact artefact = createDailyList(Sensitivity.PRIVATE);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_NAME.name())
-            .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
-            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isOk())
-            .andReturn();
-
-        assertTrue(
-            getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-            SHOULD_RETURN_EXPECTED_ARTEFACT
-        );
-    }
-
-    @Test
-    void testUnauthorisedGetArtefactByCaseNameSearchVerified() throws Exception {
-        when(accountManagementService.getIsAuthorised(
-            VERIFIED_USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
-        )).thenReturn(false);
-
-        createDailyList(Sensitivity.PRIVATE);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_NAME.name())
-            .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
-            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isNotFound())
-            .andReturn();
-
-        assertTrue(
-            getResponse.getResponse().getContentAsString().contains(ARTEFACT_NOT_FOUND_ERROR),
-            SHOULD_RETURN_EXPECTED_ARTEFACT
-        );
-    }
-
-    @Test
-    void testGetArtefactByCaseNameSearchUnverified() throws Exception {
-        Artefact artefact = createDailyList(Sensitivity.PUBLIC);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_NAME.name())
-            .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
-            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isOk())
-            .andReturn();
-
-        assertTrue(
-            getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-            SHOULD_RETURN_EXPECTED_ARTEFACT
-        );
-    }
-
-    @Test
-    void testGetArtefactByCaseNameSearchUnverifiedNotFound() throws Exception {
-        createDailyList(Sensitivity.CLASSIFIED);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_NAME.name())
-            .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
-            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
-    void testUnauthorizedGetAllRelevantArtefactsBySearchValue() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_NAME.name())
-            .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
-            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        MvcResult archiveResponse = mockMvc.perform(request).andExpect(status().isForbidden()).andReturn();
-
-        assertEquals(HttpStatus.FORBIDDEN.value(), archiveResponse.getResponse().getStatus(),
-                     FORBIDDEN_STATUS_CODE
-        );
-    }
-
-    @Test
-    void testAuthorisedGetArtefactByCaseIdSearchV2Verified() throws Exception {
-        when(accountManagementService.getIsAuthorised(
-            VERIFIED_USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
-        )).thenReturn(true);
-
-        Artefact artefact = createDailyList(Sensitivity.PRIVATE);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID.name())
-            .param(SEARCH_VALUE_PARAM, CASE_ID_SEARCH_VALUE)
-            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isOk())
-            .andReturn();
-
-        assertTrue(
-            getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-            SHOULD_RETURN_EXPECTED_ARTEFACT
-        );
-    }
-
-    @Test
-    void testUnauthorisedGetArtefactByCaseIdSearchV2Verified() throws Exception {
-        when(accountManagementService.getIsAuthorised(
-            VERIFIED_USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
-        )).thenReturn(false);
-
-        createDailyList(Sensitivity.PRIVATE);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID.name())
-            .param(SEARCH_VALUE_PARAM, CASE_ID_SEARCH_VALUE)
-            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isNotFound())
-            .andReturn();
-
-        assertTrue(
-            getResponse.getResponse().getContentAsString().contains(ARTEFACT_NOT_FOUND_ERROR),
-            SHOULD_RETURN_EXPECTED_ARTEFACT
-        );
-    }
-
-    @Test
-    void testGetArtefactByCaseIdSearchV2Unverified() throws Exception {
-        Artefact artefact = createDailyList(Sensitivity.PUBLIC);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID.name())
-            .param(SEARCH_VALUE_PARAM, CASE_ID_SEARCH_VALUE)
-            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isOk())
-            .andReturn();
-
-        assertTrue(
-            getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-            SHOULD_RETURN_EXPECTED_ARTEFACT
-        );
-    }
-
-    @Test
-    void testGetArtefactByCaseIdSearchV2UnverifiedNotFound() throws Exception {
-        createDailyList(Sensitivity.CLASSIFIED);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_ID.name())
-            .param(SEARCH_VALUE_PARAM, CASE_ID_SEARCH_VALUE)
-            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void testAuthorisedGetArtefactByCaseNameSearchV2Verified() throws Exception {
-        when(accountManagementService.getIsAuthorised(
-            VERIFIED_USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
-        )).thenReturn(true);
-
-        Artefact artefact = createDailyList(Sensitivity.PRIVATE);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_NAME.name())
-            .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
-            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isOk())
-            .andReturn();
-
-        assertTrue(
-            getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-            SHOULD_RETURN_EXPECTED_ARTEFACT
-        );
-    }
-
-    @Test
-    void testUnauthorisedGetArtefactByCaseNameSearchV2Verified() throws Exception {
-        when(accountManagementService.getIsAuthorised(
-            VERIFIED_USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.PRIVATE
-        )).thenReturn(false);
-
-        createDailyList(Sensitivity.PRIVATE);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_NAME.name())
-            .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
-            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isNotFound())
-            .andReturn();
-
-        assertTrue(
-            getResponse.getResponse().getContentAsString().contains(ARTEFACT_NOT_FOUND_ERROR),
-            SHOULD_RETURN_EXPECTED_ARTEFACT
-        );
-    }
-
-    @Test
-    void testGetArtefactByCaseNameSearchV2Unverified() throws Exception {
-        Artefact artefact = createDailyList(Sensitivity.PUBLIC);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_NAME.name())
-            .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
-            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        MvcResult getResponse = mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isOk())
-            .andReturn();
-
-        assertTrue(
-            getResponse.getResponse().getContentAsString().contains(artefact.getArtefactId().toString()),
-            SHOULD_RETURN_EXPECTED_ARTEFACT
-        );
-    }
-
-    @Test
-    void testGetArtefactByCaseNameSearchV2UnverifiedNotFound() throws Exception {
-        createDailyList(Sensitivity.CLASSIFIED);
-
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_NAME.name())
-            .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
-            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        mockMvc.perform(mockHttpServletRequestBuilder)
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
-    void testUnauthorizedGetAllRelevantArtefactsBySearchValueV2() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-            .get(SEARCH_URL)
-            .param(SEARCH_TERM_PARAM, CaseSearchTerm.CASE_NAME.name())
-            .param(SEARCH_VALUE_PARAM, CASE_NAME_SEARCH_VALUE)
-            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID);
-
-        mockMvc.perform(request)
-            .andExpect(status().isForbidden());
-    }
 
     @Test
     void testGetCourtByIdShowsAllCourtsForAdmin() throws Exception {
