@@ -179,7 +179,7 @@ public class PublicationController {
 
         // Process the created artefact to generate PDF/Excel files and check/trigger the subscription process
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
-            publicationCreationService.processCreatedPublication(createdItem, payload);
+            publicationCreationService.processCreatedPublication(createdItem, payload, null);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
@@ -319,7 +319,7 @@ public class PublicationController {
 
         // Process the created artefact to generate PDF and check/trigger the subscription process
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
-            publicationCreationService.processCreatedPublication(createdItem, payload);
+            publicationCreationService.processCreatedPublication(createdItem, payload, file);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);

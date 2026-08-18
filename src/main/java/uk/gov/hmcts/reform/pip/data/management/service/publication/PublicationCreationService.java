@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,11 +15,14 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ExcelConversionException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.ExcelAbstractList;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,7 +32,7 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-public class PublicationCreationService {
+public class PublicationCreationService extends ExcelAbstractList {
 
     private static final int RETRY_MAX_ATTEMPTS = 5;
 
@@ -111,8 +116,17 @@ public class PublicationCreationService {
     }
 
     @Async
-    public void processCreatedPublication(Artefact artefact, String payload) {
-        publicationFileManagementService.generateFiles(artefact.getArtefactId(), payload);
+    public void processCreatedPublication(Artefact artefact, String payload, MultipartFile file) {
+        byte[] excel = new byte[0];
+        if (artefact.getListType().hasExcel() && file != null) {
+            try {
+                Workbook workbook = new XSSFWorkbook(file.getInputStream());
+                excel = ExcelAbstractList.convertToByteArray(workbook);
+            } catch (IOException e) {
+                throw new ExcelConversionException("Error converting multi-part file to Excel");
+            }
+        }
+        publicationFileManagementService.generateFiles(artefact.getArtefactId(), payload, excel);
         publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefact);
     }
 

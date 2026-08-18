@@ -47,7 +47,7 @@ public class PublicationFileManagementService {
      * @param artefactId The artefact ID to generate the files for.
      * @param payload The payload of the artefact.
      */
-    public void generateFiles(UUID artefactId, String payload) {
+    public void generateFiles(UUID artefactId, String payload, byte[] excel) {
         publicationFileGenerationService.generate(artefactId, payload)
             .ifPresent(files -> {
                 if (files.getPrimaryPdf().length > 0) {
@@ -61,6 +61,9 @@ public class PublicationFileManagementService {
 
                 if (files.getExcel().length > 0) {
                     azureBlobService.uploadFile(artefactId + EXCEL.getExtension(), files.getExcel());
+                } else if (excel.length > 0) {
+                    // Store the input Excel file for non-strategic upload
+                    azureBlobService.uploadFile(artefactId + EXCEL.getExtension(), excel);
                 }
             });
     }
