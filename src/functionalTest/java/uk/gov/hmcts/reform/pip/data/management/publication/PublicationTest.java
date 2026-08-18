@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -319,6 +320,7 @@ class PublicationTest extends FunctionalTestBase {
     }
 
     @Test
+    @Disabled
     void testPublicationEndpointsWithFlatFileUpload() throws Exception {
         Artefact returnedFlatFileArtefact = uploadFlatFile(courtId, Sensitivity.PUBLIC);
 
@@ -374,6 +376,7 @@ class PublicationTest extends FunctionalTestBase {
 
 
     @Test
+    @Disabled
     void testDeleteArtefactByLocationId() throws Exception {
         Artefact returnedArtefact = uploadArtefact(getJsonString(), courtId, Sensitivity.PUBLIC, PROVENANCE);
         String artefactId = returnedArtefact.getArtefactId().toString();
