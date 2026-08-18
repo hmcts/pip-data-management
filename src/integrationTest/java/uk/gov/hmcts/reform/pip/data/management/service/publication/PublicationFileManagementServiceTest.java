@@ -58,6 +58,7 @@ class PublicationFileManagementServiceTest extends IntegrationBasicTestBase {
     private static final UUID TEST_ARTEFACT_ID = UUID.randomUUID();
     private static final String UPLOADED = "uploaded";
     private static final String WELSH_PDF_SUFFIX = "_cy";
+    private static final byte[] EMPTY_EXCEL = new byte[0];
 
     private static String sjpPublicListInput;
     private static String civilDailyListInput;
@@ -113,7 +114,7 @@ class PublicationFileManagementServiceTest extends IntegrationBasicTestBase {
         when(locationService.getLocationById(any())).thenReturn(LOCATION);
         when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
 
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, sjpPublicListInput);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, sjpPublicListInput, EMPTY_EXCEL);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
@@ -127,7 +128,7 @@ class PublicationFileManagementServiceTest extends IntegrationBasicTestBase {
         when(locationService.getLocationById(any())).thenReturn(LOCATION);
         when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
 
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, sjpPublicListInput);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, sjpPublicListInput, EMPTY_EXCEL);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
@@ -142,7 +143,7 @@ class PublicationFileManagementServiceTest extends IntegrationBasicTestBase {
         when(locationService.getLocationById(any())).thenReturn(LOCATION);
         when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
 
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, civilDailyListInput);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, civilDailyListInput, EMPTY_EXCEL);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService, never())
@@ -157,7 +158,7 @@ class PublicationFileManagementServiceTest extends IntegrationBasicTestBase {
         when(locationService.getLocationById(any())).thenReturn(LOCATION);
         when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
 
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, civilDailyListInput);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, civilDailyListInput, EMPTY_EXCEL);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());

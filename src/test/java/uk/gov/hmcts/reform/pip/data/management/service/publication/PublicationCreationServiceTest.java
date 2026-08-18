@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,7 +9,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
@@ -18,6 +21,8 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,6 +33,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -67,6 +73,9 @@ class PublicationCreationServiceTest {
     private PublicationFileManagementService publicationFileManagementService;
 
     @Mock
+    private PublicationSubscriptionService publicationSubscriptionService;
+
+    @Mock
     private ArtefactSearchService artefactSearchService;
 
     @InjectMocks
@@ -79,9 +88,18 @@ class PublicationCreationServiceTest {
     private static final Float PAYLOAD_SIZE_WITHIN_LIMIT = 90f;
     private static final Float PAYLOAD_SIZE_OVER_LIMIT = 110f;
 
+    private static MultipartFile excelFile;
+
     @BeforeAll
-    public static void setupSearchValues() {
+    public static void setupSearchValues() throws IOException {
         SEARCH_VALUES.put(TEST_KEY, List.of(TEST_VALUE));
+
+        try (InputStream mockFile = Thread.currentThread().getContextClassLoader()
+            .getResourceAsStream("mocks/non-strategic/countyCourtLondonCivilDailyCauseList.xlsx")) {
+            excelFile = new MockMultipartFile("file", "test.xlsx",
+                                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                         IOUtils.toByteArray(mockFile));
+        }
     }
 
     @BeforeEach
@@ -227,6 +245,53 @@ class PublicationCreationServiceTest {
 
         verify(azureArtefactBlobService, never()).deleteBlob(anyString());
         assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
+    void testProcessCreatedJsonPublicationWhenListTypeHasExcel() {
+        Artefact artefact = new Artefact();
+        artefact.setArtefactId(ARTEFACT_ID);
+
+        ListType listType = mock(ListType.class);
+        when(listType.hasExcel()).thenReturn(true);
+        artefact.setListType(listType);
+
+        publicationCreationService.processCreatedPublication(artefact, PAYLOAD, excelFile);
+
+        verify(publicationFileManagementService, never()).generateFiles(ARTEFACT_ID, PAYLOAD, new byte[0]);
+        verify(publicationFileManagementService).generateFiles(eq(ARTEFACT_ID), eq(PAYLOAD), any());
+        verify(publicationSubscriptionService).checkAndTriggerPublicationSubscription(artefact);
+
+    }
+
+    @Test
+    void testProcessCreatedJsonPublicationWhenListTypeDoNotHaveExcel() {
+        Artefact artefact = new Artefact();
+        artefact.setArtefactId(ARTEFACT_ID);
+
+        ListType listType = mock(ListType.class);
+        when(listType.hasExcel()).thenReturn(false);
+        artefact.setListType(listType);
+
+        publicationCreationService.processCreatedPublication(artefact, PAYLOAD, excelFile);
+
+        verify(publicationFileManagementService).generateFiles(ARTEFACT_ID, PAYLOAD, new byte[0]);
+        verify(publicationSubscriptionService).checkAndTriggerPublicationSubscription(artefact);
+    }
+
+    @Test
+    void testProcessCreatedJsonPublicationWhenNullMultipartFile() {
+        Artefact artefact = new Artefact();
+        artefact.setArtefactId(ARTEFACT_ID);
+
+        ListType listType = mock(ListType.class);
+        when(listType.hasExcel()).thenReturn(true);
+        artefact.setListType(listType);
+
+        publicationCreationService.processCreatedPublication(artefact, PAYLOAD, null);
+
+        verify(publicationFileManagementService).generateFiles(ARTEFACT_ID, PAYLOAD, new byte[0]);
+        verify(publicationSubscriptionService).checkAndTriggerPublicationSubscription(artefact);
     }
 
     @Test
