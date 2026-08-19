@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.logging.log4j.util.Strings;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.CrownWarnedPddaList;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.CrownAdvancePddaList;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
 
 import java.time.DayOfWeek;
@@ -17,17 +17,17 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-public final class CrownWarnedPddaListHelper {
+public final class CrownAdvancePddaListHelper {
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    private CrownWarnedPddaListHelper() {
+    private CrownAdvancePddaListHelper() {
     }
 
-    public static Map<String, List<CrownWarnedPddaList>> processPayload(JsonNode warnedPddaListData) {
-        Map<String, List<CrownWarnedPddaList>> groupedData = new LinkedHashMap<>();
+    public static Map<String, List<CrownAdvancePddaList>> processPayload(JsonNode advancePddaListData) {
+        Map<String, List<CrownAdvancePddaList>> groupedData = new LinkedHashMap<>();
 
-        JsonNode warnedList = warnedPddaListData.get("WarnedList");
-        JsonNode courtLists = warnedList.get("CourtLists");
+        JsonNode advanceList = advancePddaListData.get("AdvanceList");
+        JsonNode courtLists = advanceList.get("CourtLists");
 
         Optional.ofNullable(courtLists)
             .filter(JsonNode::isArray)
@@ -47,15 +47,16 @@ public final class CrownWarnedPddaListHelper {
 
         // Sort cases by fixed date within each group
         groupedData.forEach((key, cases) ->
-            cases.sort(Comparator.comparing(CrownWarnedPddaList::getFixedDateAsLocalDate,
-                                            Comparator.nullsLast(Comparator.naturalOrder())))
+            cases.sort(Comparator.comparing(
+                CrownAdvancePddaList::getFixedDateAsLocalDate,
+                Comparator.nullsLast(Comparator.naturalOrder())))
         );
 
         return groupedData;
     }
 
     private static void formatFixture(JsonNode fixtureDate, Map<String,
-        List<CrownWarnedPddaList>> groupedData, boolean isWithoutFixedDate) {
+        List<CrownAdvancePddaList>> groupedData, boolean isWithoutFixedDate) {
         JsonNode fixtures = fixtureDate.get("Fixture");
 
         fixtures.forEach(fixture -> {
@@ -79,8 +80,8 @@ public final class CrownWarnedPddaListHelper {
 
     }
 
-    private static CrownWarnedPddaList formatCaseInformation(String fixedDate, JsonNode hearing,
-                                                             JsonNode hearingCase) {
+    private static CrownAdvancePddaList formatCaseInformation(String fixedDate, JsonNode hearing,
+                                                              JsonNode hearingCase) {
         String defendantNames = "";
         if (hearingCase.has("Defendants")) {
             defendantNames = CrownPddaListHelper.formatDefendantName(hearingCase.get("Defendants"));
@@ -114,8 +115,8 @@ public final class CrownWarnedPddaListHelper {
             }
         }
         String caseReference = GeneralHelper.findAndReturnNodeText(hearingCase, "CaseNumberCaTH");
-        return new CrownWarnedPddaList(formattedDate, caseReference, defendantNames,
-                                   prosecutingAuthority, linkedCases, listingNotes);
+        return new CrownAdvancePddaList(formattedDate, caseReference, defendantNames,
+                                        prosecutingAuthority, linkedCases, listingNotes);
     }
 
     public static String formatContentDate(String contentDate, String language) {

@@ -28,10 +28,10 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_WARNED_PDDA_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_ADVANCE_PDDA_LIST;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CrownWarnedPddaListFileConverterTest {
+class CrownAdvancePddaListFileConverterTest {
     private static final String TEST_FILE_PATH = "src/test/resources/mocks/";
 
     private static final String LANGUAGE = "language";
@@ -54,28 +54,28 @@ class CrownWarnedPddaListFileConverterTest {
     private static final Map<String, String> COMMON_METADATA = Map.of("contentDate", CONTENT_DATE,
                                                                       "provenance", "MANUAL_UPLOAD",
                                                                       "locationName", "location",
-                                                                      LIST_TYPE, CROWN_WARNED_PDDA_LIST.name()
+                                                                      LIST_TYPE, CROWN_ADVANCE_PDDA_LIST.name()
     );
 
     private JsonNode inputJson;
-    private CrownWarnedPddaListFileConverter crownWarnedPddaListConverter = new CrownWarnedPddaListFileConverter();
+    private CrownAdvancePddaListFileConverter crownAdvancePddaListFileConverter = new CrownAdvancePddaListFileConverter();
 
     @BeforeAll
     void setup() throws IOException {
         StringWriter writer = new StringWriter();
         IOUtils.copy(
-            Files.newInputStream(Paths.get(TEST_FILE_PATH, "crownWarnedPddaList.json")),
+            Files.newInputStream(Paths.get(TEST_FILE_PATH, "crownAdvancePddaList.json")),
             writer, Charset.defaultCharset()
         );
         inputJson = new ObjectMapper().readTree(writer.toString());
     }
 
     @Test
-    void testCrownWarnedPddaListTemplateEnglish() throws IOException {
+    void testCrownAdvancePddaListTemplateEnglish() throws IOException {
         Map<String, Object> language;
 
         try (InputStream languageFile = Thread.currentThread()
-            .getContextClassLoader().getResourceAsStream("templates/languages/en/crownWarnedPddaList.json")) {
+            .getContextClassLoader().getResourceAsStream("templates/languages/en/crownAdvancePddaList.json")) {
             language = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -84,22 +84,22 @@ class CrownWarnedPddaListFileConverterTest {
         Map<String, String> metadataMap = new ConcurrentHashMap<>(COMMON_METADATA);
         metadataMap.put(LANGUAGE, "ENGLISH");
 
-        String outputHtml = crownWarnedPddaListConverter.convert(inputJson, metadataMap, language);
+        String outputHtml = crownAdvancePddaListFileConverter.convert(inputJson, metadataMap, language);
         Document document = Jsoup.parse(outputHtml);
 
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(outputHtml)
-            .as("No Warned list html found")
+            .as("No Advance list html found")
             .isNotEmpty();
 
         softly.assertThat(document.title())
-            .as("incorrect Warned list title found.")
-            .isEqualTo("Crown Warned List");
+            .as("incorrect Advance list title found.")
+            .isEqualTo("Crown Advance List");
 
         softly.assertThat(document.getElementsByClass(HEADING_CLASS).get(0).text())
             .as(HEADING_MESSAGE)
-            .contains("Crown Warned List for location");
+            .contains("Crown Advance List for location");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
                               .getElementsByTag("a").get(0)
@@ -206,11 +206,11 @@ class CrownWarnedPddaListFileConverterTest {
     }
 
     @Test
-    void testCrownWarnedPddaListTemplateWelsh() throws IOException {
+    void testCrownAdvancePddaListTemplateWelsh() throws IOException {
         Map<String, Object> language;
 
         try (InputStream languageFile = Thread.currentThread()
-            .getContextClassLoader().getResourceAsStream("templates/languages/cy/crownWarnedPddaList.json")) {
+            .getContextClassLoader().getResourceAsStream("templates/languages/cy/crownAdvancePddaList.json")) {
             language = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -219,17 +219,17 @@ class CrownWarnedPddaListFileConverterTest {
         Map<String, String> metadataMap = new ConcurrentHashMap<>(COMMON_METADATA);
         metadataMap.put(LANGUAGE, "WELSH");
 
-        String outputHtml = crownWarnedPddaListConverter.convert(inputJson, metadataMap, language);
+        String outputHtml = crownAdvancePddaListFileConverter.convert(inputJson, metadataMap, language);
         Document document = Jsoup.parse(outputHtml);
 
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(outputHtml)
-            .as("No Warned list html found")
+            .as("No Advance list html found")
             .isNotEmpty();
 
         softly.assertThat(document.title())
-            .as("incorrect Warned list title found.")
+            .as("incorrect Advance list title found.")
             .isEqualTo("Rhestr Rybuddio Llys y Goron");
 
         softly.assertThat(document.getElementsByClass(HEADING_CLASS).get(0).text())
@@ -345,11 +345,11 @@ class CrownWarnedPddaListFileConverterTest {
     }
 
     @Test
-    void testCrownWarnedPddaListTableContents() throws IOException {
+    void testCrownAdvancePddaListTableContents() throws IOException {
         Map<String, Object> language;
 
         try (InputStream languageFile = Thread.currentThread()
-            .getContextClassLoader().getResourceAsStream("templates/languages/en/crownWarnedPddaList.json")) {
+            .getContextClassLoader().getResourceAsStream("templates/languages/en/crownAdvancePddaList.json")) {
             language = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -358,7 +358,7 @@ class CrownWarnedPddaListFileConverterTest {
         Map<String, String> metadataMap = new ConcurrentHashMap<>(COMMON_METADATA);
         metadataMap.put(LANGUAGE, "ENGLISH");
 
-        String outputHtml = crownWarnedPddaListConverter.convert(inputJson, metadataMap, language);
+        String outputHtml = crownAdvancePddaListFileConverter.convert(inputJson, metadataMap, language);
         Document document = Jsoup.parse(outputHtml);
 
         assertThat(document.getElementsByTag("td"))
@@ -375,9 +375,9 @@ class CrownWarnedPddaListFileConverterTest {
     }
 
     @Test
-    void testCrownWarnedListExcelConversion() throws IOException {
-        byte[] result = crownWarnedPddaListConverter.convertToExcel(inputJson, CROWN_WARNED_PDDA_LIST,
-                                                                    Map.of("language", "ENGLISH"));
+    void testCrownAdvanceListExcelConversion() throws IOException {
+        byte[] result = crownAdvancePddaListFileConverter.convertToExcel(inputJson, CROWN_ADVANCE_PDDA_LIST,
+                                                                         Map.of("language", "ENGLISH"));
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -417,9 +417,9 @@ class CrownWarnedPddaListFileConverterTest {
     }
 
     @Test
-    void testCrownWarnedListWelshExcelConversion() throws IOException {
-        byte[] result = crownWarnedPddaListConverter.convertToExcel(inputJson, CROWN_WARNED_PDDA_LIST,
-                                                                    Map.of("language", "WELSH"));
+    void testCrownAdvanceListWelshExcelConversion() throws IOException {
+        byte[] result = crownAdvancePddaListFileConverter.convertToExcel(inputJson, CROWN_ADVANCE_PDDA_LIST,
+                                                                         Map.of("language", "WELSH"));
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -459,9 +459,9 @@ class CrownWarnedPddaListFileConverterTest {
     }
 
     @Test
-    void testCrownWarnedListExcelTableContents() throws IOException {
-        byte[] result = crownWarnedPddaListConverter.convertToExcel(inputJson, CROWN_WARNED_PDDA_LIST,
-                                                                    Map.of("language", "ENGLISH"));
+    void testCrownAdvanceListExcelTableContents() throws IOException {
+        byte[] result = crownAdvancePddaListFileConverter.convertToExcel(inputJson, CROWN_ADVANCE_PDDA_LIST,
+                                                                         Map.of("language", "ENGLISH"));
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);

@@ -27,17 +27,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles("integration-basic")
 @SpringBootTest
-class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
+class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
 
     @Autowired
     ValidationService validationService;
 
-    private static final String CROWN_WARNED_PDDA_LIST_VALID_JSON =
-        "data/crown-warned-pdda-list/crownWarnedPddaList.json";
-    private static final String CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE =
-        "Invalid crown warned list marked as valid";
+    private static final String CROWN_ADVANCE_PDDA_LIST_VALID_JSON =
+        "data/crown-advance-pdda-list/crownAdvancePddaList.json";
+    private static final String CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE =
+        "Invalid crown advance list marked as valid";
 
-    private static final String WARNED_LIST_SCHEMA = "WarnedList";
+    private static final String ADVANCE_LIST_SCHEMA = "AdvanceList";
     private static final String DOCUMENT_ID = "DocumentID";
     private static final String DOCUMENT_NAME = "DocumentName";
     private static final String UNIQUE_ID = "UniqueID";
@@ -97,930 +97,983 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
     }
 
     @Test
-    void testValidateWithErrorsWhenWarnedListMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenAdvanceListMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node).remove(WARNED_LIST_SCHEMA);
+            ((ObjectNode) node).remove(ADVANCE_LIST_SCHEMA);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenDocumentIdMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenDocumentIdMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA)).remove(DOCUMENT_ID);
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA)).remove(DOCUMENT_ID);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenDocumentNameMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenDocumentNameMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(DOCUMENT_ID)).remove(DOCUMENT_NAME);
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(DOCUMENT_ID)).remove(DOCUMENT_NAME);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenUniqueIdMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenUniqueIdMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(DOCUMENT_ID)).remove(UNIQUE_ID);
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(DOCUMENT_ID)).remove(UNIQUE_ID);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenDocumentTypeMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenDocumentTypeMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(DOCUMENT_ID)).remove(DOCUMENT_TYPE);
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(DOCUMENT_ID)).remove(DOCUMENT_TYPE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenListHeaderMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenListHeaderMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA)).remove(LIST_HEADER);
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA)).remove(LIST_HEADER);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenStartDateMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenStartDateMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(LIST_HEADER)).remove(START_DATE);
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(LIST_HEADER)).remove(START_DATE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenVersionMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenVersionMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(LIST_HEADER)).remove(VERSION);
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(LIST_HEADER)).remove(VERSION);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenPublishedTimeMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenPublishedTimeMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(LIST_HEADER)).remove(PUBLISHED_TIME);
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(LIST_HEADER)).remove(PUBLISHED_TIME);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCrownCourtMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenCrownCourtMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA)).remove(CROWN_COURT);
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA)).remove(CROWN_COURT);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtHouseTypeMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenCourtHouseTypeMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(CROWN_COURT)).remove(COURT_HOUSE_TYPE);
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(CROWN_COURT)).remove(COURT_HOUSE_TYPE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtListsCourtHouseTypeMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenCourtListsCourtHouseTypeMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(COURT_HOUSE))
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(COURT_HOUSE))
                 .remove(COURT_HOUSE_TYPE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtHouseCodeMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenCourtHouseCodeMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(CROWN_COURT)).remove(COURT_HOUSE_CODE);
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(CROWN_COURT)).remove(COURT_HOUSE_CODE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtListsCourtHouseCodeMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenCourtListsCourtHouseCodeMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(COURT_HOUSE))
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(COURT_HOUSE))
                 .remove(COURT_HOUSE_CODE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtHouseNameMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenCourtHouseNameMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(CROWN_COURT)).remove(COURT_HOUSE_NAME);
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(CROWN_COURT)).remove(COURT_HOUSE_NAME);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtListsCourtHouseNameMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenCourtListsCourtHouseNameMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(COURT_HOUSE))
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(COURT_HOUSE))
                 .remove(COURT_HOUSE_NAME);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtListsMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenCourtListsMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA)).remove(COURT_LISTS);
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA)).remove(COURT_LISTS);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtHouseMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenCourtHouseMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0)).remove(COURT_HOUSE);
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0)).remove(COURT_HOUSE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtListCourtHouseTypeMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenCourtListCourtHouseTypeMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(COURT_HOUSE))
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(COURT_HOUSE))
                 .remove(COURT_HOUSE_TYPE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtListCourtHouseCodeMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenCourtListCourtHouseCodeMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(COURT_HOUSE))
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(COURT_HOUSE))
                 .remove(COURT_HOUSE_CODE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenCourtListCourtHouseNameMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenCourtListCourtHouseNameMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(COURT_HOUSE))
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(COURT_HOUSE))
                 .remove(COURT_HOUSE_NAME);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithFixedDateHearingTypeMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithFixedDateHearingTypeMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0))
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0))
                 .remove(HEARING_TYPE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithFixedDateFixtureMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithFixedDateFixtureMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0))
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0))
                 .remove(FIXTURE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithFixedDateCasesMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithFixedDateCasesMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0)).remove(CASES);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithFixedDateCaseNumberMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithFixedDateCaseNumberMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0)).remove(CASE_NUMBER);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithFixedDateCaseNumberCathMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithFixedDateCaseNumberCathMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0)).remove(CASE_NUMBER_CATH);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithFixedDateDefendantsMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithFixedDateDefendantsMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0)).remove(DEFENDANTS);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithFixedDateCourtHouseCodeMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithFixedDateCourtHouseCodeMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(CASE_ARRIVED_FROM).get(ORIGINATING_COURT)).remove(COURT_HOUSE_CODE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithFixedDateCourtHouseNameMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithFixedDateCourtHouseNameMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(CASE_ARRIVED_FROM).get(ORIGINATING_COURT)).remove(COURT_HOUSE_NAME);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithFixedDateHearingDescriptionMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithFixedDateHearingDescriptionMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(HEARING).get(0)).remove(HEARING_DESCRIPTION);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithFixedDateHearingHearingTypeMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithFixedDateHearingHearingTypeMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(HEARING).get(0)).remove(HEARING_TYPE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithFixedDatePersonalDetailsMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithFixedDatePersonalDetailsMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(DEFENDANTS).get(0)).remove(PERSONAL_DETAILS);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithFixedDateNameMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithFixedDateNameMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(DEFENDANTS).get(0).get(PERSONAL_DETAILS)).remove(NAME);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithFixedDateIsMaskedMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithFixedDateIsMaskedMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(DEFENDANTS).get(0).get(PERSONAL_DETAILS)).remove(IS_MASKED);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithFixedDateLocationMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithFixedDateLocationMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(DEFENDANTS).get(0).get("PrisonLocation")).remove(LOCATION);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithFixedDateOrganisationNameMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithFixedDateOrganisationNameMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(DEFENDANTS).get(0).get("Counsel").get(0).get("Solicitor").get(0)
                 .get("Party").get("Organisation")).remove(ORGANISATION_NAME);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithFixedDateOffenceStatementMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithFixedDateOffenceStatementMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(DEFENDANTS).get(0).get("Charges").get(0)).remove(OFFENCE_STATEMENT);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithFixedDateProsecutionOrgNameMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithFixedDateProsecutionOrgNameMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get("Prosecution").get("ProsecutingOrganisation")).remove(ORGANISATION_NAME);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithFixedDateLinkedCaseNumberMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithFixedDateLinkedCaseNumberMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get("LinkedCases").get(0)).remove(CASE_NUMBER);
 
             String listJson = node.toString();
             assertThrows(
                 PayloadValidationException.class, () ->
                     validationService.validateBody(listJson, headerGroup, true),
-                CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE
+                CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
             );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDateMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDateMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0)).remove(WITHOUT_FIXED_DATE);
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0)).remove(WITHOUT_FIXED_DATE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDateHearingTypeMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDateHearingTypeMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0))
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0))
                 .remove(HEARING_TYPE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDateFixtureMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDateFixtureMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0)).remove(FIXTURE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDateCasesMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDateCasesMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0))
                 .remove(CASES);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDateCaseNumberMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDateCaseNumberMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0)).remove(CASE_NUMBER);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDateCaseNumberCathMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDateCaseNumberCathMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0)).remove(CASE_NUMBER_CATH);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDateDefendantsMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDateDefendantsMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0)).remove(DEFENDANTS);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDateCourtHouseCodeMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDateCourtHouseCodeMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(CASE_ARRIVED_FROM)).remove(SECTION_53);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDateCourtHouseNameMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDateCourtHouseNameMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(CASE_ARRIVED_FROM)).remove(SECTION_53);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDateHearingDescriptionMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDateHearingDescriptionMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(HEARING).get(0)).remove(HEARING_DESCRIPTION);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDateHearingHearingTypeMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDateHearingHearingTypeMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(HEARING).get(0)).remove(HEARING_TYPE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDatePersonalDetailsMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDatePersonalDetailsMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(DEFENDANTS).get(0)).remove(PERSONAL_DETAILS);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDateNameMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDateNameMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(DEFENDANTS).get(0).get(PERSONAL_DETAILS)).remove(NAME);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDateIsMaskedMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDateIsMaskedMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(DEFENDANTS).get(0).get(PERSONAL_DETAILS)).remove(IS_MASKED);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDateLocationMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDateLocationMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(DEFENDANTS).get(0).get("PrisonLocation")).remove(LOCATION);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDateOrganisationNameMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDateOrganisationNameMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(DEFENDANTS).get(0).get("Counsel").get(0)
                 .get("Solicitor").get(0).get("Party")
@@ -1029,18 +1082,19 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDateOffenceStatementMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDateOffenceStatementMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS)
                 .get(0).get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(DEFENDANTS).get(0).get("Charges")
                 .get(0)).remove(OFFENCE_STATEMENT);
@@ -1048,43 +1102,46 @@ class CrownWarnedPddaListTest extends IntegrationBasicTestBase {
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDateProsecutionOrgNameMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDateProsecutionOrgNameMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get("Prosecution").get("ProsecutingOrganisation")).remove(ORGANISATION_NAME);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 
     @Test
-    void testValidateWithErrorsWhenWithoutFixedDateLinkedCaseNumberMissingInCrownWarnedPddaList() throws IOException {
+    void testValidateWithErrorsWhenWithoutFixedDateLinkedCaseNumberMissingInCrownAdvancePddaList() throws IOException {
         try (InputStream jsonInput = this.getClass().getClassLoader()
-            .getResourceAsStream(CROWN_WARNED_PDDA_LIST_VALID_JSON)) {
+            .getResourceAsStream(CROWN_ADVANCE_PDDA_LIST_VALID_JSON)) {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(WARNED_LIST_SCHEMA).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(ADVANCE_LIST_SCHEMA).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get("LinkedCases").get(0)).remove(CASE_NUMBER);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
                              validationService.validateBody(listJson, headerGroup, true),
-                         CROWN_WARNED_PDDA_LIST_INVALID_MESSAGE);
+                         CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE
+            );
         }
     }
 

@@ -216,7 +216,7 @@ class PublicationControllerTest {
         "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE",
         "CROWN_DAILY_PDDA_LIST",
         "CROWN_FIRM_PDDA_LIST",
-        "CROWN_WARNED_PDDA_LIST"})
+        "CROWN_ADVANCE_PDDA_LIST"})
     void shouldNotValidateMasterSchemaForMagistratesAdultCourtLists(ListType listType) {
         when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithId);
