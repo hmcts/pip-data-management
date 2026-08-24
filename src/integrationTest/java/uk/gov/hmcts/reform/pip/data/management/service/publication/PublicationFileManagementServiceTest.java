@@ -160,7 +160,8 @@ class PublicationFileManagementServiceTest extends IntegrationBasicTestBase {
         publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, civilDailyListInput);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
-        verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
+        verify(azureBlobService, never())
+            .uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
     }
 }
