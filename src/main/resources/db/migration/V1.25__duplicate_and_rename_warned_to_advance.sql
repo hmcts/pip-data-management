@@ -48,48 +48,7 @@ WHERE a.list_type = 'CROWN_WARNED_PDDA_LIST'
     AND x.list_type = 'CROWN_ADVANCE_PDDA_LIST'
 );
 
--- -- 2) Duplicate in artefact_archived
-INSERT INTO artefact_archived (
-  artefact_id,
-  content_date,
-  display_from,
-  display_to,
-  is_flat_file,
-  language,
-  list_type,
-  location_id,
-  provenance,
-  sensitivity,
-  type,
-  last_received_date,
-  superseded_count,
-  archived_date,
-  is_manually_deleted
-)
-SELECT
-  md5(random()::text || clock_timestamp()::text)::uuid AS artefact_id,
-  aa.content_date,
-  aa.display_from,
-  aa.display_to,
-  aa.is_flat_file,
-  aa.language,
-  'CROWN_ADVANCE_PDDA_LIST',
-  aa.location_id,
-  aa.provenance,
-  aa.sensitivity,
-  aa.type,
-  aa.last_received_date,
-  aa.superseded_count,
-  aa.archived_date,
-  aa.is_manually_deleted
-FROM artefact_archived aa
-WHERE aa.list_type = 'CROWN_WARNED_PDDA_LIST'
-  AND NOT EXISTS (
-  SELECT 1
-  FROM artefact_archived y
-  WHERE y.location_id IS NOT DISTINCT FROM aa.location_id
-    AND y.content_date IS NOT DISTINCT FROM aa.content_date
-    AND y.language IS NOT DISTINCT FROM aa.language
-    AND y.provenance IS NOT DISTINCT FROM aa.provenance
-    AND y.list_type = 'CROWN_ADVANCE_PDDA_LIST'
-);
+-- 2) Rename in artefact_archived
+UPDATE artefact_archived
+SET list_type = 'CROWN_ADVANCE_PDDA_LIST'
+WHERE list_type = 'CROWN_WARNED_PDDA_LIST';
