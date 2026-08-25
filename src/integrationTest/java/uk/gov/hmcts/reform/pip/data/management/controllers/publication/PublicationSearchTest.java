@@ -404,6 +404,53 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     }
 
     @Test
+    void testGetCasesByArtefactIdReturnsResults() throws Exception {
+        setupMockListSearchConfig();
+        Artefact createdArtefact = createDailyList(Sensitivity.PUBLIC);
+
+        MvcResult response = mockMvc.perform(get(SEARCH_URL + "/" + createdArtefact.getArtefactId())
+                                                 .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<ArtefactCaseInfo> results = OBJECT_MAPPER.readValue(
+            response.getResponse().getContentAsString(), new TypeReference<>() {}
+        );
+
+        assertThat(results)
+            .hasSize(4);
+
+        assertThat(results)
+            .anyMatch(caseInfo -> CASE_ID_SEARCH_VALUE.equals(caseInfo.getCaseNumber()));
+
+        assertThat(results)
+            .anyMatch(caseInfo -> CASE_NAME_SEARCH_VALUE.equals(caseInfo.getCaseName()));
+    }
+
+    @Test
+    void testGetCasesByArtefactIdReturnsEmptyListWhenNotFound() throws Exception {
+        MvcResult response = mockMvc.perform(get(SEARCH_URL + "/" + UUID.randomUUID())
+                                                 .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<ArtefactCaseInfo> results = OBJECT_MAPPER.readValue(
+            response.getResponse().getContentAsString(), new TypeReference<>() {}
+        );
+
+        assertThat(results)
+            .isEmpty();
+    }
+
+    @Test
+    @WithMockUser(username = UNAUTHORIZED_USERNAME, authorities = {UNAUTHORIZED_ROLE})
+    void testGetCasesByArtefactIdForbidden() throws Exception {
+        mockMvc.perform(get(SEARCH_URL + "/" + UUID.randomUUID())
+                            .header(REQUESTER_ID_HEADER, VERIFIED_USER_ID))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
     void testGetCasesByCaseNumberReturnsResults() throws Exception {
         setupMockListSearchConfig();
         createDailyList(Sensitivity.PUBLIC);

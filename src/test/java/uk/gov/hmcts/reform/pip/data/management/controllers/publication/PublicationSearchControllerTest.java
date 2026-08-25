@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSearchService;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
@@ -42,6 +43,7 @@ class PublicationSearchControllerTest {
     private static final String PAYLOAD_URL = "This is a test payload";
     private static final String EMPTY_FIELD = "";
     private static final String TEST_STRING = "test";
+    private static final String TEST_CASE_NAME = "Test Case Name";
     private static final String VALIDATION_EXPECTED_MESSAGE =
         "The expected exception does not contain the correct message";
 
@@ -169,8 +171,34 @@ class PublicationSearchControllerTest {
     }
 
     @Test
+    void testGetCasesByArtefactIdReturnsOk() {
+        ArtefactCaseInfo caseInfo = new ArtefactCaseInfo(TEST_STRING, TEST_CASE_NAME);
+        when(publicationSearchService.findCasesByArtefactId(ARTEFACT_ID))
+            .thenReturn(List.of(caseInfo));
+
+        ResponseEntity<List<ArtefactCaseInfo>> result =
+            publicationSearchController.getArtefactCaseInfo(ARTEFACT_ID, USER_ID);
+
+        assertThat(result.getStatusCode())
+            .as(STATUS_CODE_MATCH)
+            .isEqualTo(HttpStatus.OK);
+
+        assertThat(result.getBody())
+            .as(MESSAGES_MATCH)
+            .hasSize(1);
+
+        assertThat(result.getBody().get(0).getCaseNumber())
+            .as(MESSAGES_MATCH)
+            .isEqualTo(TEST_STRING);
+
+        assertThat(result.getBody().get(0).getCaseName())
+            .as(MESSAGES_MATCH)
+            .isEqualTo(TEST_CASE_NAME);
+    }
+
+    @Test
     void testGetCasesByCaseNumberReturnsOk() {
-        ArtefactCaseInfo caseInfo = new ArtefactCaseInfo(TEST_STRING, "Test Case Name");
+        ArtefactCaseInfo caseInfo = new ArtefactCaseInfo(TEST_STRING, TEST_CASE_NAME);
         when(publicationSearchService.findCasesByCaseNumber(TEST_STRING))
             .thenReturn(List.of(caseInfo));
 

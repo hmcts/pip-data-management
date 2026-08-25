@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateLi
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -37,6 +38,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ARTEFACT_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SOURCE_ARTEFACT_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_VALUE;
@@ -53,6 +55,7 @@ class PublicationSearchServiceTest {
     private static final ListSearchConfig LIST_SEARCH_CONFIG = new ListSearchConfig();
     private static final String CASE_NUMBER_FIELD_NAME = "caseNumber";
     private static final String CASE_NAME_FIELD_NAME = "caseName";
+    private static final String TEST_CASE_NAME = "Test Case Name";
 
     @Mock
     private ArtefactRepository artefactRepository;
@@ -355,7 +358,7 @@ class PublicationSearchServiceTest {
     void testFindCasesByCaseNumber() {
         ArtefactSearchCaseResult caseSearchResult = mock(ArtefactSearchCaseResult.class);
         when(caseSearchResult.getCaseNumber()).thenReturn(TEST_VALUE);
-        when(caseSearchResult.getCaseName()).thenReturn("Test Case Name");
+        when(caseSearchResult.getCaseName()).thenReturn(TEST_CASE_NAME);
 
         when(artefactSearchRepository.findByCaseNumberIgnoreCase(eq(TEST_VALUE), any()))
             .thenReturn(List.of(caseSearchResult));
@@ -364,7 +367,7 @@ class PublicationSearchServiceTest {
 
         assertEquals(1, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
         assertEquals(TEST_VALUE, results.get(0).getCaseNumber(), VALIDATION_ARTEFACT_NOT_MATCH);
-        assertEquals("Test Case Name", results.get(0).getCaseName(), VALIDATION_ARTEFACT_NOT_MATCH);
+        assertEquals(TEST_CASE_NAME, results.get(0).getCaseName(), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
     @Test
@@ -416,6 +419,30 @@ class PublicationSearchServiceTest {
         when(artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(any(), any())).thenReturn(List.of());
 
         List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseName("not found", true);
+        assertEquals(0, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
+    void testFindCasesArtefactId() {
+        ArtefactSearch artefactSearch = mock(ArtefactSearch.class);
+        when(artefactSearch.getCaseNumber()).thenReturn(TEST_VALUE);
+        when(artefactSearch.getCaseName()).thenReturn(TEST_CASE_NAME);
+
+        when(artefactSearchRepository.findByArtefactId(ARTEFACT_ID))
+            .thenReturn(List.of(artefactSearch));
+
+        List<ArtefactCaseInfo> results = publicationSearchService.findCasesByArtefactId(ARTEFACT_ID);
+
+        assertEquals(1, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
+        assertEquals(TEST_VALUE, results.get(0).getCaseNumber(), VALIDATION_ARTEFACT_NOT_MATCH);
+        assertEquals(TEST_CASE_NAME, results.get(0).getCaseName(), VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
+    void testFindCasesArtefactIdReturnsEmptyListWhenNotFound() {
+        when(artefactSearchRepository.findByArtefactId(ARTEFACT_ID)).thenReturn(List.of());
+
+        List<ArtefactCaseInfo> results = publicationSearchService.findCasesByArtefactId(ARTEFACT_ID);
         assertEquals(0, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 }

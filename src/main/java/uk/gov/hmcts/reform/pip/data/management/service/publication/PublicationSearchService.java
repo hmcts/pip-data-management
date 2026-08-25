@@ -175,4 +175,16 @@ public class PublicationSearchService {
             .map(r -> new ArtefactCaseInfo(r.getCaseNumber(), r.getCaseName()))
             .toList();
     }
+
+    /**
+     * Get all case number/name pairs from the artefact_search table matching the given artefact ID.
+     *
+     * @param artefactId the artefact ID to search for
+     * @return list of ArtefactCaseInfo containing case number and case name pairs
+     */
+    public List<ArtefactCaseInfo> findCasesByArtefactId(UUID artefactId) {
+        return artefactSearchRepository.findByArtefactId(artefactId).stream()
+            .map(r -> new ArtefactCaseInfo(r.getCaseNumber(), r.getCaseName()))
+            .toList();
+    }
 }

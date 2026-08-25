@@ -125,6 +125,18 @@ public class PublicationSearchController {
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of case number/name pairs matching"
+        + " a given artefact ID")
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
+    @GetMapping("/search/{artefactId}")
+    @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
+    public ResponseEntity<List<ArtefactCaseInfo>> getArtefactCaseInfo(
+        @PathVariable UUID artefactId,
+        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
+        return ResponseEntity.ok(publicationSearchService.findCasesByArtefactId(artefactId));
+    }
+
+    @ApiResponse(responseCode = OK_CODE, description = "List of case number/name pairs matching"
         + " a given case number")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
