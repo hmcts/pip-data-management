@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
+import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.ConcurrencyFailureException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
@@ -27,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -111,7 +115,6 @@ class PublicationCreationServiceTest {
 
         Artefact returnedArtefact = publicationCreationService.createPublication(artefact, PAYLOAD);
 
-        verify(artefactSearchService).artefactSearchStore(returnedArtefact, PAYLOAD);
         verify(azureArtefactBlobService, never()).deleteBlob(anyString());
         assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, ROWID_RETURNS_UUID);
     }
@@ -126,7 +129,6 @@ class PublicationCreationServiceTest {
 
         Artefact returnedArtefact = publicationCreationService.createPublication(artefact, PAYLOAD);
 
-        verify(artefactSearchService).artefactSearchStore(returnedArtefact, PAYLOAD);
         verify(azureArtefactBlobService, never()).deleteBlob(anyString());
         assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, ROWID_RETURNS_UUID);
     }
@@ -167,7 +169,6 @@ class PublicationCreationServiceTest {
 
         Artefact returnedArtefact = publicationCreationService.createPublication(artefact, PAYLOAD);
 
-        verify(artefactSearchService).artefactSearchStore(returnedArtefact, PAYLOAD);
         verify(azureArtefactBlobService).deleteBlob(anyString());
         assertEquals(artefactToBeCreated, returnedArtefact, ROWID_RETURNS_UUID);
     }
@@ -207,7 +208,6 @@ class PublicationCreationServiceTest {
 
         Artefact returnedArtefact = publicationCreationService.createPublication(artefactToBeCreated, PAYLOAD);
 
-        verify(artefactSearchService).artefactSearchStore(returnedArtefact, PAYLOAD);
         verify(azureArtefactBlobService).deleteBlob(anyString());
         verify(publicationFileManagementService).deleteFiles(artefactToBeCreated.getArtefactId(),
                                                          artefactToBeCreated.getListType(),
@@ -307,5 +307,49 @@ class PublicationCreationServiceTest {
         publicationCreationService.createPublication(artefact, PAYLOAD);
 
         assertEquals(0, captor.getValue().getSupersededCount(), "Superseded count has been incremented");
+    }
+
+    @Test
+    void testProcessPublicationSearchCases() {
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationCreationService.class)) {
+            publicationCreationService.processPublicationSearchCases(artefact, PAYLOAD);
+
+            verify(artefactSearchService).artefactSearchStore(artefact, PAYLOAD);
+
+            assertThat(logCaptor.getErrorLogs())
+                .isEmpty();
+        }
+    }
+
+    @Test
+    void testProcessPublicationSearchCasesWithConcurrencyFailureException() {
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationCreationService.class)) {
+            doThrow(ConcurrencyFailureException.class).when(artefactSearchService)
+                .artefactSearchStore(artefact, PAYLOAD);
+
+            publicationCreationService.processPublicationSearchCases(artefact, PAYLOAD);
+
+            assertThat(logCaptor.getErrorLogs())
+                .hasSize(1);
+
+            assertThat((logCaptor.getErrorLogs().get(0)))
+                .contains("Error storing case search values for artefact with ID");
+        }
+    }
+
+    @Test
+    void testProcessPublicationSearchCasesWithDataIntegrityViolationException() {
+        try (LogCaptor logCaptor = LogCaptor.forClass(PublicationCreationService.class)) {
+            doThrow(DataIntegrityViolationException.class).when(artefactSearchService)
+                .artefactSearchStore(artefact, PAYLOAD);
+
+            publicationCreationService.processPublicationSearchCases(artefact, PAYLOAD);
+
+            assertThat(logCaptor.getErrorLogs())
+                .hasSize(1);
+
+            assertThat((logCaptor.getErrorLogs().get(0)))
+                .contains("Error storing case search values for artefact with ID");
+        }
     }
 }
