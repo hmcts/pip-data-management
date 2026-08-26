@@ -135,7 +135,7 @@ class SjpPublicListFileConverterTest {
     @EnumSource(value = ListType.class, names = {"SJP_PUBLIC_LIST", "SJP_DELTA_PUBLIC_LIST"})
     void testSuccessfulExcelEnglishHeaderConversion(ListType listType) throws IOException {
         byte[] result = converter.convertToExcel(getInput("/mocks/sjpPublicList.json"), listType,
-                                                 Map.of("language", "ENGLISH"));
+                                                 Map.of("language", "ENGLISH"), null);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -158,7 +158,7 @@ class SjpPublicListFileConverterTest {
     @EnumSource(value = ListType.class, names = {"SJP_PUBLIC_LIST", "SJP_DELTA_PUBLIC_LIST"})
     void testSuccessfulExcelWelshHeaderConversion(ListType listType) throws IOException {
         byte[] result = converter.convertToExcel(getInput("/mocks/sjpPublicList.json"), listType,
-                                                 Map.of("language", "WELSH"));
+                                                 Map.of("language", "WELSH"), null);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);

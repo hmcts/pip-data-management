@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
+import java.io.InputStream;
 import java.util.Base64;
 import java.util.UUID;
 
@@ -47,8 +48,8 @@ public class PublicationFileManagementService {
      * @param artefactId The artefact ID to generate the files for.
      * @param payload The payload of the artefact.
      */
-    public void generateFiles(UUID artefactId, String payload, byte[] excel) {
-        publicationFileGenerationService.generate(artefactId, payload)
+    public void generateFiles(UUID artefactId, String payload, InputStream inputExcel) {
+        publicationFileGenerationService.generate(artefactId, payload, inputExcel)
             .ifPresent(files -> {
                 if (files.getPrimaryPdf().length > 0) {
                     azureBlobService.uploadFile(artefactId + PDF.getExtension(), files.getPrimaryPdf());
@@ -61,9 +62,6 @@ public class PublicationFileManagementService {
 
                 if (files.getExcel().length > 0) {
                     azureBlobService.uploadFile(artefactId + EXCEL.getExtension(), files.getExcel());
-                } else if (excel.length > 0) {
-                    // Store the input Excel file for non-strategic upload
-                    azureBlobService.uploadFile(artefactId + EXCEL.getExtension(), excel);
                 }
             });
     }

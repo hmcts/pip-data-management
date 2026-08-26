@@ -109,10 +109,10 @@ class PublicationFileManagementServiceTest {
 
     @Test
     void testGenerateFilesWithPrimaryPdfOnly() {
-        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
+        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD, null))
             .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, EMPTY_BYTES, EMPTY_BYTES)));
 
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD, EMPTY_EXCEL);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD, null);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService, never())
@@ -122,10 +122,10 @@ class PublicationFileManagementServiceTest {
 
     @Test
     void testGenerateFilesWithPrimaryAndAdditionalPdfs() {
-        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
+        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD, null))
             .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, BYTE_DATA, EMPTY_BYTES)));
 
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD, EMPTY_EXCEL);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD, null);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
@@ -134,10 +134,10 @@ class PublicationFileManagementServiceTest {
 
     @Test
     void testGenerateFilesWithPdfAndExcel() {
-        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
+        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD, null))
             .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, EMPTY_BYTES, BYTE_DATA)));
 
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD, EMPTY_EXCEL);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD, null);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService, never())
@@ -147,10 +147,10 @@ class PublicationFileManagementServiceTest {
 
     @Test
     void testGenerateFilesWithExcelOnly() {
-        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
+        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD, null))
             .thenReturn(Optional.of(new PublicationFiles(EMPTY_BYTES, EMPTY_BYTES, BYTE_DATA)));
 
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD, EMPTY_EXCEL);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD, null);
 
         verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService, never())
@@ -158,26 +158,12 @@ class PublicationFileManagementServiceTest {
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
     }
 
-
-    @Test
-    void testGenerateFilesForNonStrategicList() {
-        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
-            .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, EMPTY_BYTES, EMPTY_BYTES)));
-
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD, TEST_BYTE);
-
-        verify(azureBlobService).uploadFile(TEST_ARTEFACT_ID + PDF.getExtension(), BYTE_DATA);
-        verify(azureBlobService, never())
-            .uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
-        verify(azureBlobService).uploadFile(TEST_ARTEFACT_ID + EXCEL.getExtension(), TEST_BYTE);
-    }
-
     @Test
     void testGenerateFilesWhenFailed() {
-        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
+        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD, null))
             .thenReturn(Optional.empty());
 
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD, EMPTY_EXCEL);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD, null);
 
         verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService, never())

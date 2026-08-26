@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ExcelConversionException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
@@ -23,8 +20,11 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.ExcelAbstractList;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 import java.util.UUID;
+
+import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 /**
  * This class contains the business logic for handling creation of publications.
@@ -117,16 +117,16 @@ public class PublicationCreationService extends ExcelAbstractList {
 
     @Async
     public void processCreatedPublication(Artefact artefact, String payload, MultipartFile file) {
-        byte[] excel = new byte[0];
-        if (artefact.getListType().hasExcel() && file != null) {
-            try {
-                Workbook workbook = new XSSFWorkbook(file.getInputStream());
-                excel = ExcelAbstractList.convertToByteArray(workbook);
-            } catch (IOException e) {
-                throw new ExcelConversionException("Error converting multi-part file to Excel");
+        InputStream inputStream = null;
+        try {
+            if (file != null) {
+                inputStream = file.getInputStream();
             }
+        } catch (IOException e) {
+            log.error(writeLog("Failed to convert file to input stream"));
         }
-        publicationFileManagementService.generateFiles(artefact.getArtefactId(), payload, excel);
+
+        publicationFileManagementService.generateFiles(artefact.getArtefactId(), payload, inputStream);
         publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefact);
     }
 

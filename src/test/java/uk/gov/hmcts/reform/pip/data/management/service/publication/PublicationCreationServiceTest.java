@@ -248,35 +248,16 @@ class PublicationCreationServiceTest {
     }
 
     @Test
-    void testProcessCreatedJsonPublicationWhenListTypeHasExcel() {
+    void testProcessCreatedJsonPublicationWhenHaveExcelMultipartFile() {
         Artefact artefact = new Artefact();
         artefact.setArtefactId(ARTEFACT_ID);
 
-        ListType listType = mock(ListType.class);
-        when(listType.hasExcel()).thenReturn(true);
-        artefact.setListType(listType);
-
         publicationCreationService.processCreatedPublication(artefact, PAYLOAD, excelFile);
 
-        verify(publicationFileManagementService, never()).generateFiles(ARTEFACT_ID, PAYLOAD, new byte[0]);
+        verify(publicationFileManagementService, never()).generateFiles(ARTEFACT_ID, PAYLOAD, null);
         verify(publicationFileManagementService).generateFiles(eq(ARTEFACT_ID), eq(PAYLOAD), any());
         verify(publicationSubscriptionService).checkAndTriggerPublicationSubscription(artefact);
 
-    }
-
-    @Test
-    void testProcessCreatedJsonPublicationWhenListTypeDoNotHaveExcel() {
-        Artefact artefact = new Artefact();
-        artefact.setArtefactId(ARTEFACT_ID);
-
-        ListType listType = mock(ListType.class);
-        when(listType.hasExcel()).thenReturn(false);
-        artefact.setListType(listType);
-
-        publicationCreationService.processCreatedPublication(artefact, PAYLOAD, excelFile);
-
-        verify(publicationFileManagementService).generateFiles(ARTEFACT_ID, PAYLOAD, new byte[0]);
-        verify(publicationSubscriptionService).checkAndTriggerPublicationSubscription(artefact);
     }
 
     @Test
@@ -284,13 +265,9 @@ class PublicationCreationServiceTest {
         Artefact artefact = new Artefact();
         artefact.setArtefactId(ARTEFACT_ID);
 
-        ListType listType = mock(ListType.class);
-        when(listType.hasExcel()).thenReturn(true);
-        artefact.setListType(listType);
-
         publicationCreationService.processCreatedPublication(artefact, PAYLOAD, null);
 
-        verify(publicationFileManagementService).generateFiles(ARTEFACT_ID, PAYLOAD, new byte[0]);
+        verify(publicationFileManagementService).generateFiles(ARTEFACT_ID, PAYLOAD, null);
         verify(publicationSubscriptionService).checkAndTriggerPublicationSubscription(artefact);
     }
 
