@@ -62,9 +62,11 @@ public class PublicationLocationService {
 
     public String deleteArtefactByLocation(Integer locationId, UUID requesterId)
         throws JsonProcessingException {
+        log.info(writeLog("*****deleteArtefactByLocation: before find repository"));
         List<Artefact> activeArtefacts = artefactRepository.findActiveArtefactsForLocation(
             LocalDateTime.now(),
             locationId.toString());
+        log.info(writeLog("*****deleteArtefactByLocation: after find repository"));
         if (activeArtefacts.isEmpty()) {
             log.info(writeLog(String.format("User %s attempting to delete all artefacts for location %s. "
                             + "No artefacts found", requesterId, locationId)));
