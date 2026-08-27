@@ -187,7 +187,7 @@ class PublicationFileGenerationServiceTest extends IntegrationBasicTestBase {
 
         softly.assertThat(files.get().getExcel())
             .as(FILE_EMPTY_MESSAGE)
-            .isEmpty();
+            .isNotEmpty();
 
         softly.assertAll();
     }
@@ -211,12 +211,12 @@ class PublicationFileGenerationServiceTest extends IntegrationBasicTestBase {
             .isNotEmpty();
 
         softly.assertThat(files.get().getAdditionalPdf())
-            .as(FILE_NOT_EMPTY_MESSAGE)
-            .isNotEmpty();
+            .as(FILE_EMPTY_MESSAGE)
+            .isEmpty();
 
         softly.assertThat(files.get().getExcel())
             .as(FILE_EMPTY_MESSAGE)
-            .isEmpty();
+            .isNotEmpty();
 
         softly.assertAll();
     }
