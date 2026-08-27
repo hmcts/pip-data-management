@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.FamilyMixedList;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.CaseHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
@@ -55,6 +56,44 @@ public final class FamilyMixedListHelper {
                         );
                     });
                 })));
+    }
+
+    public static FamilyMixedList buildFamilyMixedList(
+        JsonNode sitting,
+        JsonNode hearing,
+        JsonNode caseNode
+    ) {
+        FamilyMixedList thisCase = new FamilyMixedList();
+
+        thisCase.setTime(sitting.path("time").asText());
+        thisCase.setCaseRef(caseNode.path("caseNumber").asText());
+        thisCase.setCaseName(caseNode.path("formattedCaseName").asText());
+        thisCase.setCaseType(caseNode.path("caseType").asText());
+        thisCase.setHearingType(hearing.path("hearingType").asText());
+        thisCase.setLocation(sitting.path("caseHearingChannel").asText());
+        thisCase.setDuration(sitting.path("formattedDuration").asText());
+
+        thisCase.setApplicant(
+            CftListHelper.buildParty(
+                caseNode,
+                "applicant",
+                "applicantRepresentative"
+            )
+        );
+
+        thisCase.setRespondent(
+            CftListHelper.buildParty(
+                caseNode,
+                "respondent",
+                "respondentRepresentative"
+            )
+        );
+
+        thisCase.setReportingRestriction(
+            caseNode.path("formattedReportingRestriction").asText()
+        );
+
+        return thisCase;
     }
 
     private static void handleParties(JsonNode node) {
