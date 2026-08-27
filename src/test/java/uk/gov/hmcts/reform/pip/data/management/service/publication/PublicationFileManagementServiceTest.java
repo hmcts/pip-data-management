@@ -353,7 +353,7 @@ class PublicationFileManagementServiceTest {
 
         verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + PDF.getExtension());
         verify(azureBlobService, never()).deleteBlobFile(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension());
-        verify(azureBlobService, never()).deleteBlobFile(TEST_ARTEFACT_ID + EXCEL.getExtension());
+        verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + EXCEL.getExtension());
     }
 
     @Test
@@ -361,8 +361,8 @@ class PublicationFileManagementServiceTest {
         publicationFileManagementService.deleteFiles(TEST_ARTEFACT_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Language.WELSH);
 
         verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + PDF.getExtension());
-        verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension());
-        verify(azureBlobService, never()).deleteBlobFile(TEST_ARTEFACT_ID + EXCEL.getExtension());
+        verify(azureBlobService, never()).deleteBlobFile(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension());
+        verify(azureBlobService).deleteBlobFile(TEST_ARTEFACT_ID + EXCEL.getExtension());
     }
 
     @Test
