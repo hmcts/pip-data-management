@@ -98,16 +98,18 @@ class SjpPublicListFileConverterTest {
         Sheet sheet = workbook.getSheetAt(0);
 
         Row firstDataRow = sheet.getRow(1);
-        Row secondDataRow = sheet.getRow(2);
 
         assertEquals("A This is a surname", firstDataRow.getCell(0).getStringCellValue(),
                      "First row name does not match");
         assertEquals("", firstDataRow.getCell(1).getStringCellValue(),
                      "First row postcode should be empty");
-        assertEquals("This is an offence title, This is an offence title 2", firstDataRow.getCell(2).getStringCellValue(),
+        assertEquals("This is an offence title, This is an offence title 2", firstDataRow.getCell(2)
+                         .getStringCellValue(),
                      "First row offence does not match");
         assertEquals("This is an organisation", firstDataRow.getCell(3).getStringCellValue(),
                      "First row prosecutor does not match");
+
+        Row secondDataRow = sheet.getRow(2);
 
         assertEquals("A This is a surname 2", secondDataRow.getCell(0).getStringCellValue(),
                      "Second row name does not match");
