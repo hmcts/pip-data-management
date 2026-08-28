@@ -60,17 +60,7 @@ public class ExcelConversionService {
         for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
             Sheet sheet = workbook.getSheetAt(i);
             String sheetName = CaseUtils.toCamelCase(sheet.getSheetName(), false, ' ');
-
-            List<Map<String, String>> hearings = getSheetData(sheet);
-
-            if (hearings.isEmpty()) {
-                data.put(
-                    sheetName,
-                    List.of(Map.of("message", "No hearings scheduled for this day"))
-                );
-            } else {
-                data.put(sheetName, hearings);
-            }
+            data.put(sheetName, getSheetData(sheet));
         }
 
         return data;
