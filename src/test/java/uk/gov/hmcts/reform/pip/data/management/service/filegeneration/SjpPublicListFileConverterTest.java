@@ -91,7 +91,7 @@ class SjpPublicListFileConverterTest {
     @EnumSource(value = ListType.class, names = {"SJP_PUBLIC_LIST", "SJP_DELTA_PUBLIC_LIST"})
     void testExcelConversionWithMissingPostcode(ListType listType) throws IOException {
         byte[] result = converter.convertToExcel(getInput("/mocks/sjpPublicListMissingPostcode.json"), listType,
-                                                 Language.ENGLISH);
+                                                 Map.of("language", "ENGLISH"));
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
