@@ -21,6 +21,8 @@
     "Applicant/Petitioner",
     "Respondent"
   ],
+  "courtHouse": "Court House",
+  "courtRoom": "Court Room",
   "reportingRestriction": "Reporting Restriction: ",
   "beforeJudge": "Before: ",
   "legalAdvisor": "Legal Advisor: ",

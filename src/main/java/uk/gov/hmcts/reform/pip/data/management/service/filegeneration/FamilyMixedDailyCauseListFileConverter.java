@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.FamilyMixedList;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.sscsdailylist.CourtRoom;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CftListHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.FamilyMixedListHelper;
@@ -36,6 +37,8 @@ public class FamilyMixedDailyCauseListFileConverter extends ExcelAbstractList im
         List<String> tableHeadersUnwrap = (List<String>) languageResources.get("headerValuesUnwrap");
 
         return List.of(
+            languageResources.get("courtHouse").toString(),
+            languageResources.get("courtRoom").toString(),
             tableHeaders.get(0),
             tableHeaders.get(1),
             tableHeaders.get(2),
@@ -58,6 +61,8 @@ public class FamilyMixedDailyCauseListFileConverter extends ExcelAbstractList im
 
         processedData.forEach(list -> {
             rows.add(List.of(
+                list.getCourtHouse(),
+                list.getCourtRoom(),
                 list.getTime(),
                 list.getCaseRef(),
                 list.getCaseName(),

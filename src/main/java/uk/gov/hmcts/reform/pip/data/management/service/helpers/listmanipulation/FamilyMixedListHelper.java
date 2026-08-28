@@ -23,6 +23,8 @@ public final class FamilyMixedListHelper {
     private static final String COURT_LIST = "courtLists";
     private static final String COURT_HOUSE = "courtHouse";
     private static final String COURT_ROOM = "courtRoom";
+    private static final String COURT_HOUSE_NAME = "courtHouseName";
+    private static final String COURT_ROOM_NAME = "courtRoomName";
     private static final String SESSION = "session";
     private static final String SITTINGS = "sittings";
     private static final String HEARING = "hearing";
@@ -36,26 +38,37 @@ public final class FamilyMixedListHelper {
     public static void manipulatedListData(JsonNode artefact, Language language) {
         artefact.get(COURT_LIST)
             .forEach(courtList -> courtList.get(COURT_HOUSE).get(COURT_ROOM)
-                .forEach(courtRoom -> courtRoom.get(SESSION).forEach(session -> {
-                    ((ObjectNode) session).put("formattedSessionJudiciary",
-                                               JudiciaryHelper.findAndManipulateJudiciary(session));
-                    session.get(SITTINGS).forEach(sitting -> {
-                        DateHelper.calculateDuration(sitting, language);
-                        DateHelper.formatStartTime(sitting, "h:mma");
-                        SittingHelper.findAndConcatenateHearingPlatform(sitting, session);
+                .forEach(courtRoom -> {
+                    String courtHouseName = GeneralHelper.findAndReturnNodeText(
+                        courtList.get(COURT_HOUSE),
+                        COURT_HOUSE_NAME
+                    );
+                    String courtRoomName = GeneralHelper.findAndReturnNodeText(courtRoom, COURT_ROOM_NAME);
 
-                        sitting.get(HEARING).forEach(
-                            hearing -> hearing.get(CASE).forEach(hearingCase -> {
-                                handleParties(hearingCase);
-                                CaseHelper.manipulateCaseInformation((ObjectNode) hearingCase);
-                                ((ObjectNode) hearingCase).put(
-                                    "formattedReportingRestriction",
-                                    GeneralHelper.formatNodeArray(hearingCase, REPORTING_RESTRICTION_DETAIL, ", ")
-                                );
-                            })
-                        );
+                    courtRoom.get(SESSION).forEach(session -> {
+                        ((ObjectNode) session).put("formattedSessionJudiciary",
+                                                   JudiciaryHelper.findAndManipulateJudiciary(session));
+                        session.get(SITTINGS).forEach(sitting -> {
+                            ((ObjectNode) sitting).put(COURT_HOUSE, courtHouseName);
+                            ((ObjectNode) sitting).put(COURT_ROOM, courtRoomName);
+                            DateHelper.calculateDuration(sitting, language);
+                            DateHelper.formatStartTime(sitting, "h:mma");
+                            SittingHelper.findAndConcatenateHearingPlatform(sitting, session);
+
+                            sitting.get(HEARING).forEach(
+                                hearing -> hearing.get(CASE).forEach(hearingCase -> {
+                                    handleParties(hearingCase);
+                                    CaseHelper.manipulateCaseInformation((ObjectNode) hearingCase);
+                                    ((ObjectNode) hearingCase).put(
+                                        "formattedReportingRestriction",
+                                        GeneralHelper.formatNodeArray(hearingCase,
+                                                                      REPORTING_RESTRICTION_DETAIL, ", ")
+                                    );
+                                })
+                            );
+                        });
                     });
-                })));
+                }));
     }
 
     public static FamilyMixedList buildFamilyMixedList(
@@ -65,6 +78,8 @@ public final class FamilyMixedListHelper {
     ) {
         FamilyMixedList thisCase = new FamilyMixedList();
 
+        thisCase.setCourtHouse(sitting.path(COURT_HOUSE).asText());
+        thisCase.setCourtRoom(sitting.path(COURT_ROOM).asText());
         thisCase.setTime(sitting.path("time").asText());
         thisCase.setCaseRef(caseNode.path("caseNumber").asText());
         thisCase.setCaseName(caseNode.path("formattedCaseName").asText());
@@ -95,6 +110,7 @@ public final class FamilyMixedListHelper {
 
         return thisCase;
     }
+
 
     private static void handleParties(JsonNode node) {
         StringBuilder applicant = new StringBuilder();

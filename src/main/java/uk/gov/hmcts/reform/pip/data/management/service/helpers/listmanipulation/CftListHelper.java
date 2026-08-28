@@ -32,6 +32,8 @@ public final class CftListHelper {
     private static final String APPLICANT = "applicant";
     private static final String RESPONDENT = "respondent";
     private static final String TIME_FORMAT = "h:mma";
+    private static final String COURT_HOUSE_NAME = "courtHouseName";
+    private static final String COURT_ROOM_NAME = "courtRoomName";
 
     private CftListHelper() {
     }
@@ -120,6 +122,12 @@ public final class CftListHelper {
         }
 
         return party + ", Legal advisor: " + rep;
+    }
+
+    public static void populateCourtDetailsForSitting(JsonNode courtList, JsonNode courtRoom, JsonNode sitting) {
+        ObjectNode sittingObject = (ObjectNode) sitting;
+        sittingObject.put(COURT_HOUSE, courtList.path(COURT_HOUSE).path(COURT_HOUSE_NAME).asText());
+        sittingObject.put(COURT_ROOM, courtRoom.path(COURT_ROOM_NAME).asText());
     }
 
     @FunctionalInterface

@@ -21,6 +21,8 @@
     "Ceisydd/Deisebydd",
     "Atebydd"
   ],
+  "courtHouse": "Adeilad Llys",
+  "courtRoom": "Ystafell llys",
   "reportingRestriction": "Cyfyngiad adrodd: ",
   "beforeJudge": "Gerbron: ",
   "legalAdvisor": "Cynghorydd Cyfreithiol: ",
