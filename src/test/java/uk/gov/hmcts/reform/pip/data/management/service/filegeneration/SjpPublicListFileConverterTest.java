@@ -71,17 +71,52 @@ class SjpPublicListFileConverterTest {
         Document doc = Jsoup.parse(result);
         assertTitleAndDescription(doc, listType);
 
-        // Assert that the record with missing postcode is not shown in the HTML
+        // Assert that records are retained even when postcode is empty.
         assertThat(doc.getElementsByTag("td"))
             .as("Incorrect table contents")
-            .hasSize(4)
+            .hasSize(8)
             .extracting(Element::text)
             .containsExactly(
+                "A This is a surname",
+                "",
+                "This is an offence title, This is an offence title 2",
+                "This is an organisation",
                 "A This is a surname 2",
                 "AA",
                 "This is an offence title 2",
                 "This is an organisation 2"
             );
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ListType.class, names = {"SJP_PUBLIC_LIST", "SJP_DELTA_PUBLIC_LIST"})
+    void testExcelConversionWithMissingPostcode(ListType listType) throws IOException {
+        byte[] result = converter.convertToExcel(getInput("/mocks/sjpPublicListMissingPostcode.json"), listType,
+                                                 Language.ENGLISH);
+        ByteArrayInputStream file = new ByteArrayInputStream(result);
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheetAt(0);
+
+        Row firstDataRow = sheet.getRow(1);
+        Row secondDataRow = sheet.getRow(2);
+
+        assertEquals("A This is a surname", firstDataRow.getCell(0).getStringCellValue(),
+                     "First row name does not match");
+        assertEquals("", firstDataRow.getCell(1).getStringCellValue(),
+                     "First row postcode should be empty");
+        assertEquals("This is an offence title, This is an offence title 2", firstDataRow.getCell(2).getStringCellValue(),
+                     "First row offence does not match");
+        assertEquals("This is an organisation", firstDataRow.getCell(3).getStringCellValue(),
+                     "First row prosecutor does not match");
+
+        assertEquals("A This is a surname 2", secondDataRow.getCell(0).getStringCellValue(),
+                     "Second row name does not match");
+        assertEquals("AA", secondDataRow.getCell(1).getStringCellValue(),
+                     "Second row postcode does not match");
+        assertEquals("This is an offence title 2", secondDataRow.getCell(2).getStringCellValue(),
+                     "Second row offence does not match");
+        assertEquals("This is an organisation 2", secondDataRow.getCell(3).getStringCellValue(),
+                     "Second row prosecutor does not match");
     }
 
     private JsonNode getInput(String resourcePath) throws IOException {
