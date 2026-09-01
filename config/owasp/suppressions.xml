@@ -247,6 +247,8 @@
     <cve>CVE-2026-41852</cve>
     <cve>CVE-2026-41853</cve>
     <cve>CVE-2026-41855</cve>
+    <cve>CVE-2026-59313</cve>
+    <cve>CVE-2026-59314</cve>
   </suppress>
   <suppress>
     <notes>spring security suppression</notes>
