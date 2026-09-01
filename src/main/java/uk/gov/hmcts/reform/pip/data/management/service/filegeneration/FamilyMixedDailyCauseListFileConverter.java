@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.FamilyMixedList;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.sscsdailylist.CourtRoom;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CftListHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.FamilyMixedListHelper;
@@ -36,20 +35,24 @@ public class FamilyMixedDailyCauseListFileConverter extends ExcelAbstractList im
         @SuppressWarnings("unchecked")
         List<String> tableHeadersUnwrap = (List<String>) languageResources.get("headerValuesUnwrap");
 
-        return List.of(
-            languageResources.get("courtHouse").toString(),
-            languageResources.get("courtRoom").toString(),
-            tableHeaders.get(0),
-            tableHeaders.get(1),
-            tableHeaders.get(2),
-            tableHeaders.get(3),
-            tableHeaders.get(4),
-            tableHeaders.get(5),
-            tableHeaders.get(6),
-            tableHeadersUnwrap.get(0),
-            tableHeadersUnwrap.get(1),
-            languageResources.get("reportingRestriction").toString()
-        );
+        List<String> headers = new ArrayList<>();
+        if (languageResources.get("courtHouse") != null && languageResources.get("courtRoom") != null) {
+            headers.add(languageResources.get("courtHouse").toString());
+            headers.add(languageResources.get("courtRoom").toString());
+        }
+
+        headers.add(tableHeaders.get(0));
+        headers.add(tableHeaders.get(1));
+        headers.add(tableHeaders.get(2));
+        headers.add(tableHeaders.get(3));
+        headers.add(tableHeaders.get(4));
+        headers.add(tableHeaders.get(5));
+        headers.add(tableHeaders.get(6));
+        headers.add(tableHeadersUnwrap.get(0));
+        headers.add(tableHeadersUnwrap.get(1));
+        headers.add(languageResources.get("reportingRestriction").toString());
+
+        return headers;
     }
 
     @Override
