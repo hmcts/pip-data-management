@@ -39,18 +39,10 @@ public final class FamilyMixedListHelper {
         artefact.get(COURT_LIST)
             .forEach(courtList -> courtList.get(COURT_HOUSE).get(COURT_ROOM)
                 .forEach(courtRoom -> {
-                    String courtHouseName = GeneralHelper.findAndReturnNodeText(
-                        courtList.get(COURT_HOUSE),
-                        COURT_HOUSE_NAME
-                    );
-                    String courtRoomName = GeneralHelper.findAndReturnNodeText(courtRoom, COURT_ROOM_NAME);
-
                     courtRoom.get(SESSION).forEach(session -> {
                         ((ObjectNode) session).put("formattedSessionJudiciary",
                                                    JudiciaryHelper.findAndManipulateJudiciary(session));
                         session.get(SITTINGS).forEach(sitting -> {
-                            ((ObjectNode) sitting).put(COURT_HOUSE, courtHouseName);
-                            ((ObjectNode) sitting).put(COURT_ROOM, courtRoomName);
                             DateHelper.calculateDuration(sitting, language);
                             DateHelper.formatStartTime(sitting, "h:mma");
                             SittingHelper.findAndConcatenateHearingPlatform(sitting, session);
