@@ -3,12 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.thymeleaf.context.Context;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.CaseHelper;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.JudiciaryHelper;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.LocationHelper;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.PartyRoleHelper;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.SittingHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.*;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
 import java.util.ArrayList;
@@ -26,14 +21,14 @@ public final class CftListHelper {
     private static final String VENUE_CONTACT = "venueContact";
     private static final String COURT_HOUSE = "courtHouse";
     private static final String COURT_ROOM = "courtRoom";
+    private static final String COURT_HOUSE_NAME = "courtHouseName";
+    private static final String COURT_ROOM_NAME = "courtRoomName";
     private static final String SESSION = "session";
     private static final String SITTINGS = "sittings";
     private static final String HEARING = "hearing";
     private static final String APPLICANT = "applicant";
     private static final String RESPONDENT = "respondent";
     private static final String TIME_FORMAT = "h:mma";
-    private static final String COURT_HOUSE_NAME = "courtHouseName";
-    private static final String COURT_ROOM_NAME = "courtRoomName";
 
     private CftListHelper() {
     }
@@ -80,33 +75,43 @@ public final class CftListHelper {
     }
 
     public static void manipulatedListData(JsonNode artefact, Language language, boolean initialised) {
-        artefact.get("courtLists").forEach(
-            courtList -> courtList.get(COURT_HOUSE).get(COURT_ROOM).forEach(
-                courtRoom -> courtRoom.get(SESSION).forEach(session -> {
-                    StringBuilder formattedJudiciary = new StringBuilder();
-                    formattedJudiciary.append(JudiciaryHelper.findAndManipulateJudiciary(session));
-                    session.get(SITTINGS).forEach(sitting -> {
-                        DateHelper.calculateDuration(sitting, language);
-                        DateHelper.formatStartTime(sitting, TIME_FORMAT);
-                        SittingHelper.findAndConcatenateHearingPlatform(sitting, session);
+        artefact.get("courtLists")
+            .forEach(courtList -> courtList.get(COURT_HOUSE).get(COURT_ROOM)
+                .forEach(courtRoom -> {
+                    String courtHouseName = GeneralHelper.findAndReturnNodeText(
+                        courtList.get(COURT_HOUSE),
+                        COURT_HOUSE_NAME
+                    );
+                    String courtRoomName = GeneralHelper.findAndReturnNodeText(courtRoom, COURT_ROOM_NAME);
 
-                        sitting.get(HEARING).forEach(hearing -> {
-                            if (hearing.has("party")) {
-                                PartyRoleHelper.findAndManipulatePartyInformation(hearing, initialised);
-                            } else {
-                                ObjectNode hearingObj = (ObjectNode) hearing;
-                                hearingObj.put(APPLICANT, "");
-                                hearingObj.put(RESPONDENT, "");
-                            }
-                            hearing.get("case").forEach(
-                                hearingCase -> CaseHelper.manipulateCaseInformation((ObjectNode) hearingCase)
-                            );
+                    courtRoom.get(SESSION).forEach(session -> {
+
+                        StringBuilder formattedJudiciary = new StringBuilder();
+                        formattedJudiciary.append(JudiciaryHelper.findAndManipulateJudiciary(session));
+                        session.get(SITTINGS).forEach(sitting -> {
+                            ((ObjectNode) sitting).put(COURT_HOUSE, courtHouseName);
+                            ((ObjectNode) sitting).put(COURT_ROOM, courtRoomName);
+                            DateHelper.calculateDuration(sitting, language);
+                            DateHelper.formatStartTime(sitting, TIME_FORMAT);
+                            SittingHelper.findAndConcatenateHearingPlatform(sitting, session);
+
+                            sitting.get(HEARING).forEach(hearing -> {
+                                if (hearing.has("party")) {
+                                    PartyRoleHelper.findAndManipulatePartyInformation(hearing, initialised);
+                                } else {
+                                    ObjectNode hearingObj = (ObjectNode) hearing;
+                                    hearingObj.put(APPLICANT, "");
+                                    hearingObj.put(RESPONDENT, "");
+                                }
+                                hearing.get("case").forEach(
+                                    hearingCase -> CaseHelper.manipulateCaseInformation((ObjectNode) hearingCase)
+                                );
+                            });
                         });
-                    });
-                    LocationHelper.formattedCourtRoomName(courtRoom, session, formattedJudiciary);
+                        LocationHelper.formattedCourtRoomName(courtRoom, session, formattedJudiciary);
+                });
                 })
-            )
-        );
+            );
     }
 
     public static String buildParty(JsonNode caseNode, String partyField, String representativeField) {
@@ -122,12 +127,6 @@ public final class CftListHelper {
         }
 
         return party + ", Legal advisor: " + rep;
-    }
-
-    public static void populateCourtDetailsForSitting(JsonNode courtList, JsonNode courtRoom, JsonNode sitting) {
-        ObjectNode sittingObject = (ObjectNode) sitting;
-        sittingObject.put(COURT_HOUSE, courtList.path(COURT_HOUSE).path(COURT_HOUSE_NAME).asText());
-        sittingObject.put(COURT_ROOM, courtRoom.path(COURT_ROOM_NAME).asText());
     }
 
     @FunctionalInterface
