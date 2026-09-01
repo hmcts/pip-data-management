@@ -78,11 +78,11 @@ public class CivilDailyCauseListFileConverter extends ExcelAbstractList implemen
         return CftListHelper.processCases(
             jsonBody,
             body -> CftListHelper.manipulatedListData(body, language, false),
-            (sitting, hearing, caseNode) -> {
+            (courtRoom, sitting, hearing, caseNode) -> {
                 CivilDailyList thisCase = new CivilDailyList();
 
-                thisCase.setCourtHouse(sitting.path("courtHouse").asText());
-                thisCase.setCourtRoom(sitting.path("courtRoom").asText());
+                thisCase.setCourtHouse(courtRoom.path("courtHouse").asText());
+                thisCase.setCourtRoom(courtRoom.path("courtRoom").asText());
                 thisCase.setTime(sitting.path("time").asText());
                 thisCase.setCaseId(caseNode.path("caseNumber").asText());
                 thisCase.setCaseName(caseNode.path("formattedCaseName").asText());

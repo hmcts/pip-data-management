@@ -83,14 +83,14 @@ public final class CftListHelper {
                         COURT_HOUSE_NAME
                     );
                     String courtRoomName = GeneralHelper.findAndReturnNodeText(courtRoom, COURT_ROOM_NAME);
+                    ((ObjectNode) courtRoom).put(COURT_HOUSE, courtHouseName);
+                    ((ObjectNode) courtRoom).put(COURT_ROOM, courtRoomName);
 
                     courtRoom.get(SESSION).forEach(session -> {
 
                         StringBuilder formattedJudiciary = new StringBuilder();
                         formattedJudiciary.append(JudiciaryHelper.findAndManipulateJudiciary(session));
                         session.get(SITTINGS).forEach(sitting -> {
-                            ((ObjectNode) sitting).put(COURT_HOUSE, courtHouseName);
-                            ((ObjectNode) sitting).put(COURT_ROOM, courtRoomName);
                             DateHelper.calculateDuration(sitting, language);
                             DateHelper.formatStartTime(sitting, TIME_FORMAT);
                             SittingHelper.findAndConcatenateHearingPlatform(sitting, session);
@@ -131,7 +131,7 @@ public final class CftListHelper {
 
     @FunctionalInterface
     public interface CaseMapper<T> {
-        T map(JsonNode sitting, JsonNode hearing, JsonNode caseNode);
+        T map(JsonNode courtRoom, JsonNode sitting, JsonNode hearing, JsonNode caseNode);
     }
 
     public static <T> List<T> processCases(
@@ -150,7 +150,7 @@ public final class CftListHelper {
                         sitting -> sitting.get("hearing").forEach(
                             hearing -> hearing.get("case").forEach(
                                 caseNode -> results.add(
-                                    mapper.map(sitting, hearing, caseNode)
+                                    mapper.map(courtRoom, sitting, hearing, caseNode)
                                 )
                             )
                         )

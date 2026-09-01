@@ -23,8 +23,6 @@ public final class FamilyMixedListHelper {
     private static final String COURT_LIST = "courtLists";
     private static final String COURT_HOUSE = "courtHouse";
     private static final String COURT_ROOM = "courtRoom";
-    private static final String COURT_HOUSE_NAME = "courtHouseName";
-    private static final String COURT_ROOM_NAME = "courtRoomName";
     private static final String SESSION = "session";
     private static final String SITTINGS = "sittings";
     private static final String HEARING = "hearing";
@@ -64,14 +62,15 @@ public final class FamilyMixedListHelper {
     }
 
     public static FamilyMixedList buildFamilyMixedList(
+        JsonNode courtRoom,
         JsonNode sitting,
         JsonNode hearing,
         JsonNode caseNode
     ) {
         FamilyMixedList thisCase = new FamilyMixedList();
 
-        thisCase.setCourtHouse(sitting.path(COURT_HOUSE).asText());
-        thisCase.setCourtRoom(sitting.path(COURT_ROOM).asText());
+        thisCase.setCourtHouse(courtRoom.path(COURT_HOUSE).asText());
+        thisCase.setCourtRoom(courtRoom.path(COURT_ROOM).asText());
         thisCase.setTime(sitting.path("time").asText());
         thisCase.setCaseRef(caseNode.path("caseNumber").asText());
         thisCase.setCaseName(caseNode.path("formattedCaseName").asText());
