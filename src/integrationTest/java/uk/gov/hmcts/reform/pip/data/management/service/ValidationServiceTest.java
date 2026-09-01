@@ -387,8 +387,9 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
                          "data/crown-daily-pdda-list/crownDailyPddaList.json"),
             Arguments.of(ListType.CROWN_FIRM_PDDA_LIST,
                          "data/crown-firm-pdda-list/crownFirmPddaList.json"),
-            Arguments.of(ListType.CROWN_WARNED_PDDA_LIST,
-                         "data/crown-warned-pdda-list/crownWarnedPddaList.json")
+            Arguments.of(ListType.CROWN_ADVANCE_PDDA_LIST,
+                         "data/crown-advance-pdda-list/crownAdvancePddaList.json"
+            )
         );
     }
 
