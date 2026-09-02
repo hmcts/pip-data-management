@@ -1,33 +1,5 @@
 --
--- 1) Add new list type value CROWN_ADVANCE_PDDA_LIST to the check constraint
---
-DO
-$CR$
-  DECLARE
-    current_definition text;
-    new_definition text;
-  BEGIN
-    SELECT pg_get_constraintdef(oid) INTO current_definition
-    FROM pg_constraint
-    WHERE conname = 'artefact_list_type_check';
-
-    IF current_definition IS NULL THEN
-      RAISE EXCEPTION 'Constraint artefact_list_type_check not found';
-    END IF;
-
-    new_definition := regexp_replace(
-      current_definition,
-      '\]\)::text\[\]',
-      ', ''CROWN_ADVANCE_PDDA_LIST''::character varying])::text[]'
-    );
-
-    EXECUTE 'ALTER TABLE artefact DROP CONSTRAINT artefact_list_type_check';
-    EXECUTE 'ALTER TABLE artefact ADD CONSTRAINT artefact_list_type_check ' || new_definition;
-  END
-$CR$;
-
---
--- 2) Duplicate CROWN_WARNED_PDDA_LIST artefact as CROWN_ADVANCE_PDDA_LIST
+-- Duplicate CROWN_WARNED_PDDA_LIST artefact as CROWN_ADVANCE_PDDA_LIST
 --
 INSERT INTO artefact (
   artefact_id,
