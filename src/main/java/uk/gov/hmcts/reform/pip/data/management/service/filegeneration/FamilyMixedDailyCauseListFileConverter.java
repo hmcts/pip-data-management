@@ -33,7 +33,7 @@ public class FamilyMixedDailyCauseListFileConverter extends ExcelAbstractList im
         @SuppressWarnings("unchecked")
         List<String> tableHeaders = (List<String>) languageResources.get("headerValuesWrap");
         @SuppressWarnings("unchecked")
-        List<String> tableHeadersUnwrap = (List<String>) languageResources.get("headerValuesUnwrap");
+        final List<String> tableHeadersUnwrap = (List<String>) languageResources.get("headerValuesUnwrap");
 
         List<String> headers = new ArrayList<>();
         if (languageResources.get("courtHouse") != null && languageResources.get("courtRoom") != null) {

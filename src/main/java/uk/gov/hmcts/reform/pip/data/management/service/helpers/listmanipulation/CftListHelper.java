@@ -3,7 +3,13 @@ package uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.thymeleaf.context.Context;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.*;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.LocationHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.JudiciaryHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.SittingHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.PartyRoleHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.CaseHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
 import java.util.ArrayList;
@@ -87,7 +93,6 @@ public final class CftListHelper {
                     ((ObjectNode) courtRoom).put(COURT_ROOM, courtRoomName);
 
                     courtRoom.get(SESSION).forEach(session -> {
-
                         StringBuilder formattedJudiciary = new StringBuilder();
                         formattedJudiciary.append(JudiciaryHelper.findAndManipulateJudiciary(session));
                         session.get(SITTINGS).forEach(sitting -> {
@@ -104,12 +109,13 @@ public final class CftListHelper {
                                     hearingObj.put(RESPONDENT, "");
                                 }
                                 hearing.get("case").forEach(
-                                    hearingCase -> CaseHelper.manipulateCaseInformation((ObjectNode) hearingCase)
+                                    hearingCase -> CaseHelper.manipulateCaseInformation(
+                                        (ObjectNode) hearingCase)
                                 );
                             });
                         });
                         LocationHelper.formattedCourtRoomName(courtRoom, session, formattedJudiciary);
-                });
+                    });
                 })
             );
     }

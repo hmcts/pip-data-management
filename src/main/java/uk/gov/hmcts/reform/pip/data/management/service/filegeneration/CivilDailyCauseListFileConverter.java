@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.CivilDailyList;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.sscsdailylist.CourtRoom;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CftListHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
