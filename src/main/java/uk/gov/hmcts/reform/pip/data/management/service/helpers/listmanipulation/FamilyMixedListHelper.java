@@ -62,6 +62,7 @@ public final class FamilyMixedListHelper {
     }
 
     public static FamilyMixedList buildFamilyMixedList(
+        JsonNode session,
         JsonNode courtRoom,
         JsonNode sitting,
         JsonNode hearing,
@@ -69,8 +70,12 @@ public final class FamilyMixedListHelper {
     ) {
         FamilyMixedList thisCase = new FamilyMixedList();
 
-        thisCase.setCourtHouse(courtRoom.path(COURT_HOUSE).asText());
-        thisCase.setCourtRoom(courtRoom.path(COURT_ROOM).asText());
+        thisCase.setCourtHouse(courtRoom.path("courtHouse").asText());
+        String courtRoomName = courtRoom.path("courtRoom").asText();
+        String formattedSessionJudiciary = session.path("formattedSessionJudiciary").asText();
+        thisCase.setCourtRoom(formattedSessionJudiciary.isBlank()
+                                  ? courtRoomName
+                                  : courtRoomName + ", Before: " + formattedSessionJudiciary);
         thisCase.setTime(sitting.path("time").asText());
         thisCase.setCaseRef(caseNode.path("caseNumber").asText());
         thisCase.setCaseName(caseNode.path("formattedCaseName").asText());

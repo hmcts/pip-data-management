@@ -40,16 +40,8 @@ public class FamilyMixedDailyCauseListFileConverter extends ExcelAbstractList im
             headers.add(languageResources.get("courtHouse").toString());
             headers.add(languageResources.get("courtRoom").toString());
         }
-
-        headers.add(tableHeaders.get(0));
-        headers.add(tableHeaders.get(1));
-        headers.add(tableHeaders.get(2));
-        headers.add(tableHeaders.get(3));
-        headers.add(tableHeaders.get(4));
-        headers.add(tableHeaders.get(5));
-        headers.add(tableHeaders.get(6));
-        headers.add(tableHeadersUnwrap.get(0));
-        headers.add(tableHeadersUnwrap.get(1));
+        headers.addAll(tableHeaders);
+        headers.addAll(tableHeadersUnwrap);
         headers.add(languageResources.get("reportingRestriction").toString());
 
         return headers;

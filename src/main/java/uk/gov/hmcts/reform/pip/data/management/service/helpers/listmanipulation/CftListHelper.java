@@ -137,7 +137,7 @@ public final class CftListHelper {
 
     @FunctionalInterface
     public interface CaseMapper<T> {
-        T map(JsonNode courtRoom, JsonNode sitting, JsonNode hearing, JsonNode caseNode);
+        T map(JsonNode session, JsonNode courtRoom, JsonNode sitting, JsonNode hearing, JsonNode caseNode);
     }
 
     public static <T> List<T> processCases(
@@ -156,7 +156,7 @@ public final class CftListHelper {
                         sitting -> sitting.get("hearing").forEach(
                             hearing -> hearing.get("case").forEach(
                                 caseNode -> results.add(
-                                    mapper.map(courtRoom, sitting, hearing, caseNode)
+                                    mapper.map(session, courtRoom, sitting, hearing, caseNode)
                                 )
                             )
                         )

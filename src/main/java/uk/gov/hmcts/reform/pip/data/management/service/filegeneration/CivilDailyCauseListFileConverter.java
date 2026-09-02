@@ -33,19 +33,9 @@ public class CivilDailyCauseListFileConverter extends ExcelAbstractList implemen
         @SuppressWarnings("unchecked")
         List<String> tableHeaders = (List<String>) languageResources.get("headerValuesWrap");
         List<String> headers = new ArrayList<>();
-        if (languageResources.get("courtHouse") != null && languageResources.get("courtRoom") != null) {
-            headers.add(languageResources.get("courtHouse").toString());
-            headers.add(languageResources.get("courtRoom").toString());
-        }
-
-        headers.add(tableHeaders.get(0));
-        headers.add(tableHeaders.get(1));
-        headers.add(tableHeaders.get(2));
-        headers.add(tableHeaders.get(3));
-        headers.add(tableHeaders.get(4));
-        headers.add(tableHeaders.get(5));
-        headers.add(tableHeaders.get(6));
-
+        headers.add(languageResources.get("courtHouse").toString());
+        headers.add(languageResources.get("courtRoom").toString());
+        headers.addAll(tableHeaders);
         return headers;
     }
 
@@ -77,11 +67,15 @@ public class CivilDailyCauseListFileConverter extends ExcelAbstractList implemen
         return CftListHelper.processCases(
             jsonBody,
             body -> CftListHelper.manipulatedListData(body, language, false),
-            (courtRoom, sitting, hearing, caseNode) -> {
+            (session, courtRoom, sitting, hearing, caseNode) -> {
                 CivilDailyList thisCase = new CivilDailyList();
 
                 thisCase.setCourtHouse(courtRoom.path("courtHouse").asText());
-                thisCase.setCourtRoom(courtRoom.path("courtRoom").asText());
+                String courtRoomName = courtRoom.path("courtRoom").asText();
+                String formattedSessionJudiciary = session.path("formattedSessionJudiciary").asText();
+                thisCase.setCourtRoom(formattedSessionJudiciary.isBlank()
+                                          ? courtRoomName
+                                          : courtRoomName + ", Before: " + formattedSessionJudiciary);
                 thisCase.setTime(sitting.path("time").asText());
                 thisCase.setCaseId(caseNode.path("caseNumber").asText());
                 thisCase.setCaseName(caseNode.path("formattedCaseName").asText());
