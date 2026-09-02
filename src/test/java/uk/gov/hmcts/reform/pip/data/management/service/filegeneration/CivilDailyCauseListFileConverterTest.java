@@ -291,20 +291,24 @@ class CivilDailyCauseListFileConverterTest {
         Row headingRow = sheet.getRow(0);
 
         assertEquals("Sheet name does not match", "Sheet1", sheet.getSheetName());
-        assertEquals("Time column is different", "Time",
+        assertEquals("Court House column is different", "Court House",
                      headingRow.getCell(0).getStringCellValue());
-        assertEquals("Case ref column is different", "Case ID",
+        assertEquals("Court Room is different", "Court Room",
                      headingRow.getCell(1).getStringCellValue());
-        assertEquals("Case name column is different", "Case name",
+        assertEquals("Time column is different", "Time",
                      headingRow.getCell(2).getStringCellValue());
-        assertEquals("Case type column is different", "Case type",
+        assertEquals("Case ref column is different", "Case ID",
                      headingRow.getCell(3).getStringCellValue());
-        assertEquals("Hearing type column is different", "Hearing type",
+        assertEquals("Case name column is different", "Case name",
                      headingRow.getCell(4).getStringCellValue());
-        assertEquals("Location column is different", "Location",
+        assertEquals("Case type column is different", "Case type",
                      headingRow.getCell(5).getStringCellValue());
-        assertEquals("Duration column is different", "Duration",
+        assertEquals("Hearing type column is different", "Hearing type",
                      headingRow.getCell(6).getStringCellValue());
+        assertEquals("Location column is different", "Location",
+                     headingRow.getCell(7).getStringCellValue());
+        assertEquals("Duration column is different", "Duration",
+                     headingRow.getCell(8).getStringCellValue());
     }
 
     @Test
@@ -323,20 +327,24 @@ class CivilDailyCauseListFileConverterTest {
         Row headingRow = sheet.getRow(0);
 
         assertEquals("Sheet name does not match", "Sheet1", sheet.getSheetName());
-        assertEquals("Time column is different", "Amser",
+        assertEquals("Court House column is different", "Adeilad Llys",
                      headingRow.getCell(0).getStringCellValue());
-        assertEquals("Case ref column is different", "Rhif adnabod yr achos",
+        assertEquals("Court Room is different", "Ystafell llys",
                      headingRow.getCell(1).getStringCellValue());
-        assertEquals("Case name at column is different", "Enw'r achos",
+        assertEquals("Time column is different", "Amser",
                      headingRow.getCell(2).getStringCellValue());
-        assertEquals("Case type column is different", "Math o achos",
+        assertEquals("Case ref column is different", "Rhif adnabod yr achos",
                      headingRow.getCell(3).getStringCellValue());
-        assertEquals("Hearing type column is different", "Math o wrandawiad",
+        assertEquals("Case name at column is different", "Enw'r achos",
                      headingRow.getCell(4).getStringCellValue());
-        assertEquals("Location column is different", "Lleoliad",
+        assertEquals("Case type column is different", "Math o achos",
                      headingRow.getCell(5).getStringCellValue());
-        assertEquals("Duration column is different", "Hyd",
+        assertEquals("Hearing type column is different", "Math o wrandawiad",
                      headingRow.getCell(6).getStringCellValue());
+        assertEquals("Location column is different", "Lleoliad",
+                     headingRow.getCell(7).getStringCellValue());
+        assertEquals("Duration column is different", "Hyd",
+                     headingRow.getCell(8).getStringCellValue());
     }
 
     @Test
@@ -359,20 +367,25 @@ class CivilDailyCauseListFileConverterTest {
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
         Row dataRow = sheet.getRow(1);
-        assertEquals("Time value is different", "2:01am",
+
+        assertEquals("Court House value is different", "This is a court house name",
                      dataRow.getCell(0).getStringCellValue());
-        assertEquals("Case ref value is different", "This is case number 1",
+        assertEquals("Court Room value is different", "Courtroom 1",
                      dataRow.getCell(1).getStringCellValue());
-        assertEquals("Case name value is different","This is case name 1 [1 of 2]",
+        assertEquals("Time value is different", "2:01am",
                      dataRow.getCell(2).getStringCellValue());
-        assertEquals("Case type value is different", "This is a case type",
+        assertEquals("Case ref value is different", "This is case number 1",
                      dataRow.getCell(3).getStringCellValue());
-        assertEquals("Hearing type value is different", "This is hearing type 1",
+        assertEquals("Case name value is different","This is case name 1 [1 of 2]",
                      dataRow.getCell(4).getStringCellValue());
-        assertEquals("Location value is different", "Channel A, Channel B",
+        assertEquals("Case type value is different", "This is a case type",
                      dataRow.getCell(5).getStringCellValue());
-        assertEquals("Duration value is different", "1 hour",
+        assertEquals("Hearing type value is different", "This is hearing type 1",
                      dataRow.getCell(6).getStringCellValue());
+        assertEquals("Location value is different", "Channel A, Channel B",
+                     dataRow.getCell(7).getStringCellValue());
+        assertEquals("Duration value is different", "1 hour",
+                     dataRow.getCell(8).getStringCellValue());
     }
 
 }
