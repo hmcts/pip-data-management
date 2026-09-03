@@ -28,10 +28,10 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_WARNED_PDDA_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_ADVANCE_PDDA_LIST;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CrownWarnedPddaListFileConverterTest {
+class CrownAdvancePddaListFileConverterTest {
     private static final String TEST_FILE_PATH = "src/test/resources/mocks/";
 
     private static final String LANGUAGE = "language";
@@ -54,28 +54,28 @@ class CrownWarnedPddaListFileConverterTest {
     private static final Map<String, String> COMMON_METADATA = Map.of("contentDate", CONTENT_DATE,
                                                                       "provenance", "MANUAL_UPLOAD",
                                                                       "locationName", "location",
-                                                                      LIST_TYPE, CROWN_WARNED_PDDA_LIST.name()
+                                                                      LIST_TYPE, CROWN_ADVANCE_PDDA_LIST.name()
     );
 
     private JsonNode inputJson;
-    private CrownWarnedPddaListFileConverter crownWarnedPddaListConverter = new CrownWarnedPddaListFileConverter();
+    private CrownAdvancePddaListFileConverter converter = new CrownAdvancePddaListFileConverter();
 
     @BeforeAll
     void setup() throws IOException {
         StringWriter writer = new StringWriter();
         IOUtils.copy(
-            Files.newInputStream(Paths.get(TEST_FILE_PATH, "crownWarnedPddaList.json")),
+            Files.newInputStream(Paths.get(TEST_FILE_PATH, "crownAdvancePddaList.json")),
             writer, Charset.defaultCharset()
         );
         inputJson = new ObjectMapper().readTree(writer.toString());
     }
 
     @Test
-    void testCrownWarnedPddaListTemplateEnglish() throws IOException {
+    void testCrownAdvancePddaListTemplateEnglish() throws IOException {
         Map<String, Object> language;
 
         try (InputStream languageFile = Thread.currentThread()
-            .getContextClassLoader().getResourceAsStream("templates/languages/en/crownWarnedPddaList.json")) {
+            .getContextClassLoader().getResourceAsStream("templates/languages/en/crownAdvancePddaList.json")) {
             language = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -84,22 +84,22 @@ class CrownWarnedPddaListFileConverterTest {
         Map<String, String> metadataMap = new ConcurrentHashMap<>(COMMON_METADATA);
         metadataMap.put(LANGUAGE, "ENGLISH");
 
-        String outputHtml = crownWarnedPddaListConverter.convert(inputJson, metadataMap, language);
+        String outputHtml = converter.convert(inputJson, metadataMap, language);
         Document document = Jsoup.parse(outputHtml);
 
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(outputHtml)
-            .as("No Warned list html found")
+            .as("No Advance list html found")
             .isNotEmpty();
 
         softly.assertThat(document.title())
-            .as("incorrect Warned list title found.")
-            .isEqualTo("Crown Warned List");
+            .as("incorrect Advance list title found.")
+            .isEqualTo("Crown Advance List");
 
         softly.assertThat(document.getElementsByClass(HEADING_CLASS).get(0).text())
             .as(HEADING_MESSAGE)
-            .contains("Crown Warned List for location");
+            .contains("Crown Advance List for location");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
                               .getElementsByTag("a").get(0)
@@ -130,18 +130,14 @@ class CrownWarnedPddaListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(5).text())
             .as(BODY_MESSAGE)
-            .contains("The undermentioned cases are warned for the hearing period of week commencing 15 July 2024");
-
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(6).text())
-            .as(BODY_MESSAGE)
             .contains("Any representation about the listing of a case should be "
                           + "made to the Listing Officer immediately");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(7).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(6).text())
             .as(BODY_MESSAGE)
             .contains("The prosecuting authority is the Crown Prosecution Service unless otherwise stated");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(8).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(7).text())
             .as(BODY_MESSAGE)
             .contains("*denotes a defendant in custody");
 
@@ -149,7 +145,7 @@ class CrownWarnedPddaListFileConverterTest {
             .as("Incorrect restriction heading")
             .anyMatch(e -> e.text().contains("Restrictions on publishing or writing about these cases"));
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(9).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(8).text())
             .as(BODY_MESSAGE)
             .contains("You must check if any reporting restrictions apply before publishing details on any of"
                           + " the cases listed here either in writing, in a broadcast or by internet, "
@@ -161,16 +157,16 @@ class CrownWarnedPddaListFileConverterTest {
                                                  + "any information which is protected by a reporting restriction. "
                                                  + "You could get a fine, prison sentence or both."));
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(11).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(10).text())
             .as(BODY_MESSAGE)
             .contains("Specific restrictions ordered by the court will be mentioned on the cases listed here.");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(12).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(11).text())
             .as(BODY_MESSAGE)
             .contains("However, restrictions are not always listed. Some apply automatically. "
                           + "For example, anonymity given to the victims of certain sexual offences.");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(13).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(12).text())
             .as(BODY_MESSAGE)
             .contains("To find out which reporting restrictions apply on a specific case, contact:");
 
@@ -206,11 +202,11 @@ class CrownWarnedPddaListFileConverterTest {
     }
 
     @Test
-    void testCrownWarnedPddaListTemplateWelsh() throws IOException {
+    void testCrownAdvancePddaListTemplateWelsh() throws IOException {
         Map<String, Object> language;
 
         try (InputStream languageFile = Thread.currentThread()
-            .getContextClassLoader().getResourceAsStream("templates/languages/cy/crownWarnedPddaList.json")) {
+            .getContextClassLoader().getResourceAsStream("templates/languages/cy/crownAdvancePddaList.json")) {
             language = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -219,22 +215,22 @@ class CrownWarnedPddaListFileConverterTest {
         Map<String, String> metadataMap = new ConcurrentHashMap<>(COMMON_METADATA);
         metadataMap.put(LANGUAGE, "WELSH");
 
-        String outputHtml = crownWarnedPddaListConverter.convert(inputJson, metadataMap, language);
+        String outputHtml = converter.convert(inputJson, metadataMap, language);
         Document document = Jsoup.parse(outputHtml);
 
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(outputHtml)
-            .as("No Warned list html found")
+            .as("No Advance list html found")
             .isNotEmpty();
 
         softly.assertThat(document.title())
-            .as("incorrect Warned list title found.")
-            .isEqualTo("Rhestr Rybuddio Llys y Goron");
+            .as("incorrect Advance list title found.")
+            .isEqualTo("Rhestr Ymlaen Llaw Llys y Goron");
 
         softly.assertThat(document.getElementsByClass(HEADING_CLASS).get(0).text())
             .as(HEADING_MESSAGE)
-            .contains("Rhestr Rybuddio Llys y Goron ar gyfer location");
+            .contains("Rhestr Ymlaen Llaw Llys y Goron ar gyfer location");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
                               .getElementsByTag("a").get(0)
@@ -265,18 +261,13 @@ class CrownWarnedPddaListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(5).text())
             .as(BODY_MESSAGE)
-            .contains("Rhoir rhybudd yng nghyswllt yr achosion isod am gyfnod gwrandawiad "
-                          + "o'r wythnos yn dechrau 15 Gorffennaf 2024");
+            .contains("Dylid cyflwyno unrhyw sylwadau am restru achos i’r Swyddog Rhestru yn ddi-oed");
 
         softly.assertThat(document.getElementsByClass(BODY_CLASS).get(6).text())
             .as(BODY_MESSAGE)
-            .contains("Dylid cyflwyno unrhyw sylwadau am restru achos i’r Swyddog Rhestru yn ddi-oed");
-
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(7).text())
-            .as(BODY_MESSAGE)
             .contains("Yr awdurdod erlyn yw Gwasanaeth Erlyn y Goron oni nodir yn wahanol");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(8).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(7).text())
             .as(BODY_MESSAGE)
             .contains("Mae (*) yn dynodi diffynnydd a gedwir yn y ddalfa");
 
@@ -284,7 +275,7 @@ class CrownWarnedPddaListFileConverterTest {
             .as("Incorrect restriction heading")
             .anyMatch(e -> e.text().contains("Cyfyngiadau ar gyhoeddi neu ysgrifennu am yr achosion hyn."));
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(9).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(8).text())
             .as(BODY_MESSAGE)
             .contains("Rhaid i chi wirio a oes unrhyw gyfyngiadau riportio yn berthnasol cyn "
                           + "cyhoeddi manylion am unrhyw un o'r achosion a restrir yma, "
@@ -298,18 +289,18 @@ class CrownWarnedPddaListFileConverterTest {
                                                  + "gyfyngiad riportio. Gallwch gael dirwy, eich dedfrydu "
                                                  + "i garchar, neu'r ddau."));
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(11).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(10).text())
             .as(BODY_MESSAGE)
             .contains("Bydd cyfyngiadau penodol a orchmynnir gan y llys yn cael eu "
                           + "crybwyll ar yr achosion a restrir yma.");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(12).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(11).text())
             .as(BODY_MESSAGE)
             .contains("Fodd bynnag, nid yw'r cyfyngiadau bob amser yn cael eu rhestru. "
                           + "Mae rhai yn berthnasol yn awtomatig. Er enghraifft, anhysbysrwydd "
                           + "a roddir i ddioddefwyr rhai troseddau rhywiol.");
 
-        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(13).text())
+        softly.assertThat(document.getElementsByClass(BODY_CLASS).get(12).text())
             .as(BODY_MESSAGE)
             .contains("I ganfod pa gyfyngiadau riportio sy'n berthnasol ar achos penodol, cysylltwch â'r:");
 
@@ -345,11 +336,11 @@ class CrownWarnedPddaListFileConverterTest {
     }
 
     @Test
-    void testCrownWarnedPddaListTableContents() throws IOException {
+    void testCrownAdvancePddaListTableContents() throws IOException {
         Map<String, Object> language;
 
         try (InputStream languageFile = Thread.currentThread()
-            .getContextClassLoader().getResourceAsStream("templates/languages/en/crownWarnedPddaList.json")) {
+            .getContextClassLoader().getResourceAsStream("templates/languages/en/crownAdvancePddaList.json")) {
             language = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -358,7 +349,7 @@ class CrownWarnedPddaListFileConverterTest {
         Map<String, String> metadataMap = new ConcurrentHashMap<>(COMMON_METADATA);
         metadataMap.put(LANGUAGE, "ENGLISH");
 
-        String outputHtml = crownWarnedPddaListConverter.convert(inputJson, metadataMap, language);
+        String outputHtml = converter.convert(inputJson, metadataMap, language);
         Document document = Jsoup.parse(outputHtml);
 
         assertThat(document.getElementsByTag("td"))
@@ -375,9 +366,9 @@ class CrownWarnedPddaListFileConverterTest {
     }
 
     @Test
-    void testCrownWarnedListExcelConversion() throws IOException {
-        byte[] result = crownWarnedPddaListConverter.convertToExcel(inputJson, CROWN_WARNED_PDDA_LIST,
-                                                                    Map.of("language", "ENGLISH"));
+    void testCrownAdvanceListExcelConversion() throws IOException {
+        byte[] result = converter.convertToExcel(inputJson, CROWN_ADVANCE_PDDA_LIST,
+                                                 Map.of("language", "ENGLISH"));
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -417,9 +408,9 @@ class CrownWarnedPddaListFileConverterTest {
     }
 
     @Test
-    void testCrownWarnedListWelshExcelConversion() throws IOException {
-        byte[] result = crownWarnedPddaListConverter.convertToExcel(inputJson, CROWN_WARNED_PDDA_LIST,
-                                                                    Map.of("language", "WELSH"));
+    void testCrownAdvanceListWelshExcelConversion() throws IOException {
+        byte[] result = converter.convertToExcel(inputJson, CROWN_ADVANCE_PDDA_LIST,
+                                                 Map.of("language", "WELSH"));
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -459,9 +450,9 @@ class CrownWarnedPddaListFileConverterTest {
     }
 
     @Test
-    void testCrownWarnedListExcelTableContents() throws IOException {
-        byte[] result = crownWarnedPddaListConverter.convertToExcel(inputJson, CROWN_WARNED_PDDA_LIST,
-                                                                    Map.of("language", "ENGLISH"));
+    void testCrownAdvanceListExcelTableContents() throws IOException {
+        byte[] result = converter.convertToExcel(inputJson, CROWN_ADVANCE_PDDA_LIST,
+                                                 Map.of("language", "ENGLISH"));
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
