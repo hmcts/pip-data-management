@@ -254,6 +254,11 @@
     <cve>CVE-2026-59283</cve>
     <cve>CVE-2026-59280</cve>
     <cve>CVE-2026-59270</cve>
+    <cve>CVE-2026-47891</cve>
+    <cve>CVE-2026-47890</cve>
+    <cve>CVE-2026-59276</cve>
+    <cve>CVE-2026-59282</cve>
+    <cve>CVE-2026-59281</cve>
   </suppress>
   <suppress>
     <notes>spring security suppression</notes>
@@ -280,5 +285,9 @@
     <cve>CVE-2026-68525</cve>
     <cve>CVE-2026-68569</cve>
     <cve>CVE-2026-66422</cve>
+  </suppress>
+  <suppress>
+    <notes>reactor-netty</notes>
+    <cve>CVE-2026-47874</cve>
   </suppress>
 </suppressions>
