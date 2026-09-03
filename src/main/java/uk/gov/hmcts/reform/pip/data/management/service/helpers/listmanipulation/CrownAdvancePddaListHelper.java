@@ -26,7 +26,7 @@ public final class CrownAdvancePddaListHelper {
     public static Map<String, List<CrownAdvancePddaList>> processPayload(JsonNode warnedPddaListData) {
         Map<String, List<CrownAdvancePddaList>> groupedData = new LinkedHashMap<>();
 
-        JsonNode advanceList = warnedPddaListData.get("AdvanceList");
+        JsonNode advanceList = warnedPddaListData.get("WarnedList");
         JsonNode courtLists = advanceList.get("CourtLists");
 
         Optional.ofNullable(courtLists)
