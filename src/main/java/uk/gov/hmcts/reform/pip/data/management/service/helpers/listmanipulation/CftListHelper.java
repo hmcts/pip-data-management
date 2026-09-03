@@ -28,7 +28,6 @@ public final class CftListHelper {
     private static final String COURT_HOUSE = "courtHouse";
     private static final String COURT_ROOM = "courtRoom";
     private static final String COURT_HOUSE_NAME = "courtHouseName";
-    private static final String COURT_ROOM_NAME = "courtRoomName";
     private static final String SESSION = "session";
     private static final String SITTINGS = "sittings";
     private static final String HEARING = "hearing";
@@ -88,9 +87,7 @@ public final class CftListHelper {
                         courtList.get(COURT_HOUSE),
                         COURT_HOUSE_NAME
                     );
-                    String courtRoomName = GeneralHelper.findAndReturnNodeText(courtRoom, COURT_ROOM_NAME);
                     ((ObjectNode) courtRoom).put(COURT_HOUSE, courtHouseName);
-                    ((ObjectNode) courtRoom).put(COURT_ROOM, courtRoomName);
 
                     courtRoom.get(SESSION).forEach(session -> {
                         StringBuilder formattedJudiciary = new StringBuilder();

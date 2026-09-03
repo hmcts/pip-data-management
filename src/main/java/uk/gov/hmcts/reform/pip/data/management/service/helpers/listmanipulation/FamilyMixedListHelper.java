@@ -29,6 +29,9 @@ public final class FamilyMixedListHelper {
     private static final String CASE = "case";
     private static final String PARTY = "party";
     private static final String REPORTING_RESTRICTION_DETAIL = "reportingRestrictionDetail";
+    private static final String COURT_HOUSE_NAME = "courtHouseName";
+    private static final String COURT_ROOM_NAME = "courtRoomName";
+
 
     private FamilyMixedListHelper() {
     }
@@ -37,6 +40,13 @@ public final class FamilyMixedListHelper {
         artefact.get(COURT_LIST)
             .forEach(courtList -> courtList.get(COURT_HOUSE).get(COURT_ROOM)
                 .forEach(courtRoom -> {
+                    String courtHouseName = GeneralHelper.findAndReturnNodeText(
+                        courtList.get(COURT_HOUSE),
+                        COURT_HOUSE_NAME
+                    );
+                    String courtRoomName = GeneralHelper.findAndReturnNodeText(courtRoom, COURT_ROOM_NAME);
+                    ((ObjectNode) courtRoom).put(COURT_HOUSE, courtHouseName);
+                    ((ObjectNode) courtRoom).put(COURT_ROOM, courtRoomName);
                     courtRoom.get(SESSION).forEach(session -> {
                         ((ObjectNode) session).put("formattedSessionJudiciary",
                                                    JudiciaryHelper.findAndManipulateJudiciary(session));
