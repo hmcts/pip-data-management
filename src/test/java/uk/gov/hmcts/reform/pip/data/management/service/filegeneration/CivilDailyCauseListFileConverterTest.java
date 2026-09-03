@@ -370,7 +370,8 @@ class CivilDailyCauseListFileConverterTest {
 
         assertEquals("Court House value is different", "This is a court house name",
                      dataRow.getCell(0).getStringCellValue());
-        assertEquals("Court Room value is different", "Courtroom 1",
+        assertEquals("Court Room value is different",
+             "Courtroom 1: Judge KnownAs Presiding, Judge KnownAs 2",
                      dataRow.getCell(1).getStringCellValue());
         assertEquals("Time value is different", "2:01am",
                      dataRow.getCell(2).getStringCellValue());
