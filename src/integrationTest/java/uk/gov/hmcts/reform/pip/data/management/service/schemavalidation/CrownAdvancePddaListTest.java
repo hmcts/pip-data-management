@@ -37,7 +37,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
     private static final String CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE =
         "Invalid Crown Advance List marked as valid";
 
-    private static final String ADVANCE_LIST = "AdvanceList";
+    private static final String WARNED_LIST = "WarnedList";
     private static final String DOCUMENT_ID = "DocumentID";
     private static final String DOCUMENT_NAME = "DocumentName";
     private static final String UNIQUE_ID = "UniqueID";
@@ -103,7 +103,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node).remove(ADVANCE_LIST);
+            ((ObjectNode) node).remove(WARNED_LIST);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -119,7 +119,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST)).remove(DOCUMENT_ID);
+            ((ObjectNode) node.get(WARNED_LIST)).remove(DOCUMENT_ID);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -135,7 +135,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(DOCUMENT_ID)).remove(DOCUMENT_NAME);
+            ((ObjectNode) node.get(WARNED_LIST).get(DOCUMENT_ID)).remove(DOCUMENT_NAME);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -151,7 +151,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(DOCUMENT_ID)).remove(UNIQUE_ID);
+            ((ObjectNode) node.get(WARNED_LIST).get(DOCUMENT_ID)).remove(UNIQUE_ID);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -167,7 +167,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(DOCUMENT_ID)).remove(DOCUMENT_TYPE);
+            ((ObjectNode) node.get(WARNED_LIST).get(DOCUMENT_ID)).remove(DOCUMENT_TYPE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -183,7 +183,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST)).remove(LIST_HEADER);
+            ((ObjectNode) node.get(WARNED_LIST)).remove(LIST_HEADER);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -199,7 +199,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(LIST_HEADER)).remove(START_DATE);
+            ((ObjectNode) node.get(WARNED_LIST).get(LIST_HEADER)).remove(START_DATE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -215,7 +215,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(LIST_HEADER)).remove(VERSION);
+            ((ObjectNode) node.get(WARNED_LIST).get(LIST_HEADER)).remove(VERSION);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -231,7 +231,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(LIST_HEADER)).remove(PUBLISHED_TIME);
+            ((ObjectNode) node.get(WARNED_LIST).get(LIST_HEADER)).remove(PUBLISHED_TIME);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -247,7 +247,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST)).remove(CROWN_COURT);
+            ((ObjectNode) node.get(WARNED_LIST)).remove(CROWN_COURT);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -263,7 +263,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(CROWN_COURT)).remove(COURT_HOUSE_TYPE);
+            ((ObjectNode) node.get(WARNED_LIST).get(CROWN_COURT)).remove(COURT_HOUSE_TYPE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -279,7 +279,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(COURT_HOUSE))
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(COURT_HOUSE))
                 .remove(COURT_HOUSE_TYPE);
 
             String listJson = node.toString();
@@ -296,7 +296,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(CROWN_COURT)).remove(COURT_HOUSE_CODE);
+            ((ObjectNode) node.get(WARNED_LIST).get(CROWN_COURT)).remove(COURT_HOUSE_CODE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -312,7 +312,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(COURT_HOUSE))
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(COURT_HOUSE))
                 .remove(COURT_HOUSE_CODE);
 
             String listJson = node.toString();
@@ -329,7 +329,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(CROWN_COURT)).remove(COURT_HOUSE_NAME);
+            ((ObjectNode) node.get(WARNED_LIST).get(CROWN_COURT)).remove(COURT_HOUSE_NAME);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -345,7 +345,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(COURT_HOUSE))
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(COURT_HOUSE))
                 .remove(COURT_HOUSE_NAME);
 
             String listJson = node.toString();
@@ -362,7 +362,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST)).remove(COURT_LISTS);
+            ((ObjectNode) node.get(WARNED_LIST)).remove(COURT_LISTS);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -378,7 +378,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0)).remove(COURT_HOUSE);
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0)).remove(COURT_HOUSE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -394,7 +394,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(COURT_HOUSE))
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(COURT_HOUSE))
                 .remove(COURT_HOUSE_TYPE);
 
             String listJson = node.toString();
@@ -411,7 +411,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(COURT_HOUSE))
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(COURT_HOUSE))
                 .remove(COURT_HOUSE_CODE);
 
             String listJson = node.toString();
@@ -428,7 +428,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(COURT_HOUSE))
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(COURT_HOUSE))
                 .remove(COURT_HOUSE_NAME);
 
             String listJson = node.toString();
@@ -445,7 +445,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0))
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0))
                 .remove(HEARING_TYPE);
 
             String listJson = node.toString();
@@ -462,7 +462,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0))
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0))
                 .remove(FIXTURE);
 
             String listJson = node.toString();
@@ -479,7 +479,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0)).remove(CASES);
 
             String listJson = node.toString();
@@ -496,7 +496,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0)).remove(CASE_NUMBER);
 
             String listJson = node.toString();
@@ -513,7 +513,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0)).remove(CASE_NUMBER_CATH);
 
             String listJson = node.toString();
@@ -530,7 +530,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0)).remove(DEFENDANTS);
 
             String listJson = node.toString();
@@ -547,7 +547,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(CASE_ARRIVED_FROM).get(ORIGINATING_COURT)).remove(COURT_HOUSE_CODE);
 
             String listJson = node.toString();
@@ -564,7 +564,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(CASE_ARRIVED_FROM).get(ORIGINATING_COURT)).remove(COURT_HOUSE_NAME);
 
             String listJson = node.toString();
@@ -581,7 +581,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(HEARING).get(0)).remove(HEARING_DESCRIPTION);
 
             String listJson = node.toString();
@@ -598,7 +598,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(HEARING).get(0)).remove(HEARING_TYPE);
 
             String listJson = node.toString();
@@ -615,7 +615,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(DEFENDANTS).get(0)).remove(PERSONAL_DETAILS);
 
             String listJson = node.toString();
@@ -632,7 +632,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(DEFENDANTS).get(0).get(PERSONAL_DETAILS)).remove(NAME);
 
             String listJson = node.toString();
@@ -649,7 +649,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(DEFENDANTS).get(0).get(PERSONAL_DETAILS)).remove(IS_MASKED);
 
             String listJson = node.toString();
@@ -666,7 +666,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(DEFENDANTS).get(0).get("PrisonLocation")).remove(LOCATION);
 
             String listJson = node.toString();
@@ -683,7 +683,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(DEFENDANTS).get(0).get("Counsel").get(0).get("Solicitor").get(0)
                 .get("Party").get("Organisation")).remove(ORGANISATION_NAME);
 
@@ -701,7 +701,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get(DEFENDANTS).get(0).get("Charges").get(0)).remove(OFFENCE_STATEMENT);
 
             String listJson = node.toString();
@@ -718,7 +718,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get("Prosecution").get("ProsecutingOrganisation")).remove(ORGANISATION_NAME);
 
             String listJson = node.toString();
@@ -735,7 +735,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITH_FIXED_DATE).get(0).get(FIXTURE)
                 .get(0).get(CASES).get(0).get("LinkedCases").get(0)).remove(CASE_NUMBER);
 
             String listJson = node.toString();
@@ -754,7 +754,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0)).remove(WITHOUT_FIXED_DATE);
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0)).remove(WITHOUT_FIXED_DATE);
 
             String listJson = node.toString();
             assertThrows(PayloadValidationException.class, () ->
@@ -770,7 +770,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0))
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0).get(WITHOUT_FIXED_DATE).get(0))
                 .remove(HEARING_TYPE);
 
             String listJson = node.toString();
@@ -787,7 +787,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0)).remove(FIXTURE);
 
             String listJson = node.toString();
@@ -804,7 +804,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0))
                 .remove(CASES);
 
@@ -822,7 +822,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0)).remove(CASE_NUMBER);
 
@@ -840,7 +840,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0)).remove(CASE_NUMBER_CATH);
 
@@ -858,7 +858,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0)).remove(DEFENDANTS);
 
@@ -876,7 +876,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(CASE_ARRIVED_FROM)).remove(SECTION_53);
 
@@ -894,7 +894,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(CASE_ARRIVED_FROM)).remove(SECTION_53);
 
@@ -912,7 +912,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(HEARING).get(0)).remove(HEARING_DESCRIPTION);
 
@@ -930,7 +930,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(HEARING).get(0)).remove(HEARING_TYPE);
 
@@ -948,7 +948,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(DEFENDANTS).get(0)).remove(PERSONAL_DETAILS);
 
@@ -966,7 +966,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(DEFENDANTS).get(0).get(PERSONAL_DETAILS)).remove(NAME);
 
@@ -984,7 +984,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(DEFENDANTS).get(0).get(PERSONAL_DETAILS)).remove(IS_MASKED);
 
@@ -1002,7 +1002,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(DEFENDANTS).get(0).get("PrisonLocation")).remove(LOCATION);
 
@@ -1020,7 +1020,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(DEFENDANTS).get(0).get("Counsel").get(0)
                 .get("Solicitor").get(0).get("Party")
@@ -1040,7 +1040,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS)
                 .get(0).get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get(DEFENDANTS).get(0).get("Charges")
                 .get(0)).remove(OFFENCE_STATEMENT);
@@ -1059,7 +1059,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get("Prosecution").get("ProsecutingOrganisation")).remove(ORGANISATION_NAME);
 
@@ -1077,7 +1077,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
             JsonNode node = getJsonNode(text);
-            ((ObjectNode) node.get(ADVANCE_LIST).get(COURT_LISTS).get(0)
+            ((ObjectNode) node.get(WARNED_LIST).get(COURT_LISTS).get(0)
                 .get(WITHOUT_FIXED_DATE).get(0).get(FIXTURE).get(0)
                 .get(CASES).get(0).get("LinkedCases").get(0)).remove(CASE_NUMBER);
 

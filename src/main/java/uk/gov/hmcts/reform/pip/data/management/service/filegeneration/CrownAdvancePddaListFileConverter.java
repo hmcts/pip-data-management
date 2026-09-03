@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class CrownAdvancePddaListFileConverter extends ExcelAbstractList implements FileConverter {
     private static final String LIST_HEADER = "ListHeader";
-    private static final String ADVANCE_LIST = "AdvanceList";
+    private static final String WARNED_LIST = "WarnedList";
 
     @Override
     public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources)
@@ -29,7 +29,7 @@ public class CrownAdvancePddaListFileConverter extends ExcelAbstractList impleme
         context.setVariable("locationName", metadata.get("locationName"));
         context.setVariable("provenance", metadata.get("provenance"));
 
-        JsonNode listNode = artefact.get(ADVANCE_LIST);
+        JsonNode listNode = artefact.get(WARNED_LIST);
 
         processDateInfo(context, listNode, metadata);
         processVenueAddress(context, listNode);
