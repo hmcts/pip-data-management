@@ -75,6 +75,8 @@
     <cve>CVE-2026-59921</cve>
     <cve>CVE-2026-59898</cve>
     <cve>CVE-2026-59919</cve>
+    <cve>CVE-2026-62380</cve>
+    <cve>CVE-2026-47874</cve>
   </suppress>
   <suppress>
     <notes>Tomcat 10.1.52 false positives or accepted risk</notes>
@@ -172,6 +174,10 @@
     <notes>PostgreSQL, Spring Boot, Spring Framework, and Spring Security vulnerabilities – false positives or accepted risk</notes>
     <cve>CVE-2026-42198</cve>
     <cve>CVE-2026-54291</cve>
+    <cve>CVE-2026-47890</cve>
+    <cve>CVE-2026-47891</cve>
+    <cve>CVE-2026-59282</cve>
+    <cve>CVE-2026-59281</cve>
     <!-- Spring Framework -->
     <cve>CVE-2026-22740</cve>
     <cve>CVE-2026-22745</cve>
@@ -182,8 +188,16 @@
     <cve>CVE-2026-40975</cve>
     <cve>CVE-2026-40973</cve>
     <cve>CVE-2026-40977</cve>
+    <cve>CVE-2026-47892</cve>
+    <cve>CVE-2026-59283</cve>
+    <cve>CVE-2026-47893</cve>
+    <cve>CVE-2026-59280</cve>
+    <cve>CVE-2026-59270</cve>
+    <cve>CVE-2026-47890</cve>
+    <cve>CVE-2026-47891</cve>
     <!-- Spring Security -->
     <cve>CVE-2026-22751</cve>
+    <cve>CVE-2026-59276</cve>
     <!-- Spring Cloud -->
     <cve>CVE-2026-50338</cve>
   </suppress>
@@ -246,6 +260,8 @@
     <cve>CVE-2026-41852</cve>
     <cve>CVE-2026-41853</cve>
     <cve>CVE-2026-41855</cve>
+    <cve>CVE-2026-59313</cve>
+    <cve>CVE-2026-59314</cve>
   </suppress>
   <suppress>
     <notes>spring security suppression</notes>
@@ -262,5 +278,15 @@
   <suppress>
     <notes>Tomcat suppression</notes>
     <cve>CVE-2026-66299</cve>
+    <cve>CVE-2026-65637</cve>
+    <cve>CVE-2026-65905</cve>
+    <cve>CVE-2026-65182</cve>
+    <cve>CVE-2026-68525</cve>
+    <cve>CVE-2026-65183</cve>
+    <cve>CVE-2026-66422</cve>
+    <cve>CVE-2026-68569</cve>
+    <cve>CVE-2026-65927</cve>
+    <cve>CVE-2026-68763</cve>
+    <cve>CVE-2026-73180</cve>
   </suppress>
 </suppressions>
