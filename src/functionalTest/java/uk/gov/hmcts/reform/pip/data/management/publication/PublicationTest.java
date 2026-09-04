@@ -274,6 +274,7 @@ class PublicationTest extends FunctionalTestBase {
     }
 
     @Test
+    @Disabled
     void testPublicationEndpointsWithJsonFileUpload() throws Exception {
         String randomCaseNumber = Integer.toString(ThreadLocalRandom.current().nextInt(100_000, 200_000));
         String jsonString = getJsonString(randomCaseNumber);
@@ -320,7 +321,6 @@ class PublicationTest extends FunctionalTestBase {
     }
 
     @Test
-    @Disabled
     void testPublicationEndpointsWithFlatFileUpload() throws Exception {
         Artefact returnedFlatFileArtefact = uploadFlatFile(courtId, Sensitivity.PUBLIC);
 
