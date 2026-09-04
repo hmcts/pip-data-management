@@ -70,7 +70,7 @@ public class CivilDailyCauseListFileConverter extends ExcelAbstractList implemen
             (session, courtRoom, sitting, hearing, caseNode) -> {
                 CivilDailyList thisCase = new CivilDailyList();
 
-                thisCase.setCourtHouse(courtRoom.path("courtHouse").asText());
+                thisCase.setCourtHouse(courtRoom.path("courtHouseName").asText());
                 thisCase.setCourtRoom(session.path("formattedSessionCourtRoom").asText());
                 thisCase.setTime(sitting.path("time").asText());
                 thisCase.setCaseId(caseNode.path("caseNumber").asText());

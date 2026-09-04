@@ -87,7 +87,7 @@ public final class CftListHelper {
                         courtList.get(COURT_HOUSE),
                         COURT_HOUSE_NAME
                     );
-                    ((ObjectNode) courtRoom).put(COURT_HOUSE, courtHouseName);
+                    ((ObjectNode) courtRoom).put(COURT_HOUSE_NAME, courtHouseName);
 
                     courtRoom.get(SESSION).forEach(session -> {
                         StringBuilder formattedJudiciary = new StringBuilder();
