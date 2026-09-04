@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.service.publication;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
@@ -80,7 +81,6 @@ public class PublicationCreationService extends ExcelAbstractList {
 
         artefact.setPayload(blobUrl);
         Artefact createdArtefact = artefactRepository.save(artefact);
-        artefactSearchService.artefactSearchStore(createdArtefact, payload);
 
         // Remove the old payload after superseded by the new one
         if (existingPayload != null) {
@@ -113,6 +113,16 @@ public class PublicationCreationService extends ExcelAbstractList {
         }
 
         return createdArtefact;
+    }
+
+    public void processPublicationSearchCases(Artefact artefact, String payload) {
+        try {
+            artefactSearchService.artefactSearchStore(artefact, payload);
+        } catch (ConcurrencyFailureException | DataIntegrityViolationException ex) {
+            // If error occurs when storing cases into artefact_search, log an error and continue.
+            log.error(writeLog("Error storing case search values for artefact with ID "
+                                   + artefact.getArtefactId()));
+        }
     }
 
     @Async

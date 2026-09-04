@@ -201,11 +201,12 @@ class PublicationControllerTest {
             DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, PAYLOAD
         );
 
-        verify(validationService).validateBody(eq(PAYLOAD), any(), eq(true));
-        verify(publicationCreationService).processCreatedPublication(any(Artefact.class), eq(PAYLOAD), eq(null));
-
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
+
+        verify(validationService).validateBody(eq(PAYLOAD), any(), eq(true));
+        verify(publicationCreationService).processPublicationSearchCases(artefact, PAYLOAD);
+        verify(publicationCreationService).processCreatedPublication(any(Artefact.class), eq(PAYLOAD), eq(null));
     }
 
     @ParameterizedTest
@@ -227,11 +228,12 @@ class PublicationControllerTest {
             listType, LOCATION_ID, CONTENT_DATE, USER_ID, PAYLOAD
         );
 
-        verify(validationService).validateBody(eq(PAYLOAD), any(), eq(false));
-        verify(publicationCreationService).processCreatedPublication(any(Artefact.class), eq(PAYLOAD), eq(null));
-
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
+
+        verify(validationService).validateBody(eq(PAYLOAD), any(), eq(false));
+        verify(publicationCreationService).processPublicationSearchCases(artefact, PAYLOAD);
+        verify(publicationCreationService).processCreatedPublication(any(Artefact.class), eq(PAYLOAD), eq(null));
     }
 
     @Test
@@ -244,8 +246,8 @@ class PublicationControllerTest {
             DISPLAY_FROM, DISPLAY_TO, LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, PAYLOAD
         );
 
-        verify(publicationCreationService, never())
-            .processCreatedPublication(any(Artefact.class), eq(PAYLOAD), eq(null));
+        verify(publicationCreationService, never()).processPublicationSearchCases(artefact, PAYLOAD);
+        verify(publicationCreationService, never()).processCreatedPublication(any(Artefact.class), eq(PAYLOAD), eq(null));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
