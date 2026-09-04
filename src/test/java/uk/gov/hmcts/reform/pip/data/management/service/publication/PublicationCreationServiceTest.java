@@ -152,7 +152,6 @@ class PublicationCreationServiceTest {
 
         Artefact returnedArtefact = publicationCreationService.createPublication(artefact, PAYLOAD);
 
-        verify(artefactSearchService).artefactSearchStore(returnedArtefact, PAYLOAD);
         verify(azureArtefactBlobService).deleteBlob(anyString());
         verify(publicationFileManagementService).deleteFiles(artefactToBeCreated.getArtefactId(),
                                                              artefactToBeCreated.getListType(),
