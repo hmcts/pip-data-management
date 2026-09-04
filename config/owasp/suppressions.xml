@@ -14,6 +14,10 @@
     <cve>CVE-2024-35255</cve>
   </suppress>
   <suppress>
+    <notes>json-schema-validator suppression</notes>
+    <cve>CVE-2025-15104</cve>
+  </suppress>
+  <suppress>
     <notes>Tomcat suppression</notes>
     <cve>CVE-2026-65637</cve>
     <cve>CVE-2026-65905</cve>
