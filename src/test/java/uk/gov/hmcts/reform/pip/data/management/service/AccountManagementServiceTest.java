@@ -116,24 +116,6 @@ class AccountManagementServiceTest {
     }
 
     @Test
-    void testSendArtefactForEmailSubscriptionSuccess() {
-        mockAccountManagementEndpoint.enqueue(new MockResponse()
-                                                  .setResponseCode(OK.value()));
-        accountManagementService.sendArtefactForEmailSubscription(ARTEFACT);
-        assertTrue(logCaptor.getErrorLogs().isEmpty());
-    }
-
-    @Test
-    void testSendArtefactForEmailSubscriptionFailed() {
-        mockAccountManagementEndpoint.enqueue(new MockResponse()
-                                                  .setResponseCode(BAD_REQUEST.value()));
-        accountManagementService.sendArtefactForEmailSubscription(ARTEFACT);
-        assertTrue(logCaptor.getErrorLogs().get(0)
-                       .contains("Request to send artefact to Account Management for email subscriptions failed "
-                                     + "with error:"));
-    }
-
-    @Test
     void testSendArtefactForEmailSubscriptionV2Success() {
         mockAccountManagementEndpoint.enqueue(new MockResponse()
                                                   .setResponseCode(OK.value()));
@@ -166,25 +148,6 @@ class AccountManagementServiceTest {
         accountManagementService.sendArtefactForApiSubscription(ARTEFACT);
         assertTrue(logCaptor.getErrorLogs().get(0)
                        .contains("Request to send artefact to Account Management for API subscriptions failed "
-                                     + "with error:"));
-    }
-
-    @Test
-    void testSendArtefactForAllSubscriptionsSuccess() {
-        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(OK.value()));
-        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(OK.value()));
-        accountManagementService.sendArtefactForAllSubscriptions(ARTEFACT);
-        assertTrue(logCaptor.getErrorLogs().isEmpty());
-    }
-
-    @Test
-    void testSendArtefactForAllSubscriptionsPartiallyFailed() {
-        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(BAD_REQUEST.value()));
-        mockAccountManagementEndpoint.enqueue(new MockResponse().setResponseCode(OK.value()));
-        accountManagementService.sendArtefactForAllSubscriptions(ARTEFACT);
-        assertEquals(1, logCaptor.getErrorLogs().size());
-        assertTrue(logCaptor.getErrorLogs().get(0)
-                       .contains("Request to send artefact to Account Management for email subscriptions failed "
                                      + "with error:"));
     }
 

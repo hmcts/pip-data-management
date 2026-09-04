@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
 import nl.altindag.log.LogCaptor;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,22 +10,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
-import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchCaseResult;
+import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.ListSearchConfigRepository;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ArtefactNotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateListSearchConfigConflictException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
-import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,9 +31,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -44,21 +39,12 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ARTEFACT_ID;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.CONTENT_DATE;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_ID;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD_URL;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_TERM_CASE_ID;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_TERM_CASE_NAME;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_TERM_CASE_URN;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_VALUES;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SOURCE_ARTEFACT_ID;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_KEY;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_VALUE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.USER_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.VALIDATION_ARTEFACT_NOT_MATCH;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.VALIDATION_MORE_THAN_PUBLIC;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ConstantsTestHelper.MESSAGES_MATCH;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
@@ -69,6 +55,7 @@ class PublicationSearchServiceTest {
     private static final ListSearchConfig LIST_SEARCH_CONFIG = new ListSearchConfig();
     private static final String CASE_NUMBER_FIELD_NAME = "caseNumber";
     private static final String CASE_NAME_FIELD_NAME = "caseName";
+    private static final String TEST_CASE_NAME = "Test Case Name";
 
     @Mock
     private ArtefactRepository artefactRepository;
@@ -86,25 +73,9 @@ class PublicationSearchServiceTest {
     private PublicationSearchService publicationSearchService;
 
     private final Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
-    private final Artefact artefactWithIdAndPayloadUrl = ArtefactConstantTestHelper.buildArtefactWithIdAndPayloadUrl();
-    private final Artefact artefactWithIdAndPayloadUrlClassified = Artefact.builder()
-        .artefactId(ARTEFACT_ID)
-        .sourceArtefactId(SOURCE_ARTEFACT_ID)
-        .provenance(PROVENANCE)
-        .payload(PAYLOAD_URL)
-        .search(SEARCH_VALUES)
-        .displayFrom(LocalDateTime.now())
-        .displayTo(LocalDateTime.now())
-        .locationId(LOCATION_ID)
-        .contentDate(CONTENT_DATE)
-        .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-        .language(Language.ENGLISH)
-        .sensitivity(Sensitivity.CLASSIFIED)
-        .build();
 
     @BeforeAll
     static void setup() {
-        SEARCH_VALUES.put(TEST_KEY, List.of(TEST_VALUE));
         LIST_SEARCH_CONFIG.setId(TEST_ID);
         LIST_SEARCH_CONFIG.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         LIST_SEARCH_CONFIG.setCaseNumberFieldName(CASE_NUMBER_FIELD_NAME);
@@ -366,182 +337,6 @@ class PublicationSearchServiceTest {
     }
 
     @Test
-    void testFindAllBySearchCaseIdClassifiedAndAuthorised() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_ID.dbValue), eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
-            .thenReturn(true);
-
-        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
-            .thenReturn(true);
-
-        assertEquals(
-            list,
-            publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, USER_ID),
-            VALIDATION_ARTEFACT_NOT_MATCH
-        );
-    }
-
-    @Test
-    void testFindAllBySearchCaseIdClassifiedAndNotAuthorised() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_ID.dbValue), eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
-            .thenReturn(true);
-
-        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
-            .thenReturn(false);
-
-        List<Artefact> artefacts = publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, USER_ID);
-
-        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-        assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testFindAllBySearchCaseIdUnverified() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_ID.dbValue), eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
-            .thenReturn(true);
-
-        List<Artefact> artefacts = publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_ID, TEST_VALUE, USER_ID);
-
-        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-        assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testFindAllNoArtefactsThrowsNotFound() {
-        ArtefactNotFoundException ex = assertThrows(ArtefactNotFoundException.class, () ->
-            publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_ID, "not found", USER_ID)
-        );
-        assertEquals("No Artefacts found with for CASE_ID with the value: not found",
-                     ex.getMessage(), MESSAGES_MATCH
-        );
-    }
-
-    @Test
-    void testFindAllByCaseNameClassifiedAndAuthorised() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactByCaseName(eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
-            .thenReturn(true);
-
-        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
-            .thenReturn(true);
-
-        assertEquals(
-            list,
-            publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, USER_ID),
-            VALIDATION_ARTEFACT_NOT_MATCH
-        );
-    }
-
-    @Test
-    void testFindAllByCaseNameClassifiedAndNotAuthorised() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactByCaseName(eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
-            .thenReturn(true);
-
-        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
-            .thenReturn(false);
-
-        List<Artefact> artefacts = publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, USER_ID);
-
-        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-        assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testFindAllByCaseNameUnverified() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactByCaseName(eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrl, null))
-            .thenReturn(true);
-
-        List<Artefact> artefacts = publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_NAME, TEST_VALUE, null);
-
-        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-        assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testFindAllByCaseUrnClassifiedAndAuthorised() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_URN.dbValue), eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
-            .thenReturn(true);
-
-        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
-            .thenReturn(true);
-
-        assertEquals(
-            list,
-            publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, USER_ID),
-            VALIDATION_ARTEFACT_NOT_MATCH
-        );
-    }
-
-    @Test
-    void testFindAllByCaseUrnClassifiedAndNotAuthorised() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_URN.dbValue), eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrl, USER_ID))
-            .thenReturn(true);
-
-        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrlClassified, USER_ID))
-            .thenReturn(false);
-
-        List<Artefact> artefacts = publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, USER_ID);
-
-        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-        assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testFindAllByCaseUrnUnverified() {
-        List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
-        when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_URN.dbValue), eq(TEST_VALUE), any()))
-            .thenReturn(list);
-
-        when(publicationRetrievalService.isAuthorised(artefactWithIdAndPayloadUrl, null))
-            .thenReturn(true);
-
-        List<Artefact> artefacts = publicationSearchService.findAllBySearch(SEARCH_TERM_CASE_URN, TEST_VALUE, null);
-
-        assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
-        assertEquals(artefactWithIdAndPayloadUrl, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
-    }
-
-    @Test
-    void testInvalidEnumTypeThrows() {
-        try {
-            CaseSearchTerm.valueOf("invalid");
-            Assert.fail("No exception thrown for invalid enum");
-        } catch (IllegalArgumentException e) {
-            assertNotNull(e.getMessage(), "Exception is not empty");
-        }
-    }
-
-    @Test
     void testFindAllByCourtIdAdminNotAdmin() {
         when(artefactRepository.findArtefactsByLocationId(any(), any())).thenReturn(List.of(artefact));
         when(publicationRetrievalService.isAuthorised(artefact, USER_ID))
@@ -563,7 +358,7 @@ class PublicationSearchServiceTest {
     void testFindCasesByCaseNumber() {
         ArtefactSearchCaseResult caseSearchResult = mock(ArtefactSearchCaseResult.class);
         when(caseSearchResult.getCaseNumber()).thenReturn(TEST_VALUE);
-        when(caseSearchResult.getCaseName()).thenReturn("Test Case Name");
+        when(caseSearchResult.getCaseName()).thenReturn(TEST_CASE_NAME);
 
         when(artefactSearchRepository.findByCaseNumberIgnoreCase(eq(TEST_VALUE), any()))
             .thenReturn(List.of(caseSearchResult));
@@ -572,7 +367,7 @@ class PublicationSearchServiceTest {
 
         assertEquals(1, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
         assertEquals(TEST_VALUE, results.get(0).getCaseNumber(), VALIDATION_ARTEFACT_NOT_MATCH);
-        assertEquals("Test Case Name", results.get(0).getCaseName(), VALIDATION_ARTEFACT_NOT_MATCH);
+        assertEquals(TEST_CASE_NAME, results.get(0).getCaseName(), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
     @Test
@@ -624,6 +419,30 @@ class PublicationSearchServiceTest {
         when(artefactSearchRepository.findTop50ByCaseNameContainingIgnoreCase(any(), any())).thenReturn(List.of());
 
         List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseName("not found", true);
+        assertEquals(0, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
+    void testFindCasesArtefactId() {
+        ArtefactSearch artefactSearch = mock(ArtefactSearch.class);
+        when(artefactSearch.getCaseNumber()).thenReturn(TEST_VALUE);
+        when(artefactSearch.getCaseName()).thenReturn(TEST_CASE_NAME);
+
+        when(artefactSearchRepository.findByArtefactId(ARTEFACT_ID))
+            .thenReturn(List.of(artefactSearch));
+
+        List<ArtefactCaseInfo> results = publicationSearchService.findCasesByArtefactId(ARTEFACT_ID);
+
+        assertEquals(1, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
+        assertEquals(TEST_VALUE, results.get(0).getCaseNumber(), VALIDATION_ARTEFACT_NOT_MATCH);
+        assertEquals(TEST_CASE_NAME, results.get(0).getCaseName(), VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
+    void testFindCasesArtefactIdReturnsEmptyListWhenNotFound() {
+        when(artefactSearchRepository.findByArtefactId(ARTEFACT_ID)).thenReturn(List.of());
+
+        List<ArtefactCaseInfo> results = publicationSearchService.findCasesByArtefactId(ARTEFACT_ID);
         assertEquals(0, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 }

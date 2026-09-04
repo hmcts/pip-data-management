@@ -164,7 +164,6 @@ Below is a table of currently used environment variables for starting the servic
 | PUBLICATION_SERVICES_AZ_API    | Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the pip-publication-services service                                                                                                          | No        |
 | ACCOUNT_MANAGEMENT_AZ_API      | Used as part of the `scope` parameter when requesting a token from Azure. Used for service-to-service communication with the account management service                                                                                                                | No        |
 | ENABLE_TESTING_SUPPORT_API     | Used to conditionally enable testing support API. Default to `false` for the production environment only.                                                                                                                                                              | No        |
-| JSON_SEARCH_MAX_INBOUND_SIZE   | The maximum size of input payload before we stop generating the JSON Search data. Default to 256kb.                                                                                                                                                                    | No        |
 | EXCEL_MAX_INBOUND_SIZE         | The maximum size of input payload before we stop generating the Excel. Default to 4096kb.                                                                                                                                                                              | No        |
 | PDF_MAX_INBOUND_SIZE           | The maximum size of input payload before we stop generating the PDF. Default to 256kb.                                                                                                                                                                                 | No        |
 
@@ -206,47 +205,6 @@ We use Fortify to scan for security vulnerabilities. This is run as part of our 
 Our full API specification can be found within our Swagger-UI page.
 It can be accessed locally by starting the service and going to [http://localhost:8090/swagger-ui/swagger-ui/index.html](http://localhost:8090/swagger-ui/swagger-ui/index.html)
 Alternatively, if you're on our VPN, you can access the swagger endpoint at our staging URL (ask a teammate to give you this).
-
-## Search Criteria
-
-The 'search' field forms part of the response back from the POST /publication endpoint.
-
-The field contains values extracted from the payload that are then used by users in the frontend to search for publications when setting up subscriptions.
-
-The values are extracted using JPATH (Jayway implementation). This is an example of the extracted values:
-
-```json
-{
-  "cases":[{
-    "caseUrn": "ExampleURN",
-    "caseName": "ExampleName",
-    "caseNumber": "ExampleNumber"
-  }],
-  "parties": [
-    {
-      "cases": [{
-        "caseUrn": "ExampleURN",
-        "caseName": "ExampleName",
-        "caseNumber": "ExampleNumber"
-      }],
-      "organisations": [
-        "Org name"
-      ],
-      "individuals": [
-        {
-          "forename": "Forename",
-          "middleName": "M",
-          "surname": "Surname"
-        }
-      ]
-    }
-  ]
-}
-```
-
-The 'parties' section is used for searching the matched publications when adding subscriptions in the frontend. It excludes representatives, and blank / null party roles. For individual names, only the surname is used for searching. However the forenames and middle names are also stored so that full names can be displayed on the subscription tables.
-
-The legacy 'cases' section is used for search by case Number, URN or Name for publications created previously before "parties" were added.
 
 ## Examples
 

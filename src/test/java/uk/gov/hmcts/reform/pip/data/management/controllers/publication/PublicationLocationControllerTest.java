@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -56,7 +55,6 @@ class PublicationLocationControllerTest {
         .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
         .locationId(LOCATION_ID)
         .contentDate(CONTENT_DATE)
-        .search(new ConcurrentHashMap<>())
         .payloadSize(10f)
         .build();
 
