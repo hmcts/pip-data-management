@@ -56,4 +56,9 @@
     <notes>postgresql suppression</notes>
     <cve>CVE-2026-54291</cve>
   </suppress>
+  <suppress>
+    <notes>PDFBox and XMPBox</notes>
+    <cve>CVE-2026-23907</cve>
+    <cve>CVE-2026-33929</cve>
+  </suppress>
 </suppressions>
