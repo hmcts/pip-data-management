@@ -247,7 +247,8 @@ class PublicationControllerTest {
         );
 
         verify(publicationCreationService, never()).processPublicationSearchCases(artefact, PAYLOAD);
-        verify(publicationCreationService, never()).processCreatedPublication(any(Artefact.class), eq(PAYLOAD), eq(null));
+        verify(publicationCreationService, never())
+            .processCreatedPublication(any(Artefact.class), eq(PAYLOAD), eq(null));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
