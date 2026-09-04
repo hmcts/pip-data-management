@@ -26,11 +26,11 @@ import java.util.Map;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST;
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CourtOfAppealCriminalDailyCauseListFileConverterTest {
+class CourtOfAppealCivilDailyCauseFileConverterListTest {
     private static final String CONTENT_DATE = "23 April 2025";
     private static final String LAST_RECEIVED_DATE = "2025-04-22T09:30:00Z";
     private static final String PROVENANCE = "provenance";
@@ -57,12 +57,12 @@ class CourtOfAppealCriminalDailyCauseListFileConverterTest {
 
     private static final String TITLE_MESSAGE = "Title does not match";
     private static final String HEADER_MESSAGE = "Header does not match";
+    private static final String LINK_MESSAGE = "Link does not match";
     private static final String VENUE_MESSAGE = "Venue does not match";
     private static final String LIST_DATE_MESSAGE = "List date does not match";
     private static final String LAST_UPDATED_DATE_MESSAGE = "Last updated date does not match";
     private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information heading does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
-    private static final String LINK_MESSAGE = "Link does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -71,18 +71,18 @@ class CourtOfAppealCriminalDailyCauseListFileConverterTest {
     @BeforeAll
     void setup() throws IOException {
         try (InputStream inputStream = getClass()
-            .getResourceAsStream("/mocks/non-strategic/courtOfAppealCriminalDailyCauseList.json")) {
+            .getResourceAsStream("/mocks/non-strategic/courtOfAppealCivilDailyCauseList.json")) {
             String inputRaw = IOUtils.toString(inputStream, Charset.defaultCharset());
             cstInputJson = new ObjectMapper().readTree(inputRaw);
         }
     }
 
     @Test
-    void testCourtOfAppealCriminalDailyCauseListFileConversionInEnglish() throws IOException {
+    void testCourtOfAppealCivilDailyCauseListFileConversionInEnglish() throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/en/non-strategic/courtOfAppealCriminalDailyCauseList.json")) {
+            .getResourceAsStream("templates/languages/en/non-strategic/courtOfAppealCivilDailyCauseList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -91,7 +91,7 @@ class CourtOfAppealCriminalDailyCauseListFileConverterTest {
         Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
                                               PROVENANCE_METADATA, PROVENANCE,
                                               LANGUAGE_METADATA, ENGLISH,
-                                              LIST_TYPE_METADATA, COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST.name(),
+                                              LIST_TYPE_METADATA, COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST.name(),
                                               LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
         );
 
@@ -101,12 +101,12 @@ class CourtOfAppealCriminalDailyCauseListFileConverterTest {
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(document.title())
-            .as(TITLE_MESSAGE)
-            .isEqualTo("Court of Appeal (Criminal Division) Daily Cause List");
+                .as(TITLE_MESSAGE)
+            .isEqualTo("Court of Appeal (Civil Division) Daily Cause List");
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .isEqualTo("Court of Appeal (Criminal Division) Daily Cause List");
+            .isEqualTo("Court of Appeal (Civil Division) Daily Cause List");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
                               .getElementsByTag("a").get(0)
@@ -145,14 +145,21 @@ class CourtOfAppealCriminalDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Please note that advocates, whether appearing remotely or in person, are required to be "
-                          + "robed for all hearings as from 1 October 2020.");
+            .contains("Live Streaming of hearings at the Royal Courts of Justice");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
-            .hasSize(7)
+            .hasSize(15)
             .extracting(Element::text)
             .containsExactly(
+                "Venue",
+                "Judge",
+                "Time",
+                "Case number",
+                "Case details",
+                "Hearing type",
+                "Additional information",
+                "Date",
                 "Venue",
                 "Judge",
                 "Time",
@@ -166,11 +173,11 @@ class CourtOfAppealCriminalDailyCauseListFileConverterTest {
     }
 
     @Test
-    void testCourtOfAppealCriminalDailyCauseListFileConversionInWelsh() throws IOException {
+    void testCourtOfAppealCivilDailyCauseListFileConversionInWelsh() throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/cy/non-strategic/courtOfAppealCriminalDailyCauseList.json")) {
+            .getResourceAsStream("templates/languages/cy/non-strategic/courtOfAppealCivilDailyCauseList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -179,7 +186,7 @@ class CourtOfAppealCriminalDailyCauseListFileConverterTest {
         Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
                                               PROVENANCE_METADATA, PROVENANCE,
                                               LANGUAGE_METADATA, WELSH,
-                                              LIST_TYPE_METADATA, COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST.name(),
+                                              LIST_TYPE_METADATA, COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST.name(),
                                               LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
         );
 
@@ -190,11 +197,11 @@ class CourtOfAppealCriminalDailyCauseListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Rhestr Achosion Dyddiol y Llys Apêl (Adran Troseddol)");
+            .isEqualTo("Rhestr Achosion Dyddiol y Llys Apêl (Adran Sifil)");
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .isEqualTo("Rhestr Achosion Dyddiol y Llys Apêl (Adran Troseddol)");
+            .isEqualTo("Rhestr Achosion Dyddiol y Llys Apêl (Adran Sifil)");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
                               .getElementsByTag("a").get(0)
@@ -233,14 +240,21 @@ class CourtOfAppealCriminalDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Sylwch fod yn ofynnol i eiriolwyr, p'un a ydynt yn ymddangos o bell neu wyneb yn wyneb, "
-                          + "wisgo gynau ym mhob gwrandawiad o 1 Hydref 2020 ymlaen.");
+            .contains("Ffrydio gwrandawiadau yn y Llysoedd Barn Brenhinol");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
-            .hasSize(7)
+            .hasSize(15)
             .extracting(Element::text)
             .containsExactly(
+                "Lleoliad",
+                "Barnwr",
+                "Amser",
+                "Rhif yr achos",
+                "Manylion yr achos",
+                "Math o wrandawiad",
+                "Gwybodaeth ychwanegol",
+                "Dyddiad",
                 "Lleoliad",
                 "Barnwr",
                 "Amser",
@@ -254,11 +268,11 @@ class CourtOfAppealCriminalDailyCauseListFileConverterTest {
     }
 
     @Test
-    void testCourtOfAppealCriminalDailyCauseListTableContents() throws IOException {
+    void testCourtOfAppealCivilDailyCauseListTableContents() throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/en/non-strategic/courtOfAppealCriminalDailyCauseList.json")) {
+            .getResourceAsStream("templates/languages/en/non-strategic/courtOfAppealCivilDailyCauseList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 }
@@ -269,7 +283,7 @@ class CourtOfAppealCriminalDailyCauseListFileConverterTest {
             CONTENT_DATE_METADATA, CONTENT_DATE,
             PROVENANCE_METADATA, PROVENANCE,
             LANGUAGE_METADATA, ENGLISH,
-            LIST_TYPE_METADATA, COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST.name(),
+            LIST_TYPE_METADATA, COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST.name(),
             LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
         );
 
@@ -277,7 +291,7 @@ class CourtOfAppealCriminalDailyCauseListFileConverterTest {
         Document document = Jsoup.parse(result);
 
         assertThat(document.getElementsByTag("td"))
-            .as("Table contents does not match")
+            .as("Table contents for hearing list does not match")
             .extracting(Element::text)
             .containsSequence(
                 "Venue A",
@@ -286,20 +300,33 @@ class CourtOfAppealCriminalDailyCauseListFileConverterTest {
                 "12345",
                 "Case details A",
                 "Hearing type A",
-                "This is additional information"
+                "Additional information A"
+            );
+
+        assertThat(document.getElementsByTag("td"))
+            .as("Table contents for future judgements does not match")
+            .extracting(Element::text)
+            .containsSequence(
+                "Venue C",
+                "Judge C",
+                "10:30am",
+                "12347",
+                "Case details C",
+                "Hearing type C",
+                "Additional information C"
             );
     }
 
     @Test
-    void testCourtOfAppealCriminalDailyCauseListExcelConversionInEnglish() throws IOException {
+    void testCourtOfAppealCivilDailyCauseListExcelConversionInEnglish() throws IOException {
         try (InputStream excelFile = getClass()
-            .getResourceAsStream("/mocks/non-strategic/courtOfAppealCriminalDailyCauseList.xlsx")) {
+            .getResourceAsStream("/mocks/non-strategic/courtOfAppealCivilDailyCauseList.xlsx")) {
             Map<String, String> metadata = Map.of(
                 LANGUAGE_METADATA, ENGLISH,
-                LIST_TYPE_METADATA, COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST.name()
+                LIST_TYPE_METADATA, COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST.name()
             );
 
-            byte[] result = converter.convertToExcel(null, COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST, metadata,
+            byte[] result = converter.convertToExcel(null, COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST, metadata,
                                                      excelFile);
 
             ByteArrayInputStream file = new ByteArrayInputStream(result);
@@ -330,20 +357,47 @@ class CourtOfAppealCriminalDailyCauseListFileConverterTest {
             softly.assertThat(headingRow.getCell(6).getStringCellValue())
                 .isEqualTo("Additional information");
 
+            sheet = workbook.getSheetAt(1);
+            headingRow = sheet.getRow(0);
+
+            softly.assertThat(headingRow.getCell(0).getStringCellValue())
+                .isEqualTo("Date");
+
+            softly.assertThat(headingRow.getCell(1).getStringCellValue())
+                .isEqualTo("Venue");
+
+            softly.assertThat(headingRow.getCell(2).getStringCellValue())
+                .isEqualTo("Judge");
+
+            softly.assertThat(headingRow.getCell(3).getStringCellValue())
+                .isEqualTo("Time");
+
+            softly.assertThat(headingRow.getCell(4).getStringCellValue())
+                .isEqualTo("Case number");
+
+            softly.assertThat(headingRow.getCell(5).getStringCellValue())
+                .isEqualTo("Case details");
+
+            softly.assertThat(headingRow.getCell(6).getStringCellValue())
+                .isEqualTo("Hearing type");
+
+            softly.assertThat(headingRow.getCell(7).getStringCellValue())
+                .isEqualTo("Additional information");
+
             softly.assertAll();
         }
     }
 
     @Test
-    void testCourtOfAppealCriminalDailyCauseListExcelConversionInWelsh() throws IOException {
+    void testCourtOfAppealCivilDailyCauseListExcelConversionInWelsh() throws IOException {
         try (InputStream excelFile = getClass()
-            .getResourceAsStream("/mocks/non-strategic/courtOfAppealCriminalDailyCauseList.xlsx")) {
+            .getResourceAsStream("/mocks/non-strategic/courtOfAppealCivilDailyCauseList.xlsx")) {
             Map<String, String> metadata = Map.of(
                 LANGUAGE_METADATA, WELSH,
-                LIST_TYPE_METADATA, COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST.name()
+                LIST_TYPE_METADATA, COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST.name()
             );
 
-            byte[] result = converter.convertToExcel(null, COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST, metadata,
+            byte[] result = converter.convertToExcel(null, COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST, metadata,
                                                      excelFile);
 
             ByteArrayInputStream file = new ByteArrayInputStream(result);
@@ -372,6 +426,33 @@ class CourtOfAppealCriminalDailyCauseListFileConverterTest {
                 .isEqualTo("Math o wrandawiad");
 
             softly.assertThat(headingRow.getCell(6).getStringCellValue())
+                .isEqualTo("Gwybodaeth ychwanegol");
+
+            sheet = workbook.getSheetAt(1);
+            headingRow = sheet.getRow(0);
+
+            softly.assertThat(headingRow.getCell(0).getStringCellValue())
+                .isEqualTo("Dyddiad");
+
+            softly.assertThat(headingRow.getCell(1).getStringCellValue())
+                .isEqualTo("Lleoliad");
+
+            softly.assertThat(headingRow.getCell(2).getStringCellValue())
+                .isEqualTo("Barnwr");
+
+            softly.assertThat(headingRow.getCell(3).getStringCellValue())
+                .isEqualTo("Amser");
+
+            softly.assertThat(headingRow.getCell(4).getStringCellValue())
+                .isEqualTo("Rhif yr achos");
+
+            softly.assertThat(headingRow.getCell(5).getStringCellValue())
+                .isEqualTo("Manylion yr achos");
+
+            softly.assertThat(headingRow.getCell(6).getStringCellValue())
+                .isEqualTo("Math o wrandawiad");
+
+            softly.assertThat(headingRow.getCell(7).getStringCellValue())
                 .isEqualTo("Gwybodaeth ychwanegol");
 
             softly.assertAll();

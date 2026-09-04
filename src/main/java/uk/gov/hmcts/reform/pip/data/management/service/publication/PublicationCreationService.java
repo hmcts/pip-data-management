@@ -18,7 +18,10 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.ExcelAbstractList;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,7 +33,7 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
 @Slf4j
 @Service
-public class PublicationCreationService {
+public class PublicationCreationService extends ExcelAbstractList {
 
     private static final int RETRY_MAX_ATTEMPTS = 5;
 
@@ -123,8 +126,17 @@ public class PublicationCreationService {
     }
 
     @Async
-    public void processCreatedPublication(Artefact artefact, String payload) {
-        publicationFileManagementService.generateFiles(artefact.getArtefactId(), payload);
+    public void processCreatedPublication(Artefact artefact, String payload, MultipartFile file) {
+        InputStream inputStream = null;
+        try {
+            if (file != null) {
+                inputStream = file.getInputStream();
+            }
+        } catch (IOException e) {
+            log.error(writeLog("Failed to convert file to input stream"));
+        }
+
+        publicationFileManagementService.generateFiles(artefact.getArtefactId(), payload, inputStream);
         publicationSubscriptionService.checkAndTriggerPublicationSubscription(artefact);
     }
 
