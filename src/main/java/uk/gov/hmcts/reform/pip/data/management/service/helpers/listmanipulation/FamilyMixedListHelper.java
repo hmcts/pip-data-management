@@ -44,9 +44,7 @@ public final class FamilyMixedListHelper {
                         courtList.get(COURT_HOUSE),
                         COURT_HOUSE_NAME
                     );
-                    String courtRoomName = GeneralHelper.findAndReturnNodeText(courtRoom, COURT_ROOM_NAME);
                     ((ObjectNode) courtRoom).put(COURT_HOUSE, courtHouseName);
-                    ((ObjectNode) courtRoom).put(COURT_ROOM_NAME, courtRoomName);
                     courtRoom.get(SESSION).forEach(session -> {
                         ((ObjectNode) session).put("formattedSessionJudiciary",
                                                    JudiciaryHelper.findAndManipulateJudiciary(session));
