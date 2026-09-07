@@ -221,6 +221,7 @@
     <cve>CVE-2026-55831</cve>
     <cve>CVE-2026-55833</cve>
     <cve>CVE-2026-47874</cve>
+    <cve>CVE-2026-62380</cve>
   </suppress>
   <suppress>
     <notes>spring framework suppression</notes>
@@ -249,6 +250,7 @@
     <cve>CVE-2026-59281</cve>
     <cve>CVE-2026-59280</cve>
     <cve>CVE-2026-59314</cve>
+    <cve>CVE-2026-47834</cve>
   </suppress>
   <suppress>
     <notes>spring security suppression</notes>
