@@ -1,9 +1,12 @@
 package uk.gov.hmcts.reform.pip.data.management.service.helpers;
 
+import com.microsoft.applicationinsights.boot.dependencies.apachecommons.lang3.StringUtils;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -80,6 +83,19 @@ public final class NonStrategicListFormatter {
     private static final String DATE = "date";
     private static final String TIME = "time";
     private static final String HEARING_TIME = "hearingTime";
+    private static final String CASE_NAME = "caseName";
+    private static final String CASE_DETAILS = "caseDetails";
+    private static final String CASE_NUMBER = "caseNumber";
+    private static final String CASE_REFERENCE_NUMBER = "caseReferenceNumber";
+    private static final String APPEAL_REFERENCE_NUMBER = "appealReferenceNumber";
+    private static final String APPELLANT = "appellant";
+    private static final String HEARING_TYPE = "hearingType";
+    private static final String VENUE = "venue";
+    private static final String CASE_TYPE = "caseType";
+    private static final String JUDGES = "judges";
+    private static final String MEMBERS = "members";
+    private static final String HEARING_METHOD = "hearingMethod";
+    private static final String ADDITIONAL_INFORMATION = "additionalInformation";
 
     private static final Map<ListType, Map<String, Function<String, String>>> LIST_TYPE_MAP = Map.ofEntries(
         Map.entry(CST_WEEKLY_HEARING_LIST,
@@ -231,6 +247,82 @@ public final class NonStrategicListFormatter {
                   Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField))
     );
 
+    private static final Map<ListType, List<String>> LIST_TYPE_SUMMARY_FIELDS = Map.ofEntries(
+        Map.entry(CST_WEEKLY_HEARING_LIST, List.of(DATE, CASE_NAME)),
+        Map.entry(PHT_WEEKLY_HEARING_LIST, List.of(DATE, CASE_NAME)),
+        Map.entry(GRC_WEEKLY_HEARING_LIST, List.of(DATE, HEARING_TIME, CASE_REFERENCE_NUMBER)),
+        Map.entry(WPAFCC_WEEKLY_HEARING_LIST, List.of(DATE, HEARING_TIME, CASE_REFERENCE_NUMBER)),
+        Map.entry(UT_IAC_JR_LONDON_DAILY_HEARING_LIST, List.of(HEARING_TIME, CASE_REFERENCE_NUMBER)),
+        Map.entry(UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST, List.of(HEARING_TIME, CASE_REFERENCE_NUMBER)),
+        Map.entry(UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST, List.of(HEARING_TIME, CASE_REFERENCE_NUMBER)),
+        Map.entry(UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST, List.of(HEARING_TIME, CASE_REFERENCE_NUMBER)),
+        Map.entry(UT_IAC_JR_LEEDS_DAILY_HEARING_LIST, List.of(HEARING_TIME, CASE_REFERENCE_NUMBER)),
+        Map.entry(UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST, List.of(HEARING_TIME,
+                                                                       APPEAL_REFERENCE_NUMBER)),
+        Map.entry(SIAC_WEEKLY_HEARING_LIST, List.of(DATE, TIME, CASE_REFERENCE_NUMBER)),
+        Map.entry(POAC_WEEKLY_HEARING_LIST, List.of(DATE, TIME, CASE_REFERENCE_NUMBER)),
+        Map.entry(PAAC_WEEKLY_HEARING_LIST, List.of(DATE, TIME, CASE_REFERENCE_NUMBER)),
+        Map.entry(FTT_TAX_WEEKLY_HEARING_LIST, List.of(DATE, HEARING_TIME, CASE_REFERENCE_NUMBER)),
+        Map.entry(FTT_LR_WEEKLY_HEARING_LIST, List.of(DATE, HEARING_TIME, CASE_REFERENCE_NUMBER)),
+        Map.entry(RPT_EASTERN_WEEKLY_HEARING_LIST, List.of(DATE, TIME, CASE_REFERENCE_NUMBER)),
+        Map.entry(RPT_LONDON_WEEKLY_HEARING_LIST, List.of(DATE, TIME, CASE_REFERENCE_NUMBER)),
+        Map.entry(RPT_MIDLANDS_WEEKLY_HEARING_LIST, List.of(DATE, TIME, CASE_REFERENCE_NUMBER)),
+        Map.entry(RPT_NORTHERN_WEEKLY_HEARING_LIST, List.of(DATE, TIME, CASE_REFERENCE_NUMBER)),
+        Map.entry(RPT_SOUTHERN_WEEKLY_HEARING_LIST, List.of(DATE, TIME, CASE_REFERENCE_NUMBER)),
+        Map.entry(UT_T_AND_CC_DAILY_HEARING_LIST, List.of(TIME, CASE_REFERENCE_NUMBER, CASE_NAME)),
+        Map.entry(UT_LC_DAILY_HEARING_LIST, List.of(TIME, CASE_REFERENCE_NUMBER, CASE_NAME)),
+        Map.entry(UT_AAC_DAILY_HEARING_LIST, List.of(TIME, CASE_REFERENCE_NUMBER, APPELLANT)),
+        Map.entry(AST_DAILY_HEARING_LIST, List.of(APPELLANT, APPEAL_REFERENCE_NUMBER, HEARING_TIME)),
+        Map.entry(SSCS_MIDLANDS_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
+        Map.entry(SSCS_SOUTH_EAST_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
+        Map.entry(SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST,
+                  List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
+        Map.entry(SSCS_SCOTLAND_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
+        Map.entry(SSCS_NORTH_EAST_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
+        Map.entry(SSCS_NORTH_WEST_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
+        Map.entry(SSCS_LONDON_DAILY_HEARING_LIST, List.of(HEARING_TIME, HEARING_TYPE, APPEAL_REFERENCE_NUMBER)),
+        Map.entry(LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
+        Map.entry(COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
+        Map.entry(CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
+        Map.entry(COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
+        Map.entry(FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
+        Map.entry(KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
+        Map.entry(KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
+        Map.entry(SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
+        Map.entry(MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
+        Map.entry(INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
+        Map.entry(INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(LONDON_CIRCUIT_COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(PATENTS_COURT_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(PENSIONS_LIST_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(PROPERTY_TRUSTS_PROBATE_LIST_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(REVENUE_LIST_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(TECHNOLOGY_AND_CONSTRUCTION_COURT_KB_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(BUSINESS_LIST_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(COMPETITION_LIST_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(FINANCIAL_LIST_CHD_KB_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(SEND_DAILY_HEARING_LIST, List.of(TIME, CASE_REFERENCE_NUMBER, VENUE)),
+        Map.entry(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, HEARING_TYPE,
+                                                                            CASE_DETAILS)),
+        Map.entry(BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, HEARING_TYPE,
+                                                                                     CASE_DETAILS)),
+        Map.entry(MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, HEARING_TYPE,
+                                                                            CASE_DETAILS)),
+        Map.entry(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, HEARING_TYPE, CASE_DETAILS)),
+        Map.entry(CIC_WEEKLY_HEARING_LIST, List.of(DATE, HEARING_TIME, CASE_REFERENCE_NUMBER, CASE_NAME)),
+        Map.entry(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST, List.of(DATE, TIME, VENUE, CASE_TYPE, CASE_REFERENCE_NUMBER,
+                                                                    JUDGES, MEMBERS, HEARING_METHOD,
+                                                                    ADDITIONAL_INFORMATION)),
+        Map.entry(BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME))
+    );
+
     private NonStrategicListFormatter() {
     }
 
@@ -279,5 +371,48 @@ public final class NonStrategicListFormatter {
             return Optional.of(fieldFormatter);
         }
         return Optional.empty();
+    }
+
+    public static List<Map<String, String>> buildCases(
+        List<Map<String, String>> data,
+        ListType listType
+    ) {
+        Optional<Map<String, Function<String, String>>> listTypeFormatter =
+            getListTypeFormatter(listType);
+
+        List<Map<String, String>> summaryCases = new ArrayList<>();
+
+        data.forEach(hearing -> {
+            Map<String, String> summaryCase = new LinkedHashMap<>();
+
+            if (LIST_TYPE_SUMMARY_FIELDS.containsKey(listType)) {
+                List<String> summaryFields = LIST_TYPE_SUMMARY_FIELDS.get(listType);
+
+                summaryFields.forEach(field -> {
+                    String formattedKey = StringUtils.capitalize(
+                        StringUtils.join(
+                            StringUtils.splitByCharacterTypeCamelCase(field),
+                            StringUtils.SPACE
+                        ).toLowerCase(Locale.UK)
+                    );
+
+                    String formattedValue =
+                        listTypeFormatter.isPresent()
+                            && listTypeFormatter.get().containsKey(field)
+                            ? NonStrategicListFormatter.formatField(
+                            field,
+                            hearing.get(field),
+                            listTypeFormatter.get()
+                        )
+                            : hearing.get(field);
+
+                    summaryCase.put(formattedKey, formattedValue);
+                });
+
+                summaryCases.add(summaryCase);
+            }
+        });
+
+        return summaryCases;
     }
 }
