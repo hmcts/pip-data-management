@@ -137,7 +137,7 @@ public class BusinessAndPropertyDivisionRollsBuildingListSummaryData implements 
                 .map(listType -> listType.get("label"))
                 .findFirst()
                 .orElseThrow(() ->
-                                 new IllegalArgumentException("Unknown list type: " + key)
+                    new IllegalArgumentException("Unknown list type: " + key)
                 );
 
         } catch (IOException e) {

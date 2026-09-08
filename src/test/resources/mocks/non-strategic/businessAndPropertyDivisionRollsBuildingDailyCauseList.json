@@ -99,7 +99,7 @@
       "additionalInformation": "This is another additional information"
     }
   ],
-  "intellectualPropertyAndEnterpriseCourt": [
+  "intellectualPropertyEnterpris": [
     {
       "judge": "Judge A",
       "time": "9am",
@@ -179,7 +179,7 @@
       "additionalInformation": "This is another additional information"
     }
   ],
-  "propertyTrustsAndProbateList": [
+  "property,TrustsAndProbate": [
     {
       "judge": "Judge A",
       "time": "9am",
@@ -199,7 +199,7 @@
       "additionalInformation": "This is another additional information"
     }
   ],
-  "technologyAndConstructionCourt": [
+  "technology&ConstructionCourt": [
     {
       "judge": "Judge A",
       "time": "9am",
