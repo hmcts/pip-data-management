@@ -103,11 +103,11 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Interim Applications List (Chancery Division) Daily Cause List");
+            .isEqualTo("Interim Applications Daily Cause List");
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .isEqualTo("Interim Applications List (Chancery Division) Daily Cause List");
+            .isEqualTo("Interim Applications Daily Cause List");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
                               .getElementsByTag("a").get(0)
