@@ -70,7 +70,7 @@ Most interactions with `pip-data-management` are performed through the API (spec
 - Uploading/retrieval/deletion of publications into the service.
 - Interfacing with local or hosted Postgres instances for metadata and retrieval and Azure Blob Storage for raw files.
 - Parsing and validation of ingested json files.
-- Generation of PDFs from JSON payload for each list type if the payload size is less than the set limit (currently default to 2MB). These are used in the subscription process and also via the Frontend
+- Generation of PDFs from JSON payload for each list type if the payload size is less than the set limit (currently default to 2MB). These are used in the subscription process and also via the Frontend.
 - Generation of publication summary, which contains details about a JSON publication. This is used in the subscription emails.
 - Flyway for database modifications via SQL ingestion.
 - Secure/Insecure Mode: Use of bearer tokens for authentication with the secure instance (if desired)
