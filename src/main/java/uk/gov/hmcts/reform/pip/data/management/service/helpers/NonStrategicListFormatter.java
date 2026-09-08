@@ -74,6 +74,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_STATUTOR
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_T_AND_CC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST;
 
 public final class NonStrategicListFormatter {
     private static final String DATE = "date";
@@ -225,7 +226,9 @@ public final class NonStrategicListFormatter {
                          HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST,
                   Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField,
-                        TIME, NonStrategicFieldFormattingHelper::formatTimeField))
+                        TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST,
+                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField))
     );
 
     private NonStrategicListFormatter() {

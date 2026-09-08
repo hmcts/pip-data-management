@@ -3,17 +3,17 @@
   "title": "Hearing list",
   "type": "object",
   "required": [
-    "appealsList",
+    "appealList",
     "businessList",
     "commercialCourt",
     "financialList",
     "insolvency&CompaniesCourt",
-    "intellectualPropertyEnterpric",
+    "intellectualPropertyEnterpris",
     "intellectualPropertyList",
     "londonCircuitCommercialCourt",
     "patentsCourt",
     "property,TrustsAndProbate",
-    "technologyAndConstructionCou",
+    "technology&ConstructionCourt",
     "admiraltyCourt",
     "companiesWindingUp",
     "competitionList",
@@ -21,7 +21,7 @@
     "revenueList"
   ],
   "properties": {
-    "appealsList": {
+    "appealList": {
       "$ref": "#/$defs/hearingList"
     },
     "businessList": {
@@ -36,7 +36,7 @@
     "insolvency&CompaniesCourt": {
       "$ref": "#/$defs/hearingList"
     },
-    "intellectualPropertyEnterpric": {
+    "intellectualPropertyEnterpris": {
       "$ref": "#/$defs/hearingList"
     },
     "intellectualPropertyList": {
@@ -51,7 +51,7 @@
     "property,TrustsAndProbate": {
       "$ref": "#/$defs/hearingList"
     },
-    "technologyAndConstructionCou": {
+    "technology&ConstructionCourt": {
       "$ref": "#/$defs/hearingList"
     },
     "admiraltyCourt": {
@@ -80,7 +80,7 @@
     "hearing": {
       "type": "object",
       "properties": {
-        "judgeName": {
+        "judge": {
           "title": "Judge name",
           "type": "string",
           "default": "",
@@ -88,7 +88,7 @@
             "Judge name"
           ]
         },
-        "timeOfHearing": {
+        "time": {
           "title": "Time of hearing",
           "type": "string",
           "default": "",
@@ -97,7 +97,7 @@
           ],
           "pattern": "^\\d{1,2}([:.]\\d{2})?[aApP][mM]\\s*$"
         },
-        "venueName": {
+        "venue": {
           "title": "Venue name",
           "type": "string",
           "default": "",
@@ -105,7 +105,7 @@
             "This is venue name"
           ]
         },
-        "typeOfHearing": {
+        "type": {
           "title": "Type of hearing",
           "type": "string",
           "default": "",
@@ -113,7 +113,7 @@
             "This is hearing type"
           ]
         },
-        "caseReferenceNumber": {
+        "caseNumber": {
           "title": "Case reference number",
           "type": "string",
           "default": "",

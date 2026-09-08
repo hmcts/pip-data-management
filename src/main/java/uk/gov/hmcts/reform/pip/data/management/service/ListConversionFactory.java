@@ -3,38 +3,8 @@ package uk.gov.hmcts.reform.pip.data.management.service;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.ArtefactSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CivilDailyCauseListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CopDailyCauseListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CrownPddaListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CrownWarnedPddaListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.EtDailyListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.EtFortnightlyPressListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.FamilyMixedDailyCauseListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.IacDailyListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.MagistratesAdultCourtListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.MagistratesPublicListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.MagistratesStandardListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.NonStrategicListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.SscsDailyListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FamilyMixedDailyCauseListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CivilDailyCauseListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CopDailyCauseListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownDailyPddaListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownFirmPddaListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownWarnedPddaListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.EtDailyListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.EtFortnightlyPressListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.IacDailyListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesAdultCourtListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesPublicAdultCourtListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesPublicListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesStandardListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.SjpPressListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.SjpPublicListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.SscsDailyListFileConverter;
+import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.*;
+import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.*;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.Map;
@@ -449,7 +419,9 @@ public class ListConversionFactory {
         )),
         Map.entry(BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST, new ConversionConfig(
             new NonStrategicListFileConverter(),
-            new NonStrategicListSummaryData(BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST)
+            new BusinessAndPropertyDivisionRollsBuildingListSummaryData(
+                BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST
+            )
         ))
     );
 
