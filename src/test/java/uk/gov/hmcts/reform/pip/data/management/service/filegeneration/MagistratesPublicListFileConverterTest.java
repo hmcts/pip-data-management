@@ -249,7 +249,7 @@ class MagistratesPublicListFileConverterTest {
         Map<String, String> metadata = Map.of("language", "ENGLISH", LOCATION_NAME, LOCATION_NAME);
 
         byte[] result = magistratesPublicListFileConverter.convertToExcel(inputJson, ListType.MAGISTRATES_PUBLIC_LIST,
-                                                                          metadata);
+                                                                          metadata, null);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -306,7 +306,7 @@ class MagistratesPublicListFileConverterTest {
         Map<String, String> metadata = Map.of("language", "WELSH", LOCATION_NAME, LOCATION_NAME);
 
         byte[] result = magistratesPublicListFileConverter.convertToExcel(inputJson, ListType.MAGISTRATES_PUBLIC_LIST,
-                                                                          metadata);
+                                                                          metadata, null);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);

@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.CaseFormat;
 import org.apache.commons.text.CaseUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -13,6 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ExcelConversionException;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.NonStrategicFieldFormattingHelper;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -96,12 +96,9 @@ public class ExcelConversionService {
         // Link hashmap is used to ensure insertion order on the row values
         Map<String, String> values = new LinkedHashMap<>();
         for (int headerNumber = 0; headerNumber < headers.size(); headerNumber++) {
-            String upperUnderscoreHeader = headers.get(headerNumber)
-                .toUpperCase(Locale.ENGLISH)
-                .replaceAll(" ", "_")
-                .replaceAll("[()]", "");
-            String formattedHeader = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, upperUnderscoreHeader);
-
+            String formattedHeader = NonStrategicFieldFormattingHelper.formatFieldInLowerCamelCaseFormat(
+                headers.get(headerNumber)
+            );
             String rowCell = headerNumber < row.size() ? row.get(headerNumber) : "";
             values.put(formattedHeader, rowCell);
         }
@@ -119,25 +116,28 @@ public class ExcelConversionService {
 
         for (int columnNumber = firstColumnNumber; columnNumber < lastCellNum; columnNumber++) {
             Cell cell = row.getCell(columnNumber, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
-
-            String cellValue = cell == null ? "" : switch (cell.getCellType()) {
-                case CellType.NUMERIC -> formatNumericCell(cell);
-                case CellType.BOOLEAN -> {
-                    cell.setCellType(CellType.STRING);
-                    yield cell.getStringCellValue();
-                }
-                case CellType.STRING -> cell.getStringCellValue();
-                case CellType.BLANK -> "";
-                default -> throw new ExcelConversionException(
-                    String.format("Unexpected cell type on row %s, column %s",rowNumber + 1, columnNumber + 1));
-            };
-
+            String cellValue = getExcelCellValue(cell);
             rowData.add(cellValue);
         }
         return rowData;
     }
 
-    private String formatNumericCell(Cell cell) {
+    public static String getExcelCellValue(Cell cell) {
+        return cell == null ? "" : switch (cell.getCellType()) {
+            case CellType.NUMERIC -> formatNumericCell(cell);
+            case CellType.BOOLEAN -> {
+                cell.setCellType(CellType.STRING);
+                yield cell.getStringCellValue();
+            }
+            case CellType.STRING -> cell.getStringCellValue();
+            case CellType.BLANK -> "";
+            default -> throw new ExcelConversionException(
+                String.format("Unexpected cell type on row %s, column %s", cell.getRowIndex() + 1,
+                              cell.getColumnIndex() + 1));
+        };
+    }
+
+    private static String formatNumericCell(Cell cell) {
         if (DateUtil.isCellDateFormatted(cell)) {
             SimpleDateFormat formatter = cell.getNumericCellValue() < 1
                 ? new SimpleDateFormat("h:mma", Locale.UK)

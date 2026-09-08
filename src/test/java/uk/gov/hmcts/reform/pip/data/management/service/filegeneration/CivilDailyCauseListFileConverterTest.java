@@ -284,7 +284,7 @@ class CivilDailyCauseListFileConverterTest {
         );
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
 
-        byte[] result = converter.convertToExcel(inputJson, ListType.CIVIL_DAILY_CAUSE_LIST, METADATA);
+        byte[] result = converter.convertToExcel(inputJson, ListType.CIVIL_DAILY_CAUSE_LIST, METADATA, null);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -316,7 +316,7 @@ class CivilDailyCauseListFileConverterTest {
         );
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
 
-        byte[] result = converter.convertToExcel(inputJson, ListType.CIVIL_DAILY_CAUSE_LIST, METADATA_WELSH);
+        byte[] result = converter.convertToExcel(inputJson, ListType.CIVIL_DAILY_CAUSE_LIST, METADATA_WELSH, null);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -352,8 +352,7 @@ class CivilDailyCauseListFileConverterTest {
         JsonNode inputJson = new ObjectMapper().readTree(writer.toString());
 
         byte[] result = converter.convertToExcel(
-            inputJson,
-            ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST, METADATA
+            inputJson, ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST, METADATA, null
         );
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);

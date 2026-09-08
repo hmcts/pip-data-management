@@ -295,7 +295,7 @@ class MagistratesAdultCourtListFileConverterTest {
     @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
         MAGISTRATES_ADULT_COURT_LIST_FUTURE})
     void testStandardExcelConversion(ListType listType) throws IOException {
-        byte[] result = converter.convertToExcel(inputJson, listType, Map.of("language", "ENGLISH"));
+        byte[] result = converter.convertToExcel(inputJson, listType, Map.of("language", "ENGLISH"), null);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -366,7 +366,7 @@ class MagistratesAdultCourtListFileConverterTest {
     @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
         MAGISTRATES_ADULT_COURT_LIST_FUTURE})
     void testStandardWelshExcelConversion(ListType listType) throws IOException {
-        byte[] result = converter.convertToExcel(inputJson, listType, Map.of("language", "WELSH"));
+        byte[] result = converter.convertToExcel(inputJson, listType, Map.of("language", "WELSH"), null);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -437,7 +437,7 @@ class MagistratesAdultCourtListFileConverterTest {
     @EnumSource(value = ListType.class, names = {MAGISTRATES_ADULT_COURT_LIST_DAILY,
         MAGISTRATES_ADULT_COURT_LIST_FUTURE})
     void testStandardExcelTableContents(ListType listType) throws IOException {
-        byte[] result = converter.convertToExcel(inputJson, listType, Map.of("language", "ENGLISH"));
+        byte[] result = converter.convertToExcel(inputJson, listType, Map.of("language", "ENGLISH"), null);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);

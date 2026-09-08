@@ -12,6 +12,7 @@ import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +35,8 @@ public interface FileConverter {
      *
      * @return The converted Excel spreadsheet as a byte array.
      */
-    default byte[] convertToExcel(JsonNode artefact, ListType listType, Map<String, String> metadata)
-        throws IOException {
+    default byte[] convertToExcel(JsonNode artefact, ListType listType, Map<String, String> metadata,
+                                  InputStream inputExcel) throws IOException {
         Language language = Language.valueOf(metadata.get("language"));
         Map<String, Object> languageResources = LanguageResourceHelper.getLanguageResources(listType, language);
         List<String> headers = getExcelHeaders(artefact, languageResources);
