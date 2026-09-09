@@ -10,10 +10,10 @@
   "importantInfo": "Important Information",
   "headerValuesWrap": [
     "Time",
-    "Case Ref",
-    "Case Name",
-    "Case Type",
-    "Hearing Type",
+    "Case ref",
+    "Case name",
+    "Case type",
+    "Hearing type",
     "Location",
     "Duration"
   ],
@@ -21,8 +21,8 @@
     "Applicant/Petitioner",
     "Respondent"
   ],
-  "courtHouse": "Court House",
-  "courtRoom": "Court Room",
+  "courtHouse": "Court house",
+  "courtRoom": "Court room",
   "reportingRestriction": "Reporting Restriction: ",
   "beforeJudge": "Before: ",
   "legalAdvisor": "Legal Advisor: ",

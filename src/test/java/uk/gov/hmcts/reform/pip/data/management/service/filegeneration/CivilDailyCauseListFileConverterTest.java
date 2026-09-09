@@ -291,9 +291,9 @@ class CivilDailyCauseListFileConverterTest {
         Row headingRow = sheet.getRow(0);
 
         assertEquals("Sheet name does not match", "Sheet1", sheet.getSheetName());
-        assertEquals("Court House column is different", "Court House",
+        assertEquals("Court House column is different", "Court house",
                      headingRow.getCell(0).getStringCellValue());
-        assertEquals("Court Room is different", "Court Room",
+        assertEquals("Court Room is different", "Court room",
                      headingRow.getCell(1).getStringCellValue());
         assertEquals("Time column is different", "Time",
                      headingRow.getCell(2).getStringCellValue());
@@ -327,9 +327,9 @@ class CivilDailyCauseListFileConverterTest {
         Row headingRow = sheet.getRow(0);
 
         assertEquals("Sheet name does not match", "Sheet1", sheet.getSheetName());
-        assertEquals("Court House column is different", "Adeilad Llys",
+        assertEquals("Court House column is different", "Adeilad llys",
                      headingRow.getCell(0).getStringCellValue());
-        assertEquals("Court Room is different", "Ystafell Llys",
+        assertEquals("Court Room is different", "Ystafell llys",
                      headingRow.getCell(1).getStringCellValue());
         assertEquals("Time column is different", "Amser",
                      headingRow.getCell(2).getStringCellValue());
