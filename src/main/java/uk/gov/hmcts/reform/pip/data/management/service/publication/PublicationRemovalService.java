@@ -120,9 +120,10 @@ public class PublicationRemovalService {
      */
     @Transactional
     public void deleteArtefactById(String artefactId, UUID requesterId) {
+        log.info(writeLog("*****deleteArtefactById: before find artefact"));
         Artefact artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId)
             .orElseThrow(() -> new ArtefactNotFoundException("No artefact found with the ID: " + artefactId));
-
+        log.info(writeLog("*****leteArtefactById: before delete artefact"));
         handleArtefactDeletion(artefactToDelete);
         log.info(writeLog(requesterId, UserActions.REMOVE, artefactId));
     }
@@ -130,6 +131,7 @@ public class PublicationRemovalService {
     @Transactional
     public void deleteArtefactByLocation(List<Artefact> artefactsToDelete, Integer locationId, UUID requesterId)
         throws JsonProcessingException {
+        log.info(writeLog("*****deleteArtefactByLocation: before delete artefact"));
         artefactsToDelete.forEach(artefact -> {
             handleArtefactDeletion(artefact);
             log.info(writeLog(
@@ -137,10 +139,13 @@ public class PublicationRemovalService {
                         requesterId, artefact.getArtefactId())
             ));
         });
+        log.info(writeLog("*****deleteArtefactByLocation: before get location"));
         Optional<Location> location = locationRepository.getLocationByLocationId(locationId);
 
+        log.info(writeLog("*****deleteArtefactByLocation: before get user"));
         PiUser userInfo = accountManagementService.getUserById(requesterId);
         String locationName = location.isPresent() ? location.get().getName() : "";
+        log.info(writeLog("*****deleteArtefactByLocation: before send email"));
         systemAdminNotificationService.sendEmailNotification(userInfo.getEmail(), requesterId, ActionResult.SUCCEEDED,
                 String.format("Total %s artefact(s) for location %s", artefactsToDelete.size(), locationName),
                 ChangeType.DELETE_LOCATION_ARTEFACT);
@@ -153,9 +158,12 @@ public class PublicationRemovalService {
 
     private void handleArtefactDeletion(Artefact artefact) {
         deleteDataFromBlobStore(artefact);
+        log.info(writeLog("*****handleArtefactDeletion: before delete artefact search"));
         artefactSearchRepository.deleteByArtefactId(artefact.getArtefactId());
+        log.info(writeLog("*****handleArtefactDeletion: before delete artefact"));
         artefactRepository.delete(artefact);
         if (!NoMatchArtefactHelper.isNoMatchLocationId(artefact.getLocationId())) {
+            log.info(writeLog("*****handleArtefactDeletion: before send delete artefact for third-party"));
             publicationSubscriptionService.sendDeleteArtefactForApiSubscription(artefact);
         }
     }
