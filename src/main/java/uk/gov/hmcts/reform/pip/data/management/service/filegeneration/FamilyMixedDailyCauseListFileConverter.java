@@ -1,9 +1,10 @@
 package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.CivilDailyList;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.FamilyMixedList;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CftListHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.FamilyMixedListHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
 import java.io.IOException;
@@ -11,8 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class CivilDailyCauseListFileConverter extends ExcelAbstractList implements FileConverter {
-
+public class FamilyMixedDailyCauseListFileConverter extends ExcelAbstractList implements FileConverter {
     @Override
     public String convert(JsonNode artefact, Map<String, String> metadata, Map<String, Object> languageResources)
         throws IOException {
@@ -32,6 +32,8 @@ public class CivilDailyCauseListFileConverter extends ExcelAbstractList implemen
     public List<String> getExcelHeaders(Map<String, Object> languageResources) {
         @SuppressWarnings("unchecked")
         List<String> tableHeaders = (List<String>) languageResources.get("headerValuesWrap");
+        @SuppressWarnings("unchecked")
+        List<String> tableHeadersUnwrap = (List<String>) languageResources.get("headerValuesUnwrap");
 
         return List.of(
             tableHeaders.get(0),
@@ -40,7 +42,10 @@ public class CivilDailyCauseListFileConverter extends ExcelAbstractList implemen
             tableHeaders.get(3),
             tableHeaders.get(4),
             tableHeaders.get(5),
-            tableHeaders.get(6)
+            tableHeaders.get(6),
+            tableHeadersUnwrap.get(0),
+            tableHeadersUnwrap.get(1),
+            languageResources.get("reportingRestriction").toString()
         );
     }
 
@@ -49,40 +54,31 @@ public class CivilDailyCauseListFileConverter extends ExcelAbstractList implemen
                                            Map<String, String> metadata) {
         CftListHelper.manipulatedListData(json, Language.valueOf(metadata.get("language")), true);
         List<List<String>> rows = new ArrayList<>();
-        List<CivilDailyList> processedData = processRawListData(json, Language.valueOf(metadata.get("language")));
+        List<FamilyMixedList> processedData = processRawListData(json, Language.valueOf(metadata.get("language")));
 
         processedData.forEach(list -> {
             rows.add(List.of(
                 list.getTime(),
-                list.getCaseId(),
+                list.getCaseRef(),
                 list.getCaseName(),
                 list.getCaseType(),
                 list.getHearingType(),
                 list.getLocation(),
-                list.getDuration()
+                list.getDuration(),
+                list.getApplicant(),
+                list.getRespondent(),
+                list.getReportingRestriction()
             ));
         });
 
         return rows;
     }
 
-    private List<CivilDailyList> processRawListData(JsonNode jsonBody, Language language) {
+    private List<FamilyMixedList> processRawListData(JsonNode jsonBody, Language language) {
         return CftListHelper.processCases(
             jsonBody,
-            body -> CftListHelper.manipulatedListData(body, language, false),
-            (sitting, hearing, caseNode) -> {
-                CivilDailyList thisCase = new CivilDailyList();
-
-                thisCase.setTime(sitting.path("time").asText());
-                thisCase.setCaseId(caseNode.path("caseNumber").asText());
-                thisCase.setCaseName(caseNode.path("formattedCaseName").asText());
-                thisCase.setCaseType(caseNode.path("caseType").asText());
-                thisCase.setHearingType(hearing.path("hearingType").asText());
-                thisCase.setLocation(sitting.path("caseHearingChannel").asText());
-                thisCase.setDuration(sitting.path("formattedDuration").asText());
-
-                return thisCase;
-            }
+            body -> FamilyMixedListHelper.manipulatedListData(body, language),
+            FamilyMixedListHelper::buildFamilyMixedList
         );
     }
 }

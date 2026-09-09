@@ -17,7 +17,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.Magistrat
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.MagistratesStandardListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.NonStrategicListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.SscsDailyListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CivilAndFamilyDailyCauseListFileConverter;
+import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FamilyMixedDailyCauseListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CivilDailyCauseListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CopDailyCauseListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownDailyPddaListFileConverter;
@@ -25,7 +25,6 @@ import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownFirmP
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownWarnedPddaListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.EtDailyListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.EtFortnightlyPressListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FamilyDailyCauseListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.IacDailyListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.MagistratesAdultCourtListFileConverter;
@@ -144,10 +143,10 @@ public class ListConversionFactory {
                                                                 new MagistratesPublicListSummaryData())),
         Map.entry(CIVIL_DAILY_CAUSE_LIST, new ConversionConfig(new CivilDailyCauseListFileConverter(),
                                                                new CivilDailyCauseListSummaryData())),
-        Map.entry(FAMILY_DAILY_CAUSE_LIST, new ConversionConfig(new FamilyDailyCauseListFileConverter(),
+        Map.entry(FAMILY_DAILY_CAUSE_LIST, new ConversionConfig(new FamilyMixedDailyCauseListFileConverter(),
                                                                 new FamilyMixedDailyCauseListSummaryData())),
         Map.entry(CIVIL_AND_FAMILY_DAILY_CAUSE_LIST, new ConversionConfig(
-            new CivilAndFamilyDailyCauseListFileConverter(), new FamilyMixedDailyCauseListSummaryData())
+            new FamilyMixedDailyCauseListFileConverter(), new FamilyMixedDailyCauseListSummaryData())
         ),
         Map.entry(COP_DAILY_CAUSE_LIST, new ConversionConfig(new CopDailyCauseListFileConverter(),
                                                              new CopDailyCauseListSummaryData())),

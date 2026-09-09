@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +24,8 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class ArtefactSearchService {
+    private static final int RETRY_MAX_ATTEMPTS = 5;
+    private static final int MAX_CASE_NAME_SEARCH_LENGTH = 255;
 
     private final ArtefactSearchRepository artefactSearchRepository;
     private final ListSearchConfigRepository listSearchConfigRepository;
@@ -71,6 +76,8 @@ public class ArtefactSearchService {
      * @param payload The payload from which the searchable fields need to be extracted.
      */
     @Transactional
+    @Retryable(retryFor = { CannotAcquireLockException.class, DataIntegrityViolationException.class},
+        maxAttempts = RETRY_MAX_ATTEMPTS)
     public void artefactSearchStore(Artefact artefact, String payload) {
         if (artefact.getArtefactId() == null || artefact.getListType() == null) {
             return;
@@ -129,6 +136,9 @@ public class ArtefactSearchService {
         if (node.isObject()) {
             String caseNumber = extractField(node, caseNumberField);
             String caseName = extractField(node, caseNameField);
+            if (caseName != null && caseName.length() > MAX_CASE_NAME_SEARCH_LENGTH) {
+                caseName = caseName.substring(0, MAX_CASE_NAME_SEARCH_LENGTH);
+            }
 
             if (caseNumber != null || caseName != null) {
                 result.add(ArtefactSearch.builder()
