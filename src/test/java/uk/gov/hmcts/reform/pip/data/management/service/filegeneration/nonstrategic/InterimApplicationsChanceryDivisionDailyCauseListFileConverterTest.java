@@ -186,11 +186,11 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Rhestr Achosion Dyddiol Ceisiadau Interim (Adran Siawnsri)");
+            .isEqualTo("Rhestr Achosion Dyddiol Ceisiadau Interim");
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .isEqualTo("Rhestr Achosion Dyddiol Ceisiadau Interim (Adran Siawnsri)");
+            .isEqualTo("Rhestr Achosion Dyddiol Ceisiadau Interim");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
                               .getElementsByTag("a").get(0)
