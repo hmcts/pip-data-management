@@ -4,6 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.assertj.core.api.SoftAssertions;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,6 +18,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -22,6 +27,7 @@ import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_DAILY_HEARING_LIST;
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -310,5 +316,99 @@ class UtIacStatutoryAppealsDailyHearingListFileConverterTest {
                 HEARING_VENUE,
                 "This is another additional information"
             );
+    }
+
+    @Test
+    void testUtIacStatutoryAppealsDailyHearingListExcelConversionInEnglish() throws IOException {
+        try (InputStream excelFile = getClass()
+            .getResourceAsStream("/mocks/non-strategic/utIacStatutoryAppealsDailyHearingList.xlsx")) {
+            Map<String, String> metadata = Map.of(
+                LANGUAGE_METADATA, ENGLISH,
+                LIST_TYPE_METADATA, UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST.name()
+            );
+
+            byte[] result = converter.convertToExcel(null, UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST, metadata,
+                                                     excelFile);
+
+            ByteArrayInputStream file = new ByteArrayInputStream(result);
+            Workbook workbook = new XSSFWorkbook(file);
+            Sheet sheet = workbook.getSheetAt(0);
+            Row headingRow = sheet.getRow(0);
+
+            SoftAssertions softly = new SoftAssertions();
+
+            softly.assertThat(headingRow.getCell(0).getStringCellValue())
+                .isEqualTo("Hearing time");
+
+            softly.assertThat(headingRow.getCell(1).getStringCellValue())
+                .isEqualTo("Appellant");
+
+            softly.assertThat(headingRow.getCell(2).getStringCellValue())
+                .isEqualTo("Representative");
+
+            softly.assertThat(headingRow.getCell(3).getStringCellValue())
+                .isEqualTo("Appeal reference number");
+
+            softly.assertThat(headingRow.getCell(4).getStringCellValue())
+                .isEqualTo("Judge(s)");
+
+            softly.assertThat(headingRow.getCell(5).getStringCellValue())
+                .isEqualTo("Hearing type");
+
+            softly.assertThat(headingRow.getCell(6).getStringCellValue())
+                .isEqualTo("Location");
+
+            softly.assertThat(headingRow.getCell(7).getStringCellValue())
+                .isEqualTo("Additional information");
+
+            softly.assertAll();
+        }
+    }
+
+    @Test
+    void testUtIacStatutoryAppealsDailyHearingListExcelConversionInWelsh() throws IOException {
+        try (InputStream excelFile = getClass()
+            .getResourceAsStream("/mocks/non-strategic/utIacStatutoryAppealsDailyHearingList.xlsx")) {
+            Map<String, String> metadata = Map.of(
+                LANGUAGE_METADATA, WELSH,
+                LIST_TYPE_METADATA, UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST.name()
+            );
+
+            byte[] result = converter.convertToExcel(null, UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST, metadata,
+                                                     excelFile);
+
+            ByteArrayInputStream file = new ByteArrayInputStream(result);
+            Workbook workbook = new XSSFWorkbook(file);
+            Sheet sheet = workbook.getSheetAt(0);
+            Row headingRow = sheet.getRow(0);
+
+            SoftAssertions softly = new SoftAssertions();
+
+            softly.assertThat(headingRow.getCell(0).getStringCellValue())
+                .isEqualTo("Amser y gwrandawiad");
+
+            softly.assertThat(headingRow.getCell(1).getStringCellValue())
+                .isEqualTo("Apelydd");
+
+            softly.assertThat(headingRow.getCell(2).getStringCellValue())
+                .isEqualTo("Cynrychiolir gan");
+
+            softly.assertThat(headingRow.getCell(3).getStringCellValue())
+                .isEqualTo("Cyfeirnod yr apêl");
+
+            softly.assertThat(headingRow.getCell(4).getStringCellValue())
+                .isEqualTo("Barnwr/Barnwyr");
+
+            softly.assertThat(headingRow.getCell(5).getStringCellValue())
+                .isEqualTo("Math o wrandawiad");
+
+            softly.assertThat(headingRow.getCell(6).getStringCellValue())
+                .isEqualTo("Lleoliad");
+
+            softly.assertThat(headingRow.getCell(7).getStringCellValue())
+                .isEqualTo("Gwybodaeth ychwanegol");
+
+            softly.assertAll();
+        }
     }
 }
