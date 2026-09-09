@@ -3,12 +3,13 @@ package uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.thymeleaf.context.Context;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.CaseHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.JudiciaryHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LocationHelper;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.PartyRoleHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.JudiciaryHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.SittingHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.PartyRoleHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.CaseHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public final class CftListHelper {
     private static final String VENUE_CONTACT = "venueContact";
     private static final String COURT_HOUSE = "courtHouse";
     private static final String COURT_ROOM = "courtRoom";
+    private static final String COURT_HOUSE_NAME = "courtHouseName";
     private static final String SESSION = "session";
     private static final String SITTINGS = "sittings";
     private static final String HEARING = "hearing";
@@ -78,33 +80,41 @@ public final class CftListHelper {
     }
 
     public static void manipulatedListData(JsonNode artefact, Language language, boolean initialised) {
-        artefact.get("courtLists").forEach(
-            courtList -> courtList.get(COURT_HOUSE).get(COURT_ROOM).forEach(
-                courtRoom -> courtRoom.get(SESSION).forEach(session -> {
-                    StringBuilder formattedJudiciary = new StringBuilder();
-                    formattedJudiciary.append(JudiciaryHelper.findAndManipulateJudiciary(session));
-                    session.get(SITTINGS).forEach(sitting -> {
-                        DateHelper.calculateDuration(sitting, language);
-                        DateHelper.formatStartTime(sitting, TIME_FORMAT);
-                        SittingHelper.findAndConcatenateHearingPlatform(sitting, session);
+        artefact.get("courtLists")
+            .forEach(courtList -> courtList.get(COURT_HOUSE).get(COURT_ROOM)
+                .forEach(courtRoom -> {
+                    String courtHouseName = GeneralHelper.findAndReturnNodeText(
+                        courtList.get(COURT_HOUSE),
+                        COURT_HOUSE_NAME
+                    );
+                    ((ObjectNode) courtRoom).put(COURT_HOUSE_NAME, courtHouseName);
 
-                        sitting.get(HEARING).forEach(hearing -> {
-                            if (hearing.has("party")) {
-                                PartyRoleHelper.findAndManipulatePartyInformation(hearing, initialised);
-                            } else {
-                                ObjectNode hearingObj = (ObjectNode) hearing;
-                                hearingObj.put(APPLICANT, "");
-                                hearingObj.put(RESPONDENT, "");
-                            }
-                            hearing.get("case").forEach(
-                                hearingCase -> CaseHelper.manipulateCaseInformation((ObjectNode) hearingCase)
-                            );
+                    courtRoom.get(SESSION).forEach(session -> {
+                        StringBuilder formattedJudiciary = new StringBuilder();
+                        formattedJudiciary.append(JudiciaryHelper.findAndManipulateJudiciary(session));
+                        session.get(SITTINGS).forEach(sitting -> {
+                            DateHelper.calculateDuration(sitting, language);
+                            DateHelper.formatStartTime(sitting, TIME_FORMAT);
+                            SittingHelper.findAndConcatenateHearingPlatform(sitting, session);
+
+                            sitting.get(HEARING).forEach(hearing -> {
+                                if (hearing.has("party")) {
+                                    PartyRoleHelper.findAndManipulatePartyInformation(hearing, initialised);
+                                } else {
+                                    ObjectNode hearingObj = (ObjectNode) hearing;
+                                    hearingObj.put(APPLICANT, "");
+                                    hearingObj.put(RESPONDENT, "");
+                                }
+                                hearing.get("case").forEach(
+                                    hearingCase -> CaseHelper.manipulateCaseInformation(
+                                        (ObjectNode) hearingCase)
+                                );
+                            });
                         });
+                        LocationHelper.formattedCourtRoomName(courtRoom, session, formattedJudiciary);
                     });
-                    LocationHelper.formattedCourtRoomName(courtRoom, session, formattedJudiciary);
                 })
-            )
-        );
+            );
     }
 
     public static String buildParty(JsonNode caseNode, String partyField, String representativeField) {
@@ -124,7 +134,7 @@ public final class CftListHelper {
 
     @FunctionalInterface
     public interface CaseMapper<T> {
-        T map(JsonNode sitting, JsonNode hearing, JsonNode caseNode);
+        T map(JsonNode session, JsonNode courtRoom, JsonNode sitting, JsonNode hearing, JsonNode caseNode);
     }
 
     public static <T> List<T> processCases(
@@ -143,7 +153,7 @@ public final class CftListHelper {
                         sitting -> sitting.get("hearing").forEach(
                             hearing -> hearing.get("case").forEach(
                                 caseNode -> results.add(
-                                    mapper.map(sitting, hearing, caseNode)
+                                    mapper.map(session, courtRoom, sitting, hearing, caseNode)
                                 )
                             )
                         )
