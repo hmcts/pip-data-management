@@ -43,7 +43,7 @@ public class BusinessAndPropertyDivisionRollsBuildingListSummaryData implements 
                     new TypeReference<List<Map<String, String>>>() {}
                 );
 
-            List<Map<String, String>> summaryCases = NonStrategicListFormatter.buildCases(data, listType);
+            List<Map<String, String>> summaryCases = NonStrategicListSummaryData.buildCases(data, listType);
 
             if (summaryCases.isEmpty()) {
                 Map<String, String> noHearings = new LinkedHashMap<>();

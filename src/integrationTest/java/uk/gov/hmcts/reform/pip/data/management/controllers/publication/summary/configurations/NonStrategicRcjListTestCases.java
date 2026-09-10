@@ -117,6 +117,13 @@ public final class NonStrategicRcjListTestCases {
                 ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_EXCEL_FILE,
                 ADMINISTRATIVE_COURT_DAILY_CAUSE_LISTS_JSON_FILE,
                 List.of(TIME_FIELD, CASE_NUMBER_FIELD, HEARING_TYPE_FIELD, CASE_DETAILS_FIELD)
+            ),
+
+            new PublicationSummaryTestInput(
+                ListType.BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST,
+                "business-and-property-divisions-rolls-building-daily-cause-list/businessAndPropertyDivisionRollsBuildingDailyCauseList.xlsx",
+                "business-and-property-divisions-rolls-building-daily-cause-list/businessAndPropertyDivisionRollsBuildingDailyCauseList.json",
+                List.of(RCJ_TIME_FIELD, RCJ_CASE_NUMBER_FIELD, CASE_NAME_FIELD)
             )
         );
     }

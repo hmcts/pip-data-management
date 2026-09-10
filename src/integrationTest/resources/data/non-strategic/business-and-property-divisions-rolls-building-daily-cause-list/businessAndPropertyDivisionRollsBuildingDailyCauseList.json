@@ -1,0 +1,322 @@
+{
+  "appealList": [
+    {
+      "judge": "Judge A",
+      "time": "9am",
+      "venue": "Venue A",
+      "type": "Type A",
+      "caseNumber": "12345",
+      "caseName": "Case name A",
+      "additionalInformation": "This is additional information"
+    },
+    {
+      "judge": "Judge B",
+      "time": "10:30am",
+      "venue": "Venue B",
+      "type": "Type B",
+      "caseNumber": "12346",
+      "caseName": "Case name B",
+      "additionalInformation": "This is another additional information"
+    }
+  ],
+  "businessList": [
+    {
+      "judge": "Judge A",
+      "time": "9am",
+      "venue": "Venue A",
+      "type": "Type A",
+      "caseNumber": "12345",
+      "caseName": "Case name A",
+      "additionalInformation": "This is additional information"
+    },
+    {
+      "judge": "Judge B",
+      "time": "10:30am",
+      "venue": "Venue B",
+      "type": "Type B",
+      "caseNumber": "12346",
+      "caseName": "Case name B",
+      "additionalInformation": "This is another additional information"
+    }
+  ],
+  "commercialCourt": [
+    {
+      "judge": "Judge A",
+      "time": "9am",
+      "venue": "Venue A",
+      "type": "Type A",
+      "caseNumber": "12345",
+      "caseName": "Case name A",
+      "additionalInformation": "This is additional information"
+    },
+    {
+      "judge": "Judge B",
+      "time": "10:30am",
+      "venue": "Venue B",
+      "type": "Type B",
+      "caseNumber": "12346",
+      "caseName": "Case name B",
+      "additionalInformation": "This is another additional information"
+    }
+  ],
+  "financialList": [
+    {
+      "judge": "Judge A",
+      "time": "9am",
+      "venue": "Venue A",
+      "type": "Type A",
+      "caseNumber": "12345",
+      "caseName": "Case name A",
+      "additionalInformation": "This is additional information"
+    },
+    {
+      "judge": "Judge B",
+      "time": "10:30am",
+      "venue": "Venue B",
+      "type": "Type B",
+      "caseNumber": "12346",
+      "caseName": "Case name B",
+      "additionalInformation": "This is another additional information"
+    }
+  ],
+  "insolvency&CompaniesCourt": [
+    {
+      "judge": "Judge A",
+      "time": "9am",
+      "venue": "Venue A",
+      "type": "Type A",
+      "caseNumber": "12345",
+      "caseName": "Case name A",
+      "additionalInformation": "This is additional information"
+    },
+    {
+      "judge": "Judge B",
+      "time": "10:30am",
+      "venue": "Venue B",
+      "type": "Type B",
+      "caseNumber": "12346",
+      "caseName": "Case name B",
+      "additionalInformation": "This is another additional information"
+    }
+  ],
+  "intellectualPropertyEnterpris": [
+    {
+      "judge": "Judge A",
+      "time": "9am",
+      "venue": "Venue A",
+      "type": "Type A",
+      "caseNumber": "12345",
+      "caseName": "Case name A",
+      "additionalInformation": "This is additional information"
+    },
+    {
+      "judge": "Judge B",
+      "time": "10:30am",
+      "venue": "Venue B",
+      "type": "Type B",
+      "caseNumber": "12346",
+      "caseName": "Case name B",
+      "additionalInformation": "This is another additional information"
+    }
+  ],
+  "intellectualPropertyList": [
+    {
+      "judge": "Judge A",
+      "time": "9am",
+      "venue": "Venue A",
+      "type": "Type A",
+      "caseNumber": "12345",
+      "caseName": "Case name A",
+      "additionalInformation": "This is additional information"
+    },
+    {
+      "judge": "Judge B",
+      "time": "10:30am",
+      "venue": "Venue B",
+      "type": "Type B",
+      "caseNumber": "12346",
+      "caseName": "Case name B",
+      "additionalInformation": "This is another additional information"
+    }
+  ],
+  "londonCircuitCommercialCourt": [
+    {
+      "judge": "Judge A",
+      "time": "9am",
+      "venue": "Venue A",
+      "type": "Type A",
+      "caseNumber": "12345",
+      "caseName": "Case name A",
+      "additionalInformation": "This is additional information"
+    },
+    {
+      "judge": "Judge B",
+      "time": "10:30am",
+      "venue": "Venue B",
+      "type": "Type B",
+      "caseNumber": "12346",
+      "caseName": "Case name B",
+      "additionalInformation": "This is another additional information"
+    }
+  ],
+  "patentsCourt": [
+    {
+      "judge": "Judge A",
+      "time": "9am",
+      "venue": "Venue A",
+      "type": "Type A",
+      "caseNumber": "12345",
+      "caseName": "Case name A",
+      "additionalInformation": "This is additional information"
+    },
+    {
+      "judge": "Judge B",
+      "time": "10:30am",
+      "venue": "Venue B",
+      "type": "Type B",
+      "caseNumber": "12346",
+      "caseName": "Case name B",
+      "additionalInformation": "This is another additional information"
+    }
+  ],
+  "property,TrustsAndProbate": [
+    {
+      "judge": "Judge A",
+      "time": "9am",
+      "venue": "Venue A",
+      "type": "Type A",
+      "caseNumber": "12345",
+      "caseName": "Case name A",
+      "additionalInformation": "This is additional information"
+    },
+    {
+      "judge": "Judge B",
+      "time": "10:30am",
+      "venue": "Venue B",
+      "type": "Type B",
+      "caseNumber": "12346",
+      "caseName": "Case name B",
+      "additionalInformation": "This is another additional information"
+    }
+  ],
+  "technology&ConstructionCourt": [
+    {
+      "judge": "Judge A",
+      "time": "9am",
+      "venue": "Venue A",
+      "type": "Type A",
+      "caseNumber": "12345",
+      "caseName": "Case name A",
+      "additionalInformation": "This is additional information"
+    },
+    {
+      "judge": "Judge B",
+      "time": "10:30am",
+      "venue": "Venue B",
+      "type": "Type B",
+      "caseNumber": "12346",
+      "caseName": "Case name B",
+      "additionalInformation": "This is another additional information"
+    }
+  ],
+  "admiraltyCourt": [
+    {
+      "judge": "Judge A",
+      "time": "9am",
+      "venue": "Venue A",
+      "type": "Type A",
+      "caseNumber": "12345",
+      "caseName": "Case name A",
+      "additionalInformation": "This is additional information"
+    },
+    {
+      "judge": "Judge B",
+      "time": "10:30am",
+      "venue": "Venue B",
+      "type": "Type B",
+      "caseNumber": "12346",
+      "caseName": "Case name B",
+      "additionalInformation": "This is another additional information"
+    }
+  ],
+  "companiesWindingUp": [
+    {
+      "judge": "Judge A",
+      "time": "9am",
+      "venue": "Venue A",
+      "type": "Type A",
+      "caseNumber": "12345",
+      "caseName": "Case name A",
+      "additionalInformation": "This is additional information"
+    },
+    {
+      "judge": "Judge B",
+      "time": "10:30am",
+      "venue": "Venue B",
+      "type": "Type B",
+      "caseNumber": "12346",
+      "caseName": "Case name B",
+      "additionalInformation": "This is another additional information"
+    }
+  ],
+  "competitionList": [
+    {
+      "judge": "Judge A",
+      "time": "9am",
+      "venue": "Venue A",
+      "type": "Type A",
+      "caseNumber": "12345",
+      "caseName": "Case name A",
+      "additionalInformation": "This is additional information"
+    },
+    {
+      "judge": "Judge B",
+      "time": "10:30am",
+      "venue": "Venue B",
+      "type": "Type B",
+      "caseNumber": "12346",
+      "caseName": "Case name B",
+      "additionalInformation": "This is another additional information"
+    }
+  ],
+  "pensionsList": [
+    {
+      "judge": "Judge A",
+      "time": "9am",
+      "venue": "Venue A",
+      "type": "Type A",
+      "caseNumber": "12345",
+      "caseName": "Case name A",
+      "additionalInformation": "This is additional information"
+    },
+    {
+      "judge": "Judge B",
+      "time": "10:30am",
+      "venue": "Venue B",
+      "type": "Type B",
+      "caseNumber": "12346",
+      "caseName": "Case name B",
+      "additionalInformation": "This is another additional information"
+    }
+  ],
+  "revenueList": [
+    {
+      "judge": "Judge A",
+      "time": "9am",
+      "venue": "Venue A",
+      "type": "Type A",
+      "caseNumber": "12345",
+      "caseName": "Case name A",
+      "additionalInformation": "This is additional information"
+    },
+    {
+      "judge": "Judge B",
+      "time": "10:30am",
+      "venue": "Venue B",
+      "type": "Type B",
+      "caseNumber": "12346",
+      "caseName": "Case name B",
+      "additionalInformation": "This is another additional information"
+    }
+  ]
+}
