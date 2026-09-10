@@ -11,8 +11,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.thymeleaf.context.Context;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ExcelConversionException;
+import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.NonStrategicFieldFormattingHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.NonStrategicListFormatter;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -21,7 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 import static com.google.common.base.CaseFormat.LOWER_CAMEL;
 import static com.google.common.base.CaseFormat.UPPER_UNDERSCORE;
@@ -149,7 +153,7 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
     }
 
     @Override
-    public byte[] convertToExcel(JsonNode artefact, ListType listType, Map<String, String> metadata,
+    public byte[] convertToExcel(JsonNode payload, ListType listType, Map<String, String> metadata,
                                  InputStream inputExcel) throws IOException {
         if (inputExcel != null && listType.hasExcel()) {
             Language language = Language.valueOf(metadata.get("language"));
@@ -157,8 +161,11 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
                 Map<String, Object> languageResources = LanguageResourceHelper.getLanguageResources(listType, language);
                 addAdditionalLanguageResources(metadata, languageResources);
 
+
                 Map<String, String> headerFields = LIST_TYPE_HEADER_FIELDS.get(listType);
-                updateExcelHeaders(workbook, languageResources, headerFields);
+                Optional<Map<String, Function<String, String>>> listTypeFormatter = NonStrategicListFormatter
+                    .getListTypeFormatter(listType);
+                updateExcelValues(workbook, languageResources, headerFields, listTypeFormatter);
                 return ExcelAbstractList.convertToByteArray(workbook);
             } catch (IOException e) {
                 throw new ExcelConversionException("Error generating non-strategic excel file");
@@ -187,36 +194,62 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
     }
 
     @SuppressWarnings("unchecked")
-    private void updateExcelHeaders(Workbook workbook, Map<String, Object> languageResources,
-                                    Map<String, String> headerFields) {
+    private void updateExcelValues(Workbook workbook, Map<String, Object> languageResources,
+                                   Map<String, String> headerFields,
+                                   Optional<Map<String, Function<String, String>>> listTypeFormatter) {
         if (!headerFields.isEmpty()) {
-            CellStyle boldStyle = createBoldStyle(workbook);
             for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
                 Sheet sheet = workbook.getSheetAt(i);
-
-                List<String> headersToUpdate;
-                if (workbook.getNumberOfSheets() > 1) {
-                    String headerFieldName = headerFields.get(sheet.getSheetName());
-                    headersToUpdate = (List<String>) languageResources.get(headerFieldName);
-                } else {
-                    String headerFieldName = headerFields.get(SINGLE_SHEET_NAME);
-                    headersToUpdate = (List<String>) languageResources.get(headerFieldName);
-                }
+                List<String> headersToUpdate = workbook.getNumberOfSheets() > 1
+                    ? (List<String>) languageResources.get(headerFields.get(sheet.getSheetName()))
+                    : (List<String>) languageResources.get(headerFields.get(SINGLE_SHEET_NAME));
 
                 int headerRowNumber = sheet.getFirstRowNum();
                 int firstColumnNumber = sheet.getRow(headerRowNumber).getFirstCellNum();
-                Row row = sheet.getRow(headerRowNumber);
+                Row headerRow = sheet.getRow(headerRowNumber);
 
-                int lastCellNum = row.getLastCellNum();
+                int lastCellNum = headerRow.getLastCellNum();
                 if (lastCellNum < 0 || firstColumnNumber >= lastCellNum) {
                     return;
                 }
 
-                for (int columnNumber = firstColumnNumber, headerIndex = 0; columnNumber < lastCellNum;
-                     columnNumber++, headerIndex++) {
-                    Cell cell = row.getCell(columnNumber, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
-                    cell.setCellValue(headersToUpdate.get(headerIndex));
-                    cell.setCellStyle(boldStyle);
+                for (int rowNumber = headerRowNumber + 1; rowNumber <= sheet.getLastRowNum(); rowNumber++) {
+                    Row currentRow = sheet.getRow(rowNumber);
+                    formatRowValues(currentRow, headerRow, firstColumnNumber, lastCellNum, listTypeFormatter);
+                }
+                updateHeaders(workbook, headerRow, firstColumnNumber, lastCellNum, headersToUpdate);
+            }
+        }
+    }
+
+    private void updateHeaders(Workbook workbook, Row headerRow, int firstColumnNumber,
+                               int lastCellNum, List<String> headersToUpdate) {
+        CellStyle boldStyle = createBoldStyle(workbook);
+        for (int columnNumber = firstColumnNumber, headerIndex = 0; columnNumber < lastCellNum;
+             columnNumber++, headerIndex++) {
+            Cell headerCell = headerRow.getCell(columnNumber, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
+            headerCell.setCellValue(headersToUpdate.get(headerIndex));
+            headerCell.setCellStyle(boldStyle);
+        }
+    }
+
+    private void formatRowValues(Row currentRow, Row headerRow, int firstColumnNumber, int lastCellNum,
+                                 Optional<Map<String, Function<String, String>>> listTypeFormatter) {
+        if (currentRow != null && listTypeFormatter.isPresent()) {
+            for (int columnNumber = firstColumnNumber; columnNumber < lastCellNum; columnNumber++) {
+                Cell headerCell = headerRow.getCell(columnNumber, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
+                String formattedHeader = NonStrategicFieldFormattingHelper.formatFieldInLowerCamelCaseFormat(
+                    headerCell.getStringCellValue()
+                );
+
+                if (listTypeFormatter.get().containsKey(formattedHeader)) {
+                    Cell cell = currentRow.getCell(columnNumber, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
+                    String formattedCellValue = NonStrategicListFormatter.formatField(
+                        formattedHeader,
+                        ExcelConversionService.getExcelCellValue(cell),
+                        listTypeFormatter.get()
+                    );
+                    cell.setCellValue(formattedCellValue);
                 }
             }
         }

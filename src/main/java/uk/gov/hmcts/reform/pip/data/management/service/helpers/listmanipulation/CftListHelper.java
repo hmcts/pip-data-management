@@ -11,7 +11,10 @@ import uk.gov.hmcts.reform.pip.data.management.service.helpers.PartyRoleHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.SittingHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIVIL_AND_FAMILY_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FAMILY_DAILY_CAUSE_LIST;
@@ -102,5 +105,53 @@ public final class CftListHelper {
                 })
             )
         );
+    }
+
+    public static String buildParty(JsonNode caseNode, String partyField, String representativeField) {
+        String party = caseNode.path(partyField).asText();
+        String rep = caseNode.path(representativeField).asText();
+
+        if (rep.isEmpty()) {
+            return party;
+        }
+
+        if (party.isEmpty()) {
+            return "Legal advisor: " + rep;
+        }
+
+        return party + ", Legal advisor: " + rep;
+    }
+
+    @FunctionalInterface
+    public interface CaseMapper<T> {
+        T map(JsonNode sitting, JsonNode hearing, JsonNode caseNode);
+    }
+
+    public static <T> List<T> processCases(
+        JsonNode jsonBody,
+        Consumer<JsonNode> preProcessor,
+        CaseMapper<T> mapper
+    ) {
+        List<T> results = new ArrayList<>();
+
+        preProcessor.accept(jsonBody);
+
+        jsonBody.get("courtLists").forEach(
+            courtList -> courtList.get("courtHouse").get("courtRoom").forEach(
+                courtRoom -> courtRoom.get("session").forEach(
+                    session -> session.get("sittings").forEach(
+                        sitting -> sitting.get("hearing").forEach(
+                            hearing -> hearing.get("case").forEach(
+                                caseNode -> results.add(
+                                    mapper.map(sitting, hearing, caseNode)
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        );
+
+        return results;
     }
 }
