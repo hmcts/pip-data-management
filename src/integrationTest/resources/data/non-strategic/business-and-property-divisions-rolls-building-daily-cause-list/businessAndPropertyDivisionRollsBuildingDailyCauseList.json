@@ -1,322 +1,212 @@
 {
   "appealList": [
     {
-      "judge": "Judge A",
-      "time": "9am",
-      "venue": "Venue A",
-      "type": "Type A",
-      "caseNumber": "12345",
-      "caseName": "Case name A",
+      "judge": "Judge name",
+      "time": "10.30am",
+      "venue": "This is venue name",
+      "type": "This is hearing type",
+      "caseNumber": "1234",
+      "caseName": "This is case name",
       "additionalInformation": "This is additional information"
     },
     {
-      "judge": "Judge B",
-      "time": "10:30am",
-      "venue": "Venue B",
-      "type": "Type B",
-      "caseNumber": "12346",
-      "caseName": "Case name B",
-      "additionalInformation": "This is another additional information"
+      "judge": "Judge name 2",
+      "time": "11:30am",
+      "venue": "This is venue name 2",
+      "type": "This is hearing type 2",
+      "caseNumber": "5678",
+      "caseName": "This is case name 2",
+      "additionalInformation": "This is additional information 2"
+    },
+    {
+      "judge": "Judge name 3",
+      "time": "12:30Pm",
+      "venue": "This is venue name 3",
+      "type": "This is hearing type 3",
+      "caseNumber": "9012",
+      "caseName": "This is case name 3",
+      "additionalInformation": "This is additional information 3"
     }
   ],
   "businessList": [
     {
-      "judge": "Judge A",
-      "time": "9am",
-      "venue": "Venue A",
-      "type": "Type A",
-      "caseNumber": "12345",
-      "caseName": "Case name A",
+      "judge": "Judge name",
+      "time": "10:30am",
+      "venue": "This is venue name",
+      "type": "This is hearing type",
+      "caseNumber": "1234",
+      "caseName": "This is case name",
       "additionalInformation": "This is additional information"
     },
     {
-      "judge": "Judge B",
-      "time": "10:30am",
-      "venue": "Venue B",
-      "type": "Type B",
-      "caseNumber": "12346",
-      "caseName": "Case name B",
-      "additionalInformation": "This is another additional information"
+      "judge": "Judge name 2",
+      "time": "11:30am",
+      "venue": "This is venue name 2",
+      "type": "This is hearing type 2",
+      "caseNumber": "5678",
+      "caseName": "This is case name 2",
+      "additionalInformation": "This is additional information 2"
     }
   ],
   "commercialCourt": [
     {
-      "judge": "Judge A",
-      "time": "9am",
-      "venue": "Venue A",
-      "type": "Type A",
-      "caseNumber": "12345",
-      "caseName": "Case name A",
-      "additionalInformation": "This is additional information"
-    },
-    {
-      "judge": "Judge B",
+      "judge": "Judge name",
       "time": "10:30am",
-      "venue": "Venue B",
-      "type": "Type B",
-      "caseNumber": "12346",
-      "caseName": "Case name B",
-      "additionalInformation": "This is another additional information"
+      "venue": "This is venue name",
+      "type": "This is hearing type",
+      "caseNumber": "1234",
+      "caseName": "This is case name",
+      "additionalInformation": "This is additional information"
     }
   ],
   "financialList": [
     {
-      "judge": "Judge A",
-      "time": "9am",
-      "venue": "Venue A",
-      "type": "Type A",
-      "caseNumber": "12345",
-      "caseName": "Case name A",
-      "additionalInformation": "This is additional information"
-    },
-    {
-      "judge": "Judge B",
+      "judge": "Judge name",
       "time": "10:30am",
-      "venue": "Venue B",
-      "type": "Type B",
-      "caseNumber": "12346",
-      "caseName": "Case name B",
-      "additionalInformation": "This is another additional information"
+      "venue": "This is venue name",
+      "type": "This is hearing type",
+      "caseNumber": "1234",
+      "caseName": "This is case name",
+      "additionalInformation": "This is additional information"
     }
   ],
   "insolvency&CompaniesCourt": [
     {
-      "judge": "Judge A",
-      "time": "9am",
-      "venue": "Venue A",
-      "type": "Type A",
-      "caseNumber": "12345",
-      "caseName": "Case name A",
-      "additionalInformation": "This is additional information"
-    },
-    {
-      "judge": "Judge B",
+      "judge": "Judge name",
       "time": "10:30am",
-      "venue": "Venue B",
-      "type": "Type B",
-      "caseNumber": "12346",
-      "caseName": "Case name B",
-      "additionalInformation": "This is another additional information"
+      "venue": "This is venue name",
+      "type": "This is hearing type",
+      "caseNumber": "1234",
+      "caseName": "This is case name",
+      "additionalInformation": "This is additional information"
     }
   ],
-  "intellectualPropertyEnterpris": [
-    {
-      "judge": "Judge A",
-      "time": "9am",
-      "venue": "Venue A",
-      "type": "Type A",
-      "caseNumber": "12345",
-      "caseName": "Case name A",
-      "additionalInformation": "This is additional information"
-    },
-    {
-      "judge": "Judge B",
-      "time": "10:30am",
-      "venue": "Venue B",
-      "type": "Type B",
-      "caseNumber": "12346",
-      "caseName": "Case name B",
-      "additionalInformation": "This is another additional information"
-    }
-  ],
+  "ip&EnterpriseCourt": [],
   "intellectualPropertyList": [
     {
-      "judge": "Judge A",
-      "time": "9am",
-      "venue": "Venue A",
-      "type": "Type A",
-      "caseNumber": "12345",
-      "caseName": "Case name A",
+      "judge": "Judge name",
+      "time": "10:30am",
+      "venue": "This is venue name",
+      "type": "This is hearing type",
+      "caseNumber": "1234",
+      "caseName": "This is case name",
       "additionalInformation": "This is additional information"
     },
     {
-      "judge": "Judge B",
-      "time": "10:30am",
-      "venue": "Venue B",
-      "type": "Type B",
-      "caseNumber": "12346",
-      "caseName": "Case name B",
-      "additionalInformation": "This is another additional information"
+      "judge": "Judge name 2",
+      "time": "11:30am",
+      "venue": "This is venue name 2",
+      "type": "This is hearing type 2",
+      "caseNumber": "5678",
+      "caseName": "This is case name 2",
+      "additionalInformation": "This is additional information 2"
     }
   ],
   "londonCircuitCommercialCourt": [
     {
-      "judge": "Judge A",
-      "time": "9am",
-      "venue": "Venue A",
-      "type": "Type A",
-      "caseNumber": "12345",
-      "caseName": "Case name A",
-      "additionalInformation": "This is additional information"
-    },
-    {
-      "judge": "Judge B",
+      "judge": "Judge name",
       "time": "10:30am",
-      "venue": "Venue B",
-      "type": "Type B",
-      "caseNumber": "12346",
-      "caseName": "Case name B",
-      "additionalInformation": "This is another additional information"
+      "venue": "This is venue name",
+      "type": "This is hearing type",
+      "caseNumber": "1234",
+      "caseName": "This is case name",
+      "additionalInformation": "This is additional information"
     }
   ],
   "patentsCourt": [
     {
-      "judge": "Judge A",
-      "time": "9am",
-      "venue": "Venue A",
-      "type": "Type A",
-      "caseNumber": "12345",
-      "caseName": "Case name A",
-      "additionalInformation": "This is additional information"
-    },
-    {
-      "judge": "Judge B",
+      "judge": "Judge name",
       "time": "10:30am",
-      "venue": "Venue B",
-      "type": "Type B",
-      "caseNumber": "12346",
-      "caseName": "Case name B",
-      "additionalInformation": "This is another additional information"
+      "venue": "This is venue name",
+      "type": "This is hearing type",
+      "caseNumber": "1234",
+      "caseName": "This is case name",
+      "additionalInformation": "This is additional information"
     }
   ],
-  "property,TrustsAndProbate": [
+  "property,Trusts&ProbateList": [
     {
-      "judge": "Judge A",
-      "time": "9am",
-      "venue": "Venue A",
-      "type": "Type A",
-      "caseNumber": "12345",
-      "caseName": "Case name A",
+      "judge": "Judge name",
+      "time": "10:30am",
+      "venue": "This is venue name",
+      "type": "This is hearing type",
+      "caseNumber": "1234",
+      "caseName": "This is case name",
       "additionalInformation": "This is additional information"
     },
     {
-      "judge": "Judge B",
-      "time": "10:30am",
-      "venue": "Venue B",
-      "type": "Type B",
-      "caseNumber": "12346",
-      "caseName": "Case name B",
-      "additionalInformation": "This is another additional information"
+      "judge": "Judge name 2",
+      "time": "11:30am",
+      "venue": "This is venue name 2",
+      "type": "This is hearing type 2",
+      "caseNumber": "5678",
+      "caseName": "This is case name 2",
+      "additionalInformation": "This is additional information 2"
     }
   ],
   "technology&ConstructionCourt": [
     {
-      "judge": "Judge A",
-      "time": "9am",
-      "venue": "Venue A",
-      "type": "Type A",
-      "caseNumber": "12345",
-      "caseName": "Case name A",
-      "additionalInformation": "This is additional information"
-    },
-    {
-      "judge": "Judge B",
+      "judge": "Judge name",
       "time": "10:30am",
-      "venue": "Venue B",
-      "type": "Type B",
-      "caseNumber": "12346",
-      "caseName": "Case name B",
-      "additionalInformation": "This is another additional information"
+      "venue": "This is venue name",
+      "type": "This is hearing type",
+      "caseNumber": "1234",
+      "caseName": "This is case name",
+      "additionalInformation": "This is additional information"
     }
   ],
   "admiraltyCourt": [
     {
-      "judge": "Judge A",
-      "time": "9am",
-      "venue": "Venue A",
-      "type": "Type A",
-      "caseNumber": "12345",
-      "caseName": "Case name A",
-      "additionalInformation": "This is additional information"
-    },
-    {
-      "judge": "Judge B",
+      "judge": "Judge name",
       "time": "10:30am",
-      "venue": "Venue B",
-      "type": "Type B",
-      "caseNumber": "12346",
-      "caseName": "Case name B",
-      "additionalInformation": "This is another additional information"
+      "venue": "This is venue name",
+      "type": "This is hearing type",
+      "caseNumber": "1234",
+      "caseName": "This is case name",
+      "additionalInformation": "This is additional information"
     }
   ],
   "companiesWindingUp": [
     {
-      "judge": "Judge A",
-      "time": "9am",
-      "venue": "Venue A",
-      "type": "Type A",
-      "caseNumber": "12345",
-      "caseName": "Case name A",
+      "judge": "Judge name",
+      "time": "10:30am",
+      "venue": "This is venue name",
+      "type": "This is hearing type",
+      "caseNumber": "1234",
+      "caseName": "This is case name",
       "additionalInformation": "This is additional information"
     },
     {
-      "judge": "Judge B",
-      "time": "10:30am",
-      "venue": "Venue B",
-      "type": "Type B",
-      "caseNumber": "12346",
-      "caseName": "Case name B",
-      "additionalInformation": "This is another additional information"
+      "judge": "Judge name 2",
+      "time": "11:30am",
+      "venue": "This is venue name 2",
+      "type": "This is hearing type 2",
+      "caseNumber": "5678",
+      "caseName": "This is case name 2",
+      "additionalInformation": "This is additional information 2"
     }
   ],
   "competitionList": [
     {
-      "judge": "Judge A",
-      "time": "9am",
-      "venue": "Venue A",
-      "type": "Type A",
-      "caseNumber": "12345",
-      "caseName": "Case name A",
-      "additionalInformation": "This is additional information"
-    },
-    {
-      "judge": "Judge B",
+      "judge": "Judge name",
       "time": "10:30am",
-      "venue": "Venue B",
-      "type": "Type B",
-      "caseNumber": "12346",
-      "caseName": "Case name B",
-      "additionalInformation": "This is another additional information"
+      "venue": "This is venue name",
+      "type": "This is hearing type",
+      "caseNumber": "1234",
+      "caseName": "This is case name",
+      "additionalInformation": "This is additional information"
     }
   ],
   "pensionsList": [
     {
-      "judge": "Judge A",
-      "time": "9am",
-      "venue": "Venue A",
-      "type": "Type A",
-      "caseNumber": "12345",
-      "caseName": "Case name A",
-      "additionalInformation": "This is additional information"
-    },
-    {
-      "judge": "Judge B",
+      "judge": "Judge name",
       "time": "10:30am",
-      "venue": "Venue B",
-      "type": "Type B",
-      "caseNumber": "12346",
-      "caseName": "Case name B",
-      "additionalInformation": "This is another additional information"
+      "venue": "This is venue name",
+      "type": "This is hearing type",
+      "caseNumber": "1234",
+      "caseName": "This is case name",
+      "additionalInformation": "This is additional information"
     }
   ],
-  "revenueList": [
-    {
-      "judge": "Judge A",
-      "time": "9am",
-      "venue": "Venue A",
-      "type": "Type A",
-      "caseNumber": "12345",
-      "caseName": "Case name A",
-      "additionalInformation": "This is additional information"
-    },
-    {
-      "judge": "Judge B",
-      "time": "10:30am",
-      "venue": "Venue B",
-      "type": "Type B",
-      "caseNumber": "12346",
-      "caseName": "Case name B",
-      "additionalInformation": "This is another additional information"
-    }
-  ]
+  "revenueList": []
 }

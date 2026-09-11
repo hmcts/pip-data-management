@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.ArtefactSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.BusinessAndPropertyDivisionRollsBuildingListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CivilDailyCauseListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CopDailyCauseListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CrownPddaListSummaryData;
@@ -130,7 +129,6 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_STATUTOR
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_T_AND_CC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
-
 
 @Component
 public class ListConversionFactory {
@@ -324,6 +322,10 @@ public class ListConversionFactory {
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST)
         )),
+        Map.entry(BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST, new ConversionConfig(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST)
+        )),
         Map.entry(COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST, new ConversionConfig(
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST)
@@ -447,12 +449,6 @@ public class ListConversionFactory {
         Map.entry(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST, new ConversionConfig(
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST)
-        )),
-        Map.entry(BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST, new ConversionConfig(
-            new NonStrategicListFileConverter(),
-            new BusinessAndPropertyDivisionRollsBuildingListSummaryData(
-                BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST
-            )
         ))
     );
 

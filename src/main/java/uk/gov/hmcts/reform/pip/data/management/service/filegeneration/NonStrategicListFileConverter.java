@@ -40,8 +40,8 @@ public class NonStrategicListFileConverter implements FileConverter {
         String listType = metadata.get("listType");
         String resourceName;
         if (ListType.valueOf(listType).getParentListType() != null) {
-            resourceName = "non-strategic/" + UPPER_UNDERSCORE.to(LOWER_CAMEL,
-                ListType.valueOf(listType).getParentListType().name());
+            resourceName = "non-strategic/"
+                + UPPER_UNDERSCORE.to(LOWER_CAMEL, ListType.valueOf(listType).getParentListType().name());
             languageResources.putAll(LanguageResourceHelper.readResourcesFromPath(resourceName, language));
         }
         resourceName = "non-strategic/" + UPPER_UNDERSCORE.to(LOWER_CAMEL, listType);
@@ -50,29 +50,11 @@ public class NonStrategicListFileConverter implements FileConverter {
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
 
         try {
-            if (listType.equals(ListType.BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST.name())) {
-                Map<String, List<Map<String, String>>> dataBySection = OBJECT_MAPPER.convertValue(
-                    payload, new TypeReference<Map<String, List<Map<String, String>>>>() {}
-                );
-
-                Map<String, List<Map<String, String>>> formattedDataBySection = new java.util.LinkedHashMap<>();
-
-                for (Map.Entry<String, List<Map<String, String>>> entry : dataBySection.entrySet()) {
-                    List<Map<String, String>> formattedSection = NonStrategicListFormatter.formatAllFields(
-                        entry.getValue(),
-                        ListType.valueOf(listType)
-                    );
-                    formattedDataBySection.put(entry.getKey(), formattedSection);
-                }
-
-                context.setVariable("data", formattedDataBySection);
-            } else {
-                List<Map<String, String>> data = OBJECT_MAPPER.convertValue(payload, new TypeReference<>(){});
-                List<Map<String, String>> formattedData = NonStrategicListFormatter.formatAllFields(
-                    data, ListType.valueOf(listType)
-                );
-                context.setVariable("data", formattedData);
-            }
+            List<Map<String, String>> data = OBJECT_MAPPER.convertValue(payload, new TypeReference<>(){});
+            List<Map<String, String>> formattedData = NonStrategicListFormatter.formatAllFields(
+                data, ListType.valueOf(listType)
+            );
+            context.setVariable("data", formattedData);
         } catch (IllegalArgumentException e) {
             Set<Map.Entry<String, JsonNode>> fields = payload.properties();
             for (Map.Entry<String, JsonNode> entry : fields) {

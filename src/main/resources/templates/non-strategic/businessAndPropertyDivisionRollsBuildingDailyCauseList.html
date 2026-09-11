@@ -30,27 +30,19 @@
       <p id="important-information-line-1" class="govuk-body govuk-!-padding-bottom-3" th:text="${i18n.importantInformationP1}"/>
       <p id="important-information-heading-1" class="govuk-body govuk-!-font-weight-bold" th:text="${i18n.remoteHearingsHeading}"/>
       <p id="important-information-line-2" class="govuk-body govuk-!-padding-bottom-3" th:text="${i18n.remoteHearingsText}"/>
+
       <p id="important-information-heading-2" class="govuk-body govuk-!-font-weight-bold" th:text="${i18n.contactDetailsHeading}"/>
-      <p id="important-information-line-3" class="govuk-body govuk-!-padding-bottom-3">
-        <span class="govuk-body govuk-!-font-weight-bold" th:text="${i18n.contactDetails1a}"></span>
-        <span th:text="${i18n.contactDetails1b}"></span>
-      </p>
-      <p id="important-information-line-4" class="govuk-body govuk-!-padding-bottom-3">
-        <span class="govuk-body govuk-!-font-weight-bold" th:text="${i18n.contactDetails2a}"></span>
-        <span th:text="${i18n.contactDetails2b}"></span>
-      </p>
-      <p id="important-information-line-5" class="govuk-body govuk-!-padding-bottom-3">
-        <span class="govuk-body govuk-!-font-weight-bold" th:text="${i18n.contactDetails3a}"></span>
-        <span th:text="${i18n.contactDetails3b}"></span>
-      </p>
-      <p id="important-information-line-6" class="govuk-body govuk-!-padding-bottom-3">
-        <span class="govuk-body govuk-!-font-weight-bold" th:text="${i18n.contactDetails4a}"></span>
-        <span th:text="${i18n.contactDetails4b}"></span>
-      </p>
-      <p id="important-information-line-7" class="govuk-body govuk-!-padding-bottom-3">
-        <span class="govuk-body govuk-!-font-weight-bold" th:text="${i18n.contactDetails5a}"></span>
-        <span th:text="${i18n.contactDetails5b}"></span>
-      </p>
+      <p id="important-information-line-3" class="govuk-body govuk-!-font-weight-bold no-margin-bottom" th:text="${i18n.contactDetails1a}"></p>
+      <p id="important-information-line-3-email" class="govuk-body" th:text="${i18n.contactDetails1b}"></p>
+      <p id="important-information-line-4" class="govuk-body govuk-!-font-weight-bold no-margin-bottom" th:text="${i18n.contactDetails2a}"></p>
+      <p id="important-information-line-5-email" class="govuk-body" th:text="${i18n.contactDetails2b}"></p>
+      <p id="important-information-line-5" class="govuk-body govuk-!-font-weight-bold no-margin-bottom" th:text="${i18n.contactDetails3a}"></p>
+      <p id="important-information-line-5-email" class="govuk-body" th:text="${i18n.contactDetails3b}"></p>
+      <p id="important-information-line-6" class="govuk-body govuk-!-font-weight-bold no-margin-bottom" th:text="${i18n.contactDetails4a}"></p>
+      <p id="important-information-line-6-email" class="govuk-body" th:text="${i18n.contactDetails4b}"></p>
+      <p id="important-information-line-7" class="govuk-body govuk-!-font-weight-bold no-margin-bottom" th:text="${i18n.contactDetails5a}"></p>
+      <p id="important-information-line-7-email" class="govuk-body govuk-!-padding-bottom-3" th:text="${i18n.contactDetails5b}"></p>
+
       <p id="important-information-line-8" class="govuk-body govuk-!-padding-bottom-3" th:text="${i18n.importantInformationP2}"/>
       <p id="important-information-heading-3" class="govuk-body govuk-!-font-weight-bold" th:text="${i18n.remoteJudgmentsHeading}"/>
       <p id="important-information-line-9" class="govuk-body govuk-!-padding-bottom-3" th:text="${i18n.remoteJudgmentsText}"/>
@@ -58,70 +50,31 @@
   </details>
 
   <div aria-label="Hearing list" class="landscape">
+    <div th:each="listType : ${i18n.listTypes}" style="margin-bottom: 60px;">
+      <h2 class="govuk-heading-l" th:text="${listType.label}"></h2>
 
-    <div th:each="listDataEntry : ${data}" style="margin-bottom: 60px;">
+      <div th:if="${#lists.isEmpty(#vars.getVariable(listType.key))}"><p th:text="${i18n.noHearingsScheduledForThisDay}"/></div>
+        <table class="govuk-table" th:unless="${#lists.isEmpty(#vars.getVariable(listType.key))}" th:id="${listType.key + '-table'}">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th:block th:each="header : ${i18n.commonKbChdDailyCauseListTableHeaders}">
+                <th th:text="${header}" scope="col" class="govuk-table__header"></th>
+              </th:block>
+            </tr>
+          </thead>
 
-      <h2 class="govuk-heading-l"
-          th:each="list : ${i18n.listTypes}"
-          th:if="${list.key == listDataEntry.key}"
-          th:text="${list.label}">
-      </h2>
-
-      <div th:if="${#lists.isEmpty(listDataEntry.value)}">
-        <p th:text="${i18n.noHearingsScheduledForThisDay}"/>
-      </div>
-
-      <table class="govuk-table"
-             th:unless="${#lists.isEmpty(listDataEntry.value)}"
-             th:id="${listDataEntry.key + '-table'}">
-
-        <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-          <th:block th:each="header : ${i18n.commonKbChdDailyCauseListTableHeaders}">
-            <th th:text="${header}"
-                scope="col"
-                class="govuk-table__header">
-            </th>
-          </th:block>
-        </tr>
-        </thead>
-
-        <tbody class="govuk-table__body">
-        <tr class="govuk-table__row"
-            th:each="hearing : ${listDataEntry.value}">
-
-          <td class="govuk-table__cell"
-              th:text="${hearing.get('judge')}">
-          </td>
-
-          <td class="govuk-table__cell"
-              th:text="${hearing.get('time')}">
-          </td>
-
-          <td class="govuk-table__cell"
-              th:text="${hearing.get('venue')}">
-          </td>
-
-          <td class="govuk-table__cell"
-              th:text="${hearing.get('type')}">
-          </td>
-
-          <td class="govuk-table__cell"
-              th:text="${hearing.get('caseNumber')}">
-          </td>
-
-          <td class="govuk-table__cell"
-              th:text="${hearing.get('caseName')}">
-          </td>
-
-          <td class="govuk-table__cell"
-              th:text="${hearing.get('additionalInformation')}">
-          </td>
-
-        </tr>
-        </tbody>
-      </table>
-
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row" th:each="hearing : ${#vars.getVariable(listType.key)}">
+              <td class="govuk-table__cell" th:text="${hearing.get('judge')}"></td>
+              <td class="govuk-table__cell" th:text="${hearing.get('time')}"></td>
+              <td class="govuk-table__cell" th:text="${hearing.get('venue')}"></td>
+              <td class="govuk-table__cell" th:text="${hearing.get('type')}"></td>
+              <td class="govuk-table__cell" th:text="${hearing.get('caseNumber')}"></td>
+              <td class="govuk-table__cell" th:text="${hearing.get('caseName')}"></td>
+              <td class="govuk-table__cell" th:text="${hearing.get('additionalInformation')}"></td>
+            </tr>
+          </tbody>
+        </table>
     </div>
   </div>
 

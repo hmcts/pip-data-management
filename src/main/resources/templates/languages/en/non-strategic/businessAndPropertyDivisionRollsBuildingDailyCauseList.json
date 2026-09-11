@@ -24,11 +24,11 @@
   "listTypes": [
     {
       "key": "appealList",
-      "label": "Appeal list"
+      "label": "Appeal List"
     },
     {
       "key": "businessList",
-      "label": "Business list"
+      "label": "Business List"
     },
     {
       "key": "commercialCourt",
@@ -40,10 +40,10 @@
     },
     {
       "key": "insolvency&CompaniesCourt",
-      "label": "Insolvency & Companies Court"
+      "label": "Insolvency and Companies Court"
     },
     {
-      "key": "intellectualPropertyEnterpris",
+      "key": "ip&EnterpriseCourt",
       "label": "Intellectual Property and Enterprise Court"
     },
     {
@@ -59,7 +59,7 @@
       "label": "Patents Court"
     },
     {
-      "key": "property,TrustsAndProbate",
+      "key": "property,Trusts&ProbateList",
       "label": "Property, Trusts and Probate List"
     },
     {

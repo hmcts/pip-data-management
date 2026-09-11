@@ -1,6 +1,83 @@
 {
+  "$defs": {
+    "hearingList": {
+      "type": "array",
+      "items": {
+        "title": "Hearing list",
+        "type": "object",
+        "required": [
+          "judge",
+          "time",
+          "venue",
+          "type",
+          "caseNumber",
+          "caseName",
+          "additionalInformation"
+        ],
+        "properties": {
+          "judge": {
+            "title": "Judge name",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Judge name"
+            ]
+          },
+          "time": {
+            "title": "Time of hearing",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "10:30am"
+            ],
+            "pattern": "^\\d{1,2}([:.]\\d{2})?[aApP][mM]\\s*$"
+          },
+          "venue": {
+            "title": "Venue name",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "This is venue name"
+            ]
+          },
+          "type": {
+            "title": "Type of hearing",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "This is hearing type"
+            ]
+          },
+          "caseNumber": {
+            "title": "Case reference number",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "1234"
+            ]
+          },
+          "caseName": {
+            "title": "Case name",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "This is case name"
+            ]
+          },
+          "additionalInformation": {
+            "title": "Additional information",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "This is additional information"
+            ]
+          }
+        }
+      }
+    }
+  },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Hearing list",
+  "title": "Root",
   "type": "object",
   "required": [
     "appealList",
@@ -8,11 +85,11 @@
     "commercialCourt",
     "financialList",
     "insolvency&CompaniesCourt",
-    "intellectualPropertyEnterpris",
+    "ip&EnterpriseCourt",
     "intellectualPropertyList",
     "londonCircuitCommercialCourt",
     "patentsCourt",
-    "property,TrustsAndProbate",
+    "property,Trusts&ProbateList",
     "technology&ConstructionCourt",
     "admiraltyCourt",
     "companiesWindingUp",
@@ -36,7 +113,7 @@
     "insolvency&CompaniesCourt": {
       "$ref": "#/$defs/hearingList"
     },
-    "intellectualPropertyEnterpris": {
+    "ip&EnterpriseCourt": {
       "$ref": "#/$defs/hearingList"
     },
     "intellectualPropertyList": {
@@ -48,7 +125,7 @@
     "patentsCourt": {
       "$ref": "#/$defs/hearingList"
     },
-    "property,TrustsAndProbate": {
+    "property,Trusts&ProbateList": {
       "$ref": "#/$defs/hearingList"
     },
     "technology&ConstructionCourt": {
@@ -68,76 +145,6 @@
     },
     "revenueList": {
       "$ref": "#/$defs/hearingList"
-    }
-  },
-  "$defs": {
-    "hearingList": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/hearing"
-      }
-    },
-    "hearing": {
-      "type": "object",
-      "properties": {
-        "judge": {
-          "title": "Judge name",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "Judge name"
-          ]
-        },
-        "time": {
-          "title": "Time of hearing",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "10:30am"
-          ],
-          "pattern": "^\\d{1,2}([:.]\\d{2})?[aApP][mM]\\s*$"
-        },
-        "venue": {
-          "title": "Venue name",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "This is venue name"
-          ]
-        },
-        "type": {
-          "title": "Type of hearing",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "This is hearing type"
-          ]
-        },
-        "caseNumber": {
-          "title": "Case reference number",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "1234"
-          ]
-        },
-        "caseName": {
-          "title": "Case name",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "This is case name"
-          ]
-        },
-        "additionalInformation": {
-          "title": "Additional information",
-          "type": "string",
-          "default": "",
-          "examples": [
-            "This is additional information"
-          ]
-        }
-      }
     }
   }
 }

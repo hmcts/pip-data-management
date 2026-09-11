@@ -43,7 +43,7 @@
       "label": "Y Llys Ansolfedd a Chwmnïau"
     },
     {
-      "key": "intellectualPropertyEnterpris",
+      "key": "ip&EnterpriseCourt",
       "label": "Y Llys Mentrau Eiddo Deallusol"
     },
     {
@@ -59,7 +59,7 @@
       "label": "Y Llys Patentau"
     },
     {
-      "key": "property,TrustsAndProbate",
+      "key": "property,Trusts&ProbateList",
       "label": "Y Rhestr Eiddo, Ymddiriedolaethau a Phrofiant"
     },
     {

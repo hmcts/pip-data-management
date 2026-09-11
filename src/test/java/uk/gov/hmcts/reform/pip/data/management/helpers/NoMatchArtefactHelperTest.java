@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.helpers;
 
+import com.google.common.base.CaseFormat;
+import org.apache.commons.text.WordUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -10,6 +12,8 @@ class NoMatchArtefactHelperTest {
 
     @Test
     void shouldBuildNoMatchLocationId() {
+        String formattedFieldNames = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, "insolvency&CompaniesCourt").replaceAll("_", " ");
+        String formattedFieldName = WordUtils.capitalize("patentsCourt",    ',');
         assertThat(NoMatchArtefactHelper.buildNoMatchLocationId(STANDARD_LOCATION_ID)).isEqualTo(NO_MATCH_LOCATION_ID);
     }
 
