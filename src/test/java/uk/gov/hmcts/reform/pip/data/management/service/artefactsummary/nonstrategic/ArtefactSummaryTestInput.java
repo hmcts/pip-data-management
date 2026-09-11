@@ -1,11 +1,14 @@
 package uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.nonstrategic;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.experimental.Accessors;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 public class ArtefactSummaryTestInput {
     private String jsonFileName;
     private ListType listType;
@@ -14,6 +17,9 @@ public class ArtefactSummaryTestInput {
     private int expectedFieldCount;
     private List<String> expectedFieldKeys;
     private List<String> expectedFieldValues;
+    @Accessors(fluent = true)
+    private boolean hasSectionHeader = false;
+    private String firstSectionHeader;
 
     public ArtefactSummaryTestInput(String jsonFileName, ListType listType, int expectedSectionCount,
                                     int expectedCaseCount, int expectedFieldCount,

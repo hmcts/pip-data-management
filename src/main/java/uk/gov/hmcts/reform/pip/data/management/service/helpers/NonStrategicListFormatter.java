@@ -13,6 +13,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.ADMIRALTY_COURT
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.BUSINESS_LIST_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIC_WEEKLY_HEARING_LIST;
@@ -210,6 +211,8 @@ public final class NonStrategicListFormatter {
                   Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
                   Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
+        Map.entry(BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST,
+                  Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                   Map.of(TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
@@ -225,7 +228,7 @@ public final class NonStrategicListFormatter {
                          HEARING_TIME, NonStrategicFieldFormattingHelper::formatTimeField)),
         Map.entry(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST,
                   Map.of(DATE, NonStrategicFieldFormattingHelper::formatDateField,
-                        TIME, NonStrategicFieldFormattingHelper::formatTimeField))
+                         TIME, NonStrategicFieldFormattingHelper::formatTimeField))
     );
 
     private NonStrategicListFormatter() {
@@ -241,22 +244,21 @@ public final class NonStrategicListFormatter {
     public static List<Map<String, String>> formatAllFields(List<Map<String, String>> data, ListType listType) {
         List<Map<String, String>> formattedData = new ArrayList<>();
         data.forEach(hearing -> {
-                Map<String, String> formattedDataEntry = new ConcurrentHashMap<>();
-                hearing.forEach((k, v) -> {
-                    Optional<Function<String, String>> fieldFormatter = getFieldFormatter(
-                        listType, k
-                    );
+            Map<String, String> formattedDataEntry = new ConcurrentHashMap<>();
+            hearing.forEach((k, v) -> {
+                Optional<Function<String, String>> fieldFormatter = getFieldFormatter(
+                    listType, k
+                );
 
-                    if (fieldFormatter.isPresent()) {
-                        String formattedValue = fieldFormatter.get().apply(v);
-                        formattedDataEntry.put(k, formattedValue);
-                    } else {
-                        formattedDataEntry.put(k, v);
-                    }
-                });
-                formattedData.add(formattedDataEntry);
-            }
-        );
+                if (fieldFormatter.isPresent()) {
+                    String formattedValue = fieldFormatter.get().apply(v);
+                    formattedDataEntry.put(k, formattedValue);
+                } else {
+                    formattedDataEntry.put(k, v);
+                }
+            });
+            formattedData.add(formattedDataEntry);
+        });
         return formattedData;
     }
 
