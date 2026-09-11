@@ -244,22 +244,21 @@ public final class NonStrategicListFormatter {
     public static List<Map<String, String>> formatAllFields(List<Map<String, String>> data, ListType listType) {
         List<Map<String, String>> formattedData = new ArrayList<>();
         data.forEach(hearing -> {
-                         Map<String, String> formattedDataEntry = new ConcurrentHashMap<>();
-                         hearing.forEach((k, v) -> {
-                             Optional<Function<String, String>> fieldFormatter = getFieldFormatter(
-                                 listType, k
-                             );
+            Map<String, String> formattedDataEntry = new ConcurrentHashMap<>();
+            hearing.forEach((k, v) -> {
+                Optional<Function<String, String>> fieldFormatter = getFieldFormatter(
+                    listType, k
+                );
 
-                             if (fieldFormatter.isPresent()) {
-                                 String formattedValue = fieldFormatter.get().apply(v);
-                                 formattedDataEntry.put(k, formattedValue);
-                             } else {
-                                 formattedDataEntry.put(k, v);
-                             }
-                         });
-                         formattedData.add(formattedDataEntry);
-                     }
-        );
+                if (fieldFormatter.isPresent()) {
+                    String formattedValue = fieldFormatter.get().apply(v);
+                    formattedDataEntry.put(k, formattedValue);
+                } else {
+                    formattedDataEntry.put(k, v);
+                }
+            });
+            formattedData.add(formattedDataEntry);
+        });
         return formattedData;
     }
 
