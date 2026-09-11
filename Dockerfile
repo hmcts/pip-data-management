@@ -1,5 +1,5 @@
 ARG APP_INSIGHTS_AGENT_VERSION=3.4.14
-FROM hmctsprod.azurecr.io/base/java:21-distroless
+FROM hmctsprod.azurecr.io/base/java:25-distroless
 
 ENV APP pip-data-management.jar
 
