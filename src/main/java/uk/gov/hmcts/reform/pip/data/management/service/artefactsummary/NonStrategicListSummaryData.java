@@ -185,7 +185,7 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
                                                                     ADDITIONAL_INFORMATION))
     );
 
-    private static final Map<ListType, String> LIST_TYPE_NO_HEARING_MESSAGE = Map.ofEntries(
+    private static final Map<ListType, String> LIST_TYPE_NO_CONTENT_MESSAGE = Map.ofEntries(
         Map.entry(BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST,
                   "No hearings scheduled for this day.")
     );
@@ -238,8 +238,8 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
             if (summaryCases.isEmpty()) {
                 // Add bespoke message in the section with empty hearing cases. If the list type has no bespoke
                 // message, skip the section in the email summary
-                if (LIST_TYPE_NO_HEARING_MESSAGE.containsKey(listType)) {
-                    summaryCases.add(Collections.singletonMap(null, LIST_TYPE_NO_HEARING_MESSAGE.get(listType)));
+                if (LIST_TYPE_NO_CONTENT_MESSAGE.containsKey(listType)) {
+                    summaryCases.add(Collections.singletonMap(null, LIST_TYPE_NO_CONTENT_MESSAGE.get(listType)));
                     summaryData.put(formattedFieldName, summaryCases);
                 }
             } else {

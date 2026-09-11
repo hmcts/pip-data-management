@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrateg
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -37,6 +38,12 @@ class BusinessAndPropertyDivisionRollsBuildingDailyCauseListFileConverterTest {
 
     private static final String ENGLISH = "ENGLISH";
     private static final String WELSH = "WELSH";
+    private static final Map<String, String> COMMON_METADATA = Map.of(
+        CONTENT_DATE_METADATA, CONTENT_DATE,
+        PROVENANCE_METADATA, PROVENANCE,
+        LIST_TYPE_METADATA, BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST.name(),
+        LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
+    );
 
     private static final String HEADER_ELEMENT = "page-heading";
     private static final String VENUE_NAME_ELEMENT = "venue-name";
@@ -48,14 +55,15 @@ class BusinessAndPropertyDivisionRollsBuildingDailyCauseListFileConverterTest {
     private static final String LINK_CLASS = "govuk-link";
     private static final String HREF = "href";
     private static final String BODY_CLASS = "govuk-body";
+    private static final String HEADING_CLASS = "govuk-heading-l";
 
     private static final String IMPORTANT_INFORMATION_HEADING_1 = "important-information-heading-1";
     private static final String IMPORTANT_INFORMATION_HEADING_2 = "important-information-heading-2";
     private static final String IMPORTANT_INFORMATION_HEADING_3 = "important-information-heading-3";
-
     private static final String IMPORTANT_INFORMATION_ELEMENT_1 = "important-information-line-1";
     private static final String IMPORTANT_INFORMATION_ELEMENT_2 = "important-information-line-2";
     private static final String IMPORTANT_INFORMATION_ELEMENT_3 = "important-information-line-3";
+    private static final String IMPORTANT_INFORMATION_ELEMENT_3_EMAIL = "important-information-line-3-email";
     private static final String IMPORTANT_INFORMATION_ELEMENT_4 = "important-information-line-9";
 
     private static final String TITLE_MESSAGE = "Title does not match";
@@ -64,9 +72,9 @@ class BusinessAndPropertyDivisionRollsBuildingDailyCauseListFileConverterTest {
     private static final String VENUE_MESSAGE = "Venue does not match";
     private static final String LIST_DATE_MESSAGE = "List date does not match";
     private static final String LAST_UPDATED_DATE_MESSAGE = "Last updated date does not match";
-    private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information heading does not match";
+    private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information does not match";
+    private static final String SECTION_HEADING_MESSAGE = "Section heading does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
-    private static final String BODY_MESSAGE = "Body does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -93,12 +101,9 @@ class BusinessAndPropertyDivisionRollsBuildingDailyCauseListFileConverterTest {
                 });
         }
 
-        Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
-                                              PROVENANCE_METADATA, PROVENANCE,
-                                              LANGUAGE_METADATA, ENGLISH, LIST_TYPE_METADATA,
-                                              BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST.name(),
-                                              LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
-        );
+        Map<String, String> metadata = new HashMap<>();
+        metadata.putAll(COMMON_METADATA);
+        metadata.put(LANGUAGE_METADATA, ENGLISH);
 
         String result = converter.convert(inputJson, metadata, languageResource);
         Document document = Jsoup.parse(result);
@@ -150,40 +155,106 @@ class BusinessAndPropertyDivisionRollsBuildingDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementById(IMPORTANT_INFORMATION_ELEMENT_1).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("These lists are subject to change until 4:30pm. Any alterations after this time will be "
-                          + "telephoned or emailed direct to the parties or their legal representatives.");
+            .isEqualTo("These lists are subject to change until 4:30pm. Any alterations after this time will be "
+                           + "telephoned or emailed direct to the parties or their legal representatives.");
 
         softly.assertThat(document.getElementById(IMPORTANT_INFORMATION_HEADING_1).text())
-            .as(BODY_MESSAGE)
+            .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Remote Hearings");
 
         softly.assertThat(document.getElementById(IMPORTANT_INFORMATION_ELEMENT_2).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("If a member of the public or media wishes to attend a remote hearing, they should contact the "
-                          + "relevant listing office. The correct office depends on the judge hearing the case.");
+            .isEqualTo("If a member of the public or media wishes to attend a remote hearing, they should contact the "
+                           + "relevant listing office. The correct office depends on the judge hearing the case.");
 
         softly.assertThat(document.getElementById(IMPORTANT_INFORMATION_HEADING_2).text())
-            .as(BODY_MESSAGE)
+            .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Contact details:");
 
         softly.assertThat(document.getElementById(IMPORTANT_INFORMATION_ELEMENT_3).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Business and Property Division High Court Judge: BPD.HCJListing@justice.gov.uk");
+            .isEqualTo("Business and Property Division High Court Judge:");
+
+        softly.assertThat(document.getElementById(IMPORTANT_INFORMATION_ELEMENT_3_EMAIL).text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .isEqualTo("BPD.HCJListing@justice.gov.uk");
 
         softly.assertThat(document.getElementById(IMPORTANT_INFORMATION_HEADING_3).text())
-            .as(BODY_MESSAGE)
+            .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Remote Judgments");
 
         softly.assertThat(document.getElementById(IMPORTANT_INFORMATION_ELEMENT_4).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Judgments may be handed down remotely. They are sent to the parties (or their representatives) "
-                          + "by email and published on The National Archives website shortly afterwards.");
+            .isEqualTo("Judgments may be handed down remotely. They are sent to the parties (or their representatives) "
+                           + "by email and published on The National Archives website shortly afterwards.");
 
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(1).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Appeal List");
 
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(2).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Business List");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(3).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Commercial Court");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(4).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Financial List");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(5).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Insolvency and Companies Court");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(6).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Intellectual Property and Enterprise Court");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(7).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Intellectual Property List");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(8).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("London Circuit Commercial Court");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(9).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Patents Court");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(10).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Property, Trusts and Probate List");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(11).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Technology and Construction Court");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(12).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Admiralty Court");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(13).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Companies Winding Up");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(14).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Competition List");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(15).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Pensions List");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(16).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Revenue List");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
-            .hasSize(112)
+            .hasSize(105)
             .extracting(Element::text)
             .containsSequence(
                 "Judge",
@@ -210,12 +281,9 @@ class BusinessAndPropertyDivisionRollsBuildingDailyCauseListFileConverterTest {
                 });
         }
 
-        Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
-                                              PROVENANCE_METADATA, PROVENANCE,
-                                              LANGUAGE_METADATA, WELSH, LIST_TYPE_METADATA,
-                                              BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST.name(),
-                                              LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
-        );
+        Map<String, String> metadata = new HashMap<>();
+        metadata.putAll(COMMON_METADATA);
+        metadata.put(LANGUAGE_METADATA, WELSH);
 
         String result = converter.convert(inputJson, metadata, languageResource);
         Document document = Jsoup.parse(result);
@@ -267,41 +335,109 @@ class BusinessAndPropertyDivisionRollsBuildingDailyCauseListFileConverterTest {
 
         softly.assertThat(document.getElementById(IMPORTANT_INFORMATION_ELEMENT_1).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Gall y rhestrau canlynol fod yn destun newid tan 4:30pm. Bydd unrhyw newidiadau ar ôl yr amser "
-                          + "hwn yn cael eu cyfathrebu dros y ffôn neu drwy e-bost yn uniongyrchol at y partïon neu eu "
-                          + "cynrychiolwyr cyfreithiol.");
+            .isEqualTo("Gall y rhestrau canlynol fod yn destun newid tan 4:30pm. Bydd unrhyw newidiadau ar ôl yr amser "
+                           + "hwn yn cael eu cyfathrebu dros y ffôn neu drwy e-bost yn uniongyrchol at y partïon neu "
+                           + "eu cynrychiolwyr cyfreithiol.");
 
         softly.assertThat(document.getElementById(IMPORTANT_INFORMATION_HEADING_1).text())
-            .as(BODY_MESSAGE)
+            .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Gwrandawiadau o Bell");
 
         softly.assertThat(document.getElementById(IMPORTANT_INFORMATION_ELEMENT_2).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Os yw aelod o'r cyhoedd neu'r cyfryngau eisiau mynychu gwrandawiad o bell, dylent gysylltu â'r "
-                          + "swyddfa restru berthnasol. Mae'r swyddfa gywir yn dibynnu ar y barnwr sy'n gwrando'r "
-                          + "achos.");
+            .isEqualTo("Os yw aelod o'r cyhoedd neu'r cyfryngau eisiau mynychu gwrandawiad o bell, dylent gysylltu â'r "
+                           + "swyddfa restru berthnasol. Mae'r swyddfa gywir yn dibynnu ar y barnwr sy'n gwrando'r "
+                           + "achos.");
 
         softly.assertThat(document.getElementById(IMPORTANT_INFORMATION_HEADING_2).text())
-            .as(BODY_MESSAGE)
+            .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Manylion cyswllt:");
 
         softly.assertThat(document.getElementById(IMPORTANT_INFORMATION_ELEMENT_3).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Barnwr Uchel Lys - Yr Adran Busnes ac Eiddo: BPD.HCJListing@justice.gov.uk");
+            .isEqualTo("Barnwr Uchel Lys - Yr Adran Busnes ac Eiddo:");
+
+        softly.assertThat(document.getElementById(IMPORTANT_INFORMATION_ELEMENT_3_EMAIL).text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .isEqualTo("BPD.HCJListing@justice.gov.uk");
 
         softly.assertThat(document.getElementById(IMPORTANT_INFORMATION_HEADING_3).text())
-            .as(BODY_MESSAGE)
+            .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Dyfarniadau o Bell");
 
         softly.assertThat(document.getElementById(IMPORTANT_INFORMATION_ELEMENT_4).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Gall dyfarniadau gael eu traddodi o bell. Maent yn cael eu hanfon at y partïon (neu eu "
-                      + "cynrychiolwyr) trwy e-bost ac yn cael eu cyhoeddi ar wefan yr Archifau Cenedlaethol yn "
-                      + "fuan ar ôl hynny.");
+            .isEqualTo("Gall dyfarniadau gael eu traddodi o bell. Maent yn cael eu hanfon at y partïon (neu eu "
+                           + "cynrychiolwyr) trwy e-bost ac yn cael eu cyhoeddi ar wefan yr Archifau Cenedlaethol yn "
+                           + "fuan ar ôl hynny.");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(1).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Y Rhestr Apeliadau");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(2).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Y Rhestr Fusnes");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(3).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Y Llys Masnach");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(4).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Rhestr Ariannol");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(5).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Y Llys Ansolfedd a Chwmnïau");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(6).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Y Llys Mentrau Eiddo Deallusol");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(7).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Y Rhestr Eiddo Deallusol");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(8).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Y Llys Masnach - Cylchdaith Llundain");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(9).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Y Llys Patentau");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(10).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Y Rhestr Eiddo, Ymddiriedolaethau a Phrofiant");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(11).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Y Llys Technoleg ac Adeiladwaith");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(12).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Llys y Morlys");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(13).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Dirwyn Cwmnïau i Ben");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(14).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Y Rhestr Gystadleuaeth");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(15).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Y Rhestr Pensiynau");
+
+        assertThat(document.getElementsByClass(HEADING_CLASS).get(16).text())
+            .as(SECTION_HEADING_MESSAGE)
+            .isEqualTo("Y Rhestr Refeniw");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
-            .hasSize(112)
+            .hasSize(105)
             .extracting(Element::text)
             .containsSequence(
                 "Barnwr",
@@ -329,13 +465,9 @@ class BusinessAndPropertyDivisionRollsBuildingDailyCauseListFileConverterTest {
             );
         }
 
-        Map<String, String> metadata = Map.of(
-            CONTENT_DATE_METADATA, CONTENT_DATE,
-            PROVENANCE_METADATA, PROVENANCE,
-            LANGUAGE_METADATA, ENGLISH, LIST_TYPE_METADATA,
-            BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST.name(),
-            LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
-        );
+        Map<String, String> metadata = new HashMap<>();
+        metadata.putAll(COMMON_METADATA);
+        metadata.put(LANGUAGE_METADATA, ENGLISH);
 
         String result = converter.convert(inputJson, metadata, languageResource);
         Document document = Jsoup.parse(result);
