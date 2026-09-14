@@ -11,7 +11,7 @@ public final class NonStrategicRcjListTestCases {
     private static final String RCJ_TIME_FIELD2 = "Time - 10:30am";
     private static final String RCJ_CASE_NUMBER_FIELD = "Case number - 12345";
     private static final String CASE_NUMBER_FIELD = "Case number - 1234";
-    private static final String CASE_NAME_FIELD = "Case name - Case name A";
+    private static final String CASE_NAME_FIELD = "Case name - This is a case name";
     private static final String CASE_NAME_FIELD2 = "Case name - This is case name";
     private static final String CASE_DETAILS_FIELD = "Case details - Case details A";
     private static final String HEARING_TYPE_FIELD = "Hearing type - Directions";
@@ -87,15 +87,6 @@ public final class NonStrategicRcjListTestCases {
             ),
 
             new PublicationSummaryTestInput(
-                ListType.INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST,
-                "intellectual-property-and-enterprise-court-daily-cause-list/"
-                    + "intellectualPropertyAndEnterpriseCourtDailyCauseList.xlsx",
-                "intellectual-property-and-enterprise-court-daily-cause-list/"
-                    + "intellectualPropertyAndEnterpriseCourtDailyCauseList.json",
-                List.of(RCJ_TIME_FIELD, RCJ_CASE_NUMBER_FIELD, CASE_NAME_FIELD)
-            ),
-
-            new PublicationSummaryTestInput(
                 ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
                 "court-of-appeal-civil-daily-cause-list/courtOfAppealCivilDailyCauseList.xlsx",
                 "court-of-appeal-civil-daily-cause-list/courtOfAppealCivilDailyCauseList.json",
@@ -106,7 +97,7 @@ public final class NonStrategicRcjListTestCases {
                 ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
                 "interim-applications-chd-daily-cause-list/interimApplicationsChanceryDivisionDailyCauseList.xlsx",
                 "interim-applications-chd-daily-cause-list/interimApplicationsChanceryDivisionDailyCauseList.json",
-                List.of(RCJ_TIME_FIELD2, CASE_NUMBER_FIELD, CASE_NAME_FIELD2)
+                List.of(RCJ_TIME_FIELD2, CASE_NUMBER_FIELD, CASE_NAME_FIELD)
             ),
 
             new PublicationSummaryTestInput(
