@@ -12,10 +12,17 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -378,5 +385,121 @@ class SscsDailyHearingListFileConverterTest {
                 "Respondent 1",
                 "Additional information 1"
             );
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {"SSCS_MIDLANDS_DAILY_HEARING_LIST", "SSCS_LONDON_DAILY_HEARING_LIST",
+            "SSCS_NORTH_EAST_DAILY_HEARING_LIST", "SSCS_NORTH_WEST_DAILY_HEARING_LIST",
+            "SSCS_SCOTLAND_DAILY_HEARING_LIST", "SSCS_SOUTH_EAST_DAILY_HEARING_LIST",
+            "SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST"}
+    )
+    void testSscsDailyCauseListExcelConversionInEnglish(ListType listType) throws IOException {
+        try (InputStream excelFile = getClass()
+            .getResourceAsStream("/mocks/non-strategic/sscsDailyHearingList.xlsx")) {
+            Map<String, String> metadata = Map.of(
+                LANGUAGE_METADATA, ENGLISH,
+                LIST_TYPE_METADATA, listType.name()
+            );
+
+            byte[] result = converter.convertToExcel(null,
+                                                     listType,
+                                                     metadata,
+                                                     excelFile);
+
+            ByteArrayInputStream file = new ByteArrayInputStream(result);
+            Workbook workbook = new XSSFWorkbook(file);
+            Sheet sheet = workbook.getSheetAt(0);
+            Row headingRow = sheet.getRow(0);
+
+            SoftAssertions softly = new SoftAssertions();
+
+            softly.assertThat(headingRow.getCell(0).getStringCellValue())
+                .isEqualTo("Venue");
+
+            softly.assertThat(headingRow.getCell(1).getStringCellValue())
+                .isEqualTo("Appeal reference number");
+
+            softly.assertThat(headingRow.getCell(2).getStringCellValue())
+                .isEqualTo("Hearing type");
+
+            softly.assertThat(headingRow.getCell(3).getStringCellValue())
+                .isEqualTo("Appellant");
+
+            softly.assertThat(headingRow.getCell(4).getStringCellValue())
+                .isEqualTo("Courtroom");
+
+            softly.assertThat(headingRow.getCell(5).getStringCellValue())
+                .isEqualTo("Hearing time");
+
+            softly.assertThat(headingRow.getCell(6).getStringCellValue())
+                .isEqualTo("Tribunal");
+
+            softly.assertThat(headingRow.getCell(7).getStringCellValue())
+                .isEqualTo("FTA/Respondent");
+
+            softly.assertThat(headingRow.getCell(8).getStringCellValue())
+                .isEqualTo("Additional information");
+
+            softly.assertAll();
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ListType.class,
+        names = {"SSCS_MIDLANDS_DAILY_HEARING_LIST", "SSCS_LONDON_DAILY_HEARING_LIST",
+            "SSCS_NORTH_EAST_DAILY_HEARING_LIST", "SSCS_NORTH_WEST_DAILY_HEARING_LIST",
+            "SSCS_SCOTLAND_DAILY_HEARING_LIST", "SSCS_SOUTH_EAST_DAILY_HEARING_LIST",
+            "SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST"}
+    )
+    void testSscsDailyCauseListExcelConversionInWelsh(ListType listType) throws IOException {
+        try (InputStream excelFile = getClass()
+            .getResourceAsStream("/mocks/non-strategic/sscsDailyHearingList.xlsx")) {
+            Map<String, String> metadata = Map.of(
+                LANGUAGE_METADATA, WELSH,
+                LIST_TYPE_METADATA, listType.name()
+            );
+
+            byte[] result = converter.convertToExcel(
+                null, listType, metadata,
+                excelFile
+            );
+
+            ByteArrayInputStream file = new ByteArrayInputStream(result);
+            Workbook workbook = new XSSFWorkbook(file);
+            Sheet sheet = workbook.getSheetAt(0);
+            Row headingRow = sheet.getRow(0);
+
+            SoftAssertions softly = new SoftAssertions();
+
+            softly.assertThat(headingRow.getCell(0).getStringCellValue())
+                .isEqualTo("Lleoliad");
+
+            softly.assertThat(headingRow.getCell(1).getStringCellValue())
+                .isEqualTo("Cyfeirnod apêl");
+
+            softly.assertThat(headingRow.getCell(2).getStringCellValue())
+                .isEqualTo("Math o wrandawiad");
+
+            softly.assertThat(headingRow.getCell(3).getStringCellValue())
+                .isEqualTo("Apelydd");
+
+            softly.assertThat(headingRow.getCell(4).getStringCellValue())
+                .isEqualTo("Ystafell llys");
+
+            softly.assertThat(headingRow.getCell(5).getStringCellValue())
+                .isEqualTo("Amser y gwrandawiad");
+
+            softly.assertThat(headingRow.getCell(6).getStringCellValue())
+                .isEqualTo("Tribiwnlys");
+
+            softly.assertThat(headingRow.getCell(7).getStringCellValue())
+                .isEqualTo("FTA/Atebydd");
+
+            softly.assertThat(headingRow.getCell(8).getStringCellValue())
+                .isEqualTo("Gwybodaeth ychwanegol");
+
+            softly.assertAll();
+        }
     }
 }
