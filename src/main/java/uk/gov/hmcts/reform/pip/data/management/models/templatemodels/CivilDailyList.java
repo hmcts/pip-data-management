@@ -15,4 +15,6 @@ public class CivilDailyList {
     private String hearingType;
     private String location;
     private String duration;
+    private String courtHouse;
+    private String courtRoom;
 }

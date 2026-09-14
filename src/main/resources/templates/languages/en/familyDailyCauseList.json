@@ -11,9 +11,9 @@
   "headerValuesWrap": [
     "Time",
     "Case ID",
-    "Case Name",
-    "Case Type",
-    "Hearing Type",
+    "Case name",
+    "Case type",
+    "Hearing type",
     "Location",
     "Duration"
   ],
@@ -21,6 +21,8 @@
     "Applicant/Petitioner",
     "Respondent"
   ],
+  "courtHouse": "Court house",
+  "courtRoom": "Court room",
   "reportingRestriction": "Reporting Restriction: ",
   "beforeJudge": "Before: ",
   "legalAdvisor": "Legal Advisor: ",
