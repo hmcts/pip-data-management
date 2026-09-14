@@ -187,6 +187,13 @@
     <cve>CVE-2026-22745</cve>
     <cve>CVE-2026-22741</cve>
     <cve>CVE-2026-41839</cve>
+    <cve>CVE-2026-47884</cve>
+    <cve>CVE-2026-47885</cve>
+    <cve>CVE-2026-47886</cve>
+    <cve>CVE-2026-47888</cve>
+    <cve>CVE-2026-47889</cve>
+    <cve>CVE-2026-47883</cve>
+    <cve>CVE-2026-47887</cve>
     <!-- Spring Boot -->
     <cve>CVE-2026-40972</cve>
     <cve>CVE-2026-40975</cve>
