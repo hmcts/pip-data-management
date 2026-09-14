@@ -185,9 +185,18 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
                                                                     ADDITIONAL_INFORMATION))
     );
 
+    // For multi-sheet Excel, the default is not displaying a section in the summary if there is no data for that
+    // section. The map below contain list types where the empty section will be displayed with a bespoke message.
     private static final Map<ListType, String> LIST_TYPE_NO_CONTENT_MESSAGE = Map.ofEntries(
         Map.entry(BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST,
                   "No hearings scheduled for this day.")
+    );
+
+    // For multi-sheet Excel, the default is displaying all sections in the summary if there is data for that section.
+    // The map below contain list types where certain sections are skipped in the summary
+    private static final Map<ListType, List<String>> LIST_TYPE_SKIPPED_SECTIONS = Map.ofEntries(
+        Map.entry(INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
+                  List.of("openJusticeStatementDetails"))
     );
 
     private final ListType listType;
@@ -220,7 +229,11 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
             JsonNode fieldNode = payload.get(fieldName);
             if (fieldNode.isArray()) {
                 List<Map<String, String>> data = OBJECT_MAPPER.convertValue(fieldNode, new TypeReference<>(){});
-                dataFields.put(fieldName, data);
+
+                if (!(LIST_TYPE_SKIPPED_SECTIONS.containsKey(listType)
+                    && LIST_TYPE_SKIPPED_SECTIONS.get(listType).contains(fieldName))) {
+                    dataFields.put(fieldName, data);
+                }
             }
         }
 

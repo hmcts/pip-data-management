@@ -334,7 +334,7 @@ public final class NonStrategicTestCasesConfigurations {
             new ArtefactSummaryTestInput(
                 "interimApplicationsChanceryDivisionDailyCauseList.json",
                 ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
-                2,
+                1,
                 3,
                 3,
                 List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_NAME_FIELD),
