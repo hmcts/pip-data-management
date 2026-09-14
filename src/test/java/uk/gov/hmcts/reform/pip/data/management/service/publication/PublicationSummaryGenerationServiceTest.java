@@ -30,6 +30,7 @@ class PublicationSummaryGenerationServiceTest {
         "key3", "value9"
     );
 
+    private static final String NO_CONTENT_MESSAGE = "Test message";
     private static final String LINE_SEPARATOR = "---";
     private static final String SUMMARY_MESSAGE = "Output summary does nto match";
 
@@ -96,6 +97,31 @@ class PublicationSummaryGenerationServiceTest {
                 "key1 - value7",
                 "key2 - value8",
                 "key3 - value9"
+            );
+    }
+
+    @Test
+    void testPublicationSummaryGenerationContainingSectionWithNoContent() {
+        Map<String, List<Map<String, String>>> data = new LinkedHashMap<>();
+        data.put("heading1", List.of(Collections.singletonMap(null, NO_CONTENT_MESSAGE)));
+        data.put("heading2", List.of(SUMMARY_FIELDS1));
+
+        String output = publicationSummaryGenerationService.generate(data);
+        List<String> outputElements = Arrays.stream(output.split("\n"))
+            .filter(e -> !e.isEmpty())
+            .toList();
+
+        assertThat(outputElements)
+            .as(SUMMARY_MESSAGE)
+            .containsExactly(
+                LINE_SEPARATOR,
+                "##heading1",
+                NO_CONTENT_MESSAGE,
+                LINE_SEPARATOR,
+                "##heading2",
+                "key1 - value1",
+                "key2 - value2",
+                "key3 - value3"
             );
     }
 }

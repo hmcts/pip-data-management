@@ -259,6 +259,21 @@
     <cve>CVE-2026-59280</cve>
     <cve>CVE-2026-59314</cve>
     <cve>CVE-2026-47834</cve>
+    <cve>CVE-2026-47884</cve>
+    <cve>CVE-2026-47885</cve>
+    <cve>CVE-2026-47886</cve>
+    <cve>CVE-2026-47888</cve>
+    <cve>CVE-2026-47889</cve>
+    <cve>CVE-2026-47883</cve>
+    <cve>CVE-2026-47887</cve>
+    <cve>CVE-2026-40974</cve>
+    <cve>CVE-2026-40971</cve>
+    <cve>CVE-2026-40976</cve>
+    <cve>CVE-2026-22731</cve>
+    <cve>CVE-2026-22733</cve>
+    <cve>CVE-2026-40970</cve>
+    <cve>CVE-2026-41001</cve>
+    <cve>CVE-2026-40992</cve>
   </suppress>
   <suppress>
     <notes>spring security suppression</notes>

@@ -4,10 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.WordUtils;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.NonStrategicListFormatter;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -15,12 +17,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.BUSINESS_LIST_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIC_WEEKLY_HEARING_LIST;
@@ -101,6 +106,7 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
     private static final String MEMBERS = "members";
     private static final String HEARING_METHOD = "hearingMethod";
     private static final String ADDITIONAL_INFORMATION = "additionalInformation";
+    private static final Set<String> ACRONYMS = Set.of("IP");
 
     private static final Map<ListType, List<String>> LIST_TYPE_SUMMARY_FIELDS = Map.ofEntries(
         Map.entry(CST_WEEKLY_HEARING_LIST, List.of(DATE, CASE_NAME)),
@@ -146,6 +152,8 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
         Map.entry(SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
         Map.entry(MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
         Map.entry(INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER,
+                                                                                          CASE_NAME)),
         Map.entry(COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
         Map.entry(INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
         Map.entry(INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
@@ -177,6 +185,11 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
                                                                     ADDITIONAL_INFORMATION))
     );
 
+    private static final Map<ListType, String> LIST_TYPE_NO_CONTENT_MESSAGE = Map.ofEntries(
+        Map.entry(BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST,
+                  "No hearings scheduled for this day.")
+    );
+
     private final ListType listType;
 
     public NonStrategicListSummaryData(ListType listType) {
@@ -185,26 +198,72 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
 
     @Override
     public Map<String, List<Map<String, String>>> get(JsonNode payload) {
-        List<Map<String, String>> data = new ArrayList<>();
-
-        if (payload.isObject()) {
-            Iterator<String> fieldNames = payload.fieldNames();
-            while (fieldNames.hasNext()) {
-                String fieldName = fieldNames.next();
-                JsonNode fieldNode = payload.get(fieldName);
-                if (fieldNode.isArray()) {
-                    data = OBJECT_MAPPER.convertValue(fieldNode, new TypeReference<>(){});
-                    break;
-                }
-            }
-        } else if (payload.isArray()) {
-            data = OBJECT_MAPPER.convertValue(payload, new TypeReference<>(){});
-        }
-
         Optional<Map<String, Function<String, String>>> listTypeFormatter = NonStrategicListFormatter
             .getListTypeFormatter(listType);
 
+        if (payload.isObject()) {
+            return getSummaryDataForPayloadObject(payload, listTypeFormatter);
+        } else if (payload.isArray()) {
+            return getSummaryDataForPayloadArray(payload, listTypeFormatter);
+        }
+
+        return Collections.singletonMap(null, new ArrayList<>());
+    }
+
+    private Map<String, List<Map<String, String>>> getSummaryDataForPayloadObject(
+        JsonNode payload, Optional<Map<String, Function<String, String>>> listTypeFormatter
+    ) {
+        Map<String, List<Map<String, String>>> dataFields = new LinkedHashMap<>();
+        Iterator<String> fieldNames = payload.fieldNames();
+        while (fieldNames.hasNext()) {
+            String fieldName = fieldNames.next();
+            JsonNode fieldNode = payload.get(fieldName);
+            if (fieldNode.isArray()) {
+                List<Map<String, String>> data = OBJECT_MAPPER.convertValue(fieldNode, new TypeReference<>(){});
+                dataFields.put(fieldName, data);
+            }
+        }
+
+        Map<String, List<Map<String, String>>> summaryData = new LinkedHashMap<>();
+        dataFields.forEach((fieldName, data) -> {
+            List<Map<String, String>> summaryCases = formatSummaryCases(data, listTypeFormatter);
+
+            String formattedFieldName = Arrays.stream(WordUtils.capitalizeFully(
+                StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(fieldName), StringUtils.SPACE)
+                    .toLowerCase(Locale.UK)).split(StringUtils.SPACE))
+                .map(word -> ACRONYMS.contains(word.toUpperCase(Locale.ENGLISH))
+                    ? word.toUpperCase(Locale.ENGLISH) : word)
+                .collect(Collectors.joining(StringUtils.SPACE));
+
+            if (summaryCases.isEmpty()) {
+                // Add bespoke message in the section with empty hearing cases. If the list type has no bespoke
+                // message, skip the section in the email summary
+                if (LIST_TYPE_NO_CONTENT_MESSAGE.containsKey(listType)) {
+                    summaryCases.add(Collections.singletonMap(null, LIST_TYPE_NO_CONTENT_MESSAGE.get(listType)));
+                    summaryData.put(formattedFieldName, summaryCases);
+                }
+            } else {
+                summaryData.put(formattedFieldName, summaryCases);
+            }
+        });
+
+        return summaryData;
+    }
+
+    private Map<String, List<Map<String, String>>> getSummaryDataForPayloadArray(
+        JsonNode payload, Optional<Map<String, Function<String, String>>> listTypeFormatter
+    ) {
+        List<Map<String, String>> data = OBJECT_MAPPER.convertValue(payload, new TypeReference<>(){});
+        List<Map<String, String>> summaryCases = formatSummaryCases(data, listTypeFormatter);
+
+        return Collections.singletonMap(null, summaryCases);
+    }
+
+    private List<Map<String, String>> formatSummaryCases(
+        List<Map<String, String>> data, Optional<Map<String, Function<String, String>>> listTypeFormatter
+    ) {
         List<Map<String, String>> summaryCases = new ArrayList<>();
+
         data.forEach(hearing -> {
             Map<String, String> summaryCase = new LinkedHashMap<>();
             if (LIST_TYPE_SUMMARY_FIELDS.containsKey(listType)) {
@@ -224,6 +283,6 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
             }
         });
 
-        return Collections.singletonMap(null, summaryCases);
+        return summaryCases;
     }
 }
