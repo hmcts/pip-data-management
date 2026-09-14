@@ -18,4 +18,7 @@ public class FamilyMixedList {
     private String applicant;
     private String respondent;
     private String reportingRestriction;
+    private String courtHouse;
+    private String courtRoom;
+
 }
