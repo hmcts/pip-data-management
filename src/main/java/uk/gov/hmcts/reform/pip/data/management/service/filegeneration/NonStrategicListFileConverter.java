@@ -48,7 +48,13 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_MANCH
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_DAILY_HEARING_LIST;
-
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_MIDLANDS_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_SOUTH_EAST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_SCOTLAND_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_NORTH_EAST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_NORTH_WEST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_LONDON_DAILY_HEARING_LIST;
 
 public class NonStrategicListFileConverter extends ExcelAbstractList implements FileConverter {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -96,7 +102,21 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
         Map.entry(SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST,
                   Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
         Map.entry(MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST,
-                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS))
+                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
+        Map.entry(SSCS_MIDLANDS_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_LONDON_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_NORTH_EAST_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_NORTH_WEST_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_SCOTLAND_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_SOUTH_EAST_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS))
     );
 
     @Override
