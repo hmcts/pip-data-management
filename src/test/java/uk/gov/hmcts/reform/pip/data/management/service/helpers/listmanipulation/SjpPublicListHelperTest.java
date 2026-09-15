@@ -163,7 +163,7 @@ class SjpPublicListHelperTest {
     }
 
     @Test
-    void testSjpCaseIsNotGeneratedWhenPostcodeMissing() throws IOException {
+    void testSjpCaseIsGeneratedWhenPostcodeMissing() throws IOException {
         StringWriter writer = new StringWriter();
         IOUtils.copy(Files.newInputStream(Paths.get("src/test/resources/mocks/sjpPublicListMissingPostcode.json")),
                      writer, Charset.defaultCharset());
@@ -176,6 +176,15 @@ class SjpPublicListHelperTest {
             .get(SITTINGS).get(0)
             .get(HEARING).get(0);
 
-        assertThat(SjpPublicListHelper.constructSjpCase(hearingNode)).isEmpty();
+        SjpPublicList expectedSjpCase = new SjpPublicList(
+            "A This is a surname",
+            "",
+            "This is an offence title, This is an offence title 2",
+            "This is an organisation"
+        );
+
+        assertThat(SjpPublicListHelper.constructSjpCase(hearingNode))
+            .isPresent()
+            .hasValue(expectedSjpCase);
     }
 }
