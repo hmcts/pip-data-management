@@ -1,0 +1,11 @@
+{
+  "tableHeaders": [
+    "Date",
+    "Case name",
+    "Hearing length",
+    "Hearing type",
+    "Venue",
+    "Additional information"
+  ]
+}
+

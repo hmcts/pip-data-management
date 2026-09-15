@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.assertj.core.api.SoftAssertions;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,7 +18,9 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -98,6 +103,14 @@ class SiacWeeklyHearingListFileConverterTest {
                          "Rhestr o Wrandawiadau Wythnosol y Comisiwn Apeliadau Sefydliadau Gwaharddedig"),
             Arguments.of("PAAC_WEEKLY_HEARING_LIST", "paacWeeklyHearingList.json",
                          "Rhestr o Wrandawiadau Wythnosol y Comisiwn Apeliadau Mynediad Pathogenau")
+        );
+    }
+
+    private static Stream<Arguments> parametersExcel() {
+        return Stream.of(
+            Arguments.of(ListType.SIAC_WEEKLY_HEARING_LIST),
+            Arguments.of(ListType.POAC_WEEKLY_HEARING_LIST),
+            Arguments.of(ListType.PAAC_WEEKLY_HEARING_LIST)
         );
     }
 
@@ -321,5 +334,51 @@ class SiacWeeklyHearingListFileConverterTest {
                 "Additional Information 1"
             );
 
+    }
+
+    @ParameterizedTest
+    @MethodSource("parametersExcel")
+    void testWeeklyHearingListExcelConversionInEnglish(ListType listType) throws IOException {
+        try (InputStream excelFile = getClass().getResourceAsStream("/mocks/non-strategic/siacWeeklyHearingList.xlsx");
+             Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(
+                 converter.convertToExcel(null, listType, Map.of(
+                     LANGUAGE_METADATA, ENGLISH,
+                     LIST_TYPE_METADATA, listType.name()
+                 ), excelFile)
+             ))) {
+            Row headingRow = workbook.getSheetAt(0).getRow(0);
+            SoftAssertions softly = new SoftAssertions();
+            softly.assertThat(headingRow.getCell(0).getStringCellValue()).isEqualTo("Date");
+            softly.assertThat(headingRow.getCell(1).getStringCellValue()).isEqualTo("Time");
+            softly.assertThat(headingRow.getCell(2).getStringCellValue()).isEqualTo("Appellant");
+            softly.assertThat(headingRow.getCell(3).getStringCellValue()).isEqualTo("Case reference number");
+            softly.assertThat(headingRow.getCell(4).getStringCellValue()).isEqualTo("Hearing type");
+            softly.assertThat(headingRow.getCell(5).getStringCellValue()).isEqualTo("Courtroom");
+            softly.assertThat(headingRow.getCell(6).getStringCellValue()).isEqualTo("Additional information");
+            softly.assertAll();
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("parametersExcel")
+    void testWeeklyHearingListExcelConversionInWelsh(ListType listType) throws IOException {
+        try (InputStream excelFile = getClass().getResourceAsStream("/mocks/non-strategic/siacWeeklyHearingList.xlsx");
+             Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(
+                 converter.convertToExcel(null, listType, Map.of(
+                     LANGUAGE_METADATA, WELSH,
+                     LIST_TYPE_METADATA, listType.name()
+                 ), excelFile)
+             ))) {
+            Row headingRow = workbook.getSheetAt(0).getRow(0);
+            SoftAssertions softly = new SoftAssertions();
+            softly.assertThat(headingRow.getCell(0).getStringCellValue()).isEqualTo("Dyddiad");
+            softly.assertThat(headingRow.getCell(1).getStringCellValue()).isEqualTo("Amser");
+            softly.assertThat(headingRow.getCell(2).getStringCellValue()).isEqualTo("Apelydd");
+            softly.assertThat(headingRow.getCell(3).getStringCellValue()).isEqualTo("Cyfeirnod yr achos");
+            softly.assertThat(headingRow.getCell(4).getStringCellValue()).isEqualTo("Math o wrandawiad");
+            softly.assertThat(headingRow.getCell(5).getStringCellValue()).isEqualTo("Ystafell llys");
+            softly.assertThat(headingRow.getCell(6).getStringCellValue()).isEqualTo("Gwybodaeth ychwanegol");
+            softly.assertAll();
+        }
     }
 }
