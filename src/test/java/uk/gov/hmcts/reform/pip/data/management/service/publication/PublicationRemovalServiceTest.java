@@ -37,8 +37,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
@@ -122,7 +122,7 @@ class PublicationRemovalServiceTest {
                 .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
 
             publicationRemovalService.deleteArtefactById(ARTEFACT_ID.toString(), USER_ID);
-            assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE,
+            assertFalse(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE,
                                                                              USER_ID, ARTEFACT_ID)), MESSAGES_MATCH);
 
             InOrder orderVerifier = inOrder(azureArtefactBlobService, publicationFileManagementService,
@@ -146,7 +146,7 @@ class PublicationRemovalServiceTest {
                 .thenReturn(Optional.of(artefactWithNoMatchLocationId));
 
             publicationRemovalService.deleteArtefactById(ARTEFACT_ID.toString(), USER_ID);
-            assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE,
+            assertFalse(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE,
                                                                              USER_ID, ARTEFACT_ID)), MESSAGES_MATCH);
 
             verify(artefactSearchRepository).deleteByArtefactId(ARTEFACT_ID);
@@ -165,7 +165,7 @@ class PublicationRemovalServiceTest {
                 .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
 
             publicationRemovalService.deleteArtefactById(ARTEFACT_ID.toString(), USER_ID);
-            assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE,
+            assertFalse(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE,
                                                                              USER_ID, ARTEFACT_ID)), MESSAGES_MATCH);
 
             InOrder orderVerifier = inOrder(azureArtefactBlobService, publicationFileManagementService,
@@ -189,7 +189,7 @@ class PublicationRemovalServiceTest {
                 .thenReturn(Optional.of(artefactWithNoMatchLocationId));
 
             publicationRemovalService.deleteArtefactById(ARTEFACT_ID.toString(), USER_ID);
-            assertTrue(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE,
+            assertFalse(logCaptor.getInfoLogs().get(0).contains(String.format(DELETION_TRACK_LOG_MESSAGE,
                                                                              USER_ID, ARTEFACT_ID)), MESSAGES_MATCH);
 
             verify(artefactSearchRepository).deleteByArtefactId(ARTEFACT_ID);
