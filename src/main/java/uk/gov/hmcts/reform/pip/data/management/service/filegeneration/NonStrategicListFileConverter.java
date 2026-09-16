@@ -48,6 +48,15 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_MANCH
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_TAX_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SEND_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_LR_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_EASTERN_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_LONDON_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST;
 
 
 public class NonStrategicListFileConverter extends ExcelAbstractList implements FileConverter {
@@ -96,7 +105,25 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
         Map.entry(SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST,
                   Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
         Map.entry(MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST,
-                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS))
+                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
+        Map.entry(WPAFCC_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(FTT_TAX_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SEND_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(FTT_LR_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(RPT_EASTERN_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(RPT_LONDON_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(RPT_MIDLANDS_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(RPT_NORTHERN_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(RPT_SOUTHERN_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS))
     );
 
     @Override
