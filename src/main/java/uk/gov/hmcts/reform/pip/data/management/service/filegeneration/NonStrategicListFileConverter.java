@@ -49,20 +49,13 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_BIRMI
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.PRIMARY_HEALTH_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.POAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PAAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIC_WEEKLY_HEARING_LIST;
-
-
-
-
-
-
-
 
 
 public class NonStrategicListFileConverter extends ExcelAbstractList implements FileConverter {
@@ -114,7 +107,7 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
                   Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
         Map.entry(CST_WEEKLY_HEARING_LIST,
                   Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(PRIMARY_HEALTH_LIST,
+        Map.entry(PHT_WEEKLY_HEARING_LIST,
                   Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
         Map.entry(GRC_WEEKLY_HEARING_LIST,
                   Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),

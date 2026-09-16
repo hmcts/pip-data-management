@@ -26,7 +26,6 @@ import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.PRIMARY_HEALTH_LIST;
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -305,10 +304,10 @@ class PhtWeeklyHearingListFileConverterTest {
         try (InputStream excelFile = getClass().getResourceAsStream("/mocks/non-strategic/phtWeeklyHearingList.xlsx")) {
             Map<String, String> metadata = Map.of(
                 LANGUAGE_METADATA, ENGLISH,
-                LIST_TYPE_METADATA, PRIMARY_HEALTH_LIST.name()
+                LIST_TYPE_METADATA, PHT_WEEKLY_HEARING_LIST.name()
             );
 
-            byte[] result = converter.convertToExcel(null, PRIMARY_HEALTH_LIST, metadata, excelFile);
+            byte[] result = converter.convertToExcel(null, PHT_WEEKLY_HEARING_LIST, metadata, excelFile);
             Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(result));
             Row headingRow = workbook.getSheetAt(0).getRow(0);
 
@@ -328,10 +327,10 @@ class PhtWeeklyHearingListFileConverterTest {
         try (InputStream excelFile = getClass().getResourceAsStream("/mocks/non-strategic/phtWeeklyHearingList.xlsx")) {
             Map<String, String> metadata = Map.of(
                 LANGUAGE_METADATA, WELSH,
-                LIST_TYPE_METADATA, PRIMARY_HEALTH_LIST.name()
+                LIST_TYPE_METADATA, PHT_WEEKLY_HEARING_LIST.name()
             );
 
-            byte[] result = converter.convertToExcel(null, PRIMARY_HEALTH_LIST, metadata, excelFile);
+            byte[] result = converter.convertToExcel(null, PHT_WEEKLY_HEARING_LIST, metadata, excelFile);
             Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(result));
             Row headingRow = workbook.getSheetAt(0).getRow(0);
 
