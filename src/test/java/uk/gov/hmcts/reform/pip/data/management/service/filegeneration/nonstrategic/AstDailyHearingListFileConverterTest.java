@@ -170,7 +170,7 @@ class AstDailyHearingListFileConverterTest {
                 "Case type",
                 "Hearing type",
                 "Hearing time",
-                "Additional Information"
+                "Additional information"
             );
 
         softly.assertAll();
@@ -311,7 +311,7 @@ class AstDailyHearingListFileConverterTest {
             softly.assertThat(headingRow.getCell(2).getStringCellValue()).isEqualTo("Case type");
             softly.assertThat(headingRow.getCell(3).getStringCellValue()).isEqualTo("Hearing type");
             softly.assertThat(headingRow.getCell(4).getStringCellValue()).isEqualTo("Hearing time");
-            softly.assertThat(headingRow.getCell(5).getStringCellValue()).isEqualTo("Additional Information");
+            softly.assertThat(headingRow.getCell(5).getStringCellValue()).isEqualTo("Additional information");
             softly.assertAll();
         }
     }

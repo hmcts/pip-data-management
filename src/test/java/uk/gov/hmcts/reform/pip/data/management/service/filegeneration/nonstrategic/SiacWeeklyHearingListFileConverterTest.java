@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
@@ -336,8 +337,12 @@ class SiacWeeklyHearingListFileConverterTest {
 
     }
 
+
     @ParameterizedTest
-    @MethodSource("parametersExcel")
+    @EnumSource (value = ListType.class,
+        names = {"SIAC_WEEKLY_HEARING_LIST", "POAC_WEEKLY_HEARING_LIST",
+            "PAAC_WEEKLY_HEARING_LIST"}
+    )
     void testWeeklyHearingListExcelConversionInEnglish(ListType listType) throws IOException {
         try (InputStream excelFile = getClass().getResourceAsStream("/mocks/non-strategic/siacWeeklyHearingList.xlsx");
              Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(
@@ -360,7 +365,10 @@ class SiacWeeklyHearingListFileConverterTest {
     }
 
     @ParameterizedTest
-    @MethodSource("parametersExcel")
+    @EnumSource (value = ListType.class,
+        names = {"SIAC_WEEKLY_HEARING_LIST", "POAC_WEEKLY_HEARING_LIST",
+            "PAAC_WEEKLY_HEARING_LIST"}
+    )
     void testWeeklyHearingListExcelConversionInWelsh(ListType listType) throws IOException {
         try (InputStream excelFile = getClass().getResourceAsStream("/mocks/non-strategic/siacWeeklyHearingList.xlsx");
              Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(
