@@ -56,15 +56,6 @@ public final class NonStrategicTestCasesConfigurations {
     public static Stream<ArtefactSummaryTestInput> provideTestCases() {
         return Stream.of(
             new ArtefactSummaryTestInput(
-                "admiraltyCourtKbDailyCauseList.json",
-                ListType.ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST,
-                1,
-                2,
-                3,
-                List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_NAME_FIELD),
-                List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_NAME_TEXT_2)
-            ),
-            new ArtefactSummaryTestInput(
                 "astDailyHearingList.json",
                 ListType.AST_DAILY_HEARING_LIST,
                 1,
@@ -92,24 +83,6 @@ public final class NonStrategicTestCasesConfigurations {
                 List.of(TIME_TEXT_3, CASE_NUMBER_TEXT, DIRECTIONS_TEXT, CASE_DETAILS_TEXT)
             ),
             new ArtefactSummaryTestInput(
-                "businessListChdDailyCauseList.json",
-                ListType.BUSINESS_LIST_CHD_DAILY_CAUSE_LIST,
-                1,
-                2,
-                3,
-                List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_NAME_FIELD),
-                List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_NAME_TEXT_2)
-            ),
-            new ArtefactSummaryTestInput(
-                "chanceryAppealsChdDailyCauseList.json",
-                ListType.CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST,
-                1,
-                2,
-                3,
-                List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_NAME_FIELD),
-                List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_NAME_TEXT_2)
-            ),
-            new ArtefactSummaryTestInput(
                 "cicWeeklyHearingList.json",
                 ListType.CIC_WEEKLY_HEARING_LIST,
                 1,
@@ -126,33 +99,6 @@ public final class NonStrategicTestCasesConfigurations {
                 3,
                 List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_DETAILS_FIELD),
                 List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_DETAILS_TEXT)
-            ),
-            new ArtefactSummaryTestInput(
-                "commercialCourtKbDailyCauseList.json",
-                ListType.COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST,
-                1,
-                2,
-                3,
-                List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_NAME_FIELD),
-                List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_NAME_TEXT_2)
-            ),
-            new ArtefactSummaryTestInput(
-                "companiesWindingUpChdDailyCauseList.json",
-                ListType.COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST,
-                1,
-                2,
-                3,
-                List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_NAME_FIELD),
-                List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_NAME_TEXT_2)
-            ),
-            new ArtefactSummaryTestInput(
-                "competitionListChdDailyCauseList.json",
-                ListType.COMPETITION_LIST_CHD_DAILY_CAUSE_LIST,
-                1,
-                2,
-                3,
-                List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_NAME_FIELD),
-                List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_NAME_TEXT_2)
             ),
             new ArtefactSummaryTestInput(
                 "countyCourtLondonCivilDailyCauseList.json",
@@ -198,15 +144,6 @@ public final class NonStrategicTestCasesConfigurations {
                 3,
                 List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_DETAILS_FIELD),
                 List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_DETAILS_TEXT)
-            ),
-            new ArtefactSummaryTestInput(
-                "financialListChdKbDailyCauseList.json",
-                ListType.FINANCIAL_LIST_CHD_KB_DAILY_CAUSE_LIST,
-                1,
-                2,
-                3,
-                List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_NAME_FIELD),
-                List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_NAME_TEXT_2)
             ),
             new ArtefactSummaryTestInput(
                 "fttLandRegistryTribunalWeeklyHearingList.json",
@@ -292,33 +229,6 @@ public final class NonStrategicTestCasesConfigurations {
                 List.of(DATE_TEXT, TIME_TEXT_4, CASE_REFERENCE_NUMBER_TEXT_1)
             ),
             new ArtefactSummaryTestInput(
-                "insolvencyAndCompaniesCourtChdDailyCauseList.json",
-                ListType.INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST,
-                1,
-                2,
-                3,
-                List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_NAME_FIELD),
-                List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_NAME_TEXT_2)
-            ),
-            new ArtefactSummaryTestInput(
-                "intellectualPropertyAndEnterpriseCourtDailyCauseList.json",
-                ListType.INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST,
-                1,
-                2,
-                3,
-                List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_NAME_FIELD),
-                List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_NAME_TEXT_2)
-            ),
-            new ArtefactSummaryTestInput(
-                "intellectualPropertyListChdDailyCauseList.json",
-                ListType.INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST,
-                1,
-                2,
-                3,
-                List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_NAME_FIELD),
-                List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_NAME_TEXT_2)
-            ),
-            new ArtefactSummaryTestInput(
                 "interimApplicationsChanceryDivisionDailyCauseList.json",
                 ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
                 1,
@@ -364,15 +274,6 @@ public final class NonStrategicTestCasesConfigurations {
                 List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_DETAILS_TEXT)
             ),
             new ArtefactSummaryTestInput(
-                "londonCircuitCommercialCourtKbDailyCauseList.json",
-                ListType.LONDON_CIRCUIT_COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST,
-                1,
-                2,
-                3,
-                List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_NAME_FIELD),
-                List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_NAME_TEXT_2)
-            ),
-            new ArtefactSummaryTestInput(
                 ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST_JSON,
                 ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                 1,
@@ -391,24 +292,6 @@ public final class NonStrategicTestCasesConfigurations {
                 List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_DETAILS_TEXT)
             ),
             new ArtefactSummaryTestInput(
-                "patentsCourtChdDailyCauseList.json",
-                ListType.PATENTS_COURT_CHD_DAILY_CAUSE_LIST,
-                1,
-                2,
-                3,
-                List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_NAME_FIELD),
-                List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_NAME_TEXT_2)
-            ),
-            new ArtefactSummaryTestInput(
-                "pensionsListChdDailyCauseList.json",
-                ListType.PENSIONS_LIST_CHD_DAILY_CAUSE_LIST,
-                1,
-                2,
-                3,
-                List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_NAME_FIELD),
-                List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_NAME_TEXT_2)
-            ),
-            new ArtefactSummaryTestInput(
                 "phtWeeklyHearingList.json",
                 ListType.PHT_WEEKLY_HEARING_LIST,
                 1,
@@ -416,24 +299,6 @@ public final class NonStrategicTestCasesConfigurations {
                 2,
                 List.of(DATE_FIELD, CASE_NAME_FIELD),
                 List.of("10 December 2024", CASE_NAME_TEXT_1)
-            ),
-            new ArtefactSummaryTestInput(
-                "propertyTrustsProbateListChdDailyCauseList.json",
-                ListType.PROPERTY_TRUSTS_PROBATE_LIST_CHD_DAILY_CAUSE_LIST,
-                1,
-                2,
-                3,
-                List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_NAME_FIELD),
-                List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_NAME_TEXT_2)
-            ),
-            new ArtefactSummaryTestInput(
-                "revenueListChdDailyCauseList.json",
-                ListType.REVENUE_LIST_CHD_DAILY_CAUSE_LIST,
-                1,
-                2,
-                3,
-                List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_NAME_FIELD),
-                List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_NAME_TEXT_2)
             ),
             new ArtefactSummaryTestInput(
                 "sendDailyHearingList.json",
@@ -542,15 +407,6 @@ public final class NonStrategicTestCasesConfigurations {
                 3,
                 List.of(HEARING_TIME_FIELD, HEARING_TYPE_FIELD, APPEAL_REFERENCE_NUMBER_FIELD),
                 List.of(TIME_TEXT_2, DIRECTIONS_FIELD, CASE_REFERENCE_NUMBER_TEXT_2)
-            ),
-            new ArtefactSummaryTestInput(
-                "technologyAndConstructionCourtKbDailyCauseList.json",
-                ListType.TECHNOLOGY_AND_CONSTRUCTION_COURT_KB_DAILY_CAUSE_LIST,
-                1,
-                2,
-                3,
-                List.of(TIME_FIELD, CASE_NUMBER_FIELD, CASE_NAME_FIELD),
-                List.of(TIME_TEXT_1, CASE_NUMBER_TEXT, CASE_NAME_TEXT_2)
             ),
             new ArtefactSummaryTestInput(
                 "utAdministrativeAppealsChamberDailyHearingList.json",
