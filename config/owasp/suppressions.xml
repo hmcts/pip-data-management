@@ -65,4 +65,8 @@
     <cve>CVE-2026-23907</cve>
     <cve>CVE-2026-33929</cve>
   </suppress>
+  <suppress>
+    <notes>netty suppression</notes>
+    <cve>CVE-2026-89044</cve>
+  </suppress>
 </suppressions>
