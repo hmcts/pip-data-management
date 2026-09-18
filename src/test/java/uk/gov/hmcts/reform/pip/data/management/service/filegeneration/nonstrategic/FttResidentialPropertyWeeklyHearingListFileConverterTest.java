@@ -13,6 +13,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -393,16 +394,20 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
             );
     }
 
+
     @ParameterizedTest
-    @MethodSource("regionalListTypes")
-    void testFttResidentialPropertyWeeklyHearingListExcelConversionInEnglish(String listName) throws IOException {
-        ListType listType = ListType.valueOf(listName);
+    @EnumSource (value = ListType.class,
+        names = {"RPT_EASTERN_WEEKLY_HEARING_LIST", "RPT_LONDON_WEEKLY_HEARING_LIST",
+            "RPT_MIDLANDS_WEEKLY_HEARING_LIST", "RPT_NORTHERN_WEEKLY_HEARING_LIST",
+            "RPT_SOUTHERN_WEEKLY_HEARING_LIST", "FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST"}
+    )
+    void testFttResidentialPropertyWeeklyHearingListExcelConversionInEnglish(ListType listType) throws IOException {
         try (InputStream excelFile = getClass().getResourceAsStream(
             "/mocks/non-strategic/fttResidentialPropertyTribunalWeeklyHearingList.xlsx");
              Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(
                  converter.convertToExcel(null, listType, Map.of(
                      LANGUAGE_METADATA, ENGLISH,
-                     LIST_TYPE_METADATA, listName
+                     LIST_TYPE_METADATA, listType.name()
                  ), excelFile)
              ))) {
             Row headingRow = workbook.getSheetAt(0).getRow(0);
@@ -420,16 +425,20 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
         }
     }
 
+
     @ParameterizedTest
-    @MethodSource("regionalListTypes")
-    void testFttResidentialPropertyWeeklyHearingListExcelConversionInWelsh(String listName) throws IOException {
-        ListType listType = ListType.valueOf(listName);
+    @EnumSource (value = ListType.class,
+        names = {"RPT_EASTERN_WEEKLY_HEARING_LIST", "RPT_LONDON_WEEKLY_HEARING_LIST",
+            "RPT_MIDLANDS_WEEKLY_HEARING_LIST", "RPT_NORTHERN_WEEKLY_HEARING_LIST",
+            "RPT_SOUTHERN_WEEKLY_HEARING_LIST", "FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST"}
+    )
+    void testFttResidentialPropertyWeeklyHearingListExcelConversionInWelsh(ListType listType) throws IOException {
         try (InputStream excelFile = getClass().getResourceAsStream(
             "/mocks/non-strategic/fttResidentialPropertyTribunalWeeklyHearingList.xlsx");
              Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(
                  converter.convertToExcel(null, listType, Map.of(
                      LANGUAGE_METADATA, WELSH,
-                     LIST_TYPE_METADATA, listName
+                     LIST_TYPE_METADATA, listType.name()
                  ), excelFile)
              ))) {
             Row headingRow = workbook.getSheetAt(0).getRow(0);
