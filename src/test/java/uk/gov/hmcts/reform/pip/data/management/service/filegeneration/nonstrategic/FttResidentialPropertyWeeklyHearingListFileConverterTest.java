@@ -4,18 +4,24 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.assertj.core.api.SoftAssertions;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -126,6 +132,16 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
                          "Tribiwnlys Haen Gyntaf (Tribiwnlys Eiddo Preswyl): "
                          + "Rhestr Gwrandawiadau Wythnosol Rhenti’r Farchnad",
                          "marketrents@justice.gov.uk")
+        );
+    }
+
+    private static Stream<Arguments> regionalListTypes() {
+        return Stream.of(
+            Arguments.of("RPT_EASTERN_WEEKLY_HEARING_LIST"),
+            Arguments.of("RPT_LONDON_WEEKLY_HEARING_LIST"),
+            Arguments.of("RPT_MIDLANDS_WEEKLY_HEARING_LIST"),
+            Arguments.of("RPT_NORTHERN_WEEKLY_HEARING_LIST"),
+            Arguments.of("RPT_SOUTHERN_WEEKLY_HEARING_LIST")
         );
     }
 
@@ -377,4 +393,67 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
                 "This is another additional information"
             );
     }
+
+
+    @ParameterizedTest
+    @EnumSource (value = ListType.class,
+        names = {"RPT_EASTERN_WEEKLY_HEARING_LIST", "RPT_LONDON_WEEKLY_HEARING_LIST",
+            "RPT_MIDLANDS_WEEKLY_HEARING_LIST", "RPT_NORTHERN_WEEKLY_HEARING_LIST",
+            "RPT_SOUTHERN_WEEKLY_HEARING_LIST", "FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST"}
+    )
+    void testFttResidentialPropertyWeeklyHearingListExcelConversionInEnglish(ListType listType) throws IOException {
+        try (InputStream excelFile = getClass().getResourceAsStream(
+            "/mocks/non-strategic/fttResidentialPropertyTribunalWeeklyHearingList.xlsx");
+             Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(
+                 converter.convertToExcel(null, listType, Map.of(
+                     LANGUAGE_METADATA, ENGLISH,
+                     LIST_TYPE_METADATA, listType.name()
+                 ), excelFile)
+             ))) {
+            Row headingRow = workbook.getSheetAt(0).getRow(0);
+            SoftAssertions softly = new SoftAssertions();
+            softly.assertThat(headingRow.getCell(0).getStringCellValue()).isEqualTo("Date");
+            softly.assertThat(headingRow.getCell(1).getStringCellValue()).isEqualTo("Time");
+            softly.assertThat(headingRow.getCell(2).getStringCellValue()).isEqualTo("Venue");
+            softly.assertThat(headingRow.getCell(3).getStringCellValue()).isEqualTo("Case type");
+            softly.assertThat(headingRow.getCell(4).getStringCellValue()).isEqualTo("Case reference number");
+            softly.assertThat(headingRow.getCell(5).getStringCellValue()).isEqualTo("Judge(s)");
+            softly.assertThat(headingRow.getCell(6).getStringCellValue()).isEqualTo("Member(s)");
+            softly.assertThat(headingRow.getCell(7).getStringCellValue()).isEqualTo("Hearing method");
+            softly.assertThat(headingRow.getCell(8).getStringCellValue().trim()).isEqualTo("Additional information");
+            softly.assertAll();
+        }
+    }
+
+
+    @ParameterizedTest
+    @EnumSource (value = ListType.class,
+        names = {"RPT_EASTERN_WEEKLY_HEARING_LIST", "RPT_LONDON_WEEKLY_HEARING_LIST",
+            "RPT_MIDLANDS_WEEKLY_HEARING_LIST", "RPT_NORTHERN_WEEKLY_HEARING_LIST",
+            "RPT_SOUTHERN_WEEKLY_HEARING_LIST", "FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST"}
+    )
+    void testFttResidentialPropertyWeeklyHearingListExcelConversionInWelsh(ListType listType) throws IOException {
+        try (InputStream excelFile = getClass().getResourceAsStream(
+            "/mocks/non-strategic/fttResidentialPropertyTribunalWeeklyHearingList.xlsx");
+             Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(
+                 converter.convertToExcel(null, listType, Map.of(
+                     LANGUAGE_METADATA, WELSH,
+                     LIST_TYPE_METADATA, listType.name()
+                 ), excelFile)
+             ))) {
+            Row headingRow = workbook.getSheetAt(0).getRow(0);
+            SoftAssertions softly = new SoftAssertions();
+            softly.assertThat(headingRow.getCell(0).getStringCellValue()).isEqualTo("Dyddiad");
+            softly.assertThat(headingRow.getCell(1).getStringCellValue()).isEqualTo("Amser");
+            softly.assertThat(headingRow.getCell(2).getStringCellValue()).isEqualTo("Lleoliad");
+            softly.assertThat(headingRow.getCell(3).getStringCellValue()).isEqualTo("Math o achos");
+            softly.assertThat(headingRow.getCell(4).getStringCellValue()).isEqualTo("Cyfeirnod yr achos");
+            softly.assertThat(headingRow.getCell(5).getStringCellValue()).isEqualTo("Barnwr/Barnwyr");
+            softly.assertThat(headingRow.getCell(6).getStringCellValue()).isEqualTo("Aelod(au)");
+            softly.assertThat(headingRow.getCell(7).getStringCellValue()).isEqualTo("Math o wrandawiad");
+            softly.assertThat(headingRow.getCell(8).getStringCellValue().trim()).isEqualTo("Gwybodaeth ychwanegol");
+            softly.assertAll();
+        }
+    }
+
 }
