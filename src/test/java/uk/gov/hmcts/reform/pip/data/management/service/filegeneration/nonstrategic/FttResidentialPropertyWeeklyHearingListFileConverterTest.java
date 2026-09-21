@@ -135,15 +135,6 @@ class FttResidentialPropertyWeeklyHearingListFileConverterTest {
         );
     }
 
-    private static Stream<Arguments> regionalListTypes() {
-        return Stream.of(
-            Arguments.of("RPT_EASTERN_WEEKLY_HEARING_LIST"),
-            Arguments.of("RPT_LONDON_WEEKLY_HEARING_LIST"),
-            Arguments.of("RPT_MIDLANDS_WEEKLY_HEARING_LIST"),
-            Arguments.of("RPT_NORTHERN_WEEKLY_HEARING_LIST"),
-            Arguments.of("RPT_SOUTHERN_WEEKLY_HEARING_LIST")
-        );
-    }
 
     @BeforeAll
     void setup() throws IOException {
