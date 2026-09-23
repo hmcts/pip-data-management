@@ -33,20 +33,18 @@ public class FamilyMixedDailyCauseListFileConverter extends ExcelAbstractList im
         @SuppressWarnings("unchecked")
         List<String> tableHeaders = (List<String>) languageResources.get("headerValuesWrap");
         @SuppressWarnings("unchecked")
-        List<String> tableHeadersUnwrap = (List<String>) languageResources.get("headerValuesUnwrap");
+        final List<String> tableHeadersUnwrap = (List<String>) languageResources.get("headerValuesUnwrap");
 
-        return List.of(
-            tableHeaders.get(0),
-            tableHeaders.get(1),
-            tableHeaders.get(2),
-            tableHeaders.get(3),
-            tableHeaders.get(4),
-            tableHeaders.get(5),
-            tableHeaders.get(6),
-            tableHeadersUnwrap.get(0),
-            tableHeadersUnwrap.get(1),
-            languageResources.get("reportingRestriction").toString()
-        );
+        List<String> headers = new ArrayList<>();
+        if (languageResources.get("courtHouse") != null && languageResources.get("courtRoom") != null) {
+            headers.add(languageResources.get("courtHouse").toString());
+            headers.add(languageResources.get("courtRoom").toString());
+        }
+        headers.addAll(tableHeaders);
+        headers.addAll(tableHeadersUnwrap);
+        headers.add(languageResources.get("reportingRestriction").toString());
+
+        return headers;
     }
 
     @Override
@@ -58,6 +56,8 @@ public class FamilyMixedDailyCauseListFileConverter extends ExcelAbstractList im
 
         processedData.forEach(list -> {
             rows.add(List.of(
+                list.getCourtHouse(),
+                list.getCourtRoom(),
                 list.getTime(),
                 list.getCaseRef(),
                 list.getCaseName(),
