@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service.helpers;
 
+import com.google.common.base.CaseFormat;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ProcessingException;
 
 import java.time.LocalDate;
@@ -24,5 +25,12 @@ public final class NonStrategicFieldFormattingHelper {
 
     public static String formatTimeField(String time) {
         return time == null ? time : time.replace('.', ':');
+    }
+
+    public static String formatFieldInLowerCamelCaseFormat(String value) {
+        String upperUnderscoreValue = value.toUpperCase(Locale.ENGLISH)
+            .replaceAll(" ", "_")
+            .replaceAll("[()]", "");
+        return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, upperUnderscoreValue);
     }
 }
