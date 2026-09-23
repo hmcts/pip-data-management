@@ -4,6 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.assertj.core.api.SoftAssertions;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,6 +18,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -327,5 +332,93 @@ class CountyCourtLondonCivilDailyCauseListFileConverterTest {
                 "Hearing type A",
                 "This is additional information"
             );
+    }
+
+    @Test
+    void testCountyCourtLondonCivilDailyCauseListExcelConversionInEnglish() throws IOException {
+        try (InputStream excelFile = getClass()
+            .getResourceAsStream("/mocks/non-strategic/countyCourtLondonCivilDailyCauseList.xlsx")) {
+            Map<String, String> metadata = Map.of(
+                LANGUAGE_METADATA, ENGLISH,
+                LIST_TYPE_METADATA, COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST.name()
+            );
+
+            byte[] result = converter.convertToExcel(null, COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST, metadata,
+                                                     excelFile);
+
+            ByteArrayInputStream file = new ByteArrayInputStream(result);
+            Workbook workbook = new XSSFWorkbook(file);
+            Sheet sheet = workbook.getSheetAt(0);
+            Row headingRow = sheet.getRow(0);
+
+            SoftAssertions softly = new SoftAssertions();
+
+            softly.assertThat(headingRow.getCell(0).getStringCellValue())
+                .isEqualTo("Venue");
+
+            softly.assertThat(headingRow.getCell(1).getStringCellValue())
+                .isEqualTo("Judge");
+
+            softly.assertThat(headingRow.getCell(2).getStringCellValue())
+                .isEqualTo("Time");
+
+            softly.assertThat(headingRow.getCell(3).getStringCellValue())
+                .isEqualTo("Case number");
+
+            softly.assertThat(headingRow.getCell(4).getStringCellValue())
+                .isEqualTo("Case details");
+
+            softly.assertThat(headingRow.getCell(5).getStringCellValue())
+                .isEqualTo("Hearing type");
+
+            softly.assertThat(headingRow.getCell(6).getStringCellValue())
+                .isEqualTo("Additional information");
+
+            softly.assertAll();
+        }
+    }
+
+    @Test
+    void testCountyCourtLondonCivilDailyCauseListExcelConversionInWelsh() throws IOException {
+        try (InputStream excelFile = getClass()
+            .getResourceAsStream("/mocks/non-strategic/countyCourtLondonCivilDailyCauseList.xlsx")) {
+            Map<String, String> metadata = Map.of(
+                LANGUAGE_METADATA, WELSH,
+                LIST_TYPE_METADATA, COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST.name()
+            );
+
+            byte[] result = converter.convertToExcel(null, COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST, metadata,
+                                                     excelFile);
+
+            ByteArrayInputStream file = new ByteArrayInputStream(result);
+            Workbook workbook = new XSSFWorkbook(file);
+            Sheet sheet = workbook.getSheetAt(0);
+            Row headingRow = sheet.getRow(0);
+
+            SoftAssertions softly = new SoftAssertions();
+
+            softly.assertThat(headingRow.getCell(0).getStringCellValue())
+                .isEqualTo("Lleoliad");
+
+            softly.assertThat(headingRow.getCell(1).getStringCellValue())
+                .isEqualTo("Barnwr");
+
+            softly.assertThat(headingRow.getCell(2).getStringCellValue())
+                .isEqualTo("Amser");
+
+            softly.assertThat(headingRow.getCell(3).getStringCellValue())
+                .isEqualTo("Rhif yr achos");
+
+            softly.assertThat(headingRow.getCell(4).getStringCellValue())
+                .isEqualTo("Manylion yr achos");
+
+            softly.assertThat(headingRow.getCell(5).getStringCellValue())
+                .isEqualTo("Math o wrandawiad");
+
+            softly.assertThat(headingRow.getCell(6).getStringCellValue())
+                .isEqualTo("Gwybodaeth ychwanegol");
+
+            softly.assertAll();
+        }
     }
 }
