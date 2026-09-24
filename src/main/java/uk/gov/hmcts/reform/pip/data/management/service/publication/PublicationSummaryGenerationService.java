@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,13 +50,14 @@ public class PublicationSummaryGenerationService {
 
     private String formatSummaryField(Map<String, String> summaryCase) {
         StringBuilder summaryFields = new StringBuilder(20);
-        summaryCase.entrySet().forEach(
-            field -> summaryFields
-                .append(field.getKey())
-                .append(" - ")
-                .append(field.getValue())
-                .append('\n')
-        );
+        summaryCase.entrySet().forEach(field -> {
+            if (StringUtils.isNotEmpty(field.getKey())) {
+                summaryFields.append(field.getKey())
+                    .append(" - ");
+            }
+            summaryFields.append(field.getValue())
+                .append('\n');
+        });
         return summaryFields.toString();
     }
 }
