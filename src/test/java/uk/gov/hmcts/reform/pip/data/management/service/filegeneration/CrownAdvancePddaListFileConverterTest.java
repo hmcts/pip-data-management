@@ -368,7 +368,7 @@ class CrownAdvancePddaListFileConverterTest {
     @Test
     void testCrownAdvanceListExcelConversion() throws IOException {
         byte[] result = converter.convertToExcel(inputJson, CROWN_ADVANCE_PDDA_LIST,
-                                                 Map.of("language", "ENGLISH"));
+                                                 Map.of("language", "ENGLISH"), null);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -410,7 +410,7 @@ class CrownAdvancePddaListFileConverterTest {
     @Test
     void testCrownAdvanceListWelshExcelConversion() throws IOException {
         byte[] result = converter.convertToExcel(inputJson, CROWN_ADVANCE_PDDA_LIST,
-                                                 Map.of("language", "WELSH"));
+                                                 Map.of("language", "WELSH"), null);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
@@ -452,7 +452,7 @@ class CrownAdvancePddaListFileConverterTest {
     @Test
     void testCrownAdvanceListExcelTableContents() throws IOException {
         byte[] result = converter.convertToExcel(inputJson, CROWN_ADVANCE_PDDA_LIST,
-                                                 Map.of("language", "ENGLISH"));
+                                                 Map.of("language", "ENGLISH"), null);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
