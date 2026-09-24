@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
-import static uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownWarnedPddaListHelper.DATE_FORMATTER;
+import static uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownAdvancePddaListHelper.DATE_FORMATTER;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CrownWarnedPddaList {
+public class CrownAdvancePddaList {
     private String fixedDate;
     private String caseReference;
     private String defendantNames;

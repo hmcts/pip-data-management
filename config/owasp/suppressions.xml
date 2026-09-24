@@ -214,11 +214,8 @@
     <cve>CVE-2026-34477</cve>
   </suppress>
   <suppress>
-    <notes>netty</notes>
-    <cve>CVE-2026-41417</cve>
-  </suppress>
-  <suppress>
     <notes>netty suppression</notes>
+    <cve>CVE-2026-41417</cve>
     <cve>CVE-2026-45674</cve>
     <cve>CVE-2026-47691</cve>
     <cve>CVE-2026-48006</cve>
@@ -251,6 +248,9 @@
     <cve>CVE-2026-59919</cve>
     <cve>CVE-2026-62380</cve>
     <cve>CVE-2026-47874</cve>
+    <cve>CVE-2026-75596</cve>
+    <cve>CVE-2026-75595</cve>
+    <cve>CVE-2026-89044</cve>
   </suppress>
   <suppress>
     <notes>spring framework suppression</notes>
