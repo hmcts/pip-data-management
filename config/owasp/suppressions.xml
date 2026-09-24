@@ -78,6 +78,9 @@
     <cve>CVE-2026-59919</cve>
     <cve>CVE-2026-62380</cve>
     <cve>CVE-2026-47874</cve>
+    <cve>CVE-2026-75596</cve>
+    <cve>CVE-2026-75595</cve>
+    <cve>CVE-2026-89044</cve>
   </suppress>
   <suppress>
     <notes>Tomcat 10.1.52 false positives or accepted risk</notes>
@@ -248,6 +251,11 @@
     <cve>CVE-2026-75596</cve>
     <cve>CVE-2026-75595</cve>
     <cve>CVE-2026-89044</cve>
+    <cve>CVE-2026-59903</cve>
+    <cve>CVE-2026-56818</cve>
+    <cve>CVE-2026-73507</cve>
+    <cve>CVE-2026-73508</cve>
+    <cve>CVE-2026-59902</cve>
   </suppress>
   <suppress>
     <notes>spring framework suppression</notes>
