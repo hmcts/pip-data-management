@@ -626,4 +626,42 @@ class PublicationSearchServiceTest {
         List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseName("not found", true);
         assertEquals(0, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
     }
+    @Test
+    void testFindAllByLocationIdForCop() {
+        Artefact copArtefact = new Artefact();
+        copArtefact.setListType(ListType.COP_DAILY_CAUSE_LIST);
+        copArtefact.setLocationId("123");
+
+        when(artefactRepository.findArtefactsByLocationId(eq(PublicationCreationService.COP_LOCATION_ID), any()))
+            .thenReturn(new ArrayList<>());
+        when(artefactRepository.findArtefactsByListType(eq(ListType.COP_DAILY_CAUSE_LIST.name()), any()))
+            .thenReturn(List.of(copArtefact));
+        when(publicationRetrievalService.isAuthorised(any(), any())).thenReturn(true);
+
+        List<Artefact> result = publicationSearchService.findAllByLocationId(
+            PublicationCreationService.COP_LOCATION_ID, USER_ID
+        );
+
+        assertEquals(1, result.size(), "Should return 1 COP artefact");
+        assertEquals("123", result.get(0).getLocationId(), "Artefact should have original location ID");
+    }
+
+    @Test
+    void testFindAllByLocationIdAdminForCop() {
+        Artefact copArtefact = new Artefact();
+        copArtefact.setListType(ListType.COP_DAILY_CAUSE_LIST);
+        copArtefact.setLocationId("123");
+
+        when(artefactRepository.findArtefactsByLocationIdAdmin(eq(PublicationCreationService.COP_LOCATION_ID), any()))
+            .thenReturn(new ArrayList<>());
+        when(artefactRepository.findArtefactsByListTypeAdmin(eq(ListType.COP_DAILY_CAUSE_LIST.name()), any()))
+            .thenReturn(List.of(copArtefact));
+
+        List<Artefact> result = publicationSearchService.findAllByLocationIdAdmin(
+            PublicationCreationService.COP_LOCATION_ID, USER_ID, true
+        );
+
+        assertEquals(1, result.size(), "Should return 1 COP artefact");
+        assertEquals("123", result.get(0).getLocationId(), "Artefact should have original location ID");
+    }
 }

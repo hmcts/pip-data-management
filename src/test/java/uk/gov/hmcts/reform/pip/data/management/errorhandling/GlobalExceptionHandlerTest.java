@@ -155,17 +155,29 @@ class GlobalExceptionHandlerTest {
     @Test
     void testBlobStorageException() {
         when(blobStorageException.getMessage()).thenReturn(TEST_MESSAGE);
+        when(blobStorageException.getStatusCode()).thenReturn(404);
 
         ResponseEntity<ExceptionResponse> responseEntity =
             globalExceptionHandler.handle(blobStorageException);
 
-        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode(), BAD_REQUEST_ASSERTION);
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode(), NOT_FOUND_ASSERTION);
         assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
         assertTrue(
             responseEntity.getBody().getMessage().contains(TEST_MESSAGE),
             EXCEPTION_BODY_NOT_MATCH
         );
+    }
 
+    @Test
+    void testBlobStorageExceptionWithDifferentStatusCode() {
+        when(blobStorageException.getMessage()).thenReturn(TEST_MESSAGE);
+        when(blobStorageException.getStatusCode()).thenReturn(403);
+
+        ResponseEntity<ExceptionResponse> responseEntity =
+            globalExceptionHandler.handle(blobStorageException);
+
+        assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode(), "Should be 403 Forbidden");
+        assertNotNull(responseEntity.getBody(), ASSERTION_RESPONSE_BODY);
     }
 
     @Test

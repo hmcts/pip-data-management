@@ -139,6 +139,22 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     List<Artefact> findActiveArtefactsForLocation(@Param(CURRENT_DATE_PARAM) LocalDateTime today,
                                                   @Param(LOCATION_ID_PARAM) String locationId);
 
+    @Query(value = "SELECT * FROM Artefact "
+        + "WHERE list_type = :list_type "
+        + "AND sensitivity = 'PUBLIC' "
+        + "AND display_from < :curr_date "
+        + "AND (display_to > :curr_date OR display_to IS NULL)",
+        nativeQuery = true)
+    List<Artefact> findArtefactsByListType(@Param(LIST_TYPE_PARAM) String listType,
+                                           @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
+
+    @Query(value = "SELECT * FROM Artefact "
+        + "WHERE list_type = :list_type "
+        + "AND (display_to > :curr_date OR display_to IS NULL)",
+        nativeQuery = true)
+    List<Artefact> findArtefactsByListTypeAdmin(@Param(LIST_TYPE_PARAM) String listType,
+                                                @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
+
     List<Artefact> findAllByLocationIdIn(List<String> locationId);
 
     @Query(value = "SELECT * FROM Artefact "

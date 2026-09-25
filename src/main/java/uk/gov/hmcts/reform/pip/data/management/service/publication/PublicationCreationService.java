@@ -18,7 +18,11 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -45,6 +49,7 @@ public class PublicationCreationService {
     private final PublicationSubscriptionService publicationSubscriptionService;
 
     private static final String MANUAL_UPLOAD_VALUE = "MANUAL_UPLOAD";
+    public static final String COP_LOCATION_ID = "390";
     private final ArtefactSearchService artefactSearchService;
 
     @Autowired
@@ -173,6 +178,23 @@ public class PublicationCreationService {
 
         } else {
             artefact.setLocationId(NoMatchArtefactHelper.buildNoMatchLocationId(artefact.getLocationId()));
+        }
+    }
+
+    /**
+     * Method that handles the linking of COP daily cause lists to the COP location.
+     * @param artefact The artefact to handle.
+     */
+    public void handleCopLinking(Artefact artefact) {
+        if (ListType.COP_DAILY_CAUSE_LIST.equals(artefact.getListType())) {
+            Map<String, List<Object>> search = artefact.getSearch();
+            if (search == null || search.isEmpty()) {
+                search = new HashMap<>();
+            } else {
+                search = new HashMap<>(search);
+            }
+            search.put("court-id", List.of(artefact.getLocationId()));
+            artefact.setSearch(search);
         }
     }
 }

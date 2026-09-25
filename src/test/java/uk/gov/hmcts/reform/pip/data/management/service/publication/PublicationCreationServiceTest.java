@@ -352,4 +352,17 @@ class PublicationCreationServiceTest {
                 .contains("Error storing case search values for artefact with ID");
         }
     }
+
+    @Test
+    void testHandleCopLinking() {
+        Artefact artefact = new Artefact();
+        artefact.setListType(ListType.COP_DAILY_CAUSE_LIST);
+        artefact.setLocationId("123");
+
+        publicationCreationService.handleCopLinking(artefact);
+
+        assertEquals("123", artefact.getLocationId(), "Location ID should not change for COP");
+        assertEquals("123", artefact.getSearch().get("court-id").get(0),
+                     "Original location ID should be in metadata");
+    }
 }

@@ -240,4 +240,17 @@ class PublicationSearchControllerTest {
             .as(MESSAGES_MATCH)
             .isEqualTo(TEST_STRING);
     }
+
+    @Test
+    void testGetArtefactsByListTypeReturnsOk() {
+        List<Artefact> artefactList = List.of(new Artefact());
+        when(publicationSearchService.findAllByListTypeAdmin(ListType.COP_DAILY_CAUSE_LIST, USER_ID, false))
+            .thenReturn(artefactList);
+
+        ResponseEntity<List<Artefact>> result = publicationSearchController
+            .getAllRelevantArtefactsByListType(ListType.COP_DAILY_CAUSE_LIST, USER_ID, false);
+
+        assertEquals(HttpStatus.OK, result.getStatusCode(), STATUS_CODE_MATCH);
+        assertEquals(artefactList, result.getBody(), "Artefact list should match");
+    }
 }

@@ -34,7 +34,7 @@ class ArtefactRepositoryTest {
     private static final String SOURCE_ARTEFACT_ID = "1234";
     private static final String LOCATION_ID = "1";
     private static final String NO_MATCH_LOCATION_ID = "NoMatch99";
-    private static final String INVALID_LOCATION_ID = "9";
+    private static final String INVALID_LOCATION_ID = "999";
     private static final String INVALID_ARTEFACT_ID = UUID.randomUUID().toString();
     private static final String PROVENANCE = "MANUAL_UPLOAD";
     private static final String ARTEFACT_MATCHED_MESSAGE = "Artefact does not match";
@@ -269,6 +269,24 @@ class ArtefactRepositoryTest {
             .hasSize(3)
             .extracting(Artefact::getArtefactId)
             .containsExactlyInAnyOrder(artefactId1, artefactId2, artefactId3);
+    }
+
+    @Test
+    void shouldFindArtefactsByListType() {
+        assertThat(artefactRepository.findArtefactsByListType(ListType.SJP_PUBLIC_LIST.name(), TODAY))
+            .as(ARTEFACT_MATCHED_MESSAGE)
+            .hasSize(2)
+            .extracting(Artefact::getArtefactId)
+            .containsExactlyInAnyOrder(artefactId3, artefactId5);
+    }
+
+    @Test
+    void shouldFindArtefactsByListTypeAdmin() {
+        assertThat(artefactRepository.findArtefactsByListTypeAdmin(ListType.SJP_PUBLIC_LIST.name(), TODAY))
+            .as(ARTEFACT_MATCHED_MESSAGE)
+            .hasSize(2)
+            .extracting(Artefact::getArtefactId)
+            .containsExactlyInAnyOrder(artefactId3, artefactId5);
     }
 
     @Test

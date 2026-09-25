@@ -85,7 +85,7 @@ public class PublicationCreationRunner {
     }
 
     private void preprocessJsonPublicationForCreation(Artefact artefact, String payload, boolean extractSearchTerms) {
-        preprocessPublicationForCreation(artefact);
+        publicationCreationService.applyInternalLocationId(artefact);
         if (extractSearchTerms
             && payload != null
             && publicationRetrievalService.payloadWithinJsonSearchLimit(artefact.getPayloadSize())) {
@@ -93,10 +93,16 @@ public class PublicationCreationRunner {
         } else {
             artefact.setSearch(Collections.emptyMap());
         }
+        preprocessPublicationDatesAndLinking(artefact);
     }
 
     private void preprocessPublicationForCreation(Artefact artefact) {
         publicationCreationService.applyInternalLocationId(artefact);
+        preprocessPublicationDatesAndLinking(artefact);
+    }
+
+    private void preprocessPublicationDatesAndLinking(Artefact artefact) {
+        publicationCreationService.handleCopLinking(artefact);
         artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
         artefact.setLastReceivedDate(LocalDateTime.now());
     }

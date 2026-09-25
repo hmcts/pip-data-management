@@ -21,6 +21,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
@@ -127,6 +128,16 @@ public class PublicationSearchService {
         LocalDateTime currDate = LocalDateTime.now();
         List<Artefact> artefacts = artefactRepository.findArtefactsByLocationId(searchValue, currDate);
 
+        if (PublicationCreationService.COP_LOCATION_ID.equals(searchValue)) {
+            List<Artefact> copArtefacts = artefactRepository.findArtefactsByListType(
+                ListType.COP_DAILY_CAUSE_LIST.name(), currDate
+            );
+            return Stream.concat(artefacts.stream(), copArtefacts.stream())
+                .distinct()
+                .filter(artefact -> publicationRetrievalService.isAuthorised(artefact, userId))
+                .toList();
+        }
+
         return artefacts.stream()
             .filter(artefact -> publicationRetrievalService.isAuthorised(artefact, userId))
             .toList();
@@ -141,10 +152,53 @@ public class PublicationSearchService {
      * @return list of matching artefacts.
      */
     public List<Artefact> findAllByLocationIdAdmin(String locationId, UUID userId, boolean isAdmin) {
+        if (!isAdmin) {
+            return findAllByLocationId(locationId, userId);
+        }
+        LocalDateTime currDate = LocalDateTime.now();
+        List<Artefact> artefacts = artefactRepository.findArtefactsByLocationIdAdmin(locationId, currDate);
+
+        if (PublicationCreationService.COP_LOCATION_ID.equals(locationId)) {
+            List<Artefact> copArtefacts = artefactRepository.findArtefactsByListTypeAdmin(
+                ListType.COP_DAILY_CAUSE_LIST.name(), currDate
+            );
+            return Stream.concat(artefacts.stream(), copArtefacts.stream())
+                .distinct()
+                .toList();
+        }
+        return artefacts;
+    }
+
+    /**
+     * Get all relevant artefacts relating to a given list type.
+     *
+     * @param listType - represents the list type in question being searched for
+     * @param userId   - represents the user ID of the user who is making the request
+     * @return a list of all artefacts that fulfil the timing criteria, match the given list type and sensitivity
+     *     associated with given verification status.
+     */
+    public List<Artefact> findAllByListType(ListType listType, UUID userId) {
+        LocalDateTime currDate = LocalDateTime.now();
+        List<Artefact> artefacts = artefactRepository.findArtefactsByListType(listType.name(), currDate);
+
+        return artefacts.stream()
+            .filter(artefact -> publicationRetrievalService.isAuthorised(artefact, userId))
+            .toList();
+    }
+
+    /**
+     * Get all artefacts relating to a given list type for admin actions.
+     *
+     * @param listType - represents the list type in question being searched for
+     * @param userId   - represents the user ID of the user who is making the request
+     * @param isAdmin  - bool to check whether admin search is needed
+     * @return list of matching artefacts.
+     */
+    public List<Artefact> findAllByListTypeAdmin(ListType listType, UUID userId, boolean isAdmin) {
         LocalDateTime currDate = LocalDateTime.now();
         return isAdmin
-            ? artefactRepository.findArtefactsByLocationIdAdmin(locationId, currDate)
-                : findAllByLocationId(locationId, userId);
+            ? artefactRepository.findArtefactsByListTypeAdmin(listType.name(), currDate)
+            : findAllByListType(listType, userId);
     }
 
     /**

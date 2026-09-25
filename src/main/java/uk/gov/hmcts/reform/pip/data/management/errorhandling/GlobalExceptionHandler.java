@@ -77,8 +77,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BlobStorageException.class)
     public ResponseEntity<ExceptionResponse> handle(BlobStorageException ex) {
-        log.error(writeLog("404, error while communicating with blob store"));
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        log.error(writeLog(String.format("Error while communicating with blob store. Status code: %d. Details: %s",
+                                         ex.getStatusCode(), ex.getMessage())));
+        return ResponseEntity.status(HttpStatus.valueOf(ex.getStatusCode()))
             .body(generateExceptionResponse(ex.getMessage()));
     }
 
