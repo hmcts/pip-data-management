@@ -105,7 +105,7 @@ class LocationApiTest extends LocationIntegrationTestBase {
 
         List<Location> returnedLocations = Arrays.asList(arrayLocations);
 
-        assertEquals(5, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(6, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         for (Location location : locations) {
             assertTrue(
@@ -288,7 +288,7 @@ class LocationApiTest extends LocationIntegrationTestBase {
         Location[] arrayLocations =
             OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), Location[].class);
 
-        assertEquals(5, arrayLocations.length, VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(6, arrayLocations.length, VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         mvcResult = mockMvc.perform(get(GET_LOCATION_BY_ID_ENDPOINT + "1"))
             .andExpect(status().isOk())
@@ -315,13 +315,13 @@ class LocationApiTest extends LocationIntegrationTestBase {
                      "Unexpected provenance location type returned"
         );
 
-        Location location1 = arrayLocations[0];
+        Location location1 = arrayLocations[1];
         assertEquals("Test Location Other", location1.getName(), VALIDATION_LOCATION_NAME_NOT_AS_EXPECTED);
 
-        Location location2 = arrayLocations[1];
+        Location location2 = arrayLocations[2];
         assertEquals("Test Location Other 2", location2.getName(), VALIDATION_LOCATION_NAME_NOT_AS_EXPECTED);
 
-        Location location3 = arrayLocations[2];
+        Location location3 = arrayLocations[3];
         assertEquals("Unknown Location", location3.getName(), VALIDATION_LOCATION_NAME_NOT_AS_EXPECTED);
     }
 
@@ -352,7 +352,7 @@ class LocationApiTest extends LocationIntegrationTestBase {
 
             Location[] returnedLocations = OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(),
                                                                   Location[].class);
-            assertEquals(5, returnedLocations.length, VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+            assertEquals(6, returnedLocations.length, VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
         }
     }
 

@@ -173,11 +173,11 @@ class LocationSearchTest extends LocationIntegrationTestBase {
         assertEquals(3, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         assertTrue(
-            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(0)),
+            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
             VALIDATION_UNKNOWN_LOCATION
         );
         assertTrue(
-            compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(1)),
+            compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(2)),
             VALIDATION_UNKNOWN_LOCATION
         );
     }
@@ -216,15 +216,15 @@ class LocationSearchTest extends LocationIntegrationTestBase {
         assertEquals(4, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         assertTrue(
-            compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+            compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(1)),
             VALIDATION_UNKNOWN_LOCATION
         );
         assertTrue(
-            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
+            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(2)),
             VALIDATION_UNKNOWN_LOCATION
         );
         assertTrue(
-            compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(2)),
+            compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(3)),
             VALIDATION_UNKNOWN_LOCATION
         );
     }
@@ -273,7 +273,7 @@ class LocationSearchTest extends LocationIntegrationTestBase {
         List<Location> returnedLocations =
             Arrays.asList(OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
 
-        assertEquals(3, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(2, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         assertTrue(
             compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
@@ -300,7 +300,7 @@ class LocationSearchTest extends LocationIntegrationTestBase {
         List<Location> returnedLocations =
             Arrays.asList(OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
 
-        assertEquals(3, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(2, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         assertTrue(
             compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
@@ -452,18 +452,18 @@ class LocationSearchTest extends LocationIntegrationTestBase {
         List<Location> returnedLocations =
             Arrays.asList(OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
 
-        assertEquals(5, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(6, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         assertTrue(
-            compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+            compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(2)),
             VALIDATION_UNKNOWN_LOCATION
         );
         assertTrue(
-            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
+            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(3)),
             VALIDATION_UNKNOWN_LOCATION
         );
         assertTrue(
-            compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(2)),
+            compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(4)),
             VALIDATION_UNKNOWN_LOCATION
         );
     }
@@ -481,18 +481,18 @@ class LocationSearchTest extends LocationIntegrationTestBase {
         List<Location> returnedLocations =
             Arrays.asList(OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
 
-        assertEquals(5, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(6, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         assertTrue(
-            compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(0)),
+            compareLocationWithoutReference.test(locations.get(0), returnedLocations.get(2)),
             VALIDATION_UNKNOWN_LOCATION
         );
         assertTrue(
-            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(1)),
+            compareLocationWithoutReference.test(locations.get(1), returnedLocations.get(3)),
             VALIDATION_UNKNOWN_LOCATION
         );
         assertTrue(
-            compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(2)),
+            compareLocationWithoutReference.test(locations.get(2), returnedLocations.get(4)),
             VALIDATION_UNKNOWN_LOCATION
         );
     }
