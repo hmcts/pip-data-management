@@ -626,6 +626,7 @@ class PublicationSearchServiceTest {
         List<ArtefactCaseInfo> results = publicationSearchService.findCasesByCaseName("not found", true);
         assertEquals(0, results.size(), VALIDATION_ARTEFACT_NOT_MATCH);
     }
+
     @Test
     void testFindAllByLocationIdForCop() {
         Artefact copArtefact = new Artefact();
