@@ -496,51 +496,6 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             Arguments.of(ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
                          "data/non-strategic/court-of-appeal-civil-daily-cause-list/"
                              + "courtOfAppealCivilDailyCauseList.json"),
-            Arguments.of(ListType.INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST,
-                         "data/non-strategic/intellectual-property-and-enterprise-court-daily-cause-list/"
-                             + "intellectualPropertyAndEnterpriseCourtDailyCauseList.json"),
-            Arguments.of(ListType.INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST,
-                         "data/non-strategic/intellectual-property-list-chd-daily-cause-list/"
-                             + "intellectualPropertyListChdDailyCauseList.json"),
-            Arguments.of(ListType.LONDON_CIRCUIT_COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST,
-                         "data/non-strategic/london-circuit-commercial-court-kb-daily-cause-list/"
-                             + "londonCircuitCommercialCourtKbDailyCauseList.json"),
-            Arguments.of(ListType.PATENTS_COURT_CHD_DAILY_CAUSE_LIST,
-                         "data/non-strategic/patents-court-chd-daily-cause-list/patentsCourtChdDailyCauseList.json"),
-            Arguments.of(ListType.PENSIONS_LIST_CHD_DAILY_CAUSE_LIST,
-                         "data/non-strategic/pensions-list-chd-daily-cause-list/pensionsListChdDailyCauseList.json"),
-            Arguments.of(ListType.PROPERTY_TRUSTS_PROBATE_LIST_CHD_DAILY_CAUSE_LIST,
-                         "data/non-strategic/property-trusts-probate-list-chd-daily-cause-list/"
-                             + "propertyTrustsProbateListChdDailyCauseList.json"),
-            Arguments.of(ListType.REVENUE_LIST_CHD_DAILY_CAUSE_LIST,
-                         "data/non-strategic/revenue-list-chd-daily-cause-list/revenueListChdDailyCauseList.json"),
-            Arguments.of(ListType.TECHNOLOGY_AND_CONSTRUCTION_COURT_KB_DAILY_CAUSE_LIST,
-                         "data/non-strategic/technology-and-construction-court-kb-daily-cause-list/"
-                             + "technologyAndConstructionCourtKbDailyCauseList.json"),
-            Arguments.of(ListType.ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST,
-                         "data/non-strategic/admiralty-court-kb-daily-cause-list/"
-                             + "admiraltyCourtKbDailyCauseList.json"),
-            Arguments.of(ListType.BUSINESS_LIST_CHD_DAILY_CAUSE_LIST,
-                         "data/non-strategic/business-list-chd-daily-cause-list/"
-                             + "businessListChdDailyCauseList.json"),
-            Arguments.of(ListType.CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST,
-                         "data/non-strategic/chancery-appeals-chd-daily-cause-list/"
-                             + "chanceryAppealsChdDailyCauseList.json"),
-            Arguments.of(ListType.COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST,
-                         "data/non-strategic/commercial-court-kb-daily-cause-list/"
-                             + "commercialCourtKbDailyCauseList.json"),
-            Arguments.of(ListType.COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST,
-                         "data/non-strategic/companies-winding-up-chd-daily-cause-list/"
-                             + "companiesWindingUpChdDailyCauseList.json"),
-            Arguments.of(ListType.COMPETITION_LIST_CHD_DAILY_CAUSE_LIST,
-                         "data/non-strategic/competition-list-chd-daily-cause-list/"
-                             + "competitionListChdDailyCauseList.json"),
-            Arguments.of(ListType.FINANCIAL_LIST_CHD_KB_DAILY_CAUSE_LIST,
-                         "data/non-strategic/financial-list-chd-kb-daily-cause-list/"
-                             + "financialListChdKbDailyCauseList.json"),
-            Arguments.of(ListType.INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST,
-                         "data/non-strategic/insolvency-and-companies-court-chd-daily-cause-list/"
-                             + "insolvencyAndCompaniesCourtChdDailyCauseList.json"),
             Arguments.of(ListType.SEND_DAILY_HEARING_LIST,
                          "data/non-strategic/send-daily-hearing-list/"
                              + "sendDailyHearingList.json"),

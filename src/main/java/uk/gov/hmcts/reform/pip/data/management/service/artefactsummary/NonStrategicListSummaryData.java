@@ -4,10 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.WordUtils;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.NonStrategicListFormatter;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -15,47 +17,35 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.BUSINESS_LIST_CHD_DAILY_CAUSE_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.COMPETITION_LIST_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.FINANCIAL_LIST_CHD_KB_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_LR_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_TAX_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEARING_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.LONDON_CIRCUIT_COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PAAC_WEEKLY_HEARING_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.PATENTS_COURT_CHD_DAILY_CAUSE_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.PENSIONS_LIST_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.POAC_WEEKLY_HEARING_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.PROPERTY_TRUSTS_PROBATE_LIST_CHD_DAILY_CAUSE_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.REVENUE_LIST_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_EASTERN_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_LONDON_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST;
@@ -71,7 +61,6 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_NORTH_WEST
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_SCOTLAND_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_SOUTH_EAST_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.TECHNOLOGY_AND_CONSTRUCTION_COURT_KB_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST;
@@ -101,6 +90,7 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
     private static final String MEMBERS = "members";
     private static final String HEARING_METHOD = "hearingMethod";
     private static final String ADDITIONAL_INFORMATION = "additionalInformation";
+    private static final Set<String> ACRONYMS = Set.of("IP");
 
     private static final Map<ListType, List<String>> LIST_TYPE_SUMMARY_FIELDS = Map.ofEntries(
         Map.entry(CST_WEEKLY_HEARING_LIST, List.of(DATE, CASE_NAME)),
@@ -146,23 +136,9 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
         Map.entry(SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
         Map.entry(MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
         Map.entry(INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
+        Map.entry(BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER,
+                                                                                          CASE_NAME)),
         Map.entry(COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_DETAILS)),
-        Map.entry(INTELLECTUAL_PROPERTY_AND_ENTERPRISE_COURT_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
-        Map.entry(INTELLECTUAL_PROPERTY_LIST_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
-        Map.entry(LONDON_CIRCUIT_COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
-        Map.entry(PATENTS_COURT_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
-        Map.entry(PENSIONS_LIST_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
-        Map.entry(PROPERTY_TRUSTS_PROBATE_LIST_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
-        Map.entry(REVENUE_LIST_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
-        Map.entry(TECHNOLOGY_AND_CONSTRUCTION_COURT_KB_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
-        Map.entry(ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
-        Map.entry(BUSINESS_LIST_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
-        Map.entry(CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
-        Map.entry(COMMERCIAL_COURT_KB_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
-        Map.entry(COMPANIES_WINDING_UP_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
-        Map.entry(COMPETITION_LIST_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
-        Map.entry(FINANCIAL_LIST_CHD_KB_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
-        Map.entry(INSOLVENCY_AND_COMPANIES_COURT_CHD_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, CASE_NAME)),
         Map.entry(SEND_DAILY_HEARING_LIST, List.of(TIME, CASE_REFERENCE_NUMBER, VENUE)),
         Map.entry(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, List.of(TIME, CASE_NUMBER, HEARING_TYPE,
                                                                             CASE_DETAILS)),
@@ -177,6 +153,20 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
                                                                     ADDITIONAL_INFORMATION))
     );
 
+    // For multi-sheet Excel, the default is not displaying a section in the summary if there is no data for that
+    // section. The map below contain list types where the empty section will be displayed with a bespoke message.
+    private static final Map<ListType, String> LIST_TYPE_NO_CONTENT_MESSAGE = Map.ofEntries(
+        Map.entry(BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST,
+                  "No hearings scheduled for this day.")
+    );
+
+    // For multi-sheet Excel, the default is displaying all sections in the summary if there is data for that section.
+    // The map below contain list types where certain sections are skipped in the summary
+    private static final Map<ListType, List<String>> LIST_TYPE_SKIPPED_SECTIONS = Map.ofEntries(
+        Map.entry(INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
+                  List.of("openJusticeStatementDetails"))
+    );
+
     private final ListType listType;
 
     public NonStrategicListSummaryData(ListType listType) {
@@ -185,26 +175,76 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
 
     @Override
     public Map<String, List<Map<String, String>>> get(JsonNode payload) {
-        List<Map<String, String>> data = new ArrayList<>();
-
-        if (payload.isObject()) {
-            Iterator<String> fieldNames = payload.fieldNames();
-            while (fieldNames.hasNext()) {
-                String fieldName = fieldNames.next();
-                JsonNode fieldNode = payload.get(fieldName);
-                if (fieldNode.isArray()) {
-                    data = OBJECT_MAPPER.convertValue(fieldNode, new TypeReference<>(){});
-                    break;
-                }
-            }
-        } else if (payload.isArray()) {
-            data = OBJECT_MAPPER.convertValue(payload, new TypeReference<>(){});
-        }
-
         Optional<Map<String, Function<String, String>>> listTypeFormatter = NonStrategicListFormatter
             .getListTypeFormatter(listType);
 
+        if (payload.isObject()) {
+            return getSummaryDataForPayloadObject(payload, listTypeFormatter);
+        } else if (payload.isArray()) {
+            return getSummaryDataForPayloadArray(payload, listTypeFormatter);
+        }
+
+        return Collections.singletonMap(null, new ArrayList<>());
+    }
+
+    private Map<String, List<Map<String, String>>> getSummaryDataForPayloadObject(
+        JsonNode payload, Optional<Map<String, Function<String, String>>> listTypeFormatter
+    ) {
+        Map<String, List<Map<String, String>>> dataFields = new LinkedHashMap<>();
+        Iterator<String> fieldNames = payload.fieldNames();
+        while (fieldNames.hasNext()) {
+            String fieldName = fieldNames.next();
+            JsonNode fieldNode = payload.get(fieldName);
+            if (fieldNode.isArray()) {
+                List<Map<String, String>> data = OBJECT_MAPPER.convertValue(fieldNode, new TypeReference<>(){});
+
+                if (!(LIST_TYPE_SKIPPED_SECTIONS.containsKey(listType)
+                    && LIST_TYPE_SKIPPED_SECTIONS.get(listType).contains(fieldName))) {
+                    dataFields.put(fieldName, data);
+                }
+            }
+        }
+
+        Map<String, List<Map<String, String>>> summaryData = new LinkedHashMap<>();
+        dataFields.forEach((fieldName, data) -> {
+            List<Map<String, String>> summaryCases = formatSummaryCases(data, listTypeFormatter);
+
+            String formattedFieldName = Arrays.stream(WordUtils.capitalizeFully(
+                StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(fieldName), StringUtils.SPACE)
+                    .toLowerCase(Locale.UK)).split(StringUtils.SPACE))
+                .map(word -> ACRONYMS.contains(word.toUpperCase(Locale.ENGLISH))
+                    ? word.toUpperCase(Locale.ENGLISH) : word)
+                .collect(Collectors.joining(StringUtils.SPACE));
+
+            if (summaryCases.isEmpty()) {
+                // Add bespoke message in the section with empty hearing cases. If the list type has no bespoke
+                // message, skip the section in the email summary
+                if (LIST_TYPE_NO_CONTENT_MESSAGE.containsKey(listType)) {
+                    summaryCases.add(Collections.singletonMap(null, LIST_TYPE_NO_CONTENT_MESSAGE.get(listType)));
+                    summaryData.put(formattedFieldName, summaryCases);
+                }
+            } else {
+                summaryData.put(formattedFieldName, summaryCases);
+            }
+        });
+
+        return summaryData;
+    }
+
+    private Map<String, List<Map<String, String>>> getSummaryDataForPayloadArray(
+        JsonNode payload, Optional<Map<String, Function<String, String>>> listTypeFormatter
+    ) {
+        List<Map<String, String>> data = OBJECT_MAPPER.convertValue(payload, new TypeReference<>(){});
+        List<Map<String, String>> summaryCases = formatSummaryCases(data, listTypeFormatter);
+
+        return Collections.singletonMap(null, summaryCases);
+    }
+
+    private List<Map<String, String>> formatSummaryCases(
+        List<Map<String, String>> data, Optional<Map<String, Function<String, String>>> listTypeFormatter
+    ) {
         List<Map<String, String>> summaryCases = new ArrayList<>();
+
         data.forEach(hearing -> {
             Map<String, String> summaryCase = new LinkedHashMap<>();
             if (LIST_TYPE_SUMMARY_FIELDS.containsKey(listType)) {
@@ -224,6 +264,6 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
             }
         });
 
-        return Collections.singletonMap(null, summaryCases);
+        return summaryCases;
     }
 }
