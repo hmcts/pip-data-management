@@ -8,9 +8,11 @@ import java.util.stream.Stream;
 public final class NonStrategicRcjListTestCases {
     private static final String TIME_FIELD = "Time - 10am";
     private static final String RCJ_TIME_FIELD = "Time - 9am";
+    private static final String RCJ_TIME_FIELD2 = "Time - 10:30am";
     private static final String RCJ_CASE_NUMBER_FIELD = "Case number - 12345";
     private static final String CASE_NUMBER_FIELD = "Case number - 1234";
-    private static final String CASE_NAME_FIELD = "Case name - Case name A";
+    private static final String CASE_NAME_FIELD = "Case name - This is a case name";
+    private static final String CASE_NAME_FIELD2 = "Case name - This is case name";
     private static final String CASE_DETAILS_FIELD = "Case details - Case details A";
     private static final String HEARING_TYPE_FIELD = "Hearing type - Directions";
 
@@ -89,6 +91,22 @@ public final class NonStrategicRcjListTestCases {
                 "court-of-appeal-civil-daily-cause-list/courtOfAppealCivilDailyCauseList.xlsx",
                 "court-of-appeal-civil-daily-cause-list/courtOfAppealCivilDailyCauseList.json",
                 List.of(RCJ_TIME_FIELD, RCJ_CASE_NUMBER_FIELD, CASE_DETAILS_FIELD)
+            ),
+
+            new PublicationSummaryTestInput(
+                ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST,
+                "interim-applications-chd-daily-cause-list/interimApplicationsChanceryDivisionDailyCauseList.xlsx",
+                "interim-applications-chd-daily-cause-list/interimApplicationsChanceryDivisionDailyCauseList.json",
+                List.of(RCJ_TIME_FIELD2, CASE_NUMBER_FIELD, CASE_NAME_FIELD)
+            ),
+
+            new PublicationSummaryTestInput(
+                ListType.BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST,
+                "business-and-property-divisions-rolls-building-daily-cause-list"
+                    + "/businessAndPropertyDivisionRollsBuildingDailyCauseList.xlsx",
+                "business-and-property-divisions-rolls-building-daily-cause-list"
+                    + "/businessAndPropertyDivisionRollsBuildingDailyCauseList.json",
+                List.of(RCJ_TIME_FIELD2, CASE_NUMBER_FIELD, CASE_NAME_FIELD2)
             ),
 
             new PublicationSummaryTestInput(
