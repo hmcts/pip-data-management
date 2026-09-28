@@ -105,7 +105,7 @@ class LocationApiTest extends LocationIntegrationTestBase {
 
         List<Location> returnedLocations = Arrays.asList(arrayLocations);
 
-        assertEquals(4, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(5, returnedLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         for (Location location : locations) {
             assertTrue(
@@ -224,7 +224,7 @@ class LocationApiTest extends LocationIntegrationTestBase {
     void testCreateLocationsCoreData() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
 
-        assertEquals(4, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(5, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         Location locationA = createdLocations.get(0);
         assertEquals("Test Location", locationA.getName(), VALIDATION_LOCATION_NAME_NOT_AS_EXPECTED);
@@ -247,7 +247,7 @@ class LocationApiTest extends LocationIntegrationTestBase {
     void testCreateLocationsReferenceData() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
 
-        assertEquals(4, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(5, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         Location locationA = createdLocations.get(0);
         List<LocationReference> locationReferenceList = locationA.getLocationReferenceList();
@@ -288,7 +288,7 @@ class LocationApiTest extends LocationIntegrationTestBase {
         Location[] arrayLocations =
             OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), Location[].class);
 
-        assertEquals(4, arrayLocations.length, VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(5, arrayLocations.length, VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         mvcResult = mockMvc.perform(get(GET_LOCATION_BY_ID_ENDPOINT + "1"))
             .andExpect(status().isOk())
@@ -328,7 +328,7 @@ class LocationApiTest extends LocationIntegrationTestBase {
     @Test
     void testCreateLocationsWithCsvContainingExistingLocationName() throws Exception {
         List<Location> createdLocations = createLocations(LOCATIONS_CSV);
-        assertEquals(4, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+        assertEquals(5, createdLocations.size(), VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
 
         try (InputStream csvInputStream = this.getClass().getClassLoader()
             .getResourceAsStream(CSV_WITH_EXISTING_LOCATION_NAME)) {
@@ -352,7 +352,7 @@ class LocationApiTest extends LocationIntegrationTestBase {
 
             Location[] returnedLocations = OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(),
                                                                   Location[].class);
-            assertEquals(4, returnedLocations.length, VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
+            assertEquals(5, returnedLocations.length, VALIDATION_UNEXPECTED_NUMBER_OF_LOCATIONS);
         }
     }
 
