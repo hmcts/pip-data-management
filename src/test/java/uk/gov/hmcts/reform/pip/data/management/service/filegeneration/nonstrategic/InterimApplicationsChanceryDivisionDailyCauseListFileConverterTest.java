@@ -45,6 +45,7 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
     private static final String LIST_DATE_ELEMENT = "list-date";
     private static final String LAST_UPDATED_DATE_ELEMENT = "last-updated-date";
     private static final String SUMMARY_TEXT_CLASS = "govuk-details__summary-text";
+    private static final String OPEN_JUSTICE_ELEMENT = "open-justice-message-4";
     private static final String LINK_CLASS = "govuk-link";
     private static final String HREF = "href";
     private static final String BODY_CLASS = "govuk-body";
@@ -103,11 +104,11 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Interim Applications List (Chancery Division) Daily Cause List");
+            .isEqualTo("Interim Applications Daily Cause List");
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .isEqualTo("Interim Applications List (Chancery Division) Daily Cause List");
+            .isEqualTo("Interim Applications Daily Cause List");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
                               .getElementsByTag("a").get(0)
@@ -143,6 +144,11 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
         softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).getFirst().text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Important information");
+
+        softly.assertThat(document.getElementById(OPEN_JUSTICE_ELEMENT).text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .isEqualTo("Please note that hearings in the interim applications list will not additionally appear "
+                           + "in their individual list.");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
@@ -186,11 +192,11 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Rhestr Achosion Dyddiol Ceisiadau Interim (Adran Siawnsri)");
+            .isEqualTo("Rhestr Achosion Dyddiol Ceisiadau Interim");
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .isEqualTo("Rhestr Achosion Dyddiol Ceisiadau Interim (Adran Siawnsri)");
+            .isEqualTo("Rhestr Achosion Dyddiol Ceisiadau Interim");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
                               .getElementsByTag("a").get(0)
@@ -226,6 +232,11 @@ class InterimApplicationsChanceryDivisionDailyCauseListFileConverterTest {
         softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).getFirst().text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
             .isEqualTo("Gwybodaeth bwysig");
+
+        softly.assertThat(document.getElementById(OPEN_JUSTICE_ELEMENT).text())
+            .as(IMPORTANT_INFORMATION_MESSAGE)
+            .isEqualTo("Noder, ni fydd gwrandawiadau yn y rhestr ceisiadau interim yn ymddangos yn ychwanegol yn "
+                           + "eu rhestr unigol.");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
