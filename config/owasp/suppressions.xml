@@ -326,4 +326,8 @@
     <cve>CVE-2026-68569</cve>
     <cve>CVE-2026-66422</cve>
   </suppress>
+  <suppress>
+    <notes>spring-cloud-azure suppression</notes>
+    <cve>CVE-2026-69854</cve>
+  </suppress>
 </suppressions>
