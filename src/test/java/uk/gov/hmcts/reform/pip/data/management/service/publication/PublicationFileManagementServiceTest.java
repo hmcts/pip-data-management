@@ -60,6 +60,7 @@ class PublicationFileManagementServiceTest {
     private static final String FILE_EXISTS_FLAG_MESSAGE = "File exists flag does not match";
     private static final String FILE_SIZE_MESSAGE = "File size does not match";
     private static final byte[] TEST_BYTE = "test".getBytes();
+    private static final byte[] EMPTY_EXCEL = new byte[0];
 
     private static final UUID TEST_ARTEFACT_ID = UUID.randomUUID();
     private static final UUID TEST_USER_ID = UUID.randomUUID();
@@ -108,10 +109,10 @@ class PublicationFileManagementServiceTest {
 
     @Test
     void testGenerateFilesWithPrimaryPdfOnly() {
-        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
+        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD, null))
             .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, EMPTY_BYTES, EMPTY_BYTES)));
 
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD, null);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService, never())
@@ -121,10 +122,10 @@ class PublicationFileManagementServiceTest {
 
     @Test
     void testGenerateFilesWithPrimaryAndAdditionalPdfs() {
-        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
+        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD, null))
             .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, BYTE_DATA, EMPTY_BYTES)));
 
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD, null);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()), any());
@@ -133,10 +134,10 @@ class PublicationFileManagementServiceTest {
 
     @Test
     void testGenerateFilesWithPdfAndExcel() {
-        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
+        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD, null))
             .thenReturn(Optional.of(new PublicationFiles(BYTE_DATA, EMPTY_BYTES, BYTE_DATA)));
 
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD, null);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService, never())
@@ -146,10 +147,10 @@ class PublicationFileManagementServiceTest {
 
     @Test
     void testGenerateFilesWithExcelOnly() {
-        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
+        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD, null))
             .thenReturn(Optional.of(new PublicationFiles(EMPTY_BYTES, EMPTY_BYTES, BYTE_DATA)));
 
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD, null);
 
         verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService, never())
@@ -159,10 +160,10 @@ class PublicationFileManagementServiceTest {
 
     @Test
     void testGenerateFilesWhenFailed() {
-        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD))
+        when(publicationFileGenerationService.generate(TEST_ARTEFACT_ID, PAYLOAD, null))
             .thenReturn(Optional.empty());
 
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, PAYLOAD, null);
 
         verify(azureBlobService, never()).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService, never())

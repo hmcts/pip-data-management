@@ -497,7 +497,7 @@ class MagistratesStandardListFileConverterTest {
     @Test
     void testSuccessfulExcelConversion() throws IOException {
         byte[] result = converter.convertToExcel(inputJson, ListType.MAGISTRATES_STANDARD_LIST,
-                                                 Map.of("language", "ENGLISH"));
+                                                 Map.of("language", "ENGLISH"), null);
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);

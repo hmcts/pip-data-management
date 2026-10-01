@@ -235,7 +235,7 @@ class SscsDailyListFileConverterTest {
         JsonNode inputJson = OBJECT_MAPPER.readTree(writer.toString());
 
         assertEquals(0, listConversionFactory.getFileConverter(listType)
-                         .get().convertToExcel(inputJson, listType, Map.of("language", "ENGLISH")).length,
+                         .get().convertToExcel(inputJson, listType, Map.of("language", "ENGLISH"), null).length,
                      "byte array wasn't empty"
         );
     }

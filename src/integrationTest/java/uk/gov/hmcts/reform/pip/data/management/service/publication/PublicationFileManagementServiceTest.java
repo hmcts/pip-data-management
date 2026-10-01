@@ -113,7 +113,7 @@ class PublicationFileManagementServiceTest extends IntegrationBasicTestBase {
         when(locationService.getLocationById(any())).thenReturn(LOCATION);
         when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
 
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, sjpPublicListInput);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, sjpPublicListInput, null);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
@@ -127,7 +127,7 @@ class PublicationFileManagementServiceTest extends IntegrationBasicTestBase {
         when(locationService.getLocationById(any())).thenReturn(LOCATION);
         when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
 
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, sjpPublicListInput);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, sjpPublicListInput, null);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
@@ -142,7 +142,7 @@ class PublicationFileManagementServiceTest extends IntegrationBasicTestBase {
         when(locationService.getLocationById(any())).thenReturn(LOCATION);
         when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
 
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, civilDailyListInput);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, civilDailyListInput, null);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService, never())
@@ -157,7 +157,7 @@ class PublicationFileManagementServiceTest extends IntegrationBasicTestBase {
         when(locationService.getLocationById(any())).thenReturn(LOCATION);
         when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
 
-        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, civilDailyListInput);
+        publicationFileManagementService.generateFiles(TEST_ARTEFACT_ID, civilDailyListInput, null);
 
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + PDF.getExtension()), any());
         verify(azureBlobService).uploadFile(eq(TEST_ARTEFACT_ID + EXCEL.getExtension()), any());
