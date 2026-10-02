@@ -41,7 +41,6 @@ public final class SjpPublicListHelper {
         String offenceTitle = getOffenceTitle(hearing.get(OFFENCE));
 
         if (StringUtils.isNotBlank(parties.getLeft())
-            && StringUtils.isNotBlank(parties.getMiddle())
             && StringUtils.isNotBlank(parties.getRight())
             && StringUtils.isNotBlank(offenceTitle)) {
             return Optional.of(

@@ -21,11 +21,11 @@ import java.util.Map;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SEND_DAILY_HEARING_LIST;
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CourtOfAppealCivilDailyCauseListTest {
+class SendDailyHearingListFileConverterTest {
     private static final String CONTENT_DATE = "23 April 2025";
     private static final String LAST_RECEIVED_DATE = "2025-04-22T09:30:00Z";
     private static final String PROVENANCE = "provenance";
@@ -39,9 +39,6 @@ class CourtOfAppealCivilDailyCauseListTest {
     private static final String WELSH = "WELSH";
 
     private static final String HEADER_ELEMENT = "page-heading";
-    private static final String VENUE_NAME_ELEMENT = "venue-name";
-    private static final String ADDRESS_LINE1_ELEMENT = "address-line-1";
-    private static final String ADDRESS_LINE2_ELEMENT = "address-line-2";
     private static final String LIST_DATE_ELEMENT = "list-date";
     private static final String LAST_UPDATED_DATE_ELEMENT = "last-updated-date";
     private static final String SUMMARY_TITLE_CLASS = "govuk-details__summary-text";
@@ -52,12 +49,11 @@ class CourtOfAppealCivilDailyCauseListTest {
 
     private static final String TITLE_MESSAGE = "Title does not match";
     private static final String HEADER_MESSAGE = "Header does not match";
-    private static final String LINK_MESSAGE = "Link does not match";
-    private static final String VENUE_MESSAGE = "Venue does not match";
     private static final String LIST_DATE_MESSAGE = "List date does not match";
     private static final String LAST_UPDATED_DATE_MESSAGE = "Last updated date does not match";
     private static final String IMPORTANT_INFORMATION_MESSAGE = "Important information heading does not match";
     private static final String TABLE_HEADERS_MESSAGE = "Table headers does not match";
+    private static final String LINK_MESSAGE = "Link does not match";
 
     private final NonStrategicListFileConverter converter = new NonStrategicListFileConverter();
 
@@ -66,18 +62,18 @@ class CourtOfAppealCivilDailyCauseListTest {
     @BeforeAll
     void setup() throws IOException {
         try (InputStream inputStream = getClass()
-            .getResourceAsStream("/mocks/non-strategic/courtOfAppealCivilDailyCauseList.json")) {
+            .getResourceAsStream("/mocks/non-strategic/sendDailyHearingList.json")) {
             String inputRaw = IOUtils.toString(inputStream, Charset.defaultCharset());
             cstInputJson = new ObjectMapper().readTree(inputRaw);
         }
     }
 
     @Test
-    void testCourtOfAppealCivilDailyCauseListFileConversionInEnglish() throws IOException {
+    void testSendDailyHearingListFileConversionInEnglish() throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/en/non-strategic/courtOfAppealCivilDailyCauseList.json")) {
+            .getResourceAsStream("templates/languages/en/non-strategic/sendDailyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -86,7 +82,7 @@ class CourtOfAppealCivilDailyCauseListTest {
         Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
                                               PROVENANCE_METADATA, PROVENANCE,
                                               LANGUAGE_METADATA, ENGLISH,
-                                              LIST_TYPE_METADATA, COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST.name(),
+                                              LIST_TYPE_METADATA, SEND_DAILY_HEARING_LIST.name(),
                                               LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
         );
 
@@ -97,11 +93,11 @@ class CourtOfAppealCivilDailyCauseListTest {
 
         softly.assertThat(document.title())
                 .as(TITLE_MESSAGE)
-            .isEqualTo("Court of Appeal (Civil Division) Daily Cause List");
+            .isEqualTo("First-tier Tribunal (Special Educational Needs and Disability) Daily Hearing List");
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .isEqualTo("Court of Appeal (Civil Division) Daily Cause List");
+            .isEqualTo("First-tier Tribunal (Special Educational Needs and Disability) Daily Hearing List");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
                               .getElementsByTag("a").get(0)
@@ -113,18 +109,6 @@ class CourtOfAppealCivilDailyCauseListTest {
             .as(LINK_MESSAGE)
             .isEqualTo("Find contact details and other information about courts and tribunals in England "
                            + "and Wales, and some non-devolved tribunals in Scotland.");
-
-        softly.assertThat(document.getElementById(VENUE_NAME_ELEMENT).text())
-            .as(VENUE_MESSAGE)
-            .isEqualTo("Royal Courts of Justice");
-
-        softly.assertThat(document.getElementById(ADDRESS_LINE1_ELEMENT).text())
-            .as(VENUE_MESSAGE)
-            .isEqualTo("Strand, London");
-
-        softly.assertThat(document.getElementById(ADDRESS_LINE2_ELEMENT).text())
-            .as(VENUE_MESSAGE)
-            .isEqualTo("WC2A 2LL");
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
@@ -140,39 +124,43 @@ class CourtOfAppealCivilDailyCauseListTest {
 
         softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Live Streaming of hearings at the Royal Courts of Justice");
+            .contains(
+                "Special Educational Needs and Disability (SEND) Tribunal hearings are held in private and "
+                    + "unless a request from the parties for the hearing to be heard in public has been "
+                    + "approved, you will not be able to observe.",
+                "Private hearings do not allow anyone to observe remotely or in person. "
+                    + "This includes members of the press.",
+                "Open justice is a fundamental principle of our justice system. To attend a public hearing using a "
+                    + "remote link you must apply for permission to observe.",
+                "Requests to observe a public hearing that is taking place should be made in good time "
+                    + "direct to: send@justice.gov.uk. You may be asked to provide further details.",
+                "The judge hearing the case will decide if it is appropriate for you to observe remotely. "
+                    + "They will have regard to the interests of justice, the technical capacity for remote "
+                    + "observation and what is necessary to secure the proper administration of justice.");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
-            .hasSize(15)
+            .hasSize(6)
             .extracting(Element::text)
             .containsExactly(
-                "Venue",
-                "Judge",
                 "Time",
-                "Case number",
-                "Case details",
+                "Case reference number",
+                "Respondent",
                 "Hearing type",
-                "Additional information",
-                "Date",
                 "Venue",
-                "Judge",
-                "Time",
-                "Case number",
-                "Case details",
-                "Hearing type",
-                "Additional information"
+                "Time estimate"
+
             );
 
         softly.assertAll();
     }
 
     @Test
-    void testCourtOfAppealCivilDailyCauseListFileConversionInWelsh() throws IOException {
+    void testSendDailyHearingListFileConversionInWelsh() throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/cy/non-strategic/courtOfAppealCivilDailyCauseList.json")) {
+            .getResourceAsStream("templates/languages/cy/non-strategic/sendDailyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 });
@@ -181,7 +169,7 @@ class CourtOfAppealCivilDailyCauseListTest {
         Map<String, String> metadata = Map.of(CONTENT_DATE_METADATA, CONTENT_DATE,
                                               PROVENANCE_METADATA, PROVENANCE,
                                               LANGUAGE_METADATA, WELSH,
-                                              LIST_TYPE_METADATA, COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST.name(),
+                                              LIST_TYPE_METADATA, SEND_DAILY_HEARING_LIST.name(),
                                               LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
         );
 
@@ -192,11 +180,13 @@ class CourtOfAppealCivilDailyCauseListTest {
 
         softly.assertThat(document.title())
             .as(TITLE_MESSAGE)
-            .isEqualTo("Rhestr Achosion Dyddiol y Llys Apêl (Adran Sifil)");
+            .isEqualTo("Rhestr o Wrandawiadau Dyddiol y Tribiwnlys Haen Gyntaf "
+                           + "(Anghenion Addysgol Arbennig ac Anabledd)");
 
         softly.assertThat(document.getElementById(HEADER_ELEMENT).text())
             .as(HEADER_MESSAGE)
-            .isEqualTo("Rhestr Achosion Dyddiol y Llys Apêl (Adran Sifil)");
+            .isEqualTo("Rhestr o Wrandawiadau Dyddiol y Tribiwnlys Haen Gyntaf "
+                           + "(Anghenion Addysgol Arbennig ac Anabledd)");
 
         softly.assertThat(document.getElementsByClass(LINK_CLASS).get(0)
                               .getElementsByTag("a").get(0)
@@ -208,18 +198,6 @@ class CourtOfAppealCivilDailyCauseListTest {
             .as(LINK_MESSAGE)
             .isEqualTo("Dod o hyd i fanylion cyswllt a gwybodaeth arall am lysoedd a thribiwnlysoedd yng "
                            + "Nghymru a Lloegr a rhai tribiwnlysoedd heb eu datganoli yn yr Alban.");
-
-        softly.assertThat(document.getElementById(VENUE_NAME_ELEMENT).text())
-            .as(VENUE_MESSAGE)
-            .isEqualTo("Llysoedd Barn Brenhinol");
-
-        softly.assertThat(document.getElementById(ADDRESS_LINE1_ELEMENT).text())
-            .as(VENUE_MESSAGE)
-            .isEqualTo("Strand, London");
-
-        softly.assertThat(document.getElementById(ADDRESS_LINE2_ELEMENT).text())
-            .as(VENUE_MESSAGE)
-            .isEqualTo("WC2A 2LL");
 
         softly.assertThat(document.getElementById(LIST_DATE_ELEMENT).text())
             .as(LIST_DATE_MESSAGE)
@@ -235,39 +213,43 @@ class CourtOfAppealCivilDailyCauseListTest {
 
         softly.assertThat(document.getElementsByClass(SUMMARY_TEXT_CLASS).get(0).text())
             .as(IMPORTANT_INFORMATION_MESSAGE)
-            .contains("Ffrydio gwrandawiadau yn y Llysoedd Barn Brenhinol");
+            .contains("Cynhelir gwrandawiadau Tribiwnlys Anghenion Addysgol Arbennig ac Anabledd (SEND) yn breifat "
+                          + "ac oni bai bod cais gan y partïon i wrandawiad gael ei wrando yn "
+                          + "gyhoeddus wedi'i gymeradwyo, ni fyddwch yn gallu arsylwi.",
+                      "Nid yw gwrandawiadau preifat yn caniatáu i unrhyw un arsylwi o "
+                          + "bell neu wyneb yn wyneb. Mae hyn yn cynnwys aelodau o'r wasg.",
+                      "Mae cyfiawnder agored yn un o egwyddorion sylfaenol ein system gyfiawnder",
+                      "Ar gyfer mynychu gwrandawiad cyhoeddus gan ddefnyddio "
+                          + "cyswllt o bell rhaid i chi wneud cais am ganiatâd i arsylwi.",
+                      "Dylid gwneud ceisiadau i arsylwi gwrandawiad cyhoeddus sy'n cael ei "
+                          + "gynnal mewn pryd yn uniongyrchol at: send@justice.gov.uk. "
+                          + "Efallai y gofynnir i chi ddarparu rhagor o fanylion.",
+                      "Bydd y barnwr sy'n gwrando’r achos yn penderfynu a yw'n briodol i chi arsylwi o bell. "
+                          + "Byddant yn ystyried buddiannau cyfiawnder, y gallu technegol i arsylwi o bell a'r "
+                          + "hyn sy'n angenrheidiol i sicrhau gweinyddiaeth briodol cyfiawnder.");
 
         softly.assertThat(document.getElementsByTag("th"))
             .as(TABLE_HEADERS_MESSAGE)
-            .hasSize(15)
+            .hasSize(6)
             .extracting(Element::text)
             .containsExactly(
-                "Lleoliad",
-                "Barnwr",
                 "Amser",
-                "Rhif yr achos",
-                "Manylion yr achos",
+                "Cyfeirnod yr achos",
+                "Atebydd",
                 "Math o wrandawiad",
-                "Gwybodaeth ychwanegol",
-                "Dyddiad",
                 "Lleoliad",
-                "Barnwr",
-                "Amser",
-                "Rhif yr achos",
-                "Manylion yr achos",
-                "Math o wrandawiad",
-                "Gwybodaeth ychwanegol"
+                "Amcangyfrif o'r amser"
             );
 
         softly.assertAll();
     }
 
     @Test
-    void testCourtOfAppealCivilDailyCauseListTableContents() throws IOException {
+    void testSendDailyHearingListTableContents() throws IOException {
         Map<String, Object> languageResource;
         try (InputStream languageFile = Thread.currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/languages/en/non-strategic/courtOfAppealCivilDailyCauseList.json")) {
+            .getResourceAsStream("templates/languages/en/non-strategic/sendDailyHearingList.json")) {
             languageResource = new ObjectMapper().readValue(
                 Objects.requireNonNull(languageFile).readAllBytes(), new TypeReference<>() {
                 }
@@ -278,7 +260,7 @@ class CourtOfAppealCivilDailyCauseListTest {
             CONTENT_DATE_METADATA, CONTENT_DATE,
             PROVENANCE_METADATA, PROVENANCE,
             LANGUAGE_METADATA, ENGLISH,
-            LIST_TYPE_METADATA, COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST.name(),
+            LIST_TYPE_METADATA, SEND_DAILY_HEARING_LIST.name(),
             LAST_RECEIVED_DATE_METADATA, LAST_RECEIVED_DATE
         );
 
@@ -286,29 +268,15 @@ class CourtOfAppealCivilDailyCauseListTest {
         Document document = Jsoup.parse(result);
 
         assertThat(document.getElementsByTag("td"))
-            .as("Table contents for hearing list does not match")
+            .as("Table contents does not match")
             .extracting(Element::text)
             .containsSequence(
+                "10am",
+                "1234",
+                "Respondent A",
+                "Hearing Type A",
                 "Venue A",
-                "Judge A",
-                "9am",
-                "12345",
-                "Case details A",
-                "Hearing type A",
-                "Additional information A"
-            );
-
-        assertThat(document.getElementsByTag("td"))
-            .as("Table contents for future judgements does not match")
-            .extracting(Element::text)
-            .containsSequence(
-                "Venue C",
-                "Judge C",
-                "10:30am",
-                "12347",
-                "Case details C",
-                "Hearing type C",
-                "Additional information C"
+                "2hrs"
             );
     }
 }
