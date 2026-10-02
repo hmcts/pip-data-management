@@ -340,9 +340,7 @@ public class PublicationController {
         @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE,
             required = false) Boolean isAdmin) {
-        return ResponseEntity.ok(isAdmin.equals(Boolean.TRUE)
-                                    ? publicationRetrievalService.getMetadataByArtefactId(artefactId) :
-                                     publicationRetrievalService.getMetadataByArtefactId(artefactId, requesterId));
+        return ResponseEntity.ok(publicationRetrievalService.getMetadataByArtefactId(artefactId, requesterId, isAdmin));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Blob data from the given request in text format.")
@@ -356,9 +354,7 @@ public class PublicationController {
         @PathVariable UUID artefactId,
         @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
-        return ResponseEntity.ok(isAdmin.equals(Boolean.TRUE)
-                                    ? publicationRetrievalService.getPayloadByArtefactId(artefactId) :
-                                     publicationRetrievalService.getPayloadByArtefactId(artefactId, requesterId));
+        return ResponseEntity.ok(publicationRetrievalService.getPayloadByArtefactId(artefactId, requesterId, isAdmin));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "Blob data from the given request as a file.")
@@ -373,15 +369,8 @@ public class PublicationController {
         @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
 
-        Resource file;
-        Artefact metadata;
-        if (isAdmin.equals(Boolean.TRUE)) {
-            file = publicationRetrievalService.getFlatFileByArtefactID(artefactId);
-            metadata = publicationRetrievalService.getMetadataByArtefactId(artefactId);
-        } else {
-            file = publicationRetrievalService.getFlatFileByArtefactID(artefactId, requesterId);
-            metadata = publicationRetrievalService.getMetadataByArtefactId(artefactId, requesterId);
-        }
+        Resource file = publicationRetrievalService.getFlatFileByArtefactID(artefactId, requesterId, isAdmin);
+        Artefact metadata = publicationRetrievalService.getMetadataByArtefactId(artefactId, requesterId, isAdmin);
 
         String fileType = metadata.getSourceArtefactId();
 

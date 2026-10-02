@@ -79,7 +79,7 @@ public class PublicationFileManagementService {
      */
     public String getStoredPublication(UUID artefactId, FileType fileType, Integer maxFileSize, UUID userId,
                                        boolean system, boolean additionalPdf) {
-        Artefact artefact = publicationRetrievalService.getMetadataByArtefactId(artefactId);
+        Artefact artefact = publicationRetrievalService.getMetadataByArtefactId(artefactId, userId, system);
         if (!isAuthorised(artefact, userId, system)) {
             throw new UnauthorisedRequestException(
                 String.format("User with id %s is not authorised to access artefact with id %s", userId, artefactId)

@@ -100,7 +100,7 @@ public class AuthorisationService {
             return false;
         }
 
-        Artefact artefact = publicationRetrievalService.getMetadataByArtefactId(artefactId);
+        Artefact artefact = publicationRetrievalService.getMetadataByArtefactId(artefactId, requesterId, systemOrAdmin);
         if (!isAuthorised(artefact, requesterId, systemOrAdmin)) {
             log.error(writeLog(
                 String.format("User with ID %s is not authorised to access publication data with ID %s",

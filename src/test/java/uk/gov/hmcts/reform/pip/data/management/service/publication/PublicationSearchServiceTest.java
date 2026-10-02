@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pip.data.management.service.publication;
 import nl.altindag.log.LogCaptor;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -295,7 +296,7 @@ class PublicationSearchServiceTest {
         when(publicationRetrievalService.isAuthorised(artefactClassified, USER_ID))
             .thenReturn(true);
 
-        assertEquals(artefactList, publicationSearchService.findAllByLocationId(ABC, USER_ID),
+        assertEquals(artefactList, publicationSearchService.findAllByLocationId(ABC, USER_ID, false),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
@@ -331,7 +332,7 @@ class PublicationSearchServiceTest {
         when(publicationRetrievalService.isAuthorised(artefactClassified, USER_ID))
             .thenReturn(false);
 
-        List<Artefact> artefacts = publicationSearchService.findAllByLocationId(ABC, USER_ID);
+        List<Artefact> artefacts = publicationSearchService.findAllByLocationId(ABC, USER_ID, false);
 
         assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefactPublic, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
@@ -366,7 +367,7 @@ class PublicationSearchServiceTest {
         when(publicationRetrievalService.isAuthorised(artefactPublic, USER_ID))
             .thenReturn(true);
 
-        List<Artefact> artefacts = publicationSearchService.findAllByLocationId(ABC, USER_ID);
+        List<Artefact> artefacts = publicationSearchService.findAllByLocationId(ABC, USER_ID, false);
 
         assertEquals(1, artefacts.size(), VALIDATION_MORE_THAN_PUBLIC);
         assertEquals(artefactPublic, artefacts.get(0), VALIDATION_ARTEFACT_NOT_MATCH);
@@ -549,19 +550,19 @@ class PublicationSearchServiceTest {
     }
 
     @Test
-    void testFindAllByCourtIdAdminNotAdmin() {
+    void testFindAllByCourtIdNotAdmin() {
         when(artefactRepository.findArtefactsByLocationId(any(), any())).thenReturn(List.of(artefact));
         when(publicationRetrievalService.isAuthorised(artefact, USER_ID))
             .thenReturn(true);
-        assertEquals(List.of(artefact), publicationSearchService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, false),
+        assertEquals(List.of(artefact), publicationSearchService.findAllByLocationId(TEST_VALUE, USER_ID, false),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
 
     @Test
     void testFindAllByCourtIdAdmin() {
-        when(artefactRepository.findArtefactsByLocationIdAdmin(any(), any())).thenReturn(List.of(artefact));
-        assertEquals(List.of(artefact), publicationSearchService.findAllByLocationIdAdmin(TEST_VALUE, USER_ID, true),
+        when(artefactRepository.findArtefactsByLocationId(any(), any())).thenReturn(List.of(artefact));
+        assertEquals(List.of(artefact), publicationSearchService.findAllByLocationId(TEST_VALUE, USER_ID, true),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
@@ -639,6 +640,7 @@ class PublicationSearchServiceTest {
         Artefact copArtefact = new Artefact();
         copArtefact.setListType(ListType.COP_DAILY_CAUSE_LIST);
         copArtefact.setLocationId("123");
+        copArtefact.setDisplayFrom(LocalDateTime.now().minusDays(1));
 
         when(artefactRepository.findArtefactsByLocationId(eq(COP_LOCATION_ID), any()))
             .thenReturn(new ArrayList<>());
@@ -647,7 +649,7 @@ class PublicationSearchServiceTest {
         when(publicationRetrievalService.isAuthorised(any(), any())).thenReturn(true);
 
         List<Artefact> result = publicationSearchService.findAllByLocationId(
-            COP_LOCATION_ID, USER_ID
+            COP_LOCATION_ID, USER_ID, false
         );
 
         assertEquals(1, result.size(), "Should return 1 COP artefact");
@@ -660,12 +662,12 @@ class PublicationSearchServiceTest {
         copArtefact.setListType(ListType.COP_DAILY_CAUSE_LIST);
         copArtefact.setLocationId("123");
 
-        when(artefactRepository.findArtefactsByLocationIdAdmin(eq(COP_LOCATION_ID), any()))
+        when(artefactRepository.findArtefactsByLocationId(eq(COP_LOCATION_ID), any()))
             .thenReturn(new ArrayList<>());
-        when(artefactRepository.findArtefactsByListTypeAdmin(eq(ListType.COP_DAILY_CAUSE_LIST.name()), any()))
+        when(artefactRepository.findArtefactsByListType(eq(ListType.COP_DAILY_CAUSE_LIST.name()), any()))
             .thenReturn(List.of(copArtefact));
 
-        List<Artefact> result = publicationSearchService.findAllByLocationIdAdmin(
+        List<Artefact> result = publicationSearchService.findAllByLocationId(
             COP_LOCATION_ID, USER_ID, true
         );
 

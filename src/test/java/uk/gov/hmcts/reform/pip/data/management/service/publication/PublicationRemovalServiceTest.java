@@ -118,7 +118,7 @@ class PublicationRemovalServiceTest {
     @Test
     void testDeleteArtefactById() {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationRemovalService.class)) {
-            when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
+            when(artefactRepository.findByArtefactId(ARTEFACT_ID.toString()))
                 .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
 
             publicationRemovalService.deleteArtefactById(ARTEFACT_ID.toString(), USER_ID);
@@ -142,7 +142,7 @@ class PublicationRemovalServiceTest {
     @Test
     void testDeleteArtefactByIdWithNoMatchLocationId() {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationRemovalService.class)) {
-            when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
+            when(artefactRepository.findByArtefactId(ARTEFACT_ID.toString()))
                 .thenReturn(Optional.of(artefactWithNoMatchLocationId));
 
             publicationRemovalService.deleteArtefactById(ARTEFACT_ID.toString(), USER_ID);
@@ -161,7 +161,7 @@ class PublicationRemovalServiceTest {
     void testDeleteArtefactByIdFlatFile() {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationRemovalService.class)) {
             artefactWithIdAndPayloadUrl.setIsFlatFile(true);
-            when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
+            when(artefactRepository.findByArtefactId(ARTEFACT_ID.toString()))
                 .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
 
             publicationRemovalService.deleteArtefactById(ARTEFACT_ID.toString(), USER_ID);
@@ -185,7 +185,7 @@ class PublicationRemovalServiceTest {
     void testDeleteArtefactByIdFlatFileWithNoMatchLocationId() {
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationRemovalService.class)) {
             artefactWithNoMatchLocationId.setIsFlatFile(true);
-            when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
+            when(artefactRepository.findByArtefactId(ARTEFACT_ID.toString()))
                 .thenReturn(Optional.of(artefactWithNoMatchLocationId));
 
             publicationRemovalService.deleteArtefactById(ARTEFACT_ID.toString(), USER_ID);
@@ -337,7 +337,7 @@ class PublicationRemovalServiceTest {
 
     @Test
     void testArchiveArtefactById() {
-        when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
+        when(artefactRepository.findByArtefactId(ARTEFACT_ID.toString()))
             .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
 
         publicationRemovalService.archiveArtefactById(ARTEFACT_ID.toString(), USER_ID, true);
@@ -355,7 +355,7 @@ class PublicationRemovalServiceTest {
 
     @Test
     void testArchiveArtefactByIdWithNoMatchLocationId() {
-        when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
+        when(artefactRepository.findByArtefactId(ARTEFACT_ID.toString()))
             .thenReturn(Optional.of(artefactWithNoMatchLocationId));
 
         publicationRemovalService.archiveArtefactById(ARTEFACT_ID.toString(), USER_ID, true);
@@ -373,7 +373,7 @@ class PublicationRemovalServiceTest {
     @Test
     void testArchiveArtefactByIdNotFound() {
         String artefactId = UUID.randomUUID().toString();
-        when(artefactRepository.findArtefactByArtefactId(artefactId)).thenReturn(Optional.empty());
+        when(artefactRepository.findByArtefactId(artefactId)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> {
             publicationRemovalService.archiveArtefactById(artefactId, USER_ID, true);

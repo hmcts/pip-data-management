@@ -109,26 +109,26 @@ class PublicationRetrievalServiceTest {
 
     @Test
     void testArtefactPayloadFromAzureWhenAdmin() {
-        when(artefactRepository.findArtefactByArtefactId(any())).thenReturn(Optional.of(artefactWithPayloadUrl));
+        when(artefactRepository.findByArtefactId(any())).thenReturn(Optional.of(artefactWithPayloadUrl));
         when(azureArtefactBlobService.getBlobData(any())).thenReturn(PAYLOAD);
-        assertEquals(PAYLOAD, publicationRetrievalService.getPayloadByArtefactId(ARTEFACT_ID),
+        assertEquals(PAYLOAD, publicationRetrievalService.getPayloadByArtefactId(ARTEFACT_ID, null, true),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
 
     @Test
     void testArtefactPayloadFromAzureWhenArtefactIsPublic() {
-        when(artefactRepository.findByArtefactId(any(), any())).thenReturn(Optional.of(artefactWithPayloadUrl));
+        when(artefactRepository.findByArtefactId(any())).thenReturn(Optional.of(artefactWithPayloadUrl));
         when(azureArtefactBlobService.getBlobData(any()))
             .thenReturn(PAYLOAD);
-        assertEquals(PAYLOAD, publicationRetrievalService.getPayloadByArtefactId(ARTEFACT_ID, USER_ID),
+        assertEquals(PAYLOAD, publicationRetrievalService.getPayloadByArtefactId(ARTEFACT_ID, USER_ID, false),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
 
     @Test
     void testArtefactPayloadFromAzureWhenArtefactIsNotPublicAndIsAuthorised() {
-        when(artefactRepository.findByArtefactId(any(), any()))
+        when(artefactRepository.findByArtefactId(any()))
             .thenReturn(Optional.of(artefactWithPayloadUrlClassified));
         when(azureArtefactBlobService.getBlobData(any()))
             .thenReturn(PAYLOAD);
@@ -136,14 +136,14 @@ class PublicationRetrievalServiceTest {
                                                       ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
             .thenReturn(true);
 
-        assertEquals(PAYLOAD, publicationRetrievalService.getPayloadByArtefactId(ARTEFACT_ID, USER_ID),
+        assertEquals(PAYLOAD, publicationRetrievalService.getPayloadByArtefactId(ARTEFACT_ID, USER_ID, false),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
 
     @Test
     void testArtefactPayloadFromAzureWhenArtefactIsNotPublicAndIsNotAuthorised() {
-        when(artefactRepository.findByArtefactId(any(), any()))
+        when(artefactRepository.findByArtefactId(any()))
             .thenReturn(Optional.of(artefactWithPayloadUrlClassified));
 
         when(accountManagementService.getIsAuthorised(USER_ID,
@@ -151,35 +151,35 @@ class PublicationRetrievalServiceTest {
             .thenReturn(false);
 
         assertThrows(NotFoundException.class, () -> publicationRetrievalService.getPayloadByArtefactId(ARTEFACT_ID,
-                                                                                                       USER_ID),
+                                                                                                       USER_ID, false),
                      VALIDATION_NOT_THROWN_MESSAGE);
     }
 
     @Test
     void testArtefactFileFromAzureWhenAdmin() {
         byte[] testData = TEST_FILE.getBytes();
-        when(artefactRepository.findArtefactByArtefactId(any())).thenReturn(Optional.of(artefactWithPayloadUrl));
+        when(artefactRepository.findByArtefactId(any())).thenReturn(Optional.of(artefactWithPayloadUrl));
         when(azureArtefactBlobService.getBlobFile(any())).thenReturn(new ByteArrayResource(testData));
 
         assertEquals(new ByteArrayResource(testData), publicationRetrievalService.getFlatFileByArtefactID(
-            ARTEFACT_ID), VALIDATION_ARTEFACT_NOT_MATCH);
+            ARTEFACT_ID, null, true), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
     @Test
     void testArtefactFileFromAzureWhenArtefactIsPublic() {
         byte[] testData = TEST_FILE.getBytes();
-        when(artefactRepository.findByArtefactId(any(), any())).thenReturn(Optional.of(artefactWithPayloadUrl));
+        when(artefactRepository.findByArtefactId(any())).thenReturn(Optional.of(artefactWithPayloadUrl));
         when(azureArtefactBlobService.getBlobFile(any())).thenReturn(new ByteArrayResource(testData));
 
         assertEquals(new ByteArrayResource(testData), publicationRetrievalService.getFlatFileByArtefactID(
             ARTEFACT_ID,
-            USER_ID), VALIDATION_ARTEFACT_NOT_MATCH);
+            USER_ID, false), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
     @Test
     void testArtefactFileFromAzureWhenArtefactIsNotPublic() {
         byte[] testData = TEST_FILE.getBytes();
-        when(artefactRepository.findByArtefactId(any(), any()))
+        when(artefactRepository.findByArtefactId(any()))
             .thenReturn(Optional.of(artefactWithPayloadUrlClassified));
         when(azureArtefactBlobService.getBlobFile(any())).thenReturn(new ByteArrayResource(testData));
 
@@ -189,12 +189,12 @@ class PublicationRetrievalServiceTest {
 
         assertEquals(new ByteArrayResource(testData), publicationRetrievalService.getFlatFileByArtefactID(
             ARTEFACT_ID,
-            USER_ID), VALIDATION_ARTEFACT_NOT_MATCH);
+            USER_ID, false), VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
     @Test
     void testArtefactFileFromAzureWhenArtefactIsNotPublicAndNotAuthorised() {
-        when(artefactRepository.findByArtefactId(any(), any()))
+        when(artefactRepository.findByArtefactId(any()))
             .thenReturn(Optional.of(artefactWithPayloadUrlClassified));
 
         when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
@@ -202,106 +202,106 @@ class PublicationRetrievalServiceTest {
 
         assertThrows(NotFoundException.class, () -> publicationRetrievalService.getFlatFileByArtefactID(
             ARTEFACT_ID,
-            USER_ID), VALIDATION_NOT_THROWN_MESSAGE);
+            USER_ID, false), VALIDATION_NOT_THROWN_MESSAGE);
     }
 
     @Test
     void testArtefactPayloadFromAzureWhenUnauthorized() {
-        when(artefactRepository.findByArtefactId(any(), any()))
+        when(artefactRepository.findByArtefactId(any()))
             .thenReturn(Optional.of(artefactWithPayloadUrlClassified));
         when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
                                                        Sensitivity.CLASSIFIED))
             .thenReturn(false);
 
         assertThrows(NotFoundException.class, () -> publicationRetrievalService.getPayloadByArtefactId(ARTEFACT_ID,
-                                                                                                       USER_ID),
+                                                                                                       USER_ID, false),
                      VALIDATION_NOT_THROWN_MESSAGE);
         verify(azureArtefactBlobService, never()).getBlobFile(any());
     }
 
     @Test
     void testArtefactContentFromAzureWhenDoesNotExist() {
-        when(artefactRepository.findByArtefactId(any(), any())).thenReturn(Optional.empty());
+        when(artefactRepository.findByArtefactId(any())).thenReturn(Optional.empty());
         assertThrows(
             NotFoundException.class,
             ()
-                -> publicationRetrievalService.getPayloadByArtefactId(ARTEFACT_ID, USER_ID),
+                -> publicationRetrievalService.getPayloadByArtefactId(ARTEFACT_ID, USER_ID, false),
             "Not Found exception has not been thrown when artefact does not exist"
         );
     }
 
     @Test
     void testArtefactFileFromAzureWhenUnauthorized() {
-        when(artefactRepository.findByArtefactId(any(), any()))
+        when(artefactRepository.findByArtefactId(any()))
             .thenReturn(Optional.of(artefactWithPayloadUrlClassified));
         when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST,
                                                       Sensitivity.CLASSIFIED))
             .thenReturn(false);
 
         assertThrows(NotFoundException.class, () -> publicationRetrievalService.getFlatFileByArtefactID(ARTEFACT_ID,
-                                                                                                        USER_ID),
+                                                                                                        USER_ID, false),
                      VALIDATION_NOT_THROWN_MESSAGE);
         verify(azureArtefactBlobService, never()).getBlobFile(any());
     }
 
     @Test
     void testArtefactFileFromAzureWhenDoesNotExist() {
-        when(artefactRepository.findByArtefactId(any(), any())).thenReturn(Optional.empty());
+        when(artefactRepository.findByArtefactId(any())).thenReturn(Optional.empty());
         assertThrows(
             NotFoundException.class,
             ()
-                -> publicationRetrievalService.getFlatFileByArtefactID(ARTEFACT_ID, USER_ID),
+                -> publicationRetrievalService.getFlatFileByArtefactID(ARTEFACT_ID, USER_ID, false),
             "Not Found exception has not been thrown when artefact does not exist"
         );
     }
 
     @Test
     void testArtefactMetadataFromAzureWhenPublic() {
-        when(artefactRepository.findByArtefactId(any(), any())).thenReturn(Optional.of(artefact));
+        when(artefactRepository.findByArtefactId(any())).thenReturn(Optional.of(artefact));
 
-        assertEquals(artefact, publicationRetrievalService.getMetadataByArtefactId(ARTEFACT_ID, USER_ID),
+        assertEquals(artefact, publicationRetrievalService.getMetadataByArtefactId(ARTEFACT_ID, USER_ID, false),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
 
     @Test
     void testArtefactMetadataFromAzureWhenNotPublic() {
-        when(artefactRepository.findByArtefactId(any(), any())).thenReturn(Optional.of(artefactClassified));
+        when(artefactRepository.findByArtefactId(any())).thenReturn(Optional.of(artefactClassified));
 
         when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
             .thenReturn(true);
 
-        assertEquals(artefactClassified, publicationRetrievalService.getMetadataByArtefactId(ARTEFACT_ID, USER_ID),
+        assertEquals(artefactClassified, publicationRetrievalService.getMetadataByArtefactId(ARTEFACT_ID, USER_ID, false),
                      VALIDATION_ARTEFACT_NOT_MATCH
         );
     }
 
     @Test
     void testArtefactMetadataFromAzureWhenNotPublicAndNotAuthorised() {
-        when(artefactRepository.findByArtefactId(any(), any())).thenReturn(Optional.of(artefactClassified));
+        when(artefactRepository.findByArtefactId(any())).thenReturn(Optional.of(artefactClassified));
 
         when(accountManagementService.getIsAuthorised(USER_ID, ListType.CIVIL_DAILY_CAUSE_LIST, Sensitivity.CLASSIFIED))
             .thenReturn(false);
 
         assertThrows(NotFoundException.class, () -> publicationRetrievalService.getMetadataByArtefactId(ARTEFACT_ID,
-                                                                                                        USER_ID),
+                                                                                                        USER_ID, false),
                      VALIDATION_NOT_THROWN_MESSAGE
         );
     }
 
     @Test
     void testGetArtefactMetadataForAdmin() {
-        when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString()))
+        when(artefactRepository.findByArtefactId(ARTEFACT_ID.toString()))
             .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
-        assertEquals(artefactWithIdAndPayloadUrl, publicationRetrievalService.getMetadataByArtefactId(ARTEFACT_ID),
+        assertEquals(artefactWithIdAndPayloadUrl, publicationRetrievalService.getMetadataByArtefactId(ARTEFACT_ID, null, true),
                      VALIDATION_ARTEFACT_NOT_MATCH);
     }
 
     @Test
     void testGetArtefactMetadataForAdminThrows() {
-        when(artefactRepository.findArtefactByArtefactId(ARTEFACT_ID.toString())).thenReturn(Optional.empty());
+        when(artefactRepository.findByArtefactId(ARTEFACT_ID.toString())).thenReturn(Optional.empty());
         NotFoundException ex = assertThrows(NotFoundException.class, () ->
-                                                publicationRetrievalService.getMetadataByArtefactId(ARTEFACT_ID),
+                                                publicationRetrievalService.getMetadataByArtefactId(ARTEFACT_ID, null, true),
                                             "Not found exception should be thrown"
         );
         assertEquals("No artefact found with the ID: " + ARTEFACT_ID, ex.getMessage(),
@@ -310,10 +310,10 @@ class PublicationRetrievalServiceTest {
 
     @Test
     void testGetArtefactMetadataCallsNonAdmin() {
-        when(artefactRepository.findByArtefactId(any(), any()))
+        when(artefactRepository.findByArtefactId(any()))
             .thenReturn(Optional.of(artefactWithIdAndPayloadUrl));
         assertEquals(artefactWithIdAndPayloadUrl, publicationRetrievalService.getMetadataByArtefactId(ARTEFACT_ID,
-                                                                                                      USER_ID),
+                                                                                                      USER_ID, false),
                      VALIDATION_ARTEFACT_NOT_MATCH);
     }
 }

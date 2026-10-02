@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -109,7 +110,7 @@ class PublicationFileManagementServiceTest extends IntegrationBasicTestBase {
 
     @Test
     void testGenerateFilesSjpEnglish() {
-        when(publicationRetrievalService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
+        when(publicationRetrievalService.getMetadataByArtefactId(any(), any(), anyBoolean())).thenReturn(ARTEFACT);
         when(locationService.getLocationById(any())).thenReturn(LOCATION);
         when(azureBlobService.uploadFile(any(), any())).thenReturn(UPLOADED);
 

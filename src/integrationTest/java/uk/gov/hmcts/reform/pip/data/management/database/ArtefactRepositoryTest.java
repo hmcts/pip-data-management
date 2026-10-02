@@ -138,17 +138,10 @@ class ArtefactRepositoryTest {
 
     @Test
     void shouldFindByArtefactId() {
-        assertThat(artefactRepository.findByArtefactId(artefactId3.toString(), TODAY))
+        assertThat(artefactRepository.findByArtefactId(artefactId3.toString()))
             .as(ARTEFACT_MATCHED_MESSAGE)
             .isPresent()
             .hasValueSatisfying(a -> a.getArtefactId().equals(artefactId3));
-    }
-
-    @Test
-    void shouldNotFindByArtefactIdIfCurrentDateNotAfterDisplayFromDate() {
-        assertThat(artefactRepository.findByArtefactId(artefactId3.toString(), YESTERDAY))
-            .as(ARTEFACT_EMPTY_MESSAGE)
-            .isEmpty();
     }
 
     @Test
@@ -161,8 +154,8 @@ class ArtefactRepositoryTest {
     }
 
     @Test
-    void shouldNotFindArtefactsByLocationIdIfCurrentDateNotBeforeDisplayToDate() {
-        assertThat(artefactRepository.findArtefactsByLocationId(INVALID_LOCATION_ID, TOMORROW))
+    void shouldNotFindArtefactsByLocationIdIfInvalid() {
+        assertThat(artefactRepository.findArtefactsByLocationId(INVALID_LOCATION_ID, TODAY))
             .as(ARTEFACT_EMPTY_MESSAGE)
             .isEmpty();
     }
@@ -183,36 +176,7 @@ class ArtefactRepositoryTest {
             .isEqualTo(3L);
     }
 
-    @Test
-    void shouldFindArtefactsByLocationIdAdmin() {
-        assertThat(artefactRepository.findArtefactsByLocationIdAdmin(LOCATION_ID, TODAY))
-            .as(ARTEFACT_MATCHED_MESSAGE)
-            .hasSize(3)
-            .extracting(Artefact::getArtefactId)
-            .containsExactlyInAnyOrder(artefactId1, artefactId2, artefactId3);
-    }
 
-    @Test
-    void shouldNotFindArtefactsByLocationIdAdminIfInvalid() {
-        assertThat(artefactRepository.findArtefactsByLocationIdAdmin(INVALID_LOCATION_ID, TODAY))
-            .as(ARTEFACT_EMPTY_MESSAGE)
-            .isEmpty();
-    }
-
-    @Test
-    void shouldFindArtefactByArtefactId() {
-        assertThat(artefactRepository.findArtefactByArtefactId(artefactId3.toString()))
-            .as(ARTEFACT_MATCHED_MESSAGE)
-            .isPresent()
-            .hasValueSatisfying(a -> a.getArtefactId().equals(4));
-    }
-
-    @Test
-    void shouldNotFindArtefactByInvalidArtefactId() {
-        assertThat(artefactRepository.findArtefactByArtefactId(INVALID_ARTEFACT_ID))
-            .as(ARTEFACT_EMPTY_MESSAGE)
-            .isEmpty();
-    }
 
     @Test
     void shouldFindArtefactsByDisplayFrom() {
@@ -280,14 +244,6 @@ class ArtefactRepositoryTest {
             .containsExactlyInAnyOrder(artefactId3, artefactId5);
     }
 
-    @Test
-    void shouldFindArtefactsByListTypeAdmin() {
-        assertThat(artefactRepository.findArtefactsByListTypeAdmin(ListType.SJP_PUBLIC_LIST.name(), TODAY))
-            .as(ARTEFACT_MATCHED_MESSAGE)
-            .hasSize(2)
-            .extracting(Artefact::getArtefactId)
-            .containsExactlyInAnyOrder(artefactId3, artefactId5);
-    }
 
     @Test
     void shouldNotFindActiveArtefactsForLocation() {

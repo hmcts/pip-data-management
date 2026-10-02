@@ -189,7 +189,7 @@ class PublicationSearchControllerTest {
     void checkGetArtefactsByCourtIdReturnsOkWhenFalse() {
         List<Artefact> artefactList = List.of(ARTEFACT_WITH_ID);
 
-        when(publicationSearchService.findAllByLocationIdAdmin(EMPTY_FIELD, USER_ID, false)).thenReturn(artefactList);
+        when(publicationSearchService.findAllByLocationId(EMPTY_FIELD, USER_ID, false)).thenReturn(artefactList);
         ResponseEntity<List<Artefact>> unmappedArtefact = publicationSearchController
             .getAllRelevantArtefactsByLocationId(EMPTY_FIELD, USER_ID, false);
 

@@ -274,7 +274,7 @@ class PublicationControllerTest {
 
     @Test
     void checkGetMetadataContentReturns() {
-        when(publicationRetrievalService.getMetadataByArtefactId(any(), any()))
+        when(publicationRetrievalService.getMetadataByArtefactId(any(), any(), eq(false)))
             .thenReturn(artefactWithId);
         ResponseEntity<Artefact> unmappedBlob = publicationController
             .getArtefactMetadata(UUID.randomUUID(), USER_ID, false);
@@ -287,7 +287,7 @@ class PublicationControllerTest {
 
     @Test
     void checkGetMetadataContentReturnsAdmin() {
-        when(publicationRetrievalService.getMetadataByArtefactId(any()))
+        when(publicationRetrievalService.getMetadataByArtefactId(any(), any(), eq(true)))
             .thenReturn(artefactWithId);
         ResponseEntity<Artefact> unmappedBlob = publicationController
             .getArtefactMetadata(UUID.randomUUID(), USER_ID, true);
@@ -301,7 +301,7 @@ class PublicationControllerTest {
 
     @Test
     void checkGetPayloadContentReturns() {
-        when(publicationRetrievalService.getPayloadByArtefactId(any(), any()))
+        when(publicationRetrievalService.getPayloadByArtefactId(any(), any(), eq(false)))
             .thenReturn(String.valueOf(artefactWithId));
         ResponseEntity<String> unmappedBlob =
             publicationController.getArtefactPayload(UUID.randomUUID(), USER_ID, false);
@@ -316,9 +316,9 @@ class PublicationControllerTest {
     void checkGetFileContentReturns() {
         String string = "Hello";
         byte[] testData = string.getBytes();
-        when(publicationRetrievalService.getFlatFileByArtefactID(any(), any()))
+        when(publicationRetrievalService.getFlatFileByArtefactID(any(), any(), eq(false)))
             .thenReturn(new ByteArrayResource(testData));
-        when(publicationRetrievalService.getMetadataByArtefactId(any(), any())).thenReturn(artefactWithId);
+        when(publicationRetrievalService.getMetadataByArtefactId(any(), any(), eq(false))).thenReturn(artefactWithId);
         ResponseEntity<Resource> flatFileBlob = publicationController.getArtefactFile(
             UUID.randomUUID(),
             USER_ID,
@@ -334,8 +334,8 @@ class PublicationControllerTest {
     void checkGetFileContentAdminReturns() {
         String string = "Hello";
         byte[] testData = string.getBytes();
-        when(publicationRetrievalService.getFlatFileByArtefactID(any())).thenReturn(new ByteArrayResource(testData));
-        when(publicationRetrievalService.getMetadataByArtefactId(any())).thenReturn(artefactWithId);
+        when(publicationRetrievalService.getFlatFileByArtefactID(any(), any(), eq(true))).thenReturn(new ByteArrayResource(testData));
+        when(publicationRetrievalService.getMetadataByArtefactId(any(), any(), eq(true))).thenReturn(artefactWithId);
         ResponseEntity<Resource> flatFileBlob = publicationController.getArtefactFile(
             UUID.randomUUID(),
             USER_ID,

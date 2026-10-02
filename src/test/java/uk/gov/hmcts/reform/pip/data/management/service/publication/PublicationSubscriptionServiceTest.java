@@ -30,7 +30,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -187,10 +189,10 @@ class PublicationSubscriptionServiceTest {
 
     @Test
     void testGenerateArtefactSummarySuccess() {
-        when(publicationRetrievalService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
+        when(publicationRetrievalService.getMetadataByArtefactId(any(), any(), anyBoolean())).thenReturn(ARTEFACT);
         when(listConversionFactory.getArtefactSummaryData(any(ListType.class)))
             .thenReturn(Optional.of(civilDailyCauseListSummaryData));
-        when(publicationRetrievalService.getPayloadByArtefactId(any())).thenReturn("{}");
+        when(publicationRetrievalService.getPayloadByArtefactId(any(), any(), anyBoolean())).thenReturn("{}");
         when(publicationSummaryGenerationService.generate(any())).thenReturn(TEST);
 
         String response = publicationSubscriptionService.generateArtefactSummary(TEST_ARTEFACT_ID);
@@ -209,10 +211,10 @@ class PublicationSubscriptionServiceTest {
             ListType.CST_WEEKLY_HEARING_LIST
         );
 
-        when(publicationRetrievalService.getMetadataByArtefactId(any())).thenReturn(artefact);
+        when(publicationRetrievalService.getMetadataByArtefactId(any(), any(), anyBoolean())).thenReturn(artefact);
         when(listConversionFactory.getArtefactSummaryData(any(ListType.class)))
             .thenReturn(Optional.of(nonStrategicListSummaryData));
-        when(publicationRetrievalService.getPayloadByArtefactId(any())).thenReturn("[{\"date\":\"01/01/2025\"}]");
+        when(publicationRetrievalService.getPayloadByArtefactId(any(), any(), anyBoolean())).thenReturn("[{\"date\":\"01/01/2025\"}]");
         when(publicationSummaryGenerationService.generate(any())).thenReturn(TEST);
 
         String response = publicationSubscriptionService.generateArtefactSummary(TEST_ARTEFACT_ID);
@@ -221,12 +223,12 @@ class PublicationSubscriptionServiceTest {
 
     @Test
     void testGenerateArtefactSummaryWhenSummaryIsEmpty() {
-        when(publicationRetrievalService.getMetadataByArtefactId(TEST_ARTEFACT_ID)).thenReturn(ARTEFACT);
+        when(publicationRetrievalService.getMetadataByArtefactId(eq(TEST_ARTEFACT_ID), any(), anyBoolean())).thenReturn(ARTEFACT);
         when(listConversionFactory.getArtefactSummaryData(any(ListType.class))).thenReturn(Optional.empty());
 
         assertEquals("", publicationSubscriptionService.generateArtefactSummary(TEST_ARTEFACT_ID),
                      RESPONSE_MESSAGE);
-        verify(publicationRetrievalService, never()).getPayloadByArtefactId(TEST_ARTEFACT_ID);
+        verify(publicationRetrievalService, never()).getPayloadByArtefactId(eq(TEST_ARTEFACT_ID), any(), anyBoolean());
     }
 
     @Test

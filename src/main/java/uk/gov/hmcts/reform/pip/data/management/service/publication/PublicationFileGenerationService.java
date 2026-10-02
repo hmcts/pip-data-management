@@ -86,8 +86,9 @@ public class PublicationFileGenerationService {
      * @throws ProcessingException error.
      */
     public Optional<PublicationFiles> generate(UUID artefactId, String payload, InputStream inputExcel) {
-        String rawJson = payload == null ? publicationRetrievalService.getPayloadByArtefactId(artefactId) : payload;
-        Artefact artefact = publicationRetrievalService.getMetadataByArtefactId(artefactId);
+        String rawJson = payload == null ? publicationRetrievalService.getPayloadByArtefactId(artefactId, null, true)
+            : payload;
+        Artefact artefact = publicationRetrievalService.getMetadataByArtefactId(artefactId, null, true);
         Location location = locationService.getLocationById(Integer.valueOf(artefact.getLocationId()));
         JsonNode topLevelNode;
 

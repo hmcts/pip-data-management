@@ -43,33 +43,29 @@ public class PublicationRetrievalService {
         this.azureArtefactBlobService = azureArtefactBlobService;
     }
 
-    public Artefact getMetadataByArtefactId(UUID artefactId) {
-        return artefactRepository.findArtefactByArtefactId(artefactId.toString())
-            .orElseThrow(() -> new ArtefactNotFoundException(String.format(
-                "No artefact found with the ID: %s",
-                artefactId
-            )));
-    }
-
     /**
      * Takes in artefact id and returns the metadata for the artefact.
      *
      * @param artefactId represents the artefact id which is then used to get an artefact to populate the inputs
      *                   for the blob request.
      * @param userId     represents the user ID of the user who is making the request
+     * @param isAdmin    represents if the user is an admin
      * @return The metadata for the found artefact.
      */
-    public Artefact getMetadataByArtefactId(UUID artefactId, UUID userId) {
+    public Artefact getMetadataByArtefactId(UUID artefactId, UUID userId, boolean isAdmin) {
+        Optional<Artefact> artefact = artefactRepository.findByArtefactId(artefactId.toString());
 
-        LocalDateTime currentDate = LocalDateTime.now();
-
-        Optional<Artefact> artefact = artefactRepository.findByArtefactId(
-            artefactId.toString(),
-            currentDate
-        );
-
-        if (artefact.isPresent() && isAuthorised(artefact.get(), userId)) {
-            return artefact.get();
+        if (artefact.isPresent()) {
+            Artefact a = artefact.get();
+            if (isAdmin) {
+                return a;
+            }
+            LocalDateTime currentDate = LocalDateTime.now();
+            if (a.getDisplayFrom().isBefore(currentDate)
+                && (a.getDisplayTo() == null || a.getDisplayTo().isAfter(currentDate))
+                && isAuthorised(a, userId)) {
+                return a;
+            }
         }
 
         throw new ArtefactNotFoundException(String.format("No artefact found with the ID: %s", artefactId));
@@ -81,24 +77,11 @@ public class PublicationRetrievalService {
      * @param artefactId represents the artefact id which is then used to get an artefact to populate the inputs
      *                   for the blob request.
      * @param userId     represents the user ID of the user who is making the request
+     * @param isAdmin    represents if the user is an admin
      * @return The data within the blob in string format.
      */
-    public String getPayloadByArtefactId(UUID artefactId, UUID userId) {
-        Artefact artefact = getMetadataByArtefactId(artefactId, userId);
-
-        return azureArtefactBlobService.getBlobData(ArtefactHelper.getUuidFromUrl(artefact.getPayload()));
-    }
-
-    /**
-     * Takes in artefact id and returns the payload within the matching blob in string format. This is used for admin
-     * requests
-     *
-     * @param artefactId represents the artefact id which is then used to get an artefact to populate the inputs
-     *                   for the blob request.
-     * @return The data within the blob in string format.
-     */
-    public String getPayloadByArtefactId(UUID artefactId) {
-        Artefact artefact = getMetadataByArtefactId(artefactId);
+    public String getPayloadByArtefactId(UUID artefactId, UUID userId, boolean isAdmin) {
+        Artefact artefact = getMetadataByArtefactId(artefactId, userId, isAdmin);
 
         return azureArtefactBlobService.getBlobData(ArtefactHelper.getUuidFromUrl(artefact.getPayload()));
     }
@@ -108,22 +91,11 @@ public class PublicationRetrievalService {
      *
      * @param artefactId The artefact ID to retrieve the flat file from.
      * @param userId     represents the user ID of the user who is making the request
+     * @param isAdmin    represents if the user is an admin
      * @return The flat file resource.
      */
-    public Resource getFlatFileByArtefactID(UUID artefactId, UUID userId) {
-        Artefact artefact = getMetadataByArtefactId(artefactId, userId);
-
-        return azureArtefactBlobService.getBlobFile(ArtefactHelper.getUuidFromUrl(artefact.getPayload()));
-    }
-
-    /**
-     * Retrieves a flat file for an artefact. This is used for admin requests
-     *
-     * @param artefactId The artefact ID to retrieve the flat file from.
-     * @return The flat file resource.
-     */
-    public Resource getFlatFileByArtefactID(UUID artefactId) {
-        Artefact artefact = getMetadataByArtefactId(artefactId);
+    public Resource getFlatFileByArtefactID(UUID artefactId, UUID userId, boolean isAdmin) {
+        Artefact artefact = getMetadataByArtefactId(artefactId, userId, isAdmin);
 
         return azureArtefactBlobService.getBlobFile(ArtefactHelper.getUuidFromUrl(artefact.getPayload()));
     }

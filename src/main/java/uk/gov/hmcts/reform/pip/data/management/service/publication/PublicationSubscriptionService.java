@@ -112,7 +112,7 @@ public class PublicationSubscriptionService {
      * @return A string of the generated summary
      */
     public String generateArtefactSummary(UUID artefactId) {
-        Artefact artefact = publicationRetrievalService.getMetadataByArtefactId(artefactId);
+        Artefact artefact = publicationRetrievalService.getMetadataByArtefactId(artefactId, null, true);
         Optional<ArtefactSummaryData> artefactSummaryData =
             listConversionFactory.getArtefactSummaryData(artefact.getListType());
 
@@ -121,7 +121,7 @@ public class PublicationSubscriptionService {
         }
 
         try {
-            String rawJson = publicationRetrievalService.getPayloadByArtefactId(artefactId);
+            String rawJson = publicationRetrievalService.getPayloadByArtefactId(artefactId, null, true);
             Map<String, List<Map<String, String>>> summaryData = artefactSummaryData.get()
                 .get(MAPPER.readTree(rawJson));
 

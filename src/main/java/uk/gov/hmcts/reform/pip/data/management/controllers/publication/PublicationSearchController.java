@@ -182,7 +182,7 @@ public class PublicationSearchController {
         @PathVariable String locationId,
         @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
-        return ResponseEntity.ok(publicationSearchService.findAllByLocationIdAdmin(locationId, requesterId, isAdmin));
+        return ResponseEntity.ok(publicationSearchService.findAllByLocationId(locationId, requesterId, isAdmin));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching the given listType and "

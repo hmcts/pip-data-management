@@ -53,6 +53,7 @@ public class PublicationCreationService extends ExcelAbstractList {
 
     private final PublicationSubscriptionService publicationSubscriptionService;
 
+    private static final String MANUAL_UPLOAD_VALUE = "MANUAL_UPLOAD";
     @Value("${publications.cop-location-id}")
     private String copLocationId;
     private final ArtefactSearchService artefactSearchService;

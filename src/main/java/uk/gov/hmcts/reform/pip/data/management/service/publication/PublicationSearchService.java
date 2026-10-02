@@ -128,49 +128,23 @@ public class PublicationSearchService {
      * @return a list of all artefacts that fulfil the timing criteria, match the given location id and sensitivity
      *     associated with given verification status.
      */
-    public List<Artefact> findAllByLocationId(String searchValue, UUID userId) {
+    public List<Artefact> findAllByLocationId(String locationId, UUID userId, boolean isAdmin) {
         LocalDateTime currDate = LocalDateTime.now();
-        List<Artefact> artefacts = artefactRepository.findArtefactsByLocationId(searchValue, currDate);
+        List<Artefact> artefacts = artefactRepository.findArtefactsByLocationId(locationId, currDate);
 
-        if (copLocationId.equals(searchValue)) {
+        if (copLocationId.equals(locationId)) {
             List<Artefact> copArtefacts = artefactRepository.findArtefactsByListType(
                 ListType.COP_DAILY_CAUSE_LIST.name(), currDate
             );
-            return Stream.concat(artefacts.stream(), copArtefacts.stream())
+            artefacts = Stream.concat(artefacts.stream(), copArtefacts.stream())
                 .distinct()
-                .filter(artefact -> publicationRetrievalService.isAuthorised(artefact, userId))
                 .toList();
         }
 
-        return artefacts.stream()
+        return isAdmin ? artefacts : artefacts.stream()
+            .filter(artefact -> artefact.getDisplayFrom().isBefore(currDate))
             .filter(artefact -> publicationRetrievalService.isAuthorised(artefact, userId))
             .toList();
-    }
-
-    /**
-     * Get all artefacts for admin actions.
-     *
-     * @param locationId The location id to search for.
-     * @param userId     represents the user ID of the user who is making the request
-     * @param isAdmin    bool to check whether admin search is needed, if not will default to findAllByLocationId().
-     * @return list of matching artefacts.
-     */
-    public List<Artefact> findAllByLocationIdAdmin(String locationId, UUID userId, boolean isAdmin) {
-        if (!isAdmin) {
-            return findAllByLocationId(locationId, userId);
-        }
-        LocalDateTime currDate = LocalDateTime.now();
-        List<Artefact> artefacts = artefactRepository.findArtefactsByLocationIdAdmin(locationId, currDate);
-
-        if (copLocationId.equals(locationId)) {
-            List<Artefact> copArtefacts = artefactRepository.findArtefactsByListTypeAdmin(
-                ListType.COP_DAILY_CAUSE_LIST.name(), currDate
-            );
-            return Stream.concat(artefacts.stream(), copArtefacts.stream())
-                .distinct()
-                .toList();
-        }
-        return artefacts;
     }
 
     /**
@@ -183,11 +157,10 @@ public class PublicationSearchService {
      */
     public List<Artefact> findAllByListType(ListType listType, UUID userId, boolean isAdmin) {
         LocalDateTime currDate = LocalDateTime.now();
-        List<Artefact> artefacts = isAdmin
-            ? artefactRepository.findArtefactsByListTypeAdmin(listType.name(), currDate)
-            : artefactRepository.findArtefactsByListType(listType.name(), currDate);
+        List<Artefact> artefacts = artefactRepository.findArtefactsByListType(listType.name(), currDate);
 
         return isAdmin ? artefacts : artefacts.stream()
+            .filter(artefact -> artefact.getDisplayFrom().isBefore(currDate))
             .filter(artefact -> publicationRetrievalService.isAuthorised(artefact, userId))
             .toList();
     }

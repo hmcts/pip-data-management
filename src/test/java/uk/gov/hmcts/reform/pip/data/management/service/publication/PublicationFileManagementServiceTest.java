@@ -37,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -173,7 +174,8 @@ class PublicationFileManagementServiceTest {
 
     @Test
     void testGetStoredPdfPublicationSjp() {
-        when(publicationRetrievalService.getMetadataByArtefactId(TEST_ARTEFACT_ID)).thenReturn(ARTEFACT);
+        when(publicationRetrievalService.getMetadataByArtefactId(eq(TEST_ARTEFACT_ID), any(), anyBoolean()))
+            .thenReturn(ARTEFACT);
         when(azureBlobService.getBlobFile(TEST_ARTEFACT_ID + PDF.getExtension())).thenReturn(TEST_BYTE);
 
         String response = publicationFileManagementService.getStoredPublication(
@@ -186,7 +188,8 @@ class PublicationFileManagementServiceTest {
 
     @Test
     void testGetStoredAdditionalPdfPublicationSjp() {
-        when(publicationRetrievalService.getMetadataByArtefactId(TEST_ARTEFACT_ID)).thenReturn(ARTEFACT);
+        when(publicationRetrievalService.getMetadataByArtefactId(eq(TEST_ARTEFACT_ID), any(), anyBoolean()))
+            .thenReturn(ARTEFACT);
         doThrow(new NotFoundException(NOT_FOUND_MESSAGE)).when(azureBlobService)
             .getBlobFile(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension());
 
@@ -201,7 +204,8 @@ class PublicationFileManagementServiceTest {
     @ParameterizedTest
     @MethodSource("sjpParameters")
     void testGetStoredExcelPublicationSjp(Artefact artefact) {
-        when(publicationRetrievalService.getMetadataByArtefactId(TEST_ARTEFACT_ID)).thenReturn(artefact);
+        when(publicationRetrievalService.getMetadataByArtefactId(TEST_ARTEFACT_ID, null, true))
+            .thenReturn(artefact);
         when(azureBlobService.getBlobFile(TEST_ARTEFACT_ID + EXCEL.getExtension())).thenReturn(TEST_BYTE);
 
         String response = publicationFileManagementService.getStoredPublication(
@@ -215,7 +219,8 @@ class PublicationFileManagementServiceTest {
     @Test
     void testGetStoredPdfPublicationCivilList() {
         ARTEFACT.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
-        when(publicationRetrievalService.getMetadataByArtefactId(TEST_ARTEFACT_ID)).thenReturn(ARTEFACT);
+        when(publicationRetrievalService.getMetadataByArtefactId(eq(TEST_ARTEFACT_ID), any(), anyBoolean()))
+            .thenReturn(ARTEFACT);
         when(azureBlobService.getBlobFile(TEST_ARTEFACT_ID + PDF.getExtension())).thenReturn(TEST_BYTE);
 
         String response = publicationFileManagementService.getStoredPublication(
@@ -229,7 +234,8 @@ class PublicationFileManagementServiceTest {
     @Test
     void testGetStoredAdditionalPdfPublicationCivilList() {
         ARTEFACT.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
-        when(publicationRetrievalService.getMetadataByArtefactId(TEST_ARTEFACT_ID)).thenReturn(ARTEFACT);
+        when(publicationRetrievalService.getMetadataByArtefactId(eq(TEST_ARTEFACT_ID), any(), anyBoolean()))
+            .thenReturn(ARTEFACT);
         when(azureBlobService.getBlobFile(TEST_ARTEFACT_ID + WELSH_PDF_SUFFIX + PDF.getExtension()))
             .thenReturn(TEST_BYTE);
 
@@ -244,7 +250,8 @@ class PublicationFileManagementServiceTest {
     @Test
     void testGetStoredExcelPublicationCivilList() {
         ARTEFACT.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
-        when(publicationRetrievalService.getMetadataByArtefactId(TEST_ARTEFACT_ID)).thenReturn(ARTEFACT);
+        when(publicationRetrievalService.getMetadataByArtefactId(eq(TEST_ARTEFACT_ID), any(), anyBoolean()))
+            .thenReturn(ARTEFACT);
         doThrow(new NotFoundException(NOT_FOUND_MESSAGE)).when(azureBlobService)
             .getBlobFile(TEST_ARTEFACT_ID + EXCEL.getExtension());
 
@@ -258,7 +265,8 @@ class PublicationFileManagementServiceTest {
 
     @Test
     void testGetStoredPublicationWithinFileSizeLimit() {
-        when(publicationRetrievalService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
+        when(publicationRetrievalService.getMetadataByArtefactId(any(), any(), anyBoolean()))
+            .thenReturn(ARTEFACT);
         when(azureBlobService.getBlobFile(any())).thenReturn(TEST_BYTE);
 
         String response = publicationFileManagementService.getStoredPublication(
@@ -271,7 +279,8 @@ class PublicationFileManagementServiceTest {
 
     @Test
     void testGetStoredPublicationOverFileSizeLimit() {
-        when(publicationRetrievalService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
+        when(publicationRetrievalService.getMetadataByArtefactId(any(), any(), anyBoolean()))
+            .thenReturn(ARTEFACT);
         when(azureBlobService.getBlobFile(any())).thenReturn(TEST_BYTE);
 
         FileSizeLimitException ex = assertThrows(FileSizeLimitException.class, () ->
@@ -287,7 +296,8 @@ class PublicationFileManagementServiceTest {
     void testGetStoredPublicationAuthorisedPublic() {
         ARTEFACT.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         ARTEFACT.setSensitivity(Sensitivity.PUBLIC);
-        when(publicationRetrievalService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
+        when(publicationRetrievalService.getMetadataByArtefactId(any(), any(), anyBoolean()))
+            .thenReturn(ARTEFACT);
         when(azureBlobService.getBlobFile(any())).thenReturn(TEST_BYTE);
 
         String response = publicationFileManagementService.getStoredPublication(
@@ -302,7 +312,8 @@ class PublicationFileManagementServiceTest {
     void testGetStoredPublicationAuthorisedUserIdNull() {
         ARTEFACT.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         ARTEFACT.setSensitivity(Sensitivity.CLASSIFIED);
-        when(publicationRetrievalService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
+        when(publicationRetrievalService.getMetadataByArtefactId(any(), any(), anyBoolean()))
+            .thenReturn(ARTEFACT);
 
         UnauthorisedRequestException ex = assertThrows(UnauthorisedRequestException.class, () ->
             publicationFileManagementService.getStoredPublication(
@@ -317,7 +328,8 @@ class PublicationFileManagementServiceTest {
     void testGetStoredPublicationAuthorisedFalse() {
         ARTEFACT.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         ARTEFACT.setSensitivity(Sensitivity.CLASSIFIED);
-        when(publicationRetrievalService.getMetadataByArtefactId(any())).thenReturn(ARTEFACT);
+        when(publicationRetrievalService.getMetadataByArtefactId(any(), any(), anyBoolean()))
+            .thenReturn(ARTEFACT);
         when(accountManagementService.getIsAuthorised(any(), any(), any())).thenReturn(false);
 
         UnauthorisedRequestException ex = assertThrows(UnauthorisedRequestException.class, () ->

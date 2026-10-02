@@ -25,6 +25,8 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -186,13 +188,12 @@ class AuthorisationServiceTest {
     void testUserCanAccessPublicationWhenPublicSensitivity() {
         Artefact artefact = new Artefact();
         artefact.setSensitivity(Sensitivity.PUBLIC);
-        when(publicationRetrievalService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
+        when(publicationRetrievalService.getMetadataByArtefactId(any(), any(), anyBoolean())).thenReturn(artefact);
 
         List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(ADMIN_ROLE));
         Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
         when(securityContext.getAuthentication()).thenReturn(auth);
-        when(publicationRetrievalService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
 
         assertTrue(authorisationService.userCanAccessPublicationData(TEST_UUID, TEST_UUID, false),
                    "User cannot access publication with sensitivity PUBLIC");
@@ -208,7 +209,7 @@ class AuthorisationServiceTest {
         Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
         when(securityContext.getAuthentication()).thenReturn(auth);
-        when(publicationRetrievalService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
+        when(publicationRetrievalService.getMetadataByArtefactId(any(), any(), anyBoolean())).thenReturn(artefact);
 
         assertTrue(authorisationService.userCanAccessPublicationData(TEST_UUID, TEST_UUID, true),
                    "User cannot access publication with sensitivity PUBLIC");
@@ -225,7 +226,7 @@ class AuthorisationServiceTest {
         Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
         when(securityContext.getAuthentication()).thenReturn(auth);
-        when(publicationRetrievalService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
+        when(publicationRetrievalService.getMetadataByArtefactId(any(), any(), anyBoolean())).thenReturn(artefact);
         when(accountManagementService.getIsAuthorised(TEST_UUID, LIST_TYPE, Sensitivity.PRIVATE))
             .thenReturn(true);
 
@@ -244,7 +245,7 @@ class AuthorisationServiceTest {
         Authentication auth = new TestingAuthenticationToken(TEST_USER_ID, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
         when(securityContext.getAuthentication()).thenReturn(auth);
-        when(publicationRetrievalService.getMetadataByArtefactId(TEST_UUID)).thenReturn(artefact);
+        when(publicationRetrievalService.getMetadataByArtefactId(any(), any(), anyBoolean())).thenReturn(artefact);
         when(accountManagementService.getIsAuthorised(TEST_UUID, LIST_TYPE, Sensitivity.PRIVATE))
             .thenReturn(false);
 

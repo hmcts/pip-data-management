@@ -70,7 +70,7 @@ public class PublicationRemovalService {
      */
     @Transactional
     public void archiveArtefactById(String artefactId, UUID requesterId, Boolean isManuallyDeleted) {
-        Artefact artefactToArchive = artefactRepository.findArtefactByArtefactId(artefactId)
+        Artefact artefactToArchive = artefactRepository.findByArtefactId(artefactId)
             .orElseThrow(() -> new ArtefactNotFoundException("No artefact found with the ID: " + artefactId));
 
         handleArtefactArchiving(artefactToArchive, isManuallyDeleted);
@@ -120,7 +120,7 @@ public class PublicationRemovalService {
      */
     @Transactional
     public void deleteArtefactById(String artefactId, UUID requesterId) {
-        Artefact artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId)
+        Artefact artefactToDelete = artefactRepository.findByArtefactId(artefactId)
             .orElseThrow(() -> new ArtefactNotFoundException("No artefact found with the ID: " + artefactId));
 
         handleArtefactDeletion(artefactToDelete);
