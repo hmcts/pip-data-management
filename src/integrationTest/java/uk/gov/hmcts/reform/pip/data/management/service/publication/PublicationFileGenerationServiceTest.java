@@ -112,7 +112,8 @@ class PublicationFileGenerationServiceTest extends IntegrationBasicTestBase {
         when(publicationRetrievalService.getMetadataByArtefactId(ARTEFACT_ID)).thenReturn(ARTEFACT);
         when(locationService.getLocationById(LOCATION_ID)).thenReturn(LOCATION);
 
-        Optional<PublicationFiles> files = publicationFileGenerationService.generate(ARTEFACT_ID, sjpPublicListInput);
+        Optional<PublicationFiles> files = publicationFileGenerationService.generate(ARTEFACT_ID, sjpPublicListInput,
+                                                                                     null);
         verify(publicationRetrievalService, never()).getPayloadByArtefactId(ARTEFACT_ID);
 
         SoftAssertions softly = new SoftAssertions();
@@ -140,7 +141,8 @@ class PublicationFileGenerationServiceTest extends IntegrationBasicTestBase {
         when(publicationRetrievalService.getMetadataByArtefactId(ARTEFACT_ID)).thenReturn(WELSH_ARTEFACT);
         when(locationService.getLocationById(LOCATION_ID)).thenReturn(LOCATION);
 
-        Optional<PublicationFiles> files = publicationFileGenerationService.generate(ARTEFACT_ID, sjpPublicListInput);
+        Optional<PublicationFiles> files = publicationFileGenerationService.generate(ARTEFACT_ID, sjpPublicListInput,
+                                                                                     null);
         verify(publicationRetrievalService, never()).getPayloadByArtefactId(ARTEFACT_ID);
 
         SoftAssertions softly = new SoftAssertions();
@@ -169,7 +171,8 @@ class PublicationFileGenerationServiceTest extends IntegrationBasicTestBase {
         when(publicationRetrievalService.getMetadataByArtefactId(ARTEFACT_ID)).thenReturn(ARTEFACT);
         when(locationService.getLocationById(LOCATION_ID)).thenReturn(LOCATION);
 
-        Optional<PublicationFiles> files = publicationFileGenerationService.generate(ARTEFACT_ID, civilDailyListInput);
+        Optional<PublicationFiles> files = publicationFileGenerationService.generate(ARTEFACT_ID, civilDailyListInput,
+                                                                                     null);
         verify(publicationRetrievalService, never()).getPayloadByArtefactId(ARTEFACT_ID);
 
         SoftAssertions softly = new SoftAssertions();
@@ -198,7 +201,8 @@ class PublicationFileGenerationServiceTest extends IntegrationBasicTestBase {
         when(publicationRetrievalService.getMetadataByArtefactId(ARTEFACT_ID)).thenReturn(WELSH_ARTEFACT);
         when(locationService.getLocationById(LOCATION_ID)).thenReturn(LOCATION);
 
-        Optional<PublicationFiles> files = publicationFileGenerationService.generate(ARTEFACT_ID, civilDailyListInput);
+        Optional<PublicationFiles> files = publicationFileGenerationService.generate(ARTEFACT_ID, civilDailyListInput,
+                                                                                     null);
         verify(publicationRetrievalService, never()).getPayloadByArtefactId(ARTEFACT_ID);
 
         SoftAssertions softly = new SoftAssertions();
@@ -227,7 +231,8 @@ class PublicationFileGenerationServiceTest extends IntegrationBasicTestBase {
         when(publicationRetrievalService.getMetadataByArtefactId(ARTEFACT_ID)).thenReturn(ARTEFACT);
         when(locationService.getLocationById(LOCATION_ID)).thenReturn(LOCATION);
 
-        Optional<PublicationFiles> files = publicationFileGenerationService.generate(ARTEFACT_ID, sjpPublicListInput);
+        Optional<PublicationFiles> files = publicationFileGenerationService.generate(ARTEFACT_ID, sjpPublicListInput,
+                                                                                     null);
         verify(publicationRetrievalService, never()).getPayloadByArtefactId(ARTEFACT_ID);
 
         SoftAssertions softly = new SoftAssertions();
@@ -256,7 +261,8 @@ class PublicationFileGenerationServiceTest extends IntegrationBasicTestBase {
         when(publicationRetrievalService.getMetadataByArtefactId(ARTEFACT_ID)).thenReturn(ARTEFACT);
         when(locationService.getLocationById(LOCATION_ID)).thenReturn(LOCATION);
 
-        Optional<PublicationFiles> files = publicationFileGenerationService.generate(ARTEFACT_ID, sjpPublicListInput);
+        Optional<PublicationFiles> files = publicationFileGenerationService.generate(ARTEFACT_ID, sjpPublicListInput,
+                                                                                     null);
         verify(publicationRetrievalService, never()).getPayloadByArtefactId(ARTEFACT_ID);
 
         SoftAssertions softly = new SoftAssertions();
@@ -286,7 +292,7 @@ class PublicationFileGenerationServiceTest extends IntegrationBasicTestBase {
         when(publicationRetrievalService.getMetadataByArtefactId(ARTEFACT_ID)).thenReturn(ARTEFACT);
         when(locationService.getLocationById(LOCATION_ID)).thenReturn(LOCATION);
 
-        publicationFileGenerationService.generate(ARTEFACT_ID, null);
+        publicationFileGenerationService.generate(ARTEFACT_ID, null, null);
         verify(publicationRetrievalService).getPayloadByArtefactId(ARTEFACT_ID);
     }
 
@@ -296,7 +302,7 @@ class PublicationFileGenerationServiceTest extends IntegrationBasicTestBase {
         when(publicationRetrievalService.getMetadataByArtefactId(ARTEFACT_ID)).thenReturn(ARTEFACT);
         when(locationService.getLocationById(LOCATION_ID)).thenReturn(LOCATION);
 
-        assertThat(publicationFileGenerationService.generate(ARTEFACT_ID, sjpPublicListInput))
+        assertThat(publicationFileGenerationService.generate(ARTEFACT_ID, sjpPublicListInput, null))
             .as(FILE_NOT_PRESENT_MESSAGE)
             .isEmpty();
     }

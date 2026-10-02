@@ -239,7 +239,7 @@ class SjpPressListFileConverterTest {
     void testExcelConversionEnglishTableHeaders(ListType listType) throws IOException {
         byte[] result = sjpPressListConverter
             .convertToExcel(getInput("/mocks/sjpPressList.json"), listType,
-                            Map.of("language", "ENGLISH"));
+                            Map.of("language", "ENGLISH"), null);
 
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
@@ -305,7 +305,7 @@ class SjpPressListFileConverterTest {
     @EnumSource(value = ListType.class, names = {"SJP_PRESS_LIST", "SJP_DELTA_PRESS_LIST"})
     void testExcelConversionWelshTableHeaders(ListType listType) throws IOException {
         byte[] result = sjpPressListConverter.convertToExcel(getInput("/mocks/sjpPressList.json"), listType,
-                                                             Map.of("language", "WELSH"));
+                                                             Map.of("language", "WELSH"), null);
 
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);
@@ -372,7 +372,7 @@ class SjpPressListFileConverterTest {
     void testExcelConversionTableValues(ListType listType) throws IOException {
         byte[] result = sjpPressListConverter
             .convertToExcel(getInput("/mocks/sjpPressList.json"), listType,
-                            Map.of("language", "ENGLISH"));
+                            Map.of("language", "ENGLISH"), null);
 
         ByteArrayInputStream file = new ByteArrayInputStream(result);
         Workbook workbook = new XSSFWorkbook(file);

@@ -26,6 +26,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Map;
@@ -80,10 +81,11 @@ public class PublicationFileGenerationService {
      *
      * @param artefactId The artefact ID to generate the files for.
      * @param payload The payload of the artefact.
+     * @param inputExcel The input non-strategic Excel file
      * @return all generated files (primary PDF + additional PDF + Excel).
      * @throws ProcessingException error.
      */
-    public Optional<PublicationFiles> generate(UUID artefactId, String payload) {
+    public Optional<PublicationFiles> generate(UUID artefactId, String payload, InputStream inputExcel) {
         String rawJson = payload == null ? publicationRetrievalService.getPayloadByArtefactId(artefactId) : payload;
         Artefact artefact = publicationRetrievalService.getMetadataByArtefactId(artefactId);
         Location location = locationService.getLocationById(Integer.valueOf(artefact.getLocationId()));
@@ -101,7 +103,8 @@ public class PublicationFileGenerationService {
             byte[] excel = new byte[0];
             if (publicationRetrievalService.payloadWithinExcelLimit(artefact.getPayloadSize())) {
                 excel = fileConverter.get().convertToExcel(
-                    topLevelNode, listType, buildArtefactMetadata(artefact, location, artefact.getLanguage())
+                    topLevelNode, listType, buildArtefactMetadata(artefact, location, artefact.getLanguage()),
+                    inputExcel
                 );
             }
 
