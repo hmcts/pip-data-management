@@ -107,6 +107,10 @@ payload:
 
 validations:
   master-schema: "schemas/master_schema.json"
+
+publications:
+  cop-location-id: ${COP_LOCATION_ID:390}
+
   validation-schemas:
     CIVIL_DAILY_CAUSE_LIST: "schemas/civil_daily_cause_list.json"
     FAMILY_DAILY_CAUSE_LIST: "schemas/family_daily_cause_list.json"

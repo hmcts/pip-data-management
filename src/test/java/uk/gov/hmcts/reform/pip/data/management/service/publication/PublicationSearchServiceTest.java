@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactSearchCaseResult;
@@ -69,6 +70,7 @@ class PublicationSearchServiceTest {
     private static final ListSearchConfig LIST_SEARCH_CONFIG = new ListSearchConfig();
     private static final String CASE_NUMBER_FIELD_NAME = "caseNumber";
     private static final String CASE_NAME_FIELD_NAME = "caseName";
+    private static final String COP_LOCATION_ID = "390";
 
     @Mock
     private ArtefactRepository artefactRepository;
@@ -109,6 +111,11 @@ class PublicationSearchServiceTest {
         LIST_SEARCH_CONFIG.setListType(ListType.CIVIL_DAILY_CAUSE_LIST);
         LIST_SEARCH_CONFIG.setCaseNumberFieldName(CASE_NUMBER_FIELD_NAME);
         LIST_SEARCH_CONFIG.setCaseNameFieldName(CASE_NAME_FIELD_NAME);
+    }
+
+    @BeforeEach
+    void setupBeforeEach() {
+        ReflectionTestUtils.setField(publicationSearchService, "copLocationId", COP_LOCATION_ID);
     }
 
     @Test
@@ -633,14 +640,14 @@ class PublicationSearchServiceTest {
         copArtefact.setListType(ListType.COP_DAILY_CAUSE_LIST);
         copArtefact.setLocationId("123");
 
-        when(artefactRepository.findArtefactsByLocationId(eq(PublicationCreationService.COP_LOCATION_ID), any()))
+        when(artefactRepository.findArtefactsByLocationId(eq(COP_LOCATION_ID), any()))
             .thenReturn(new ArrayList<>());
         when(artefactRepository.findArtefactsByListType(eq(ListType.COP_DAILY_CAUSE_LIST.name()), any()))
             .thenReturn(List.of(copArtefact));
         when(publicationRetrievalService.isAuthorised(any(), any())).thenReturn(true);
 
         List<Artefact> result = publicationSearchService.findAllByLocationId(
-            PublicationCreationService.COP_LOCATION_ID, USER_ID
+            COP_LOCATION_ID, USER_ID
         );
 
         assertEquals(1, result.size(), "Should return 1 COP artefact");
@@ -653,13 +660,13 @@ class PublicationSearchServiceTest {
         copArtefact.setListType(ListType.COP_DAILY_CAUSE_LIST);
         copArtefact.setLocationId("123");
 
-        when(artefactRepository.findArtefactsByLocationIdAdmin(eq(PublicationCreationService.COP_LOCATION_ID), any()))
+        when(artefactRepository.findArtefactsByLocationIdAdmin(eq(COP_LOCATION_ID), any()))
             .thenReturn(new ArrayList<>());
         when(artefactRepository.findArtefactsByListTypeAdmin(eq(ListType.COP_DAILY_CAUSE_LIST.name()), any()))
             .thenReturn(List.of(copArtefact));
 
         List<Artefact> result = publicationSearchService.findAllByLocationIdAdmin(
-            PublicationCreationService.COP_LOCATION_ID, USER_ID, true
+            COP_LOCATION_ID, USER_ID, true
         );
 
         assertEquals(1, result.size(), "Should return 1 COP artefact");

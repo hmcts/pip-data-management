@@ -141,7 +141,6 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
 
     @Query(value = "SELECT * FROM Artefact "
         + "WHERE list_type = :list_type "
-        + "AND sensitivity = 'PUBLIC' "
         + "AND display_from < :curr_date "
         + "AND (display_to > :curr_date OR display_to IS NULL)",
         nativeQuery = true)

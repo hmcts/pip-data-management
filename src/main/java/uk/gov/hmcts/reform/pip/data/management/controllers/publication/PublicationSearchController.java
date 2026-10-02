@@ -198,6 +198,6 @@ public class PublicationSearchController {
         @PathVariable ListType listType,
         @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
-        return ResponseEntity.ok(publicationSearchService.findAllByListTypeAdmin(listType, requesterId, isAdmin));
+        return ResponseEntity.ok(publicationSearchService.findAllByListType(listType, requesterId, isAdmin));
     }
 }

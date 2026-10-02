@@ -244,7 +244,7 @@ class PublicationSearchControllerTest {
     @Test
     void testGetArtefactsByListTypeReturnsOk() {
         List<Artefact> artefactList = List.of(new Artefact());
-        when(publicationSearchService.findAllByListTypeAdmin(ListType.COP_DAILY_CAUSE_LIST, USER_ID, false))
+        when(publicationSearchService.findAllByListType(ListType.COP_DAILY_CAUSE_LIST, USER_ID, false))
             .thenReturn(artefactList);
 
         ResponseEntity<List<Artefact>> result = publicationSearchController

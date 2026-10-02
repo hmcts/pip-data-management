@@ -102,7 +102,6 @@ public class PublicationCreationRunner {
     }
 
     private void preprocessPublicationDatesAndLinking(Artefact artefact) {
-        publicationCreationService.handleCopLinking(artefact);
         artefact.setContentDate(artefact.getContentDate().toLocalDate().atTime(LocalTime.MIN));
         artefact.setLastReceivedDate(LocalDateTime.now());
     }

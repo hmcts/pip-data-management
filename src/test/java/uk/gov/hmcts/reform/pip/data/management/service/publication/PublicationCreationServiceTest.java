@@ -14,6 +14,7 @@ import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
@@ -394,16 +395,4 @@ class PublicationCreationServiceTest {
         }
     }
 
-    @Test
-    void testHandleCopLinking() {
-        Artefact artefact = new Artefact();
-        artefact.setListType(ListType.COP_DAILY_CAUSE_LIST);
-        artefact.setLocationId("123");
-
-        publicationCreationService.handleCopLinking(artefact);
-
-        assertEquals("123", artefact.getLocationId(), "Location ID should not change for COP");
-        assertEquals("123", artefact.getSearch().get("court-id").get(0),
-                     "Original location ID should be in metadata");
-    }
 }

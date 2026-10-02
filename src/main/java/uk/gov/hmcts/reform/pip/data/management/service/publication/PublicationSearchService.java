@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
@@ -32,6 +33,9 @@ public class PublicationSearchService {
     private final ArtefactSearchRepository artefactSearchRepository;
     private final ListSearchConfigRepository listSearchConfigRepository;
     private final PublicationRetrievalService publicationRetrievalService;
+
+    @Value("${publications.cop-location-id}")
+    private String copLocationId;
 
     @Autowired
     public PublicationSearchService(ArtefactRepository artefactRepository,
@@ -128,7 +132,7 @@ public class PublicationSearchService {
         LocalDateTime currDate = LocalDateTime.now();
         List<Artefact> artefacts = artefactRepository.findArtefactsByLocationId(searchValue, currDate);
 
-        if (PublicationCreationService.COP_LOCATION_ID.equals(searchValue)) {
+        if (copLocationId.equals(searchValue)) {
             List<Artefact> copArtefacts = artefactRepository.findArtefactsByListType(
                 ListType.COP_DAILY_CAUSE_LIST.name(), currDate
             );
@@ -158,7 +162,7 @@ public class PublicationSearchService {
         LocalDateTime currDate = LocalDateTime.now();
         List<Artefact> artefacts = artefactRepository.findArtefactsByLocationIdAdmin(locationId, currDate);
 
-        if (PublicationCreationService.COP_LOCATION_ID.equals(locationId)) {
+        if (copLocationId.equals(locationId)) {
             List<Artefact> copArtefacts = artefactRepository.findArtefactsByListTypeAdmin(
                 ListType.COP_DAILY_CAUSE_LIST.name(), currDate
             );
@@ -174,31 +178,18 @@ public class PublicationSearchService {
      *
      * @param listType - represents the list type in question being searched for
      * @param userId   - represents the user ID of the user who is making the request
-     * @return a list of all artefacts that fulfil the timing criteria, match the given list type and sensitivity
-     *     associated with given verification status.
-     */
-    public List<Artefact> findAllByListType(ListType listType, UUID userId) {
-        LocalDateTime currDate = LocalDateTime.now();
-        List<Artefact> artefacts = artefactRepository.findArtefactsByListType(listType.name(), currDate);
-
-        return artefacts.stream()
-            .filter(artefact -> publicationRetrievalService.isAuthorised(artefact, userId))
-            .toList();
-    }
-
-    /**
-     * Get all artefacts relating to a given list type for admin actions.
-     *
-     * @param listType - represents the list type in question being searched for
-     * @param userId   - represents the user ID of the user who is making the request
      * @param isAdmin  - bool to check whether admin search is needed
      * @return list of matching artefacts.
      */
-    public List<Artefact> findAllByListTypeAdmin(ListType listType, UUID userId, boolean isAdmin) {
+    public List<Artefact> findAllByListType(ListType listType, UUID userId, boolean isAdmin) {
         LocalDateTime currDate = LocalDateTime.now();
-        return isAdmin
+        List<Artefact> artefacts = isAdmin
             ? artefactRepository.findArtefactsByListTypeAdmin(listType.name(), currDate)
-            : findAllByListType(listType, userId);
+            : artefactRepository.findArtefactsByListType(listType.name(), currDate);
+
+        return isAdmin ? artefacts : artefacts.stream()
+            .filter(artefact -> publicationRetrievalService.isAuthorised(artefact, userId))
+            .toList();
     }
 
     /**

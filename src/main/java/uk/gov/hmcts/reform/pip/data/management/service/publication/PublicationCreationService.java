@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -52,8 +53,8 @@ public class PublicationCreationService extends ExcelAbstractList {
 
     private final PublicationSubscriptionService publicationSubscriptionService;
 
-    private static final String MANUAL_UPLOAD_VALUE = "MANUAL_UPLOAD";
-    public static final String COP_LOCATION_ID = "390";
+    @Value("${publications.cop-location-id}")
+    private String copLocationId;
     private final ArtefactSearchService artefactSearchService;
 
     @Autowired
@@ -191,23 +192,6 @@ public class PublicationCreationService extends ExcelAbstractList {
 
         } else {
             artefact.setLocationId(NoMatchArtefactHelper.buildNoMatchLocationId(artefact.getLocationId()));
-        }
-    }
-
-    /**
-     * Method that handles the linking of COP daily cause lists to the COP location.
-     * @param artefact The artefact to handle.
-     */
-    public void handleCopLinking(Artefact artefact) {
-        if (ListType.COP_DAILY_CAUSE_LIST.equals(artefact.getListType())) {
-            Map<String, List<Object>> search = artefact.getSearch();
-            if (search == null || search.isEmpty()) {
-                search = new HashMap<>();
-            } else {
-                search = new HashMap<>(search);
-            }
-            search.put("court-id", List.of(artefact.getLocationId()));
-            artefact.setSearch(search);
         }
     }
 }
