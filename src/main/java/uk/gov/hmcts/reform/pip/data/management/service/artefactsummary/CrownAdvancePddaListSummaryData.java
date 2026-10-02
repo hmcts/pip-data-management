@@ -2,8 +2,8 @@ package uk.gov.hmcts.reform.pip.data.management.service.artefactsummary;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.CrownWarnedPddaList;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownWarnedPddaListHelper;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.CrownAdvancePddaList;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownAdvancePddaListHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,10 +11,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class CrownWarnedPddaListSummaryData implements ArtefactSummaryData {
+public class CrownAdvancePddaListSummaryData implements ArtefactSummaryData {
     @Override
     public Map<String, List<Map<String, String>>> get(JsonNode payload) {
-        Map<String, List<CrownWarnedPddaList>> listData = CrownWarnedPddaListHelper.processPayload(payload);
+        Map<String, List<CrownAdvancePddaList>> listData = CrownAdvancePddaListHelper.processPayload(payload);
         List<Map<String, String>> summaryCases = new ArrayList<>();
 
         listData.values()
