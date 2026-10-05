@@ -118,6 +118,7 @@ public class PublicationRemovalService {
      * @param artefactId    The ID of the artefact to be deleted.
      * @param requesterId   The ID of the admin user who is attempting to delete the artefact.
      */
+    @Transactional
     public void deleteArtefactById(String artefactId, UUID requesterId) {
         Artefact artefactToDelete = artefactRepository.findArtefactByArtefactId(artefactId)
             .orElseThrow(() -> new ArtefactNotFoundException("No artefact found with the ID: " + artefactId));
@@ -126,6 +127,7 @@ public class PublicationRemovalService {
         log.info(writeLog(requesterId, UserActions.REMOVE, artefactId));
     }
 
+    @Transactional
     public void deleteArtefactByLocation(List<Artefact> artefactsToDelete, Integer locationId, UUID requesterId)
         throws JsonProcessingException {
         artefactsToDelete.forEach(artefact -> {
@@ -144,6 +146,7 @@ public class PublicationRemovalService {
                 ChangeType.DELETE_LOCATION_ARTEFACT);
     }
 
+    @Transactional
     public void deleteArtefacts(List<Artefact> artefacts) {
         artefacts.forEach(this::handleArtefactDeletion);
     }
