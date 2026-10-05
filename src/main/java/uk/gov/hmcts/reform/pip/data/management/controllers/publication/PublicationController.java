@@ -49,10 +49,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 
@@ -174,7 +171,7 @@ public class PublicationController {
         validationService.validateBody(payload, initialHeaders, validateMasterSchema(listType));
         Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
 
-        Artefact createdItem = publicationCreationRunner.run(artefact, payload, true);
+        Artefact createdItem = publicationCreationRunner.run(artefact, payload);
         logManualUpload(requesterId, createdItem.getArtefactId().toString());
 
         // Process the created artefact to generate PDF/Excel files and check/trigger the subscription process
@@ -247,9 +244,6 @@ public class PublicationController {
                 .body(artefact);
         }
 
-        Map<String, List<Object>> search = new ConcurrentHashMap<>();
-        search.put("location-id", List.of(headers.getCourtId()));
-        artefact.setSearch(search);
         artefact.setIsFlatFile(true);
 
         Artefact createdItem =  publicationCreationRunner.run(artefact, file);
@@ -315,7 +309,7 @@ public class PublicationController {
 
         Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
 
-        Artefact createdItem = publicationCreationRunner.run(artefact, payload, false);
+        Artefact createdItem = publicationCreationRunner.run(artefact, payload);
         logManualUpload(requesterId, createdItem.getArtefactId().toString());
 
         // Process the created artefact to generate PDF and check/trigger the subscription process

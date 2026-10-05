@@ -61,23 +61,6 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
     List<Artefact> findArtefactsByLocationId(@Param(LOCATION_ID_PARAM) String locationId,
                                              @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
 
-    @Deprecated
-    @Query(value = INITIAL_SELECT + "WHERE LOWER(searchDetails.caseDetails ->> 'caseName') LIKE LOWER"
-        + "('%' || :caseName || '%') and display_from < :curr_date and (display_to > :curr_date or display_to is "
-        + "null)",
-        nativeQuery = true)
-    List<Artefact> findArtefactByCaseName(@Param(CASE_NAME_PARAM) String caseName,
-                                          @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
-
-    @Deprecated
-    @Query(value = INITIAL_SELECT + "WHERE searchDetails.caseDetails ->> :searchTerm = :searchValue and "
-        + "display_from < :curr_date and (display_to > :curr_date or display_to is null)",
-        nativeQuery = true)
-    List<Artefact> findArtefactBySearch(@Param(SEARCH_TERM_PARAM) String searchTerm,
-                                        @Param(SEARCH_VAL_PARAM) String searchVal,
-                                        @Param(CURRENT_DATE_PARAM) LocalDateTime currentDate);
-
-
     @Query(value = "select location_id, count(distinct artefact_id) from artefact "
         + "where location_id ~ '^[0-9]+$' "
         + "and (display_to > :curr_date or display_to is null)"
