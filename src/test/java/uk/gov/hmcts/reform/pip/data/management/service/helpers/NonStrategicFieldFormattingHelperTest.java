@@ -1,7 +1,12 @@
 package uk.gov.hmcts.reform.pip.data.management.service.helpers;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ProcessingException;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -38,4 +43,21 @@ class NonStrategicFieldFormattingHelperTest {
             .as(RESULT_MATCHED_MESSAGE)
             .isEqualTo("9:30am");
     }
+
+    @ParameterizedTest
+    @MethodSource("parametersForFormatLowerCamelCase")
+    void shouldFormatFieldInLowerCamelCaseFormat(String input, String expectedOutput) {
+        assertThat(NonStrategicFieldFormattingHelper.formatFieldInLowerCamelCaseFormat(input))
+            .as(RESULT_MATCHED_MESSAGE)
+            .isEqualTo(expectedOutput);
+    }
+
+    private static Stream<Arguments> parametersForFormatLowerCamelCase() {
+        return Stream.of(
+            Arguments.of("Test String", "testString"),
+            Arguments.of("TEST_STRING", "testString"),
+            Arguments.of("(Test String)", "testString")
+        );
+    }
+
 }

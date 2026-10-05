@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
 import nl.altindag.log.LogCaptor;
+import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +12,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.AzureArtefactBlobService;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
@@ -20,6 +24,8 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,6 +40,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ARTEFACT_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.FILE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.LOCATION_VENUE;
@@ -65,6 +72,9 @@ class PublicationCreationServiceTest {
     private PublicationFileManagementService publicationFileManagementService;
 
     @Mock
+    private PublicationSubscriptionService publicationSubscriptionService;
+
+    @Mock
     private ArtefactSearchService artefactSearchService;
 
     @InjectMocks
@@ -73,6 +83,19 @@ class PublicationCreationServiceTest {
     private Artefact artefact;
     private Artefact artefactWithPayloadUrl;
     private Artefact artefactWithIdAndPayloadUrl;
+
+
+    private static MultipartFile excelFile;
+
+    @BeforeAll
+    public static void setupSearchValues() throws IOException {
+        try (InputStream mockFile = Thread.currentThread().getContextClassLoader()
+            .getResourceAsStream("mocks/non-strategic/countyCourtLondonCivilDailyCauseList.xlsx")) {
+            excelFile = new MockMultipartFile("file", "test.xlsx",
+                                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                         IOUtils.toByteArray(mockFile));
+        }
+    }
 
     @BeforeEach
     void setup() {
@@ -170,6 +193,30 @@ class PublicationCreationServiceTest {
 
         verify(azureArtefactBlobService, never()).deleteBlob(anyString());
         assertEquals(artefactWithIdAndPayloadUrl, returnedArtefact, VALIDATION_ARTEFACT_NOT_MATCH);
+    }
+
+    @Test
+    void testProcessCreatedJsonPublicationWhenHaveExcelMultipartFile() {
+        Artefact artefact = new Artefact();
+        artefact.setArtefactId(ARTEFACT_ID);
+
+        publicationCreationService.processCreatedPublication(artefact, PAYLOAD, excelFile);
+
+        verify(publicationFileManagementService, never()).generateFiles(ARTEFACT_ID, PAYLOAD, null);
+        verify(publicationFileManagementService).generateFiles(eq(ARTEFACT_ID), eq(PAYLOAD), any());
+        verify(publicationSubscriptionService).checkAndTriggerPublicationSubscription(artefact);
+
+    }
+
+    @Test
+    void testProcessCreatedJsonPublicationWhenNullMultipartFile() {
+        Artefact artefact = new Artefact();
+        artefact.setArtefactId(ARTEFACT_ID);
+
+        publicationCreationService.processCreatedPublication(artefact, PAYLOAD, null);
+
+        verify(publicationFileManagementService).generateFiles(ARTEFACT_ID, PAYLOAD, null);
+        verify(publicationSubscriptionService).checkAndTriggerPublicationSubscription(artefact);
     }
 
     @Test

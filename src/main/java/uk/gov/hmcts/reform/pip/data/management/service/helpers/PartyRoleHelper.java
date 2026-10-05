@@ -163,26 +163,6 @@ public final class PartyRoleHelper {
         nodeObj.put(PROSECUTING_AUTHORITY, String.join(DELIMITER, prosecutingAuthorities));
     }
 
-    public static void findProsecutingAuthorities(JsonNode node) {
-        List<String> prosecutingAuthorities = new ArrayList<>();
-
-        if (node.has(PARTY)) {
-            node.get(PARTY).forEach(party -> {
-                if (!GeneralHelper.findAndReturnNodeText(party, PARTY_ROLE).isEmpty()
-                    && party.get(PARTY_ROLE).asText().equals("PROSECUTING_AUTHORITY")) {
-                    if (party.has(INDIVIDUAL_DETAILS)) {
-                        prosecutingAuthorities.add(createIndividualDetails(party));
-                    } else {
-                        prosecutingAuthorities.add(createOrganisationDetails(party));
-                    }
-                }
-            });
-        }
-
-        ObjectNode nodeObj = (ObjectNode) node;
-        nodeObj.put(PROSECUTING_AUTHORITY, String.join(DELIMITER, prosecutingAuthorities));
-    }
-
     public static void findProsecutingAuthority(JsonNode node) {
         String prosecutingAuthority = "";
 
