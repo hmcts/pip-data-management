@@ -366,6 +366,62 @@ class PublicationSearchServiceTest {
     }
 
     @Test
+    void testFindByListTypeWhenVerifiedAndAuthorised() {
+        Artefact artefactPublic = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .language(Language.ENGLISH)
+            .sensitivity(Sensitivity.PUBLIC)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .build();
+
+        Artefact artefactClassified = Artefact.builder()
+            .sourceArtefactId(SOURCE_ARTEFACT_ID)
+            .provenance(PROVENANCE)
+            .language(Language.WELSH)
+            .sensitivity(Sensitivity.CLASSIFIED)
+            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
+            .build();
+
+        List<Artefact> artefactList = new ArrayList<>();
+        artefactList.add(artefactPublic);
+        artefactList.add(artefactClassified);
+
+        when(artefactRepository.findArtefactsByListType(eq(ListType.CIVIL_DAILY_CAUSE_LIST.name()), any()))
+            .thenReturn(artefactList);
+
+        when(publicationRetrievalService.isAuthorised(artefactPublic, USER_ID))
+            .thenReturn(true);
+
+        when(publicationRetrievalService.isAuthorised(artefactClassified, USER_ID))
+            .thenReturn(true);
+
+        assertEquals(artefactList, publicationSearchService.findAllByListType(ListType.CIVIL_DAILY_CAUSE_LIST, USER_ID),
+                     VALIDATION_ARTEFACT_NOT_MATCH
+        );
+    }
+
+    @Test
+    void testFindAllByListTypeAdminNotAdmin() {
+        when(artefactRepository.findArtefactsByListType(any(), any())).thenReturn(List.of(artefact));
+        when(publicationRetrievalService.isAuthorised(artefact, USER_ID))
+            .thenReturn(true);
+        assertEquals(List.of(artefact), publicationSearchService.findAllByListTypeAdmin(
+            ListType.CIVIL_DAILY_CAUSE_LIST, USER_ID, false),
+                     VALIDATION_ARTEFACT_NOT_MATCH
+        );
+    }
+
+    @Test
+    void testFindAllByListTypeAdmin() {
+        when(artefactRepository.findArtefactsByListTypeAdmin(any(), any())).thenReturn(List.of(artefact));
+        assertEquals(List.of(artefact), publicationSearchService.findAllByListTypeAdmin(
+            ListType.CIVIL_DAILY_CAUSE_LIST, USER_ID, true),
+                     VALIDATION_ARTEFACT_NOT_MATCH
+        );
+    }
+
+    @Test
     void testFindAllBySearchCaseIdClassifiedAndAuthorised() {
         List<Artefact> list = List.of(artefactWithIdAndPayloadUrl, artefactWithIdAndPayloadUrlClassified);
         when(artefactRepository.findArtefactBySearch(eq(SEARCH_TERM_CASE_ID.dbValue), eq(TEST_VALUE), any()))

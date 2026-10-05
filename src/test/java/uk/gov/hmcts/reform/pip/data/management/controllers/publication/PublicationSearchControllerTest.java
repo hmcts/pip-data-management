@@ -198,6 +198,19 @@ class PublicationSearchControllerTest {
     }
 
     @Test
+    void checkGetArtefactsByListTypeReturnsOkWhenFalse() {
+        List<Artefact> artefactList = List.of(ARTEFACT_WITH_ID);
+
+        when(publicationSearchService.findAllByListTypeAdmin(ListType.CIVIL_DAILY_CAUSE_LIST, USER_ID, false))
+            .thenReturn(artefactList);
+        ResponseEntity<List<Artefact>> unmappedArtefact = publicationSearchController
+            .getAllRelevantArtefactsByListType(ListType.CIVIL_DAILY_CAUSE_LIST, USER_ID, false);
+
+        assertEquals(artefactList, unmappedArtefact.getBody(), VALIDATION_EXPECTED_MESSAGE);
+        assertEquals(HttpStatus.OK, unmappedArtefact.getStatusCode(), STATUS_CODE_MATCH);
+    }
+
+    @Test
     void testGetCasesByCaseNumberReturnsOk() {
         ArtefactCaseInfo caseInfo = new ArtefactCaseInfo(TEST_STRING, "Test Case Name");
         when(publicationSearchService.findCasesByCaseNumber(TEST_STRING))

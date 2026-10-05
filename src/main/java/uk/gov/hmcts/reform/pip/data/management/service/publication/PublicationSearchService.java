@@ -148,6 +148,38 @@ public class PublicationSearchService {
     }
 
     /**
+     * Get all relevant artefacts relating to a given list type.
+     *
+     * @param listType - represents the list type in question being searched for
+     * @param userId   - represents the user ID of the user who is making the request
+     * @return a list of all artefacts that fulfil the timing criteria, match the given list type and sensitivity
+     *     associated with given verification status.
+     */
+    public List<Artefact> findAllByListType(ListType listType, UUID userId) {
+        LocalDateTime currDate = LocalDateTime.now();
+        List<Artefact> artefacts = artefactRepository.findArtefactsByListType(listType.name(), currDate);
+
+        return artefacts.stream()
+            .filter(artefact -> publicationRetrievalService.isAuthorised(artefact, userId))
+            .toList();
+    }
+
+    /**
+     * Get all artefacts for admin actions.
+     *
+     * @param listType The list type to search for.
+     * @param userId   represents the user ID of the user who is making the request
+     * @param isAdmin  bool to check whether admin search is needed, if not will default to findAllByListType().
+     * @return list of matching artefacts.
+     */
+    public List<Artefact> findAllByListTypeAdmin(ListType listType, UUID userId, boolean isAdmin) {
+        LocalDateTime currDate = LocalDateTime.now();
+        return isAdmin
+            ? artefactRepository.findArtefactsByListTypeAdmin(listType.name(), currDate)
+            : findAllByListType(listType, userId);
+    }
+
+    /**
      * Get all relevant Artefacts based on search values stored in the Artefact.
      *
      * @param searchTerm  the search term checking against, e.g. CASE_ID or CASE_URN
