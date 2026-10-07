@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.service.location;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import nl.altindag.log.LogCaptor;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 import uk.gov.hmcts.reform.pip.data.management.database.ArtefactRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationMetadataRepository;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationRepository;
