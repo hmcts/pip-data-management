@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.ArtefactSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CivilDailyCauseListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CopDailyCauseListSummaryData;
+import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CrownAdvancePddaListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CrownPddaListSummaryData;
-import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.CrownWarnedPddaListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.EtDailyListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.EtFortnightlyPressListSummaryData;
 import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.FamilyMixedDailyCauseListSummaryData;
@@ -20,9 +20,9 @@ import uk.gov.hmcts.reform.pip.data.management.service.artefactsummary.SscsDaily
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FamilyMixedDailyCauseListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CivilDailyCauseListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CopDailyCauseListFileConverter;
+import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownAdvancePddaListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownDailyPddaListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownFirmPddaListFileConverter;
-import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.CrownWarnedPddaListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.EtDailyListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.EtFortnightlyPressListFileConverter;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.FileConverter;
@@ -44,6 +44,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.ADMIRALTY_COURT
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.BUSINESS_LIST_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CHANCERY_APPEALS_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIC_WEEKLY_HEARING_LIST;
@@ -57,9 +58,9 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.COP_DAILY_CAUSE
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_ADVANCE_PDDA_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_DAILY_PDDA_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_FIRM_PDDA_LIST;
-import static uk.gov.hmcts.reform.pip.model.publication.ListType.CROWN_WARNED_PDDA_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.ET_DAILY_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.ET_FORTNIGHTLY_PRESS_LIST;
@@ -321,6 +322,10 @@ public class ListConversionFactory {
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST)
         )),
+        Map.entry(BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST, new ConversionConfig(
+            new NonStrategicListFileConverter(),
+            new NonStrategicListSummaryData(BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST)
+        )),
         Map.entry(COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST, new ConversionConfig(
             new NonStrategicListFileConverter(),
             new NonStrategicListSummaryData(COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST)
@@ -437,9 +442,9 @@ public class ListConversionFactory {
             new CrownFirmPddaListFileConverter(),
             new CrownPddaListSummaryData(CROWN_FIRM_PDDA_LIST)
         )),
-        Map.entry(CROWN_WARNED_PDDA_LIST, new ConversionConfig(
-            new CrownWarnedPddaListFileConverter(),
-            new CrownWarnedPddaListSummaryData()
+        Map.entry(CROWN_ADVANCE_PDDA_LIST, new ConversionConfig(
+            new CrownAdvancePddaListFileConverter(),
+            new CrownAdvancePddaListSummaryData()
         )),
         Map.entry(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST, new ConversionConfig(
             new NonStrategicListFileConverter(),
