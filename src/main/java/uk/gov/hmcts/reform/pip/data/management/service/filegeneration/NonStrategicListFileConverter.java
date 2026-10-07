@@ -148,18 +148,6 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/nonStrategicCommon", language));
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
 
-        String resourceName;
-        if (ListType.valueOf(listType).getParentListType() != null) {
-            resourceName = "non-strategic/"
-                + UPPER_UNDERSCORE.to(LOWER_CAMEL, ListType.valueOf(listType).getParentListType().name());
-            languageResources.putAll(LanguageResourceHelper.readResourcesFromPath(resourceName, language));
-        }
-        resourceName = "non-strategic/" + UPPER_UNDERSCORE.to(LOWER_CAMEL, listType);
-        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath(resourceName, language));
-        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/nonStrategicCommon", language));
-        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
-
-
         try {
             List<Map<String, String>> data = OBJECT_MAPPER.convertValue(payload, new TypeReference<>(){});
             List<Map<String, String>> formattedData = NonStrategicListFormatter.formatAllFields(
