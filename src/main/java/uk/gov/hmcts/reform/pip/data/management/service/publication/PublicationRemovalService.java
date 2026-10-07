@@ -151,7 +151,7 @@ public class PublicationRemovalService {
         artefacts.forEach(this::handleArtefactDeletion);
     }
 
-    public void handleArtefactDeletion(Artefact artefact) {
+    private void handleArtefactDeletion(Artefact artefact) {
         deleteDataFromBlobStore(artefact);
         artefactSearchRepository.deleteByArtefactId(artefact.getArtefactId());
         artefactRepository.delete(artefact);

@@ -180,7 +180,7 @@ public class PublicationController {
         // Process the created artefact to generate PDF/Excel files and check/trigger the subscription process
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
             publicationCreationService.processPublicationSearchCases(artefact, payload);
-            publicationCreationService.processCreatedPublication(createdItem, payload);
+            publicationCreationService.processCreatedPublication(createdItem, payload, null);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
@@ -321,7 +321,7 @@ public class PublicationController {
         // Process the created artefact to generate PDF and check/trigger the subscription process
         if (!NoMatchArtefactHelper.isNoMatchLocationId(createdItem.getLocationId())) {
             publicationCreationService.processPublicationSearchCases(artefact, payload);
-            publicationCreationService.processCreatedPublication(createdItem, payload);
+            publicationCreationService.processCreatedPublication(createdItem, payload, file);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
@@ -465,7 +465,7 @@ public class PublicationController {
             || listType.equals(ListType.MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE)
             || listType.equals(ListType.CROWN_DAILY_PDDA_LIST)
             || listType.equals(ListType.CROWN_FIRM_PDDA_LIST)
-            || listType.equals(ListType.CROWN_WARNED_PDDA_LIST));
+            || listType.equals(ListType.CROWN_ADVANCE_PDDA_LIST));
     }
 
     private boolean validateLcsuUploadFile(MultipartFile file) {

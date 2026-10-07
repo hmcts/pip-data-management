@@ -206,7 +206,7 @@ class PublicationControllerTest {
 
         verify(validationService).validateBody(eq(PAYLOAD), any(), eq(true));
         verify(publicationCreationService).processPublicationSearchCases(artefact, PAYLOAD);
-        verify(publicationCreationService).processCreatedPublication(any(Artefact.class), eq(PAYLOAD));
+        verify(publicationCreationService).processCreatedPublication(any(Artefact.class), eq(PAYLOAD), eq(null));
     }
 
     @ParameterizedTest
@@ -217,7 +217,7 @@ class PublicationControllerTest {
         "MAGISTRATES_PUBLIC_ADULT_COURT_LIST_FUTURE",
         "CROWN_DAILY_PDDA_LIST",
         "CROWN_FIRM_PDDA_LIST",
-        "CROWN_WARNED_PDDA_LIST"})
+        "CROWN_ADVANCE_PDDA_LIST"})
     void shouldNotValidateMasterSchemaForMagistratesAdultCourtLists(ListType listType) {
         when(validationService.validateHeaders(any())).thenReturn(headers);
         when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithId);
@@ -233,7 +233,7 @@ class PublicationControllerTest {
 
         verify(validationService).validateBody(eq(PAYLOAD), any(), eq(false));
         verify(publicationCreationService).processPublicationSearchCases(artefact, PAYLOAD);
-        verify(publicationCreationService).processCreatedPublication(any(Artefact.class), eq(PAYLOAD));
+        verify(publicationCreationService).processCreatedPublication(any(Artefact.class), eq(PAYLOAD), eq(null));
     }
 
     @Test
@@ -247,7 +247,8 @@ class PublicationControllerTest {
         );
 
         verify(publicationCreationService, never()).processPublicationSearchCases(artefact, PAYLOAD);
-        verify(publicationCreationService, never()).processCreatedPublication(any(Artefact.class), eq(PAYLOAD));
+        verify(publicationCreationService, never())
+            .processCreatedPublication(any(Artefact.class), eq(PAYLOAD), eq(null));
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
@@ -410,7 +411,7 @@ class PublicationControllerTest {
             LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, file
         );
 
-        verify(publicationCreationService).processCreatedPublication(artefactWithId, PAYLOAD);
+        verify(publicationCreationService).processCreatedPublication(artefactWithId, PAYLOAD, file);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
@@ -431,7 +432,7 @@ class PublicationControllerTest {
             LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, file
         );
 
-        verify(publicationCreationService, never()).processCreatedPublication(artefactWithId, PAYLOAD);
+        verify(publicationCreationService, never()).processCreatedPublication(artefactWithId, PAYLOAD, file);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);
         assertEquals(artefactWithNoMatchLocationId, responseEntity.getBody(), ARTEFACT_MATCH_MESSAGE);
