@@ -16,15 +16,15 @@ public final class NonStrategicFieldFormattingHelper {
         try {
             DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
             DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH);
-            LocalDate parsedDate = LocalDate.parse(date, inputFormatter);
+            LocalDate parsedDate = LocalDate.parse(date.trim(), inputFormatter);
             return parsedDate.format(outputFormatter);
-        } catch (DateTimeParseException e) {
+        } catch (DateTimeParseException | NullPointerException e) {
             throw new ProcessingException("Failed to convert date format");
         }
     }
 
     public static String formatTimeField(String time) {
-        return time == null ? time : time.replace('.', ':');
+        return time == null ? time : time.trim().replace('.', ':');
     }
 
     public static String formatFieldInLowerCamelCaseFormat(String value) {
