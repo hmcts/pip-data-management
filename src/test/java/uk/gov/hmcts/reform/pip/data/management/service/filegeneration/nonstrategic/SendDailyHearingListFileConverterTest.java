@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.assertj.core.api.SoftAssertions;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,6 +17,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -279,4 +283,47 @@ class SendDailyHearingListFileConverterTest {
                 "2hrs"
             );
     }
+
+    @Test
+    void testSendDailyHearingListExcelConversionInEnglish() throws IOException {
+        try (InputStream excelFile = getClass().getResourceAsStream("/mocks/non-strategic/sendDailyHearingList.xlsx");
+             Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(
+                 converter.convertToExcel(null, SEND_DAILY_HEARING_LIST, Map.of(
+                     LANGUAGE_METADATA, ENGLISH,
+                     LIST_TYPE_METADATA, SEND_DAILY_HEARING_LIST.name()
+                 ), excelFile)
+             ))) {
+            Row headingRow = workbook.getSheetAt(0).getRow(0);
+            SoftAssertions softly = new SoftAssertions();
+            softly.assertThat(headingRow.getCell(0).getStringCellValue()).isEqualTo("Time");
+            softly.assertThat(headingRow.getCell(1).getStringCellValue()).isEqualTo("Case reference number");
+            softly.assertThat(headingRow.getCell(2).getStringCellValue()).isEqualTo("Respondent");
+            softly.assertThat(headingRow.getCell(3).getStringCellValue()).isEqualTo("Hearing type");
+            softly.assertThat(headingRow.getCell(4).getStringCellValue()).isEqualTo("Venue");
+            softly.assertThat(headingRow.getCell(5).getStringCellValue()).isEqualTo("Time estimate");
+            softly.assertAll();
+        }
+    }
+
+    @Test
+    void testSendDailyHearingListExcelConversionInWelsh() throws IOException {
+        try (InputStream excelFile = getClass().getResourceAsStream("/mocks/non-strategic/sendDailyHearingList.xlsx");
+             Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(
+                 converter.convertToExcel(null, SEND_DAILY_HEARING_LIST, Map.of(
+                     LANGUAGE_METADATA, WELSH,
+                     LIST_TYPE_METADATA, SEND_DAILY_HEARING_LIST.name()
+                 ), excelFile)
+             ))) {
+            Row headingRow = workbook.getSheetAt(0).getRow(0);
+            SoftAssertions softly = new SoftAssertions();
+            softly.assertThat(headingRow.getCell(0).getStringCellValue()).isEqualTo("Amser");
+            softly.assertThat(headingRow.getCell(1).getStringCellValue()).isEqualTo("Cyfeirnod yr achos");
+            softly.assertThat(headingRow.getCell(2).getStringCellValue()).isEqualTo("Atebydd");
+            softly.assertThat(headingRow.getCell(3).getStringCellValue()).isEqualTo("Math o wrandawiad");
+            softly.assertThat(headingRow.getCell(4).getStringCellValue()).isEqualTo("Lleoliad");
+            softly.assertThat(headingRow.getCell(5).getStringCellValue()).isEqualTo("Amcangyfrif o'r amser");
+            softly.assertAll();
+        }
+    }
+
 }
