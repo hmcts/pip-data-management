@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @ActiveProfiles("test")
-class CrownWarnedPddaListSummaryDataTest {
+class CrownAdvancePddaListSummaryDataTest {
     private static final String SUMMARY_SECTIONS_MESSAGE = "Summary sections count does not match";
     private static final String SUMMARY_CASES_MESSAGE = "Summary cases count does not match";
     private static final String SUMMARY_FIELDS_MESSAGE = "Summary fields count does not match";
@@ -22,12 +22,12 @@ class CrownWarnedPddaListSummaryDataTest {
     private static final String SUMMARY_FIELD_VALUE_MESSAGE = "Summary field value does not match";
 
     @Test
-    void testCrownWarnedPddaListSummary() throws IOException {
+    void testCrownAdvancePddaListSummary() throws IOException {
         Map<String, List<Map<String, String>>> output;
         try (InputStream mockFile = Thread.currentThread().getContextClassLoader()
-            .getResourceAsStream("mocks/crownWarnedPddaList.json")) {
+            .getResourceAsStream("mocks/crownAdvancePddaList.json")) {
             JsonNode payload = new ObjectMapper().readTree(new String(mockFile.readAllBytes()));
-            output = new ListConversionFactory().getArtefactSummaryData(ListType.CROWN_WARNED_PDDA_LIST).get()
+            output = new ListConversionFactory().getArtefactSummaryData(ListType.CROWN_ADVANCE_PDDA_LIST).get()
                 .get(payload);
         }
 

@@ -2,12 +2,12 @@ package uk.gov.hmcts.reform.pip.data.management.service.filegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.thymeleaf.context.Context;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.CrownWarnedPddaList;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.CrownAdvancePddaList;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.GeneralHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownPddaListHelper;
-import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownWarnedPddaListHelper;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.listmanipulation.CrownAdvancePddaListHelper;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class CrownWarnedPddaListFileConverter extends ExcelAbstractList implements FileConverter {
+public class CrownAdvancePddaListFileConverter extends ExcelAbstractList implements FileConverter {
     private static final String LIST_HEADER = "ListHeader";
     private static final String WARNED_LIST = "WarnedList";
 
@@ -24,8 +24,6 @@ public class CrownWarnedPddaListFileConverter extends ExcelAbstractList implemen
         throws IOException {
         Context context = new Context();
         Language language = Language.valueOf(metadata.get("language"));
-        context.setVariable("contentDate",
-            CrownWarnedPddaListHelper.formatContentDate(metadata.get("contentDate"), language.toString()));
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
         context.setVariable("i18n", languageResources);
         context.setVariable("locationName", metadata.get("locationName"));
@@ -36,7 +34,7 @@ public class CrownWarnedPddaListFileConverter extends ExcelAbstractList implemen
         processDateInfo(context, listNode, metadata);
         processVenueAddress(context, listNode);
 
-        context.setVariable("listData", CrownWarnedPddaListHelper.processPayload(artefact));
+        context.setVariable("listData", CrownAdvancePddaListHelper.processPayload(artefact));
         context.setVariable("version", listNode.get(LIST_HEADER).get("Version").asText());
         return TemplateEngine.processTemplate(metadata.get("listType"), context);
     }
@@ -61,7 +59,7 @@ public class CrownWarnedPddaListFileConverter extends ExcelAbstractList implemen
     public List<List<String>> getExcelRows(JsonNode json, Map<String, Object> languageResources,
                                            Map<String, String> metadata) {
         List<List<String>> rows = new ArrayList<>();
-        Map<String, List<CrownWarnedPddaList>> processedData = CrownWarnedPddaListHelper.processPayload(json);
+        Map<String, List<CrownAdvancePddaList>> processedData = CrownAdvancePddaListHelper.processPayload(json);
 
         processedData.forEach(
             (hearingDescription, cases) -> cases.forEach(

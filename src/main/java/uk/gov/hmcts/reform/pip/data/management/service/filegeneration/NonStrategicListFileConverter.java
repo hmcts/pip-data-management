@@ -39,13 +39,59 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.KINGS_BENCH_MAS
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_T_AND_CC_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_LEEDS_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_TAX_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_LR_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SEND_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_EASTERN_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_LONDON_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_MIDLANDS_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_SOUTH_EAST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_SCOTLAND_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_NORTH_EAST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_NORTH_WEST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_LONDON_DAILY_HEARING_LIST;
+
 
 public class NonStrategicListFileConverter extends ExcelAbstractList implements FileConverter {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String SINGLE_SHEET_NAME = "Sheet1";
     private static final String COMMON_NON_STRATEGIC_HEADERS = "commonNsDailyCauseListTableHeaders";
+    private static final String TABLE_HEADERS = "tableHeaders";
 
     private static final Map<ListType, Map<String, String>> LIST_TYPE_HEADER_FIELDS = Map.ofEntries(
+        Map.entry(UT_AAC_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(UT_IAC_JR_LEEDS_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(UT_IAC_JR_LONDON_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(UT_T_AND_CC_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(UT_LC_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
         Map.entry(LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                   Map.of("London administrative court", COMMON_NON_STRATEGIC_HEADERS,
                          "Planning court", COMMON_NON_STRATEGIC_HEADERS)),
@@ -67,7 +113,41 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
         Map.entry(SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST,
                   Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
         Map.entry(MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST,
-                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS))
+                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
+        Map.entry(WPAFCC_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(FTT_TAX_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SEND_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(FTT_LR_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(RPT_EASTERN_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(RPT_LONDON_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(RPT_MIDLANDS_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(RPT_NORTHERN_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(RPT_SOUTHERN_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_MIDLANDS_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_LONDON_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_NORTH_EAST_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_NORTH_WEST_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_SCOTLAND_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_SOUTH_EAST_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS))
     );
 
     @Override
@@ -88,6 +168,7 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
 
         addAdditionalLanguageResources(metadata, languageResources);
         String listType = metadata.get("listType");
+
         String resourceName;
         if (ListType.valueOf(listType).getParentListType() != null) {
             resourceName = "non-strategic/"
@@ -96,7 +177,8 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
         }
         resourceName = "non-strategic/" + UPPER_UNDERSCORE.to(LOWER_CAMEL, listType);
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath(resourceName, language));
-        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/nonStrategicCommon", language));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/nonStrategicCommon",
+                                                                              language));
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
 
         try {
