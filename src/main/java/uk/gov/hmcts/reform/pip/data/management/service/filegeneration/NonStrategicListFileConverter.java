@@ -168,7 +168,6 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
 
         addAdditionalLanguageResources(metadata, languageResources);
         String listType = metadata.get("listType");
-
         String resourceName;
         if (ListType.valueOf(listType).getParentListType() != null) {
             resourceName = "non-strategic/"
