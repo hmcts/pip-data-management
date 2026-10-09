@@ -755,6 +755,34 @@ class PublicationSearchTest extends PublicationIntegrationTestBase {
     }
 
     @Test
+    void testGetArtefactByListTypeShowsAllForAdmin() throws Exception {
+        createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.minusMonths(2), CONTENT_DATE);
+        createDailyList(Sensitivity.PUBLIC, DISPLAY_FROM.plusMonths(1),
+                        CONTENT_DATE.plusDays(1));
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
+            .get(PUBLICATION_URL + "/listType/" + ListType.CIVIL_DAILY_CAUSE_LIST)
+            .header(ADMIN_HEADER, FALSE)
+            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID);
+
+        MvcResult nonAdminResponse =
+            mockMvc.perform(mockHttpServletRequestBuilder).andExpect(status().isOk()).andReturn();
+
+        MockHttpServletRequestBuilder mockHttpServletRequestBuilder1 = MockMvcRequestBuilders
+            .get(PUBLICATION_URL + "/listType/" + ListType.CIVIL_DAILY_CAUSE_LIST)
+            .header(ADMIN_HEADER, TRUE);
+
+        MvcResult adminResponse = mockMvc.perform(mockHttpServletRequestBuilder1)
+            .andExpect(status().isOk())
+            .andReturn();
+
+        JSONArray nonAdminResults = new JSONArray(nonAdminResponse.getResponse().getContentAsString());
+        JSONArray adminResults = new JSONArray(adminResponse.getResponse().getContentAsString());
+        assertEquals(1, nonAdminResults.length(), "Should return 1 artefact for non admin");
+        assertEquals(2, adminResults.length(), "Should return 2 artefacts for admins");
+    }
+
+    @Test
     @WithMockUser(username = ADMIN, authorities = { "APPROLE_api.request.unknown" })
     void testUnauthorizedGetByCourtId() throws Exception {
         MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders
