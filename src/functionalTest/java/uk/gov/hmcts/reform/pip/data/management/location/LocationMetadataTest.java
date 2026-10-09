@@ -55,7 +55,7 @@ class LocationMetadataTest extends FunctionalTestBase {
     private UUID locationMetadataId;
 
     @BeforeAll
-    void setUp() {
+    void setupTestData() {
         locationId = randomLocationId();
 
         doPostRequest(

@@ -127,9 +127,9 @@ public class ExcelConversionService {
             case CellType.NUMERIC -> formatNumericCell(cell);
             case CellType.BOOLEAN -> {
                 cell.setCellType(CellType.STRING);
-                yield cell.getStringCellValue();
+                yield cell.getStringCellValue().trim();
             }
-            case CellType.STRING -> cell.getStringCellValue();
+            case CellType.STRING -> cell.getStringCellValue().trim();
             case CellType.BLANK -> "";
             default -> throw new ExcelConversionException(
                 String.format("Unexpected cell type on row %s, column %s", cell.getRowIndex() + 1,
