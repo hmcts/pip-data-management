@@ -32,16 +32,11 @@ public class CivilDailyCauseListFileConverter extends ExcelAbstractList implemen
     public List<String> getExcelHeaders(Map<String, Object> languageResources) {
         @SuppressWarnings("unchecked")
         List<String> tableHeaders = (List<String>) languageResources.get("headerValuesWrap");
-
-        return List.of(
-            tableHeaders.get(0),
-            tableHeaders.get(1),
-            tableHeaders.get(2),
-            tableHeaders.get(3),
-            tableHeaders.get(4),
-            tableHeaders.get(5),
-            tableHeaders.get(6)
-        );
+        List<String> headers = new ArrayList<>();
+        headers.add(languageResources.get("courtHouse").toString());
+        headers.add(languageResources.get("courtRoom").toString());
+        headers.addAll(tableHeaders);
+        return headers;
     }
 
     @Override
@@ -53,6 +48,8 @@ public class CivilDailyCauseListFileConverter extends ExcelAbstractList implemen
 
         processedData.forEach(list -> {
             rows.add(List.of(
+                list.getCourtHouse(),
+                list.getCourtRoom(),
                 list.getTime(),
                 list.getCaseId(),
                 list.getCaseName(),
@@ -70,9 +67,11 @@ public class CivilDailyCauseListFileConverter extends ExcelAbstractList implemen
         return CftListHelper.processCases(
             jsonBody,
             body -> CftListHelper.manipulatedListData(body, language, false),
-            (sitting, hearing, caseNode) -> {
+            (session, courtRoom, sitting, hearing, caseNode) -> {
                 CivilDailyList thisCase = new CivilDailyList();
 
+                thisCase.setCourtHouse(courtRoom.path("courtHouseName").asText());
+                thisCase.setCourtRoom(session.path("formattedSessionCourtRoom").asText());
                 thisCase.setTime(sitting.path("time").asText());
                 thisCase.setCaseId(caseNode.path("caseNumber").asText());
                 thisCase.setCaseName(caseNode.path("formattedCaseName").asText());

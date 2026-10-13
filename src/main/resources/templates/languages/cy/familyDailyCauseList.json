@@ -10,7 +10,7 @@
   "importantInfo": "Gwybodaeth Bwysig",
   "headerValuesWrap": [
     "Amser",
-    "Cyfeirnod yr Achos",
+    "Cyfeirnod yr achos",
     "Enw'r achos",
     "Math o achos",
     "Math o wrandawiad",
@@ -21,6 +21,8 @@
     "Ceisydd/Deisebydd",
     "Atebydd"
   ],
+  "courtHouse": "Adeilad llys",
+  "courtRoom": "Ystafell llys",
   "reportingRestriction": "Cyfyngiad adrodd: ",
   "beforeJudge": "Gerbron: ",
   "legalAdvisor": "Cynghorydd Cyfreithiol: ",

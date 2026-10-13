@@ -54,7 +54,9 @@ public final class SittingHelper {
 
     public static void findAndConcatenateHearingPlatform(JsonNode sitting, JsonNode session) {
         String channel = "";
-        if (sitting.has(CHANNEL)) {
+        if (sitting.has(CHANNEL)
+            && sitting.get(CHANNEL).isArray()
+            && !sitting.get(CHANNEL).isEmpty()) {
             channel = GeneralHelper.formatNodeArray(sitting, CHANNEL, ", ");
         } else if (session.has(SESSION_CHANNEL)) {
             channel = GeneralHelper.formatNodeArray(session, SESSION_CHANNEL, ", ");

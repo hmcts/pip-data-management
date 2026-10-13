@@ -10,7 +10,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.CrownWarnedPddaList;
+import uk.gov.hmcts.reform.pip.data.management.models.templatemodels.crownpddalist.CrownAdvancePddaList;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class CrownWarnedPddaListHelperTest {
+class CrownAdvancePddaListHelperTest {
     private static final String HEARING_TYPE_MESSAGE = "Hearing types do not match";
     private static final String ROW_COUNT_MESSAGE = "Row count does not match";
     private static final String ROW_VALUE_MESSAGE = "Row values do not match";
@@ -36,7 +36,7 @@ class CrownWarnedPddaListHelperTest {
     @BeforeAll
     void setup() throws IOException {
         try (InputStream inputStream = getClass().getResourceAsStream(
-            "/mocks/crownWarnedPddaList.json")) {
+            "/mocks/crownAdvancePddaList.json")) {
             String inputRaw = IOUtils.toString(inputStream, Charset.defaultCharset());
             rawListJson = new ObjectMapper().readTree(inputRaw);
         }
@@ -51,7 +51,7 @@ class CrownWarnedPddaListHelperTest {
             )
         );
 
-        assertThat(CrownWarnedPddaListHelper.processPayload(rawListJson))
+        assertThat(CrownAdvancePddaListHelper.processPayload(rawListJson))
             .as(HEARING_TYPE_MESSAGE)
             .hasSize(2)
             .extracting(r -> r.keySet())
@@ -60,7 +60,7 @@ class CrownWarnedPddaListHelperTest {
 
     @Test
     void testTableRowCountForEachHearingType() {
-        List<List<CrownWarnedPddaList>> values = CrownWarnedPddaListHelper
+        List<List<CrownAdvancePddaList>> values = CrownAdvancePddaListHelper
             .processPayload(rawListJson)
             .values()
             .stream()
@@ -81,18 +81,19 @@ class CrownWarnedPddaListHelperTest {
 
     @Test
     void testTableRowValuesForFirstHearingType() {
-        Map<String, List<CrownWarnedPddaList>> listData = CrownWarnedPddaListHelper.processPayload(rawListJson);
+        Map<String, List<CrownAdvancePddaList>> listData = CrownAdvancePddaListHelper.processPayload(rawListJson);
 
-        List<CrownWarnedPddaList> firstList = listData.values().iterator().next();
+        List<CrownAdvancePddaList> firstList = listData.values().iterator().next();
 
         assertThat(firstList.get(0))
             .as(ROW_VALUE_MESSAGE)
-            .extracting(CrownWarnedPddaList::getFixedDate,
-                        CrownWarnedPddaList::getCaseReference,
-                        CrownWarnedPddaList::getDefendantNames,
-                        CrownWarnedPddaList::getProsecutingAuthority,
-                        CrownWarnedPddaList::getLinkedCases,
-                        CrownWarnedPddaList::getListingNotes)
+            .extracting(
+                CrownAdvancePddaList::getFixedDate,
+                CrownAdvancePddaList::getCaseReference,
+                CrownAdvancePddaList::getDefendantNames,
+                CrownAdvancePddaList::getProsecutingAuthority,
+                CrownAdvancePddaList::getLinkedCases,
+                CrownAdvancePddaList::getListingNotes)
             .containsExactly("01/01/2024",
                              "T00112233",
                              "TestDefendantRequestedName",
@@ -111,7 +112,7 @@ class CrownWarnedPddaListHelperTest {
     void testFormatContentDateShouldReturnCorrectMondayDateInSpecifiedLanguage(
         String inputDate, String language, String expectedOutput) {
 
-        String result = CrownWarnedPddaListHelper.formatContentDate(inputDate, language);
+        String result = CrownAdvancePddaListHelper.formatContentDate(inputDate, language);
 
         assertThat(result).isEqualTo(expectedOutput, WEEK_COMMENCING_MESSAGE);
     }
@@ -133,7 +134,7 @@ class CrownWarnedPddaListHelperTest {
         String expectedMonday = "01 January 2024";
 
         for (String testDate : testDates) {
-            String result = CrownWarnedPddaListHelper.formatContentDate(testDate, "english");
+            String result = CrownAdvancePddaListHelper.formatContentDate(testDate, "english");
             assertThat(result).isEqualTo(expectedMonday, WEEK_COMMENCING_MESSAGE);
         }
     }

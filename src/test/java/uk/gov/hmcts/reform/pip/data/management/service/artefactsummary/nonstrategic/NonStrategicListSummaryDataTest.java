@@ -31,7 +31,9 @@ class NonStrategicListSummaryDataTest  extends NonStrategicCommonArtefactSummary
             .as("Summary sections count does not match")
             .hasSize(testCase.getExpectedSectionCount());
 
-        List<Map<String, String>> summaryCases = output.get(null);
+        List<Map<String, String>> summaryCases = testCase.hasSectionHeader()
+            ? output.get(testCase.getFirstSectionHeader()) : output.get(null);
+
         softly.assertThat(summaryCases)
             .as("Summary cases count does not match")
             .hasSize(testCase.getExpectedCaseCount());
