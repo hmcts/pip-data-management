@@ -65,6 +65,14 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_SCOTLAND_D
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_NORTH_EAST_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_NORTH_WEST_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_LONDON_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.POAC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.PAAC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIC_WEEKLY_HEARING_LIST;
 
 
 public class NonStrategicListFileConverter extends ExcelAbstractList implements FileConverter {
@@ -144,9 +152,25 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
                   Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
         Map.entry(SSCS_SCOTLAND_DAILY_HEARING_LIST,
                   Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_SOUTH_EAST_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
         Map.entry(SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST,
                   Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(SSCS_SOUTH_EAST_DAILY_HEARING_LIST,
+        Map.entry(CST_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(PHT_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(GRC_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SIAC_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(POAC_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(PAAC_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(AST_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(CIC_WEEKLY_HEARING_LIST,
                   Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS))
     );
 
