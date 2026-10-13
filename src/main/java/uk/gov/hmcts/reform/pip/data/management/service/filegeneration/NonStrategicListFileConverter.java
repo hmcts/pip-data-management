@@ -73,7 +73,10 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.POAC_WEEKLY_HEA
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.PAAC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIC_WEEKLY_HEARING_LIST;
-
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 
 public class NonStrategicListFileConverter extends ExcelAbstractList implements FileConverter {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -171,7 +174,15 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
         Map.entry(AST_DAILY_HEARING_LIST,
                   Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
         Map.entry(CIC_WEEKLY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS))
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
+        Map.entry(BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
+        Map.entry(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
+        Map.entry(MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS))
     );
 
     @Override
