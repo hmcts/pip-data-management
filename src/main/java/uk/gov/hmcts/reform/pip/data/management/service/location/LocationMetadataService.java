@@ -96,6 +96,17 @@ public class LocationMetadataService {
     }
 
     /**
+     * Handles request to search for a location metadata by location id.
+     *
+     * @param locationId The location ID to search for.
+     * @return Location metadata of the found location or null
+     */
+    public LocationMetadata getLocationByIdOrNull(String locationId) {
+        return locationMetadataRepository.findByLocationId(Integer.parseInt(locationId))
+            .orElse(null);
+    }
+
+    /**
      * Handles request to search for a location metadata by id.
      *
      * @param id The ID to search for.
@@ -108,4 +119,5 @@ public class LocationMetadataService {
                 String.format("No location metadata found with the id: %s", id)
             ));
     }
+
 }
