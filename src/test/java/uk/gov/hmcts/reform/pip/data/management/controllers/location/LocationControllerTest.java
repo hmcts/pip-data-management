@@ -15,6 +15,8 @@ import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationWithMetadata;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 import uk.gov.hmcts.reform.pip.model.location.LocationCsv;
 
 import java.io.IOException;
@@ -25,6 +27,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -245,7 +248,7 @@ class LocationControllerTest {
         when(locationService.deleteLocation(locationId, requesterId)).thenReturn(locationDeletion);
 
         assertEquals(HttpStatus.OK, locationController.deleteLocation(requesterId, locationId).getStatusCode(),
-                     "Delete location endpoint has not returned OK");
+                      "Delete location endpoint has not returned OK");
     }
 
     @Test
@@ -256,6 +259,37 @@ class LocationControllerTest {
         ResponseEntity<byte[]> controllerResponse = locationController.downloadLocations(UUID.randomUUID());
         assertEquals(HttpStatus.OK, controllerResponse.getStatusCode(), "Status did not match expected");
         assertEquals(testByte, controllerResponse.getBody(), "Body did not match expected");
+    }
+
+    @Test
+    void testGetLocationByIdWithMetadataReturnsLocationAndMetadata() {
+        int locationId = 1;
+        LocationMetadata metadata = new LocationMetadata();
+        LocationWithMetadata locationWithMetadata = new LocationWithMetadata(firstLocation, metadata);
+
+        when(locationService.getLocationWithMetadata(locationId)).thenReturn(locationWithMetadata);
+
+        ResponseEntity<LocationWithMetadata> response = locationController.getLocationByIdWithMetadata(locationId);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Combined endpoint has not returned OK");
+        assertEquals(locationWithMetadata, response.getBody(), "Combined response body does not match expected");
+        assertEquals(firstLocation, response.getBody().getLocation(), "Location does not match expected");
+        assertEquals(metadata, response.getBody().getMetadata(), "Metadata does not match expected");
+    }
+
+    @Test
+    void testGetLocationByIdWithMetadataReturnsNullMetadataWhenMissing() {
+        int locationId = 1;
+        LocationWithMetadata locationWithMetadata = new LocationWithMetadata(firstLocation, null);
+
+        when(locationService.getLocationWithMetadata(locationId)).thenReturn(locationWithMetadata);
+
+        ResponseEntity<LocationWithMetadata> response = locationController.getLocationByIdWithMetadata(locationId);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Combined endpoint has not returned OK");
+        assertEquals(locationWithMetadata, response.getBody(), "Combined response body does not match expected");
+        assertEquals(firstLocation, response.getBody().getLocation(), "Location does not match expected");
+        assertNull(response.getBody().getMetadata(), "Metadata should be null when not found");
     }
 
 }
