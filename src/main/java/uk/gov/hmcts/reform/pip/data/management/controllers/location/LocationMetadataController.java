@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 import uk.gov.hmcts.reform.pip.data.management.service.location.LocationMetadataService;
+import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
 
 import java.util.UUID;
 
@@ -104,6 +105,7 @@ public class LocationMetadataController {
     @ApiResponse(responseCode = OK_CODE, description = "Get Locations metadata By Location Id")
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location metadata found "
         + "with the location id {locationId}")
+    @IsAdmin
     public ResponseEntity<LocationMetadata> getLocationMetaDataByLocationId(
         @PathVariable String locationId) {
         return ResponseEntity.ok(locationMetadataService.getLocationById(locationId));
