@@ -34,13 +34,10 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -70,12 +67,6 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
     private static final String COURT_ID = "1";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().toLocalDate().atStartOfDay()
         .truncatedTo(ChronoUnit.SECONDS);
-    private static final String SEARCH_KEY_FOUND = "array-value";
-    private static final String SEARCH_KEY_NOT_FOUND = "case-urn";
-    private static final String SEARCH_VALUE_1 = "array-value-1";
-    private static final String SEARCH_VALUE_2 = "array-value-2";
-
-    private static final String LOCATION_ID_SEARCH_KEY = "location-id";
 
     private static final String VALIDATION_EMPTY_RESPONSE = "Response should contain a Artefact";
     private static final String ARTEFACT_ID_POPULATED_MESSAGE = "Artefact ID should be populated";
@@ -161,26 +152,6 @@ class PublicationUploadTest extends PublicationIntegrationTestBase {
         assertEquals(artefact.getProvenance(), PROVENANCE, "Provenance does not match input provenance");
         assertEquals(artefact.getLanguage(), LANGUAGE, "Language does not match input language");
         assertEquals(artefact.getSensitivity(), SENSITIVITY, "Sensitivity does not match input sensitivity");
-
-
-        Map<String, List<Object>> searchResult = artefact.getSearch();
-        assertTrue(
-            searchResult.containsKey(isJson ? SEARCH_KEY_FOUND : LOCATION_ID_SEARCH_KEY),
-            "Returned search result does not contain the correct key"
-        );
-        assertFalse(searchResult.containsKey(SEARCH_KEY_NOT_FOUND), "Returned search result contains "
-            + "key that does not exist");
-        assertEquals(
-            isJson ? SEARCH_VALUE_1 : COURT_ID,
-            searchResult.get(isJson ? SEARCH_KEY_FOUND : LOCATION_ID_SEARCH_KEY).get(0),
-            "Does not contain first value in the array"
-        );
-
-        if (isJson) {
-            assertEquals(SEARCH_VALUE_2, searchResult.get(SEARCH_KEY_FOUND).get(1),
-                         "Does not contain second value in the array"
-            );
-        }
     }
 
     @DisplayName("Should create a valid artefact with provenance different from manual_upload")

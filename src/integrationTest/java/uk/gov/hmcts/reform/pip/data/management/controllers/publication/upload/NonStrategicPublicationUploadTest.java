@@ -132,7 +132,6 @@ class NonStrategicPublicationUploadTest extends PublicationIntegrationTestBase {
         assertEquals(artefact.getProvenance(), PROVENANCE, "Provenance does not match input provenance");
         assertEquals(artefact.getLanguage(), Language.ENGLISH, "Language does not match input language");
         assertEquals(artefact.getSensitivity(), Sensitivity.PUBLIC, "Sensitivity does not match input sensitivity");
-        assertTrue(artefact.getSearch().isEmpty(), "Search value does not match");
     }
 
     @ParameterizedTest
@@ -293,7 +292,5 @@ class NonStrategicPublicationUploadTest extends PublicationIntegrationTestBase {
         assertEquals(artefact.getProvenance(), PROVENANCE, "Provenance does not match input provenance");
         assertEquals(artefact.getLanguage(), Language.ENGLISH, "Language does not match input language");
         assertEquals(artefact.getSensitivity(), Sensitivity.PUBLIC, "Sensitivity does not match input sensitivity");
-        assertTrue(artefact.getSearch().isEmpty(), "Search value does not match");
     }
-
 }

@@ -26,7 +26,6 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -52,11 +51,8 @@ import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTe
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.ROWID_RETURNS_UUID;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_VALUES;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SOURCE_ARTEFACT_ID;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.START_OF_TODAY_CONTENT_DATE;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_KEY;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.TEST_VALUE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.VALIDATION_ARTEFACT_NOT_MATCH;
 
 @ActiveProfiles("test")
@@ -88,15 +84,11 @@ class PublicationCreationServiceTest {
     private Artefact artefactWithPayloadUrl;
     private Artefact artefactWithIdAndPayloadUrl;
 
-    private static final Float PAYLOAD_SIZE_WITHIN_LIMIT = 90f;
-    private static final Float PAYLOAD_SIZE_OVER_LIMIT = 110f;
 
     private static MultipartFile excelFile;
 
     @BeforeAll
     public static void setupSearchValues() throws IOException {
-        SEARCH_VALUES.put(TEST_KEY, List.of(TEST_VALUE));
-
         try (InputStream mockFile = Thread.currentThread().getContextClassLoader()
             .getResourceAsStream("mocks/non-strategic/countyCourtLondonCivilDailyCauseList.xlsx")) {
             excelFile = new MockMultipartFile("file", "test.xlsx",
@@ -160,7 +152,6 @@ class PublicationCreationServiceTest {
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
             .payload(PAYLOAD_URL)
-            .payloadSize(PAYLOAD_SIZE_WITHIN_LIMIT)
             .build();
 
         Artefact artefactToBeCreated = Artefact.builder()
@@ -171,8 +162,6 @@ class PublicationCreationServiceTest {
             .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
             .language(Language.ENGLISH)
             .payload(PAYLOAD_URL)
-            .search(SEARCH_VALUES)
-            .payloadSize(PAYLOAD_SIZE_WITHIN_LIMIT)
             .build();
 
         when(artefactRepository.findArtefactByUpdateLogic(artefactToBeCreated.getLocationId(),
@@ -187,55 +176,15 @@ class PublicationCreationServiceTest {
         Artefact returnedArtefact = publicationCreationService.createPublication(artefact, PAYLOAD);
 
         verify(azureArtefactBlobService).deleteBlob(anyString());
-        assertEquals(artefactToBeCreated, returnedArtefact, ROWID_RETURNS_UUID);
-    }
-
-    @Test
-    void testUpdatingOfExistingArtefactWithNewPayloadNotWithinLimit() {
-        Artefact existingArtefact = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .locationId(PROVENANCE_ID)
-            .contentDate(START_OF_TODAY_CONTENT_DATE)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .payload(PAYLOAD_URL)
-            .payloadSize(PAYLOAD_SIZE_OVER_LIMIT)
-            .build();
-
-        Artefact artefactToBeCreated = Artefact.builder()
-            .artefactId(ARTEFACT_ID)
-            .provenance(PROVENANCE)
-            .contentDate(START_OF_TODAY_CONTENT_DATE)
-            .locationId(PROVENANCE_ID)
-            .listType(ListType.CIVIL_DAILY_CAUSE_LIST)
-            .language(Language.ENGLISH)
-            .payload(PAYLOAD_URL)
-            .payloadSize(PAYLOAD_SIZE_OVER_LIMIT)
-            .build();
-
-        when(artefactRepository.findArtefactByUpdateLogic(artefactToBeCreated.getLocationId(),
-                                                          artefactToBeCreated.getContentDate(),
-                                                          artefactToBeCreated.getLanguage(),
-                                                          artefactToBeCreated.getListType(),
-                                                          artefactToBeCreated.getProvenance()))
-            .thenReturn(Optional.of(existingArtefact));
-        when(azureArtefactBlobService.createPayload(any(), eq(PAYLOAD))).thenReturn(PAYLOAD_URL);
-        when(artefactRepository.save(any())).thenReturn(artefactToBeCreated);
-
-        Artefact returnedArtefact = publicationCreationService.createPublication(artefactToBeCreated, PAYLOAD);
-
-        verify(azureArtefactBlobService).deleteBlob(anyString());
         verify(publicationFileManagementService).deleteFiles(artefactToBeCreated.getArtefactId(),
-                                                         artefactToBeCreated.getListType(),
-                                                         artefactToBeCreated.getLanguage());
+                                                             artefactToBeCreated.getListType(),
+                                                             artefactToBeCreated.getLanguage());
 
         assertEquals(artefactToBeCreated, returnedArtefact, ROWID_RETURNS_UUID);
     }
 
     @Test
     void testCreationOfNewArtefactWithFile() {
-        artefactWithPayloadUrl.setSearch(null);
         artefactWithPayloadUrl.setLocationId(NO_COURT_EXISTS_IN_REFERENCE_DATA);
         when(azureArtefactBlobService.uploadFlatFile(any(), eq(FILE))).thenReturn(PAYLOAD_URL);
         when(artefactRepository.save(artefact)).thenReturn(artefactWithIdAndPayloadUrl);
