@@ -105,8 +105,6 @@ public class LocationMetadataController {
     @ApiResponse(responseCode = OK_CODE, description = "Get Locations metadata By Location Id")
     @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location metadata found "
         + "with the location id {locationId}")
-    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
-    @SecurityRequirement(name = BEARER_AUTHENTICATION)
     @IsAdmin
     public ResponseEntity<LocationMetadata> getLocationMetaDataByLocationId(
         @PathVariable String locationId) {
