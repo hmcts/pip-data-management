@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.EmptyReq
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
+import uk.gov.hmcts.reform.pip.data.management.helpers.ValidationErrorFormattingHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
@@ -25,6 +26,7 @@ import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -180,7 +182,8 @@ public class ValidationService {
      * @param headers The headers of the publication.
      * @param validateMasterSchema True if master schema should be used in validation too
      */
-    public void validateBody(String jsonPayload, HeaderGroup headers, boolean validateMasterSchema) {
+    public void validateBody(String jsonPayload, HeaderGroup headers, boolean validateMasterSchema,
+                             boolean formatErrors) {
         Map<String, String> propertiesMap = headers.getAppInsightsHeaderMap();
         Set<String> errors = new HashSet<>();
         try {
@@ -205,6 +208,11 @@ public class ValidationService {
             propertiesMap.put("ERROR", errors.toString());
             telemetry.trackTrace(String.format("Payload validation failed, %s errors present", errors.size()),
                                  SeverityLevel.Error, propertiesMap);
+
+            if (formatErrors) {
+                List<String> formattedErrors = ValidationErrorFormattingHelper.format(errors);
+                throw new PayloadValidationException(String.join("| ", formattedErrors), true);
+            }
             throw new PayloadValidationException(String.join(", ", errors));
         }
     }

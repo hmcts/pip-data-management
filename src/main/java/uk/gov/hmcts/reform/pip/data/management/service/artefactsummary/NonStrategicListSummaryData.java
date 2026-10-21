@@ -4,12 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.WordUtils;
+import uk.gov.hmcts.reform.pip.data.management.service.helpers.NonStrategicFieldFormattingHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.NonStrategicListFormatter;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -17,9 +16,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.ADMIRALTY_COURT_KB_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_HEARING_LIST;
@@ -106,7 +103,6 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
     private static final String MEMBERS = "members";
     private static final String HEARING_METHOD = "hearingMethod";
     private static final String ADDITIONAL_INFORMATION = "additionalInformation";
-    private static final Set<String> ACRONYMS = Set.of("IP");
 
     private static final Map<ListType, List<String>> LIST_TYPE_SUMMARY_FIELDS = Map.ofEntries(
         Map.entry(CST_WEEKLY_HEARING_LIST, List.of(DATE, CASE_NAME)),
@@ -240,13 +236,7 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
         Map<String, List<Map<String, String>>> summaryData = new LinkedHashMap<>();
         dataFields.forEach((fieldName, data) -> {
             List<Map<String, String>> summaryCases = formatSummaryCases(data, listTypeFormatter);
-
-            String formattedFieldName = Arrays.stream(WordUtils.capitalizeFully(
-                StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(fieldName), StringUtils.SPACE)
-                    .toLowerCase(Locale.UK)).split(StringUtils.SPACE))
-                .map(word -> ACRONYMS.contains(word.toUpperCase(Locale.ENGLISH))
-                    ? word.toUpperCase(Locale.ENGLISH) : word)
-                .collect(Collectors.joining(StringUtils.SPACE));
+            String formattedFieldName = NonStrategicFieldFormattingHelper.formatInternalFieldNameForDisplay(fieldName, false);
 
             if (summaryCases.isEmpty()) {
                 // Add bespoke message in the section with empty hearing cases. If the list type has no bespoke
