@@ -396,6 +396,11 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
                     workbook.removeSheetAt(i);
                 }
             }
+
+            if (!isSingleSheet) {
+                // Set the first sheet as the default after processing
+                workbook.setActiveSheet(0);
+            }
         }
     }
 
