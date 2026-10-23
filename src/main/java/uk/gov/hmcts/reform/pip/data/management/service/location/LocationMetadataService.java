@@ -119,5 +119,4 @@ public class LocationMetadataService {
                 String.format("No location metadata found with the id: %s", id)
             ));
     }
-
 }

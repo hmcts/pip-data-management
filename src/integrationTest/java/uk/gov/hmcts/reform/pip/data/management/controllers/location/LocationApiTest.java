@@ -20,7 +20,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference
 import uk.gov.hmcts.reform.pip.data.management.utils.LocationIntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,6 +39,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 
 @SpringBootTest(classes = {Application.class},
@@ -539,6 +539,58 @@ class LocationApiTest extends LocationIntegrationTestBase {
                 get(DOWNLOAD_LOCATIONS_ENDPOINT)
                     .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
             .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testGetLocationWithMetadata() throws Exception {
+        List<Location> locations = createLocations(LOCATIONS_CSV);
+
+        Location location = locations.get(0);
+
+
+        MvcResult mvcResult = mockMvc.perform(
+                get(GET_LOCATION_BY_NAME_ENDPOINT)
+                    .param(LOCATION_NAME_PARAM, location.getName())
+                    .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        Location returnedLocation = OBJECT_MAPPER.readValue(
+            mvcResult.getResponse().getContentAsString(),
+            Location.class
+        );
+
+        assertEquals(location, returnedLocation, VALIDATION_UNKNOWN_LOCATION);
+    }
+
+    @Test
+    void testGetLocationByIdWithMetadataReturnsSuccess() throws Exception {
+        List<Location> locations = createLocations(LOCATIONS_CSV);
+        Location location = locations.get(0);
+
+        mockMvc.perform(get(GET_LOCATION_BY_ID_ENDPOINT + location.getLocationId() + "/with-metadata"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.location.locationId").value(location.getLocationId()))
+            .andExpect(jsonPath("$.location.name").value(location.getName()))
+            .andExpect(jsonPath("$.metadata").doesNotExist()); // or .isEmpty() depending on serialization
+    }
+
+    @Test
+    void testGetLocationByIdWithMetadataReturnsNotFound() throws Exception {
+        int unknownId = 1234;
+
+        MvcResult mvcResult = mockMvc.perform(
+                get(GET_LOCATION_BY_ID_ENDPOINT + unknownId + "/with-metadata"))
+            .andExpect(status().isNotFound())
+            .andReturn();
+
+        ExceptionResponse exceptionResponse = OBJECT_MAPPER.readValue(
+            mvcResult.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
+
+        assertEquals("No location found with the id: " + unknownId, exceptionResponse.getMessage(),
+                     "Unexpected error message returned when location with metadata by ID not found");
     }
 }
 
