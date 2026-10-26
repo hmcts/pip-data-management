@@ -54,11 +54,11 @@ class SmokeTest extends SmokeTestBase {
     private String locationId;
     private String locationName;
 
-    @Value("${test-system-admin-id}")
+    @Value("${test-system-admin-id:}")
     private String systemAdminUserId;
 
     @BeforeAll
-    void startup() {
+    void setupTestData() {
         Integer randomNumber = 10_000 + new Random().nextInt();
         locationId = randomNumber.toString();
         locationName = BASE_LOCATION_NAME + locationId;
