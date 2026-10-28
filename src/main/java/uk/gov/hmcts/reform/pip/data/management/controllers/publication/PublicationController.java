@@ -171,7 +171,7 @@ public class PublicationController {
         );
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
-        validationService.validateBody(payload, initialHeaders, validateMasterSchema(listType));
+        validationService.validateBody(payload, initialHeaders, validateMasterSchema(listType), false);
         Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
 
         Artefact createdItem = publicationCreationRunner.run(artefact, payload, true);
@@ -311,7 +311,7 @@ public class PublicationController {
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
 
         String payload = excelConversionService.convert(file);
-        validationService.validateBody(payload, initialHeaders, false);
+        validationService.validateBody(payload, initialHeaders, false, true);
 
         Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
 
