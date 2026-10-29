@@ -12,5 +12,5 @@ spring:
       charSet: UTF-8
   autoconfigure:
     exclude:
-      - "org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration"
-      - "org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration"
+      - "org.springframework.boot.security.autoconfigure.actuate.web.servlet.ManagementWebSecurityAutoConfiguration"
+      - "org.springframework.boot.security.autoconfigure.SecurityAutoConfiguration"
