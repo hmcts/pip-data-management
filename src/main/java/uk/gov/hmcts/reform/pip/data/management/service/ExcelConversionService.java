@@ -70,15 +70,14 @@ public class ExcelConversionService {
         int headerRowNumber = sheet.getFirstRowNum();
         int firstColumnNumber = sheet.getRow(headerRowNumber).getFirstCellNum();
 
-        List<String> headers = getExcelRow(sheet, headerRowNumber, firstColumnNumber);
+        List<String> headers = getExcelRow(sheet.getRow(headerRowNumber), firstColumnNumber);
         List<Map<String, String>> data = new ArrayList<>();
 
         for (int rowNumber = headerRowNumber + 1; rowNumber <= sheet.getLastRowNum(); rowNumber++) {
             Row currentRow = sheet.getRow(rowNumber);
 
             if (currentRow != null) {
-
-                List<String> row = getExcelRow(sheet, rowNumber, firstColumnNumber);
+                List<String> row = getExcelRow(currentRow, firstColumnNumber);
                 Map<String, String> rowMappings = buildRowMap(headers, row);
 
                 if (rowMappings.values().stream().allMatch(String::isBlank)) {
@@ -105,10 +104,8 @@ public class ExcelConversionService {
         return values;
     }
 
-    private List<String> getExcelRow(Sheet sheet, int rowNumber, int firstColumnNumber) {
+    public static List<String> getExcelRow(Row row, int firstColumnNumber) {
         List<String> rowData = new ArrayList<>();
-        Row row = sheet.getRow(rowNumber);
-
         int lastCellNum = row.getLastCellNum();
         if (lastCellNum < 0 || firstColumnNumber >= lastCellNum) {
             return rowData;
@@ -122,14 +119,14 @@ public class ExcelConversionService {
         return rowData;
     }
 
-    public static String getExcelCellValue(Cell cell) {
+    private static String getExcelCellValue(Cell cell) {
         return cell == null ? "" : switch (cell.getCellType()) {
             case CellType.NUMERIC -> formatNumericCell(cell);
             case CellType.BOOLEAN -> {
                 cell.setCellType(CellType.STRING);
-                yield cell.getStringCellValue();
+                yield cell.getStringCellValue().trim();
             }
-            case CellType.STRING -> cell.getStringCellValue();
+            case CellType.STRING -> cell.getStringCellValue().trim();
             case CellType.BLANK -> "";
             default -> throw new ExcelConversionException(
                 String.format("Unexpected cell type on row %s, column %s", cell.getRowIndex() + 1,

@@ -10,7 +10,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.thymeleaf.context.Context;
-import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.ExcelConversionException;
 import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.DateHelper;
 import uk.gov.hmcts.reform.pip.data.management.service.helpers.LanguageResourceHelper;
@@ -29,23 +28,81 @@ import java.util.function.Function;
 
 import static com.google.common.base.CaseFormat.LOWER_CAMEL;
 import static com.google.common.base.CaseFormat.UPPER_UNDERSCORE;
+import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.CST_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_LR_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_TAX_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.PAAC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.PHT_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.POAC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_EASTERN_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_LONDON_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_MIDLANDS_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_NORTHERN_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.RPT_SOUTHERN_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SEND_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SIAC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_LONDON_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_MIDLANDS_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_NORTH_EAST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_NORTH_WEST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_SCOTLAND_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_SOUTH_EAST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_AAC_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_LEEDS_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_LONDON_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_LC_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.UT_T_AND_CC_DAILY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.WPAFCC_WEEKLY_HEARING_LIST;
 
 public class NonStrategicListFileConverter extends ExcelAbstractList implements FileConverter {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String SINGLE_SHEET_NAME = "Sheet1";
     private static final String COMMON_NON_STRATEGIC_HEADERS = "commonNsDailyCauseListTableHeaders";
+    private static final String TABLE_HEADERS = "tableHeaders";
 
     private static final Map<ListType, Map<String, String>> LIST_TYPE_HEADER_FIELDS = Map.ofEntries(
+        Map.entry(UT_AAC_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(UT_IAC_JR_LEEDS_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(UT_IAC_JR_LONDON_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(UT_T_AND_CC_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(UT_LC_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
         Map.entry(LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                   Map.of("London administrative court", COMMON_NON_STRATEGIC_HEADERS,
                          "Planning court", COMMON_NON_STRATEGIC_HEADERS)),
@@ -67,6 +124,64 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
         Map.entry(SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST,
                   Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
         Map.entry(MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST,
+                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
+        Map.entry(WPAFCC_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(FTT_TAX_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SEND_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(FTT_LR_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(RPT_EASTERN_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(RPT_LONDON_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(RPT_MIDLANDS_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(RPT_NORTHERN_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(RPT_SOUTHERN_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_MIDLANDS_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_LONDON_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_NORTH_EAST_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_NORTH_WEST_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_SCOTLAND_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_SOUTH_EAST_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(CST_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(PHT_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(GRC_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(SIAC_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(POAC_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(PAAC_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(AST_DAILY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(CIC_WEEKLY_HEARING_LIST,
+                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
+        Map.entry(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
+        Map.entry(BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
+        Map.entry(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
+                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
+        Map.entry(MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
                   Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS))
     );
 
@@ -88,6 +203,7 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
 
         addAdditionalLanguageResources(metadata, languageResources);
         String listType = metadata.get("listType");
+
         String resourceName;
         if (ListType.valueOf(listType).getParentListType() != null) {
             resourceName = "non-strategic/"
@@ -96,7 +212,8 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
         }
         resourceName = "non-strategic/" + UPPER_UNDERSCORE.to(LOWER_CAMEL, listType);
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath(resourceName, language));
-        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/nonStrategicCommon", language));
+        languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/nonStrategicCommon",
+                                                                              language));
         languageResources.putAll(LanguageResourceHelper.readResourcesFromPath("common/linkToFact", language));
 
         try {
@@ -136,8 +253,9 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
                     .getListTypeFormatter(listType);
                 updateExcelValues(workbook, languageResources, headerFields, listTypeFormatter);
                 return ExcelAbstractList.convertToByteArray(workbook);
-            } catch (IOException e) {
-                throw new ExcelConversionException("Error generating non-strategic excel file");
+            } catch (Exception e) {
+                log.error(writeLog("Error generating non-strategic excel file with error: "
+                                       + e.getMessage()));
             }
         }
         return new byte[0];
@@ -184,38 +302,48 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
 
                 for (int rowNumber = headerRowNumber + 1; rowNumber <= sheet.getLastRowNum(); rowNumber++) {
                     Row currentRow = sheet.getRow(rowNumber);
-                    formatRowValues(currentRow, headerRow, firstColumnNumber, lastCellNum, listTypeFormatter);
+                    if (currentRow != null && listTypeFormatter.isPresent()) {
+                        List<String> currentRowData = ExcelConversionService.getExcelRow(currentRow, firstColumnNumber);
+
+                        // Skip Excel processing once it reaches a row with empty values
+                        if (currentRowData.stream().allMatch(String::isBlank)) {
+                            break;
+                        }
+
+                        formatRowValues(currentRowData, currentRow, headerRow, firstColumnNumber, listTypeFormatter);
+                    }
                 }
-                updateHeaders(workbook, headerRow, firstColumnNumber, lastCellNum, headersToUpdate);
+                updateHeaders(workbook, headerRow, firstColumnNumber, headersToUpdate);
             }
         }
     }
 
-    private void updateHeaders(Workbook workbook, Row headerRow, int firstColumnNumber,
-                               int lastCellNum, List<String> headersToUpdate) {
+    private void updateHeaders(Workbook workbook, Row headerRow, int firstColumnNumber, List<String> headersToUpdate) {
         CellStyle boldStyle = createBoldStyle(workbook);
-        for (int columnNumber = firstColumnNumber, headerIndex = 0; columnNumber < lastCellNum;
+        for (int columnNumber = firstColumnNumber, headerIndex = 0; columnNumber < headerRow.getLastCellNum();
              columnNumber++, headerIndex++) {
             Cell headerCell = headerRow.getCell(columnNumber, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
-            headerCell.setCellValue(headersToUpdate.get(headerIndex));
-            headerCell.setCellStyle(boldStyle);
+            if (headerCell != null) {
+                headerCell.setCellValue(headersToUpdate.get(headerIndex));
+                headerCell.setCellStyle(boldStyle);
+            }
         }
     }
 
-    private void formatRowValues(Row currentRow, Row headerRow, int firstColumnNumber, int lastCellNum,
+    private void formatRowValues(List<String> currentRowData, Row currentRow, Row headerRow, int firstColumnNumber,
                                  Optional<Map<String, Function<String, String>>> listTypeFormatter) {
-        if (currentRow != null && listTypeFormatter.isPresent()) {
-            for (int columnNumber = firstColumnNumber; columnNumber < lastCellNum; columnNumber++) {
-                Cell headerCell = headerRow.getCell(columnNumber, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
-                String formattedHeader = NonStrategicFieldFormattingHelper.formatFieldInLowerCamelCaseFormat(
-                    headerCell.getStringCellValue()
-                );
+        for (int columnNumber = firstColumnNumber; columnNumber < headerRow.getLastCellNum(); columnNumber++) {
+            Cell headerCell = headerRow.getCell(columnNumber, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
+            String formattedHeader = NonStrategicFieldFormattingHelper.formatFieldInLowerCamelCaseFormat(
+                headerCell.getStringCellValue()
+            );
 
-                if (listTypeFormatter.get().containsKey(formattedHeader)) {
-                    Cell cell = currentRow.getCell(columnNumber, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
+            if (listTypeFormatter.get().containsKey(formattedHeader)) {
+                Cell cell = currentRow.getCell(columnNumber, Row.MissingCellPolicy.RETURN_NULL_AND_BLANK);
+                if (cell != null) {
                     String formattedCellValue = NonStrategicListFormatter.formatField(
                         formattedHeader,
-                        ExcelConversionService.getExcelCellValue(cell),
+                        currentRowData.get(columnNumber),
                         listTypeFormatter.get()
                     );
                     cell.setCellValue(formattedCellValue);

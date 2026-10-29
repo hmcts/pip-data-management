@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.assertj.core.api.SoftAssertions;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,6 +17,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.service.filegeneration.NonStrategicListFileConverter;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -319,5 +323,53 @@ class GrcWeeklyHearingListFileConverterTest {
                 HEARING_VENUE,
                 "This is another additional information"
             );
+    }
+
+    @Test
+    void testGrcWeeklyHearingListExcelConversionInEnglish() throws IOException {
+        try (InputStream excelFile = getClass().getResourceAsStream("/mocks/non-strategic/grcWeeklyHearingList.xlsx");
+             Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(
+                 converter.convertToExcel(null, GRC_WEEKLY_HEARING_LIST, Map.of(
+                     LANGUAGE_METADATA, ENGLISH,
+                     LIST_TYPE_METADATA, GRC_WEEKLY_HEARING_LIST.name()
+                 ), excelFile)
+             ))) {
+            Row headingRow = workbook.getSheetAt(0).getRow(0);
+            SoftAssertions softly = new SoftAssertions();
+            softly.assertThat(headingRow.getCell(0).getStringCellValue()).isEqualTo("Date");
+            softly.assertThat(headingRow.getCell(1).getStringCellValue()).isEqualTo("Hearing time");
+            softly.assertThat(headingRow.getCell(2).getStringCellValue()).isEqualTo("Case reference number");
+            softly.assertThat(headingRow.getCell(3).getStringCellValue()).isEqualTo("Case name");
+            softly.assertThat(headingRow.getCell(4).getStringCellValue()).isEqualTo("Judge(s)");
+            softly.assertThat(headingRow.getCell(5).getStringCellValue()).isEqualTo("Member(s)");
+            softly.assertThat(headingRow.getCell(6).getStringCellValue()).isEqualTo("Mode of hearing");
+            softly.assertThat(headingRow.getCell(7).getStringCellValue()).isEqualTo("Venue");
+            softly.assertThat(headingRow.getCell(8).getStringCellValue()).isEqualTo("Additional information");
+            softly.assertAll();
+        }
+    }
+
+    @Test
+    void testGrcWeeklyHearingListExcelConversionInWelsh() throws IOException {
+        try (InputStream excelFile = getClass().getResourceAsStream("/mocks/non-strategic/grcWeeklyHearingList.xlsx");
+             Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(
+                 converter.convertToExcel(null, GRC_WEEKLY_HEARING_LIST, Map.of(
+                     LANGUAGE_METADATA, WELSH,
+                     LIST_TYPE_METADATA, GRC_WEEKLY_HEARING_LIST.name()
+                 ), excelFile)
+             ))) {
+            Row headingRow = workbook.getSheetAt(0).getRow(0);
+            SoftAssertions softly = new SoftAssertions();
+            softly.assertThat(headingRow.getCell(0).getStringCellValue()).isEqualTo("Dyddiad");
+            softly.assertThat(headingRow.getCell(1).getStringCellValue()).isEqualTo("Amser y gwrandawiad");
+            softly.assertThat(headingRow.getCell(2).getStringCellValue()).isEqualTo("Cyfeirnod yr achos");
+            softly.assertThat(headingRow.getCell(3).getStringCellValue()).isEqualTo("Enw’r achos");
+            softly.assertThat(headingRow.getCell(4).getStringCellValue()).isEqualTo("Barnwr/Barnwyr");
+            softly.assertThat(headingRow.getCell(5).getStringCellValue()).isEqualTo("Aelod(au)");
+            softly.assertThat(headingRow.getCell(6).getStringCellValue()).isEqualTo("Math o wrandawiad");
+            softly.assertThat(headingRow.getCell(7).getStringCellValue()).isEqualTo("Lleoliad");
+            softly.assertThat(headingRow.getCell(8).getStringCellValue()).isEqualTo("Gwybodaeth ychwanegol");
+            softly.assertAll();
+        }
     }
 }
