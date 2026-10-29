@@ -60,17 +60,13 @@
                               {
                                 "partyRole": "APPLICANT_PETITIONER",
                                 "individualDetails": {
-                                  "individualForenames": "Rep Forenames 2",
-                                  "individualMiddleName": "Rep Middlename 2",
-                                  "individualSurname": "Rep Surname 2"
+                                  "individualSurname": "Applicant surname"
                                 }
                               },
                               {
                                 "partyRole": "RESPONDENT",
                                 "individualDetails": {
-                                  "individualForenames": "Respondent Forenames 2",
-                                  "individualMiddleName": "Respondent Middlename 2",
-                                  "individualSurname": "Respondent surname"
+                                  "individualSurname": "Applicant surname"
                                 }
                               },
                               {
