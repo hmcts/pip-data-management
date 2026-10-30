@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -34,11 +35,11 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.NoMatchArtefactHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
-import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationRunner;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationPayloadConversionService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRemovalService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
 import uk.gov.hmcts.reform.pip.model.authentication.roles.IsAdmin;
@@ -88,7 +89,7 @@ public class PublicationController {
     private final PublicationRetrievalService publicationRetrievalService;
     private final PublicationRemovalService publicationRemovalService;
     private final ValidationService validationService;
-    private final ExcelConversionService excelConversionService;
+    private final PublicationPayloadConversionService publicationPayloadConversionService;
     private final PublicationServicesService publicationServicesService;
 
     /**
@@ -100,7 +101,7 @@ public class PublicationController {
      * @param publicationRetrievalService   The service used to retrieval publication and publication property
      * @param publicationRemovalService The service used to Delete or Archive artefacts
      * @param validationService The service that handle input validation of publications
-     * @param excelConversionService The service handles conversion of Excel data to JSON format
+     * @param publicationPayloadConversionService The service handles payload conversion
      * @param publicationServicesService The service handles communication with publication service
      */
     @Autowired
@@ -109,14 +110,14 @@ public class PublicationController {
                                  ValidationService validationService,
                                  PublicationRetrievalService publicationRetrievalService,
                                  PublicationRemovalService publicationRemovalService,
-                                 ExcelConversionService excelConversionService,
+                                 PublicationPayloadConversionService publicationPayloadConversionService,
                                  PublicationServicesService publicationServicesService) {
         this.publicationCreationService = publicationCreationService;
         this.publicationCreationRunner = publicationCreationRunner;
         this.validationService = validationService;
         this.publicationRetrievalService = publicationRetrievalService;
         this.publicationRemovalService = publicationRemovalService;
-        this.excelConversionService = excelConversionService;
+        this.publicationPayloadConversionService = publicationPayloadConversionService;
         this.publicationServicesService = publicationServicesService;
     }
 
@@ -125,15 +126,15 @@ public class PublicationController {
      * The suppression of concurrentHashMap warnings is because we require the ability to use nulls (say, if a date
      * is left blank), and Hashmap provides this whereas concurrentHashMap does not.
      *
-     * @param provenance  Name of the source system.
-     * @param sensitivity Level of sensitivity.
-     * @param language    Language of publication.
-     * @param displayFrom Date / Time from which the publication will be displayed.
-     * @param displayTo   Date / Time until which the publication will be displayed.
-     * @param listType    DL / SL / PL / WL / SJP / FL.
-     * @param courtId     Source systems court id.
-     * @param contentDate Local date time for when the publication is referring to start.
-     * @param payload     JSON Blob with key/value pairs of data to be published.
+     * @param provenance    Name of the source system.
+     * @param sensitivity   Level of sensitivity.
+     * @param language      Language of publication.
+     * @param displayFrom   Date / Time from which the publication will be displayed.
+     * @param displayTo     Date / Time until which the publication will be displayed.
+     * @param listType      DL / SL / PL / WL / SJP / FL.
+     * @param courtId       Source systems court id.
+     * @param contentDate   Local date time for when the publication is referring to start.
+     * @param inputPayload  JSON Blob with key/value pairs of data to be published.
      * @return The created artefact.
      */
     @ApiResponse(responseCode = "201", description = "Artefact.class instance for the artefact that has been "
@@ -162,12 +163,14 @@ public class PublicationController {
         @RequestHeader(PublicationConfiguration.CONTENT_DATE)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime contentDate,
         @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
-        @RequestBody String payload) {
+        @RequestBody String inputPayload) throws JsonProcessingException {
         HeaderGroup initialHeaders = new HeaderGroup(provenance, sourceArtefactId, type, sensitivity, language,
                                                      displayFrom, displayTo, listType, courtId, contentDate
         );
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
+
+        String payload = publicationPayloadConversionService.removeJsonFormatting(inputPayload);
         validationService.validateBody(payload, initialHeaders, validateMasterSchema(listType));
         Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
 
@@ -304,7 +307,7 @@ public class PublicationController {
 
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
 
-        String payload = excelConversionService.convert(file);
+        String payload = publicationPayloadConversionService.convertExcelToJson(file);
         validationService.validateBody(payload, initialHeaders, false);
 
         Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
