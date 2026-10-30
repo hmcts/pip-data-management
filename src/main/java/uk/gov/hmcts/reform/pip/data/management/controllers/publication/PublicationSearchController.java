@@ -184,4 +184,20 @@ public class PublicationSearchController {
         @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
         return ResponseEntity.ok(publicationSearchService.findAllByLocationIdAdmin(locationId, requesterId, isAdmin));
     }
+
+    @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching the given listType and "
+        + "verification parameters and date requirements")
+    @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
+    @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
+    @Operation(summary = "Get a series of publications matching a given listType")
+    @GetMapping("/listType/{listType}")
+    @JsonView(ArtefactView.Internal.class)
+    @PreAuthorize("@authorisationService.userCanSearchForPublicationByLocation()")
+    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsByListType(
+        @PathVariable ListType listType,
+        @RequestHeader(value = REQUESTER_ID_HEADER, required = false) UUID requesterId,
+        @RequestHeader(value = ADMIN_HEADER, defaultValue = DEFAULT_ADMIN_VALUE, required = false) Boolean isAdmin) {
+        return ResponseEntity.ok(publicationSearchService.findAllByListTypeAdmin(listType, requesterId, isAdmin));
+    }
 }
