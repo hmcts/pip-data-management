@@ -19,6 +19,18 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import uk.gov.hmcts.reform.pip.data.management.database.LocationMetadataRepository;
+import uk.gov.hmcts.reform.pip.data.management.service.location.LocationMetadataService;
+
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
 import java.util.Arrays;
@@ -69,6 +81,12 @@ class LocationMetadataTest extends IntegrationTestBase {
     private static final String UNAUTHORIZED_USERNAME = "unauthorized_isAuthorized";
 
     private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
+
+    @Mock
+    private LocationMetadataRepository locationMetadataRepository;
+
+    @InjectMocks
+    private LocationMetadataService locationMetadataService;
 
     private static PiUser piUser;
 
@@ -352,6 +370,32 @@ class LocationMetadataTest extends IntegrationTestBase {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(OBJECT_MAPPER.writeValueAsString(locationMetadata)))
                 .andExpect(status().isConflict());
+    }
+
+    @Test
+    void testGetLocationByIdOrNullReturnsMetadataWhenFound() {
+        LocationMetadata locationMetadata = new LocationMetadata();
+        locationMetadata.setLocationId(123);
+
+        when(locationMetadataRepository.findByLocationId(123))
+            .thenReturn(Optional.of(locationMetadata));
+
+        LocationMetadata result = locationMetadataService.getLocationByIdOrNull("123");
+
+        assertNotNull(result);
+        assertEquals(123, result.getLocationId());
+        verify(locationMetadataRepository).findByLocationId(123);
+    }
+
+    @Test
+    void testGetLocationByIdOrNullReturnsNullWhenNotFound() {
+        when(locationMetadataRepository.findByLocationId(123))
+            .thenReturn(Optional.empty());
+
+        LocationMetadata result = locationMetadataService.getLocationByIdOrNull("123");
+
+        assertNull(result);
+        verify(locationMetadataRepository).findByLocationId(123);
     }
 
 }
