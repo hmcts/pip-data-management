@@ -20,6 +20,7 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,6 +33,7 @@ import static uk.gov.hmcts.reform.pip.model.LogBuilder.writeLog;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.AST_DAILY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIC_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST;
@@ -43,6 +45,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_LR_WEEKLY_H
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.FTT_TAX_WEEKLY_HEARING_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.GRC_WEEKLY_HEARING_LIST;
+import static uk.gov.hmcts.reform.pip.model.publication.ListType.INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST;
 import static uk.gov.hmcts.reform.pip.model.publication.ListType.LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST;
@@ -82,107 +85,177 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String SINGLE_SHEET_NAME = "Sheet1";
     private static final String COMMON_NON_STRATEGIC_HEADERS = "commonNsDailyCauseListTableHeaders";
+    private static final String COMMON_BUSINESS_AND_PROPERTY_HEADERS = "commonKbChdDailyCauseListTableHeaders";
     private static final String TABLE_HEADERS = "tableHeaders";
 
     private static final Map<ListType, Map<String, String>> LIST_TYPE_HEADER_FIELDS = Map.ofEntries(
-        Map.entry(UT_AAC_DAILY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(UT_IAC_JR_LEEDS_DAILY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(UT_IAC_JR_LONDON_DAILY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(UT_T_AND_CC_DAILY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(UT_LC_DAILY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
-                  Map.of("London administrative court", COMMON_NON_STRATEGIC_HEADERS,
-                         "Planning court", COMMON_NON_STRATEGIC_HEADERS)),
-        Map.entry(COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST,
-                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
-        Map.entry(CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST,
-                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
-        Map.entry(COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST,
-                  Map.of("Hearing list", COMMON_NON_STRATEGIC_HEADERS,
-                         "Future judgments", "futureJudgementTableHeaders")),
-        Map.entry(COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST,
-                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
-        Map.entry(FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST,
-                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
-        Map.entry(KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST,
-                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
-        Map.entry(KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST,
-                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
-        Map.entry(SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST,
-                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
-        Map.entry(MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST,
-                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
-        Map.entry(WPAFCC_WEEKLY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(FTT_TAX_WEEKLY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(SEND_DAILY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(FTT_LR_WEEKLY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(RPT_EASTERN_WEEKLY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(RPT_LONDON_WEEKLY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(RPT_MIDLANDS_WEEKLY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(RPT_NORTHERN_WEEKLY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(RPT_SOUTHERN_WEEKLY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(SSCS_MIDLANDS_DAILY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(SSCS_LONDON_DAILY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(SSCS_NORTH_EAST_DAILY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(SSCS_NORTH_WEST_DAILY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(SSCS_SCOTLAND_DAILY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(SSCS_SOUTH_EAST_DAILY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(CST_WEEKLY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(PHT_WEEKLY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(GRC_WEEKLY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(SIAC_WEEKLY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(POAC_WEEKLY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(PAAC_WEEKLY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(AST_DAILY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(CIC_WEEKLY_HEARING_LIST,
-                  Map.of(SINGLE_SHEET_NAME, TABLE_HEADERS)),
-        Map.entry(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
-                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
-        Map.entry(BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
-                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
-        Map.entry(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
-                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)),
-        Map.entry(MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST,
-                  Map.of(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS))
+        Map.entry(UT_AAC_DAILY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(UT_IAC_JR_CARDIFF_DAILY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(UT_IAC_JR_BIRMINGHAM_DAILY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(UT_IAC_JR_MANCHESTER_DAILY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(UT_IAC_JR_LEEDS_DAILY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(UT_IAC_JR_LONDON_DAILY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(UT_IAC_STATUTORY_APPEALS_DAILY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(UT_T_AND_CC_DAILY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(UT_LC_DAILY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(LONDON_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, Map.ofEntries(
+            Map.entry("London administrative court", COMMON_NON_STRATEGIC_HEADERS),
+            Map.entry("Planning court", COMMON_NON_STRATEGIC_HEADERS)
+        )),
+        Map.entry(COUNTY_COURT_LONDON_CIVIL_DAILY_CAUSE_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)
+        )),
+        Map.entry(CIVIL_COURTS_RCJ_DAILY_CAUSE_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)
+        )),
+        Map.entry(COURT_OF_APPEAL_CIVIL_DAILY_CAUSE_LIST, Map.ofEntries(
+            Map.entry("Hearing list", COMMON_NON_STRATEGIC_HEADERS),
+            Map.entry("Future judgments", "futureJudgementTableHeaders")
+        )),
+        Map.entry(COURT_OF_APPEAL_CRIMINAL_DAILY_CAUSE_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)
+        )),
+        Map.entry(FAMILY_DIVISION_HIGH_COURT_DAILY_CAUSE_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)
+        )),
+        Map.entry(KINGS_BENCH_DIVISION_DAILY_CAUSE_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)
+        )),
+        Map.entry(KINGS_BENCH_MASTERS_DAILY_CAUSE_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)
+        )),
+        Map.entry(SENIOR_COURTS_COSTS_OFFICE_DAILY_CAUSE_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)
+        )),
+        Map.entry(MAYOR_AND_CITY_CIVIL_DAILY_CAUSE_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)
+        )),
+        Map.entry(WPAFCC_WEEKLY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(FTT_TAX_WEEKLY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(SEND_DAILY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(FTT_LR_WEEKLY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(RPT_EASTERN_WEEKLY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(RPT_LONDON_WEEKLY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(RPT_MIDLANDS_WEEKLY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(RPT_NORTHERN_WEEKLY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(RPT_SOUTHERN_WEEKLY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(FTT_RPT_MARKET_RENTS_WEEKLY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(SSCS_MIDLANDS_DAILY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(SSCS_LONDON_DAILY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(SSCS_NORTH_EAST_DAILY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(SSCS_NORTH_WEST_DAILY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(SSCS_SCOTLAND_DAILY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(SSCS_SOUTH_EAST_DAILY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(SSCS_WALES_AND_SOUTH_WEST_DAILY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(CST_WEEKLY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(PHT_WEEKLY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(GRC_WEEKLY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(SIAC_WEEKLY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(POAC_WEEKLY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(PAAC_WEEKLY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(AST_DAILY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(CIC_WEEKLY_HEARING_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, TABLE_HEADERS)
+        )),
+        Map.entry(BIRMINGHAM_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)
+        )),
+        Map.entry(BRISTOL_AND_CARDIFF_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)
+        )),
+        Map.entry(LEEDS_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)
+        )),
+        Map.entry(MANCHESTER_ADMINISTRATIVE_COURT_DAILY_CAUSE_LIST, Map.ofEntries(
+            Map.entry(SINGLE_SHEET_NAME, COMMON_NON_STRATEGIC_HEADERS)
+        )),
+        Map.entry(BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST, Map.ofEntries(
+            Map.entry("Appeal List", COMMON_BUSINESS_AND_PROPERTY_HEADERS),
+            Map.entry("Business List", COMMON_BUSINESS_AND_PROPERTY_HEADERS),
+            Map.entry("Commercial Court", COMMON_BUSINESS_AND_PROPERTY_HEADERS),
+            Map.entry("Financial List", COMMON_BUSINESS_AND_PROPERTY_HEADERS),
+            Map.entry("Insolvency & Companies Court", COMMON_BUSINESS_AND_PROPERTY_HEADERS),
+            Map.entry("IP & Enterprise Court", COMMON_BUSINESS_AND_PROPERTY_HEADERS),
+            Map.entry("Intellectual Property List", COMMON_BUSINESS_AND_PROPERTY_HEADERS),
+            Map.entry("London Circuit Commercial Court", COMMON_BUSINESS_AND_PROPERTY_HEADERS),
+            Map.entry("Patents Court", COMMON_BUSINESS_AND_PROPERTY_HEADERS),
+            Map.entry("Property, Trusts & Probate List", COMMON_BUSINESS_AND_PROPERTY_HEADERS),
+            Map.entry("Technology & Construction Court", COMMON_BUSINESS_AND_PROPERTY_HEADERS),
+            Map.entry("Admiralty Court", COMMON_BUSINESS_AND_PROPERTY_HEADERS),
+            Map.entry("Companies Winding Up", COMMON_BUSINESS_AND_PROPERTY_HEADERS),
+            Map.entry("Competition List", COMMON_BUSINESS_AND_PROPERTY_HEADERS),
+            Map.entry("Pensions List", COMMON_BUSINESS_AND_PROPERTY_HEADERS),
+            Map.entry("Revenue List", COMMON_BUSINESS_AND_PROPERTY_HEADERS)
+        )),
+        Map.entry(INTERIM_APPLICATIONS_CHD_DAILY_CAUSE_LIST, Map.ofEntries(
+            Map.entry("Hearing List", COMMON_BUSINESS_AND_PROPERTY_HEADERS)
+        ))
     );
 
     @Override
@@ -280,41 +353,66 @@ public class NonStrategicListFileConverter extends ExcelAbstractList implements 
                                                                               language));
     }
 
-    @SuppressWarnings("unchecked")
     private void updateExcelValues(Workbook workbook, Map<String, Object> languageResources,
                                    Map<String, String> headerFields,
                                    Optional<Map<String, Function<String, String>>> listTypeFormatter) {
         if (!headerFields.isEmpty()) {
-            for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+            boolean isSingleSheet = workbook.getNumberOfSheets() == 1;
+            for (int i = workbook.getNumberOfSheets() - 1; i >= 0; i--) {
                 Sheet sheet = workbook.getSheetAt(i);
-                List<String> headersToUpdate = workbook.getNumberOfSheets() > 1
-                    ? (List<String>) languageResources.get(headerFields.get(sheet.getSheetName()))
-                    : (List<String>) languageResources.get(headerFields.get(SINGLE_SHEET_NAME));
+                List<String> headersToUpdate = getHeadersToUpdate(isSingleSheet, sheet, languageResources,
+                                                                  headerFields);
+                if (!headersToUpdate.isEmpty()) {
+                    int headerRowNumber = sheet.getFirstRowNum();
+                    int firstColumnNumber = sheet.getRow(headerRowNumber).getFirstCellNum();
+                    Row headerRow = sheet.getRow(headerRowNumber);
 
-                int headerRowNumber = sheet.getFirstRowNum();
-                int firstColumnNumber = sheet.getRow(headerRowNumber).getFirstCellNum();
-                Row headerRow = sheet.getRow(headerRowNumber);
-
-                int lastCellNum = headerRow.getLastCellNum();
-                if (lastCellNum < 0 || firstColumnNumber >= lastCellNum) {
-                    return;
-                }
-
-                for (int rowNumber = headerRowNumber + 1; rowNumber <= sheet.getLastRowNum(); rowNumber++) {
-                    Row currentRow = sheet.getRow(rowNumber);
-                    if (currentRow != null && listTypeFormatter.isPresent()) {
-                        List<String> currentRowData = ExcelConversionService.getExcelRow(currentRow, firstColumnNumber);
-
-                        // Skip Excel processing once it reaches a row with empty values
-                        if (currentRowData.stream().allMatch(String::isBlank)) {
-                            break;
-                        }
-
-                        formatRowValues(currentRowData, currentRow, headerRow, firstColumnNumber, listTypeFormatter);
+                    int lastCellNum = headerRow.getLastCellNum();
+                    if (lastCellNum < 0 || firstColumnNumber >= lastCellNum) {
+                        continue;
                     }
+
+                    for (int rowNumber = headerRowNumber + 1; rowNumber <= sheet.getLastRowNum(); rowNumber++) {
+                        Row currentRow = sheet.getRow(rowNumber);
+                        if (currentRow != null && listTypeFormatter.isPresent()) {
+                            List<String> currentRowData = ExcelConversionService.getExcelRow(
+                                currentRow,
+                                firstColumnNumber
+                            );
+
+                            // Skip Excel processing once it reaches a row with empty values
+                            if (currentRowData.stream().allMatch(String::isBlank)) {
+                                break;
+                            }
+
+                            formatRowValues(currentRowData, currentRow, headerRow, firstColumnNumber,
+                                            listTypeFormatter);
+                        }
+                    }
+                    updateHeaders(workbook, headerRow, firstColumnNumber, headersToUpdate);
+                } else {
+                    // Remove the sheet if it does not contain any headers to update. For example, the open justice
+                    // statement details sheet for Interim Applications Daily Cause List
+                    workbook.removeSheetAt(i);
                 }
-                updateHeaders(workbook, headerRow, firstColumnNumber, headersToUpdate);
             }
+
+            if (!isSingleSheet) {
+                // Set the first sheet as the default after processing
+                workbook.setActiveSheet(0);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<String> getHeadersToUpdate(boolean isSingleSheet, Sheet sheet, Map<String, Object> languageResources,
+                                            Map<String, String> headerFields) {
+        if (isSingleSheet) {
+            return (List<String>) languageResources.get(headerFields.get(SINGLE_SHEET_NAME));
+        } else {
+            return headerFields.containsKey(sheet.getSheetName())
+                ? (List<String>) languageResources.get(headerFields.get(sheet.getSheetName()))
+                : Collections.emptyList();
         }
     }
 
