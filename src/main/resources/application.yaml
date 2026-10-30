@@ -34,7 +34,9 @@ spring:
             scopes:
               - ${PUBLICATION_SERVICES_AZ_API}/.default
   jackson:
-    serialization.write_dates_as_timestamps: false
+    datatype:
+      datetime:
+        write-dates-as-timestamps: false
     mapper:
       accept_case_insensitive_enums: true
   config:

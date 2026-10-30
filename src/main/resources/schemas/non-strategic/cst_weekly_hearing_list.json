@@ -21,7 +21,7 @@
         "examples": [
           "02/01/2025"
         ],
-        "pattern": "^\\d{2}/\\d{2}/\\d{4}$"
+        "pattern": "^\\s*\\d{2}/\\d{2}/\\d{4}\\s*$"
       },
       "caseName": {
         "title": "Case name",

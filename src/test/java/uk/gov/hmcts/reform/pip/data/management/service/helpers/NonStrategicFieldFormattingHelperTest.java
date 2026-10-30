@@ -23,6 +23,13 @@ class NonStrategicFieldFormattingHelperTest {
     }
 
     @Test
+    void shouldConvertCorrectDateFormatWithSpaces() {
+        assertThat(NonStrategicFieldFormattingHelper.formatDateField(" 01/12/2024 "))
+            .as(RESULT_MATCHED_MESSAGE)
+            .isEqualTo("1 December 2024");
+    }
+
+    @Test
     void shouldThrowExceptionForIncorrectDateFormat() {
         assertThatThrownBy(() -> NonStrategicFieldFormattingHelper.formatDateField("01-12-2024"))
             .as(EXCEPTION_MESSAGE)
@@ -42,6 +49,13 @@ class NonStrategicFieldFormattingHelperTest {
         assertThat(NonStrategicFieldFormattingHelper.formatTimeField("9:30am"))
             .as(RESULT_MATCHED_MESSAGE)
             .isEqualTo("9:30am");
+    }
+
+    @Test
+    void shouldTrimTimeFormat() {
+        assertThat(NonStrategicFieldFormattingHelper.formatTimeField(" 10:30am "))
+            .as(RESULT_MATCHED_MESSAGE)
+            .isEqualTo("10:30am");
     }
 
     @ParameterizedTest

@@ -69,7 +69,7 @@
         "examples": [
           "10:30am"
         ],
-        "pattern": "^\\d{1,2}([:.]\\d{2})?[ap]m\\s*$"
+        "pattern": "^\\s*\\d{1,2}([:.]\\d{2})?[ap]m\\s*$"
       },
       "tribunal": {
         "title": "Tribunal members",
