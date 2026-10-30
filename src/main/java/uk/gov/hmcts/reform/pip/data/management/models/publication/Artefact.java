@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.Nulls;
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
 import uk.gov.hmcts.reform.pip.model.publication.Language;
@@ -24,8 +22,6 @@ import uk.gov.hmcts.reform.pip.model.publication.ListType;
 import uk.gov.hmcts.reform.pip.model.publication.Sensitivity;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -79,14 +75,6 @@ public class Artefact {
     @Enumerated(EnumType.STRING)
     @JsonView(ArtefactView.External.class)
     private Language language;
-
-    /**
-     * Metadata that will be indexed for searching.
-     */
-    @Type(JsonType.class)
-    @Column(columnDefinition = "json")
-    @JsonView(ArtefactView.External.class)
-    private Map<String, List<Object>> search;
 
     /**
      * Date / Time from which the publication will be displayed.
