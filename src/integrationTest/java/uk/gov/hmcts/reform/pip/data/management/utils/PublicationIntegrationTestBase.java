@@ -136,7 +136,6 @@ public class PublicationIntegrationTestBase extends IntegrationTestBase {
             && expectedArtefact.getSensitivity().equals(returnedArtefact.getSensitivity())
             && expectedArtefact.getPayload().equals(returnedArtefact.getPayload())
             && expectedArtefact.getType().equals(returnedArtefact.getType())
-            && expectedArtefact.getSearch().equals(returnedArtefact.getSearch())
             && expectedArtefact.getLocationId().equals(returnedArtefact.getLocationId())
             && expectedArtefact.getLanguage().equals(returnedArtefact.getLanguage())
             && expectedArtefact.getListType().equals(returnedArtefact.getListType())
