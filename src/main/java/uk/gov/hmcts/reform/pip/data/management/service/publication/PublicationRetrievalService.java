@@ -25,9 +25,6 @@ public class PublicationRetrievalService {
     private final AccountManagementService accountManagementService;
     private final AzureArtefactBlobService azureArtefactBlobService;
 
-    @Value("${payload.json.max-size-search}")
-    private int maxPayloadSizeForJsonSearch;
-
     @Value("${payload.json.max-size-excel}")
     private int maxPayloadSizeForExcel;
 
@@ -136,10 +133,6 @@ public class PublicationRetrievalService {
         } else {
             return accountManagementService.getIsAuthorised(userId, artefact.getListType(), artefact.getSensitivity());
         }
-    }
-
-    public boolean payloadWithinJsonSearchLimit(Float artefactPayloadSize) {
-        return artefactPayloadSize == null || artefactPayloadSize < maxPayloadSizeForJsonSearch;
     }
 
     public boolean payloadWithinExcelLimit(Float artefactPayloadSize) {
