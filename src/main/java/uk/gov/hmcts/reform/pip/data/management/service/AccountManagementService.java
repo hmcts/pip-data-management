@@ -108,32 +108,9 @@ public class AccountManagementService {
         return systemAdmins;
     }
 
-    @Deprecated
-    public void sendArtefactForAllSubscriptions(Artefact artefact) {
-        sendArtefactForEmailSubscription(artefact);
-        sendArtefactForApiSubscription(artefact);
-    }
-
     public void sendArtefactForAllSubscriptionsV2(Artefact artefact) {
         sendArtefactForEmailSubscriptionV2(artefact);
         sendArtefactForApiSubscription(artefact);
-    }
-
-    @Deprecated
-    public void sendArtefactForEmailSubscription(Artefact artefact) {
-        try {
-            webClient.post()
-                .uri(url + "/subscription/email-recipients")
-                .body(BodyInserters.fromValue(artefact))
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-        } catch (WebClientException ex) {
-            log.error(writeLog(
-                String.format("Request to send artefact to Account Management for email subscriptions failed with "
-                                  + "error: %s", ex.getMessage())
-            ));
-        }
     }
 
     public void sendArtefactForEmailSubscriptionV2(Artefact artefact) {

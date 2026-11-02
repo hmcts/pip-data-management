@@ -7,7 +7,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
 import uk.gov.hmcts.reform.pip.data.management.config.AzureBlobConfigurationProperties;
-import uk.gov.hmcts.reform.pip.data.management.config.SearchConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.config.ValidationConfiguration;
 
 import java.util.TimeZone;
@@ -15,7 +14,6 @@ import java.util.TimeZone;
 @SpringBootApplication
 @EnableConfigurationProperties({
     AzureBlobConfigurationProperties.class,
-    SearchConfiguration.class,
     ValidationConfiguration.class,
 })
 @EnableAsync
