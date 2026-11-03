@@ -65,6 +65,7 @@ public abstract class ExcelAbstractList {
     protected static byte[] convertToByteArray(Workbook workbook) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         workbook.write(baos);
+        baos.close();
         return baos.toByteArray();
     }
 }
