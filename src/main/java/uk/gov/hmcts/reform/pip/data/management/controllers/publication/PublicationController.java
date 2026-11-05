@@ -171,7 +171,7 @@ public class PublicationController {
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
 
         String payload = publicationPayloadConversionService.removeJsonFormatting(inputPayload);
-        validationService.validateBody(payload, initialHeaders, validateMasterSchema(listType), false);
+        validationService.validateBody(payload, initialHeaders, validateMasterSchema(listType));
         Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
 
         Artefact createdItem = publicationCreationRunner.run(artefact, payload);

@@ -203,14 +203,14 @@ class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
     private void assertValidationFails(TestData testData, String fieldName) {
         String json = testData.jsonNode().toString();
         assertThatExceptionOfType(PayloadValidationException.class)
-            .isThrownBy(() -> validationService.validateBody(json, testData.headerGroup(), false))
+            .isThrownBy(() -> validationService.validateBody(json, testData.headerGroup(), false, true))
             .withMessageContaining(fieldName);
     }
 
     private void assertValidationPass(TestData testData) {
         String json = testData.jsonNode().toString();
         assertThatNoException()
-            .isThrownBy(() -> validationService.validateBody(json, testData.headerGroup(), false));
+            .isThrownBy(() -> validationService.validateBody(json, testData.headerGroup(), false, true));
     }
 
     @ParameterizedTest
@@ -225,6 +225,6 @@ class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
 
         Assertions.assertThatExceptionOfType(PayloadValidationException.class)
             .as(INVALID_MESSAGE)
-            .isThrownBy(() -> validationService.validateBody(formattedJson, testData.headerGroup(), false));
+            .isThrownBy(() -> validationService.validateBody(formattedJson, testData.headerGroup(), false, true));
     }
 }

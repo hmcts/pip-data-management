@@ -407,6 +407,7 @@ class PublicationControllerTest {
             LIST_TYPE, LOCATION_ID, CONTENT_DATE, USER_ID, file
         );
 
+        verify(validationService).validateBody(eq(PAYLOAD), any(), eq(false), eq(true));
         verify(publicationCreationService).processCreatedPublication(artefactWithId, PAYLOAD, file);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode(), STATUS_CODE_MATCH);

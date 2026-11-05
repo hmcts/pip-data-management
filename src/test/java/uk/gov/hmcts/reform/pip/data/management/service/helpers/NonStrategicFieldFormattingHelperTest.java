@@ -74,4 +74,20 @@ class NonStrategicFieldFormattingHelperTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource("parametersForFormatInternalFieldNameForDisplay")
+    void shouldFormatInternalFieldNameForDisplay(String input, String expectedOutput) {
+        assertThat(NonStrategicFieldFormattingHelper.formatInternalFieldNameForDisplay(input, false))
+            .as(RESULT_MATCHED_MESSAGE)
+            .isEqualTo(expectedOutput);
+    }
+
+    private static Stream<Arguments> parametersForFormatInternalFieldNameForDisplay() {
+        return Stream.of(
+            Arguments.of("hearingList", "Hearing List"),
+            Arguments.of("patentsCourt", "Patents Court"),
+            Arguments.of("ip&EnterpriseCourt", "IP & Enterprise Court")
+        );
+    }
+
 }

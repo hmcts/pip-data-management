@@ -182,6 +182,18 @@ public class ValidationService {
      * @param headers The headers of the publication.
      * @param validateMasterSchema True if master schema should be used in validation too
      */
+    public void validateBody(String jsonPayload, HeaderGroup headers, boolean validateMasterSchema) {
+        validateBody(jsonPayload, headers, validateMasterSchema, false);
+    }
+
+    /**
+     * Validates a JSON body.
+     *
+     * @param jsonPayload The JSON body to validate.
+     * @param headers The headers of the publication.
+     * @param validateMasterSchema True if master schema should be used in validation too
+     * @param formatErrors True if the errors are to be formatted for the API response
+     */
     public void validateBody(String jsonPayload, HeaderGroup headers, boolean validateMasterSchema,
                              boolean formatErrors) {
         Map<String, String> propertiesMap = headers.getAppInsightsHeaderMap();
