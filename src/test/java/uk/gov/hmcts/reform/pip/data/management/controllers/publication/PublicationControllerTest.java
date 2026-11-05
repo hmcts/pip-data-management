@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.controllers.publication;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,11 +21,11 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileFormatNotSupportedException;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.HeaderGroup;
-import uk.gov.hmcts.reform.pip.data.management.service.ExcelConversionService;
 import uk.gov.hmcts.reform.pip.data.management.service.PublicationServicesService;
 import uk.gov.hmcts.reform.pip.data.management.service.ValidationService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationRunner;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationCreationService;
+import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationPayloadConversionService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRemovalService;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationRetrievalService;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactType;
@@ -39,7 +40,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -110,7 +110,7 @@ class PublicationControllerTest {
     private ValidationService validationService;
 
     @Mock
-    private ExcelConversionService excelConversionService;
+    private PublicationPayloadConversionService publicationPayloadConversionService;
 
     @Mock
     private PublicationServicesService publicationServicesService;
@@ -153,7 +153,6 @@ class PublicationControllerTest {
             .listType(LIST_TYPE)
             .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
-            .search(new ConcurrentHashMap<>())
             .payloadSize(PAYLOAD_SIZE)
             .build();
 
@@ -170,7 +169,6 @@ class PublicationControllerTest {
             .listType(LIST_TYPE)
             .locationId(NO_MATCH + LOCATION_ID)
             .contentDate(CONTENT_DATE)
-            .search(new ConcurrentHashMap<>())
             .payloadSize(PAYLOAD_SIZE)
             .build();
 
@@ -185,16 +183,16 @@ class PublicationControllerTest {
             .listType(LIST_TYPE)
             .locationId(LOCATION_ID)
             .contentDate(CONTENT_DATE)
-            .search(new ConcurrentHashMap<>())
             .payloadSize(PAYLOAD_SIZE)
             .isFlatFile(true)
             .build();
     }
 
     @Test
-    void testCreationOfPublication() {
+    void testCreationOfPublication() throws JsonProcessingException {
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithId);
+        when(publicationPayloadConversionService.removeJsonFormatting(any())).thenReturn(PAYLOAD);
+        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
@@ -218,9 +216,10 @@ class PublicationControllerTest {
         "CROWN_DAILY_PDDA_LIST",
         "CROWN_FIRM_PDDA_LIST",
         "CROWN_ADVANCE_PDDA_LIST"})
-    void shouldNotValidateMasterSchemaForMagistratesAdultCourtLists(ListType listType) {
+    void shouldNotValidateMasterSchemaForMagistratesAdultCourtLists(ListType listType) throws JsonProcessingException {
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithId);
+        when(publicationPayloadConversionService.removeJsonFormatting(any())).thenReturn(PAYLOAD);
+        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
@@ -237,9 +236,10 @@ class PublicationControllerTest {
     }
 
     @Test
-    void testCreationOfPublicationWithNonExistentLocationId() {
+    void testCreationOfPublicationWithNonExistentLocationId() throws JsonProcessingException {
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithNoMatchLocationId);
+        when(publicationPayloadConversionService.removeJsonFormatting(any())).thenReturn(PAYLOAD);
+        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithNoMatchLocationId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.uploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE,
@@ -351,11 +351,9 @@ class PublicationControllerTest {
     void testCreatePublicationMultipartFile() {
         Map<String, List<Object>> search = new HashMap<>();
         search.put("location-id", List.of(LOCATION_ID));
-        artefact.setSearch(search);
         artefact.setIsFlatFile(true);
         artefact.setPayloadSize(0f);
         artefactWithId.setIsFlatFile(true);
-        artefactWithId.setSearch(search);
         artefactWithId.setPayloadSize(0f);
 
         when(validationService.validateHeaders(any())).thenReturn(headers);
@@ -376,11 +374,9 @@ class PublicationControllerTest {
     void testCreatePublicationMultipartFileWithNonExistentLocationId() {
         Map<String, List<Object>> search = new HashMap<>();
         search.put("location-id", List.of(LOCATION_ID));
-        artefact.setSearch(search);
         artefact.setIsFlatFile(true);
         artefact.setPayloadSize(0f);
         artefactWithNoMatchLocationId.setIsFlatFile(true);
-        artefactWithNoMatchLocationId.setSearch(search);
         artefactWithNoMatchLocationId.setPayloadSize(0f);
 
         when(validationService.validateHeaders(any())).thenReturn(headers);
@@ -403,8 +399,8 @@ class PublicationControllerTest {
                                                    TEST_STRING.getBytes(StandardCharsets.UTF_8));
 
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(excelConversionService.convert(file)).thenReturn(PAYLOAD);
-        when(publicationCreationRunner.run(artefact, PAYLOAD, false)).thenReturn(artefactWithId);
+        when(publicationPayloadConversionService.convertExcelToJson(file)).thenReturn(PAYLOAD);
+        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.nonStrategicUploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO,
@@ -423,9 +419,8 @@ class PublicationControllerTest {
                                                    TEST_STRING.getBytes(StandardCharsets.UTF_8));
 
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(excelConversionService.convert(file)).thenReturn(PAYLOAD);
-        when(publicationCreationRunner.run(artefact, PAYLOAD, false))
-            .thenReturn(artefactWithNoMatchLocationId);
+        when(publicationPayloadConversionService.convertExcelToJson(file)).thenReturn(PAYLOAD);
+        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithNoMatchLocationId);
 
         ResponseEntity<Artefact> responseEntity = publicationController.nonStrategicUploadPublication(
             PROVENANCE, SOURCE_ARTEFACT_ID, ARTEFACT_TYPE, SENSITIVITY, LANGUAGE, DISPLAY_FROM, DISPLAY_TO,
@@ -440,8 +435,6 @@ class PublicationControllerTest {
 
     @Test
     void testUploadHtmlFileToS3BucketSuccess() {
-
-        artefactWithoutId.setSearch(null);
         artefactWithoutId.setIsFlatFile(true);
         artefactWithoutId.setPayloadSize(0f);
         artefactWithoutId.setType(ArtefactType.LCSU);
@@ -496,7 +489,8 @@ class PublicationControllerTest {
     @Test
     void testCreatePublicationLogsWhenHeaderIsPresent() throws IOException {
         when(validationService.validateHeaders(any())).thenReturn(headers);
-        when(publicationCreationRunner.run(artefact, PAYLOAD, true)).thenReturn(artefactWithId);
+        when(publicationPayloadConversionService.removeJsonFormatting(any())).thenReturn(PAYLOAD);
+        when(publicationCreationRunner.run(artefact, PAYLOAD)).thenReturn(artefactWithId);
 
         try (LogCaptor logCaptor = LogCaptor.forClass(PublicationController.class)) {
             publicationController.uploadPublication(
