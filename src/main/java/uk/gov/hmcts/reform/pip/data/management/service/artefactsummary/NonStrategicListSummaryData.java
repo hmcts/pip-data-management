@@ -236,7 +236,8 @@ public class NonStrategicListSummaryData implements ArtefactSummaryData {
         Map<String, List<Map<String, String>>> summaryData = new LinkedHashMap<>();
         dataFields.forEach((fieldName, data) -> {
             List<Map<String, String>> summaryCases = formatSummaryCases(data, listTypeFormatter);
-            String formattedFieldName = NonStrategicFieldFormattingHelper.formatInternalFieldNameForDisplay(fieldName, false);
+            String formattedFieldName = NonStrategicFieldFormattingHelper.formatInternalFieldNameForDisplay(fieldName,
+                                                                                                            false);
 
             if (summaryCases.isEmpty()) {
                 // Add bespoke message in the section with empty hearing cases. If the list type has no bespoke
