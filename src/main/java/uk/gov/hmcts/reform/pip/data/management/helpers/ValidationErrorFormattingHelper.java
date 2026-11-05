@@ -19,7 +19,10 @@ public final class ValidationErrorFormattingHelper {
             StringBuilder errorLocation = new StringBuilder();
             if (errorComponents.length > 0 && errorComponents[0].startsWith("/")) {
                 String[] locationComponents = errorComponents[0].substring(1).split("/");
-                if (locationComponents.length == 2) {
+                if (locationComponents.length == 1 && NumberUtils.isNumber(locationComponents[0])) {
+                    errorLocation.append("Row ")
+                        .append(Integer.parseInt(locationComponents[0]) + 1);
+                } else if (locationComponents.length == 2) {
                     if (NumberUtils.isCreatable(locationComponents[0])) {
                         errorLocation.append("Row ")
                             .append(Integer.parseInt(locationComponents[0]) + 1)
@@ -45,9 +48,11 @@ public final class ValidationErrorFormattingHelper {
                                     .formatInternalFieldNameForDisplay(locationComponents[2], true))
                         .append(" column");
                 } else {
-                    errorLocation.append(errorComponents[0]);
+                    errorLocation.append(error);
                 }
                 formattedErrors.add(errorLocation.toString());
+            } else if (errorComponents.length == 2 && errorComponents[0].isEmpty()) {
+                formattedErrors.add(errorComponents[1]);
             } else {
                 formattedErrors.add(error);
             }

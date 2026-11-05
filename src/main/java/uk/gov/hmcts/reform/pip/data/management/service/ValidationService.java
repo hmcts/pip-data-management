@@ -223,7 +223,7 @@ public class ValidationService {
 
             if (formatErrors) {
                 List<String> formattedErrors = ValidationErrorFormattingHelper.format(errors);
-                throw new PayloadValidationException(String.join("| ", formattedErrors), true);
+                throw new PayloadValidationException(String.join(" | ", formattedErrors), true);
             }
             throw new PayloadValidationException(String.join(", ", errors));
         }

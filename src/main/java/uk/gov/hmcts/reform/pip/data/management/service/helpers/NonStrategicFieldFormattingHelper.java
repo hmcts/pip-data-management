@@ -47,7 +47,9 @@ public final class NonStrategicFieldFormattingHelper {
                 .toLowerCase(Locale.UK)).split(StringUtils.SPACE))
             .map(word -> ACRONYMS.contains(word.toUpperCase(Locale.ENGLISH))
                 ? word.toUpperCase(Locale.ENGLISH) : word)
-            .collect(Collectors.joining(StringUtils.SPACE));
+            .collect(Collectors.joining(StringUtils.SPACE))
+            .trim()
+            .replaceAll("\\s{2,}", " ");
 
         return addQuotes ? org.springframework.util.StringUtils.quote(formatValue) : formatValue;
     }
