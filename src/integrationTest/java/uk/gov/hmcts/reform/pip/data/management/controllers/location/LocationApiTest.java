@@ -41,6 +41,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationWithMetadata;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest(classes = {Application.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -549,7 +551,7 @@ class LocationApiTest extends LocationIntegrationTestBase {
 
 
         MvcResult mvcResult = mockMvc.perform(
-                get(GET_LOCATION_BY_NAME_ENDPOINT)
+                get(GET_LOCATION_BY_NAME_ENDPOINT + location.getLocationId() + "/with-metadata")
                     .param(LOCATION_NAME_PARAM, location.getName())
                     .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
@@ -591,6 +593,22 @@ class LocationApiTest extends LocationIntegrationTestBase {
 
         assertEquals("No location found with the id: " + unknownId, exceptionResponse.getMessage(),
                      "Unexpected error message returned when location with metadata by ID not found");
+    }
+
+    void testGetLocationByIdWithMetadataReturnsNullMetadata() throws Exception {
+        List<Location> locations = createLocations(LOCATIONS_CSV);
+        Location location = locations.get(0);
+
+        MvcResult mvcResult = mockMvc.perform(
+                get(GET_LOCATION_BY_ID_ENDPOINT + location.getLocationId() + "/with-metadata"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        LocationWithMetadata returnedLocation = OBJECT_MAPPER.readValue(
+            mvcResult.getResponse().getContentAsString(), LocationWithMetadata.class);
+
+        assertEquals(location, returnedLocation.getLocation(), VALIDATION_UNKNOWN_LOCATION);
+        assertNull(returnedLocation.getMetadata(), "Metadata should be null when none exists");
     }
 }
 
