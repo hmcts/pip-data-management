@@ -551,7 +551,7 @@ class LocationApiTest extends LocationIntegrationTestBase {
 
 
         MvcResult mvcResult = mockMvc.perform(
-                get(GET_LOCATION_BY_NAME_ENDPOINT + location.getLocationId() + "/with-metadata")
+                get(GET_LOCATION_BY_ID_ENDPOINT + location.getLocationId() + "/with-metadata")
                     .param(LOCATION_NAME_PARAM, location.getName())
                     .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
             .andExpect(status().isOk())
