@@ -557,12 +557,9 @@ class LocationApiTest extends LocationIntegrationTestBase {
             .andExpect(status().isOk())
             .andReturn();
 
-        Location returnedLocation = OBJECT_MAPPER.readValue(
-            mvcResult.getResponse().getContentAsString(),
-            Location.class
-        );
-
-        assertEquals(location, returnedLocation, VALIDATION_UNKNOWN_LOCATION);
+        LocationWithMetadata returnedLocation = OBJECT_MAPPER.readValue(
+            mvcResult.getResponse().getContentAsString(), LocationWithMetadata.class);
+        assertEquals(location, returnedLocation.getLocation(), VALIDATION_UNKNOWN_LOCATION);
     }
 
     @Test
