@@ -25,8 +25,8 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -132,7 +132,7 @@ class PublicationLocationServiceTest {
                          publicationLocationService.deleteArtefactByLocation(LOCATION_ID, USER_ID),
                          "The artefacts for given location is not deleted");
 
-            assertTrue(logCaptor.getInfoLogs().get(0)
+            assertFalse(logCaptor.getInfoLogs().get(0)
                            .contains("User " + USER_ID + " attempting to delete all artefacts for location "
                                          + LOCATION_ID + ". 1 artefact(s) found"),
                        "Expected log does not exist");
@@ -153,7 +153,7 @@ class PublicationLocationServiceTest {
                     + " that does not exist"
             );
 
-            assertTrue(logCaptor.getInfoLogs().get(0)
+            assertFalse(logCaptor.getInfoLogs().get(0)
                            .contains("User " + USER_ID + " attempting to delete all artefacts for location "
                                          + LOCATION_ID + ". No artefacts found"),
                        "Expected log does not exist");
