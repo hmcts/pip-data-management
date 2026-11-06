@@ -39,7 +39,6 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationWithMetadata;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -549,6 +548,9 @@ class LocationApiTest extends LocationIntegrationTestBase {
 
         Location location = locations.get(0);
 
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        createLocationMetadata(location.getLocationId());
+
 
         MvcResult mvcResult = mockMvc.perform(
                 get(GET_LOCATION_BY_ID_ENDPOINT + location.getLocationId() + "/with-metadata")
@@ -562,17 +564,6 @@ class LocationApiTest extends LocationIntegrationTestBase {
         assertEquals(location, returnedLocation.getLocation(), VALIDATION_UNKNOWN_LOCATION);
     }
 
-    @Test
-    void testGetLocationByIdWithMetadataReturnsSuccess() throws Exception {
-        List<Location> locations = createLocations(LOCATIONS_CSV);
-        Location location = locations.get(0);
-
-        mockMvc.perform(get(GET_LOCATION_BY_ID_ENDPOINT + location.getLocationId() + "/with-metadata"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.location.locationId").value(location.getLocationId()))
-            .andExpect(jsonPath("$.location.name").value(location.getName()))
-            .andExpect(jsonPath("$.metadata").doesNotExist()); // or .isEmpty() depending on serialization
-    }
 
     @Test
     void testGetLocationByIdWithMetadataReturnsNotFound() throws Exception {
@@ -592,6 +583,8 @@ class LocationApiTest extends LocationIntegrationTestBase {
                      "Unexpected error message returned when location with metadata by ID not found");
     }
 
+
+    @Test
     void testGetLocationByIdWithMetadataReturnsNullMetadata() throws Exception {
         List<Location> locations = createLocations(LOCATIONS_CSV);
         Location location = locations.get(0);

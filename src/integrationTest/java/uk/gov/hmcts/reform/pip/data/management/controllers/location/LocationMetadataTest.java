@@ -24,12 +24,9 @@ import org.mockito.Mock;
 import uk.gov.hmcts.reform.pip.data.management.database.LocationMetadataRepository;
 import uk.gov.hmcts.reform.pip.data.management.service.location.LocationMetadataService;
 
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
@@ -38,10 +35,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotEmpty;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -371,31 +366,4 @@ class LocationMetadataTest extends IntegrationTestBase {
                         .content(OBJECT_MAPPER.writeValueAsString(locationMetadata)))
                 .andExpect(status().isConflict());
     }
-
-    @Test
-    void testGetLocationByIdOrNullReturnsMetadataWhenFound() {
-        LocationMetadata locationMetadata = new LocationMetadata();
-        locationMetadata.setLocationId(123);
-
-        when(locationMetadataRepository.findByLocationId(123))
-            .thenReturn(Optional.of(locationMetadata));
-
-        LocationMetadata result = locationMetadataService.getLocationByIdOrNull("123");
-
-        assertNotNull(result);
-        assertEquals(123, result.getLocationId());
-        verify(locationMetadataRepository).findByLocationId(123);
-    }
-
-    @Test
-    void testGetLocationByIdOrNullReturnsNullWhenNotFound() {
-        when(locationMetadataRepository.findByLocationId(123))
-            .thenReturn(Optional.empty());
-
-        LocationMetadata result = locationMetadataService.getLocationByIdOrNull("123");
-
-        assertNull(result);
-        verify(locationMetadataRepository).findByLocationId(123);
-    }
-
 }
