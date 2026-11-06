@@ -31,8 +31,8 @@ public class LocationIntegrationTestBase extends IntegrationTestBase {
     private static final String UPLOAD_API = "/locations/upload";
     private static final String LOCATION_LIST = "locationList";
     private static final String LOCATION_METADATA_URL = "/location-metadata";
-    private static final String CAUTION_MESSAGE = "Cause message";
-    private static final String NO_LIST_MESSAGE = "No List Message";
+    protected static final String CAUTION_MESSAGE = "Cause message";
+    protected static final String NO_LIST_MESSAGE = "No List Message";
 
     public static final String REQUESTER_ID_HEADER = "x-requester-id";
     private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();

@@ -562,6 +562,10 @@ class LocationApiTest extends LocationIntegrationTestBase {
         LocationWithMetadata returnedLocation = OBJECT_MAPPER.readValue(
             mvcResult.getResponse().getContentAsString(), LocationWithMetadata.class);
         assertEquals(location, returnedLocation.getLocation(), VALIDATION_UNKNOWN_LOCATION);
+        assertEquals(CAUTION_MESSAGE, returnedLocation.getMetadata().getCautionMessage(),
+                     "Caution message does not match");
+        assertEquals(NO_LIST_MESSAGE, returnedLocation.getMetadata().getNoListMessage(),
+                     "No list message does not match");
     }
 
 

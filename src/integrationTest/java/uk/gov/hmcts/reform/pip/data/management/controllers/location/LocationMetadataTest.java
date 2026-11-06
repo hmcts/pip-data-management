@@ -19,15 +19,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import uk.gov.hmcts.reform.pip.data.management.database.LocationMetadataRepository;
-import uk.gov.hmcts.reform.pip.data.management.service.location.LocationMetadataService;
 
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
 import java.util.Arrays;
@@ -35,8 +27,10 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotEmpty;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -74,15 +68,7 @@ class LocationMetadataTest extends IntegrationTestBase {
     private static final String WELSH_NO_LIST = "Welsh no list message";
     private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.authorized";
     private static final String UNAUTHORIZED_USERNAME = "unauthorized_isAuthorized";
-
     private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
-
-    @Mock
-    private LocationMetadataRepository locationMetadataRepository;
-
-    @InjectMocks
-    private LocationMetadataService locationMetadataService;
-
     private static PiUser piUser;
 
     @Autowired
@@ -366,4 +352,5 @@ class LocationMetadataTest extends IntegrationTestBase {
                         .content(OBJECT_MAPPER.writeValueAsString(locationMetadata)))
                 .andExpect(status().isConflict());
     }
+
 }
