@@ -39,7 +39,7 @@
 ## Overview
 `pip-data-management` is a microservice that deals with most operations relating to data persistence. It sits within the Court and Tribunal Hearings Service (CaTH hereafter) written with Spring Boot/Java.
 
-In practice, the service is usually containerized within a hosted kubernetes environment within Azure.
+In practice, the service is usually containerized within a hosted kubernetes environment within Azure
 
 Broadly speaking, this service has components relating to:
 - The persistence, validation, retrieval and manipulation of court publications and canonical location information (reference data)
