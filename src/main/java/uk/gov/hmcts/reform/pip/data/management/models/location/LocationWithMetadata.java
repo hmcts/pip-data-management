@@ -11,12 +11,4 @@ public class LocationWithMetadata {
         this.location = location;
         this.metadata = metadata;
     }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public LocationMetadata getMetadata() {
-        return metadata;
-    }
 }

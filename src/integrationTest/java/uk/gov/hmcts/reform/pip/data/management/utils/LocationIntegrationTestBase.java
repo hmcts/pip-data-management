@@ -30,7 +30,7 @@ public class LocationIntegrationTestBase extends IntegrationTestBase {
     protected static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String UPLOAD_API = "/locations/upload";
     private static final String LOCATION_LIST = "locationList";
-    private static final String LOCATION_METADATA_URL = "/locations/metadata";
+    private static final String LOCATION_METADATA_URL = "/location-metadata";
     private static final String CAUTION_MESSAGE = "Cause message";
     private static final String NO_LIST_MESSAGE = "No List Message";
 
