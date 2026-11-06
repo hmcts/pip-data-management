@@ -30,9 +30,9 @@ public class LocationIntegrationTestBase extends IntegrationTestBase {
     protected static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String UPLOAD_API = "/locations/upload";
     private static final String LOCATION_LIST = "locationList";
-    private static final String LOCATION_METADATA_URL = "/metadata";
-    private static final String CAUTION_MESSAGE = "Combined response body does not match expected";
-    private static final String NO_LIST_MESSAGE = "Combined response body does not match expected";
+    private static final String LOCATION_METADATA_URL = "/with-metadata";
+    private static final String CAUTION_MESSAGE = "Cause message";
+    private static final String NO_LIST_MESSAGE = "No List Message";
 
     public static final String REQUESTER_ID_HEADER = "x-requester-id";
     private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
