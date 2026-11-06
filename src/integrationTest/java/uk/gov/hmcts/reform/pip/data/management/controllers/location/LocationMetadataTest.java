@@ -67,10 +67,10 @@ class LocationMetadataTest extends IntegrationTestBase {
     private static final String WELSH_NO_LIST = "Welsh no list message";
     private static final String UNAUTHORIZED_ROLE = "APPROLE_unknown.authorized";
     private static final String UNAUTHORIZED_USERNAME = "unauthorized_isAuthorized";
+
     private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
 
     private static PiUser piUser;
-
 
     @Autowired
     private MockMvc mockMvc;
