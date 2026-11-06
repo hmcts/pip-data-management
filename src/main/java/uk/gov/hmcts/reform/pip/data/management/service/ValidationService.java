@@ -222,7 +222,7 @@ public class ValidationService {
                                  SeverityLevel.Error, propertiesMap);
 
             if (formatErrors) {
-                List<String> formattedErrors = ValidationErrorFormattingHelper.format(errors);
+                List<String> formattedErrors = ValidationErrorFormattingHelper.formatErrors(errors);
                 throw new PayloadValidationException(String.join(" | ", formattedErrors), true);
             }
             throw new PayloadValidationException(String.join(", ", errors));
