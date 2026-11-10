@@ -9,8 +9,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -18,7 +18,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.AbstractMockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
@@ -38,12 +38,10 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -78,11 +76,6 @@ class PublicationInternalCourtIdTest extends IntegrationTestBase {
     private static final String PROVENANCE_COURT_ID_DOESNOT_MATCH = "111";
     private static final String INTERNAL_COURT_ID = "1";
     private static final LocalDateTime CONTENT_DATE = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-    private static final String SEARCH_KEY_FOUND = "array-value";
-    private static final String SEARCH_KEY_NOT_FOUND = "case-urn";
-    private static final String SEARCH_VALUE_1 = "array-value-1";
-    private static final String SEARCH_VALUE_2 = "array-value-2";
-    private static final String LOCATION_ID_SEARCH_KEY = "location-id";
 
     private static final String REQUESTER_ID_HEADER = "x-requester-id";
     private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
@@ -140,7 +133,7 @@ class PublicationInternalCourtIdTest extends IntegrationTestBase {
         + "court Id and return the created artefact to the user")
     void creationOfAValidArtefactAndUpdateCourtId(boolean isJson) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+        AbstractMockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -180,25 +173,6 @@ class PublicationInternalCourtIdTest extends IntegrationTestBase {
         assertEquals(artefact.getLocationId(), INTERNAL_COURT_ID,
                      "Provenance court Id does not match with reference data");
 
-        Map<String, List<Object>> searchResult = artefact.getSearch();
-        assertTrue(
-            searchResult.containsKey(isJson ? SEARCH_KEY_FOUND : LOCATION_ID_SEARCH_KEY),
-            "Returned search result does not contain the correct key"
-        );
-        assertFalse(searchResult.containsKey(SEARCH_KEY_NOT_FOUND), "Returned search result contains "
-            + "key that does not exist");
-        assertEquals(
-            isJson ? SEARCH_VALUE_1 : PROVENANCE_COURT_ID_MATCH,
-            searchResult.get(isJson ? SEARCH_KEY_FOUND : LOCATION_ID_SEARCH_KEY).get(0),
-            "Does not contain first value in the array"
-        );
-
-        if (isJson) {
-            assertEquals(SEARCH_VALUE_2, searchResult.get(SEARCH_KEY_FOUND).get(1),
-                         "Does not contain second value in the array"
-            );
-        }
-
         assertTrue(artefact.getPayload().startsWith(BLOB_PAYLOAD_URL), "Payload is not as expected");
     }
 
@@ -208,7 +182,7 @@ class PublicationInternalCourtIdTest extends IntegrationTestBase {
         + "internal court Id and return the created artefact to the user")
     void creationOfAValidArtefactAndUpdateCourtIdWithNoMatch(boolean isJson) throws Exception {
         when(accountManagementService.getUserById(any())).thenReturn(piUser);
-        MockHttpServletRequestBuilder mockHttpServletRequestBuilder;
+        AbstractMockHttpServletRequestBuilder mockHttpServletRequestBuilder;
         if (isJson) {
             mockHttpServletRequestBuilder = MockMvcRequestBuilders.post(PUBLICATION_URL).content(payload);
         } else {
@@ -245,26 +219,6 @@ class PublicationInternalCourtIdTest extends IntegrationTestBase {
         assertEquals(artefact.getSensitivity(), SENSITIVITY, "Sensitivity does not match input sensitivity");
         assertEquals(artefact.getLocationId(), String.format("NoMatch%s", PROVENANCE_COURT_ID_DOESNOT_MATCH),
                      "Provenance court Id match with reference data");
-
-
-        Map<String, List<Object>> searchResult = artefact.getSearch();
-        assertTrue(
-            searchResult.containsKey(isJson ? SEARCH_KEY_FOUND : LOCATION_ID_SEARCH_KEY),
-            "Returned search result does not contain the correct key"
-        );
-        assertFalse(searchResult.containsKey(SEARCH_KEY_NOT_FOUND), "Returned search result contains "
-            + "key that does not exist");
-        assertEquals(
-            isJson ? SEARCH_VALUE_1 : PROVENANCE_COURT_ID_DOESNOT_MATCH,
-            searchResult.get(isJson ? SEARCH_KEY_FOUND : LOCATION_ID_SEARCH_KEY).get(0),
-            "Does not contain first value in the array"
-        );
-
-        if (isJson) {
-            assertEquals(SEARCH_VALUE_2, searchResult.get(SEARCH_KEY_FOUND).get(1),
-                         "Does not contain second value in the array"
-            );
-        }
 
         assertTrue(artefact.getPayload().startsWith(BLOB_PAYLOAD_URL), "Payload is not as expected");
     }

@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pip.data.management.service;
 
+import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
@@ -7,7 +8,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.type.TypeReference;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-import org.testcontainers.shaded.org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
