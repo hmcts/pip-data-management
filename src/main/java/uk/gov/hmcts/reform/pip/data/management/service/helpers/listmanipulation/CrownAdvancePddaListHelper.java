@@ -23,10 +23,10 @@ public final class CrownAdvancePddaListHelper {
     private CrownAdvancePddaListHelper() {
     }
 
-    public static Map<String, List<CrownAdvancePddaList>> processPayload(JsonNode warnedPddaListData) {
+    public static Map<String, List<CrownAdvancePddaList>> processPayload(JsonNode advancedPddaListData) {
         Map<String, List<CrownAdvancePddaList>> groupedData = new LinkedHashMap<>();
 
-        JsonNode advanceList = warnedPddaListData.get("WarnedList");
+        JsonNode advanceList = advancedPddaListData.get("AdvancedList");
         JsonNode courtLists = advanceList.get("CourtLists");
 
         Optional.ofNullable(courtLists)
