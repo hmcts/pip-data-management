@@ -50,10 +50,10 @@
   "title": "Root",
   "type": "object",
   "required": [
-    "WarnedList"
+    "AdvancedList"
   ],
   "properties": {
-    "WarnedList": {
+    "AdvancedList": {
       "type": "object",
       "required": [
         "DocumentID",
