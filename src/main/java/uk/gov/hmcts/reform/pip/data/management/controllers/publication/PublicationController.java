@@ -308,7 +308,7 @@ public class PublicationController {
         HeaderGroup headers = validationService.validateHeaders(initialHeaders);
 
         String payload = publicationPayloadConversionService.convertExcelToJson(file);
-        validationService.validateBody(payload, initialHeaders, false);
+        validationService.validateBody(payload, initialHeaders, false, true);
 
         Artefact artefact = createPublicationMetadataFromHeaders(headers, payload.length());
 

@@ -72,7 +72,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handle(PayloadValidationException ex) {
         log.error(writeLog("400, error while validating JSON payload"));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body(generateExceptionResponse(ex.getMessage()));
+            .body(ex.isUiError() ? generateExceptionResponseWithUiError(ex.getMessage())
+                      : generateExceptionResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(BlobStorageException.class)

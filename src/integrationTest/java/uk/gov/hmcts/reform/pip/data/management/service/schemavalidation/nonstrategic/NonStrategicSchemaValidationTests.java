@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -30,6 +31,7 @@ import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrat
 import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.TypeValidationData;
 import uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.nonstrategic.configurations.VenueValidationData;
 import uk.gov.hmcts.reform.pip.data.management.utils.IntegrationBasicTestBase;
+import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,6 +75,9 @@ import static uk.gov.hmcts.reform.pip.data.management.service.schemavalidation.n
 @ActiveProfiles("integration-basic")
 @SpringBootTest
 class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
+    private static final String BUSINESS_AND_PROPERTY_LIST_VALID_JSON = "data/non-strategic"
+        + "/business-and-property-divisions-rolls-building-daily-cause-list/"
+        + "businessAndPropertyDivisionRollsBuildingDailyCauseList.json";
 
     @Autowired
     ValidationService validationService;
@@ -158,19 +163,22 @@ class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
             .getResourceAsStream(config.getJsonFilePath())) {
             String jsonContent = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
             JsonNode node = getJsonNode(jsonContent);
-            HeaderGroup headerGroup = new HeaderGroup(
-                PROVENANCE,
-                SOURCE_ARTEFACT_ID,
-                ARTEFACT_TYPE,
-                SENSITIVITY,
-                LANGUAGE,
-                DISPLAY_FROM,
-                DISPLAY_TO,
-                config.getListType(),
-                COURT_ID,
-                CONTENT_DATE);
-            return new TestData(headerGroup, node);
+            return new TestData(getHeaderGroup(config.getListType()), node);
         }
+    }
+
+    private HeaderGroup getHeaderGroup(ListType listType) {
+        return new HeaderGroup(
+            PROVENANCE,
+            SOURCE_ARTEFACT_ID,
+            ARTEFACT_TYPE,
+            SENSITIVITY,
+            LANGUAGE,
+            DISPLAY_FROM,
+            DISPLAY_TO,
+            listType,
+            COURT_ID,
+            CONTENT_DATE);
     }
 
     @ParameterizedTest
@@ -182,7 +190,10 @@ class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
         } else {
             ((ObjectNode) testData.jsonNode().get(config.getParentNode()).get(0)).remove(config.getValidationField());
         }
-        assertValidationFails(testData, config.getValidationField());
+        String json = testData.jsonNode().toString();
+        assertThatExceptionOfType(PayloadValidationException.class)
+            .isThrownBy(() -> validationService.validateBody(json, testData.headerGroup(), false, true))
+            .withMessageContaining("Row 1");
     }
 
     @ParameterizedTest
@@ -190,7 +201,10 @@ class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
     void shouldFailWhenMissingSheet(SchemaValidationTestInput config) throws IOException {
         TestData testData = loadTestData(config);
         ((ObjectNode) testData.jsonNode()).remove(config.getValidationField());
-        assertValidationFails(testData, config.getValidationField());
+        String json = testData.jsonNode().toString();
+        assertThatExceptionOfType(PayloadValidationException.class)
+            .isThrownBy(() -> validationService.validateBody(json, testData.headerGroup(), false, true))
+            .withMessageContaining(config.getValidationField());
     }
 
     @ParameterizedTest
@@ -200,17 +214,49 @@ class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
         assertValidationPass(testData);
     }
 
-    private void assertValidationFails(TestData testData, String fieldName) {
-        String json = testData.jsonNode().toString();
-        assertThatExceptionOfType(PayloadValidationException.class)
-            .isThrownBy(() -> validationService.validateBody(json, testData.headerGroup(), false))
-            .withMessageContaining(fieldName);
+    @Test
+    void multiSheetListValidationShouldFailWhenFieldDoesNotMatchRegex() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(BUSINESS_AND_PROPERTY_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            String updatedJson = node.toString()
+                .replaceAll("\"time\":\"11:30am\"", "\"time\":\"1130\"");
+
+            HeaderGroup headerGroup = getHeaderGroup(
+                ListType.BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST
+            );
+
+            assertThatExceptionOfType(PayloadValidationException.class)
+                .isThrownBy(() -> validationService.validateBody(updatedJson, headerGroup, false, true))
+                .withMessageContaining("Sheet 'Appeal List' - Row 2 of 'Time' column");
+        }
+    }
+
+    @Test
+    void multiSheetListValidationShouldFailWhenFieldIsMissing() throws IOException {
+        try (InputStream jsonInput = this.getClass().getClassLoader()
+            .getResourceAsStream(BUSINESS_AND_PROPERTY_LIST_VALID_JSON)) {
+            String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
+
+            JsonNode node = getJsonNode(text);
+            ((ObjectNode) node.get("businessList").get(0)).remove("venue");
+
+            HeaderGroup headerGroup = getHeaderGroup(
+                ListType.BUSINESS_AND_PROPERTY_DIVISION_ROLLS_BUILDING_DAILY_CAUSE_LIST
+            );
+
+            assertThatExceptionOfType(PayloadValidationException.class)
+                .isThrownBy(() -> validationService.validateBody(node.toString(), headerGroup, false, true))
+                .withMessageContaining("Sheet 'Business List' - Row 1");
+        }
     }
 
     private void assertValidationPass(TestData testData) {
         String json = testData.jsonNode().toString();
         assertThatNoException()
-            .isThrownBy(() -> validationService.validateBody(json, testData.headerGroup(), false));
+            .isThrownBy(() -> validationService.validateBody(json, testData.headerGroup(), false, true));
     }
 
     @ParameterizedTest
@@ -225,6 +271,6 @@ class NonStrategicSchemaValidationTests  extends IntegrationBasicTestBase {
 
         Assertions.assertThatExceptionOfType(PayloadValidationException.class)
             .as(INVALID_MESSAGE)
-            .isThrownBy(() -> validationService.validateBody(formattedJson, testData.headerGroup(), false));
+            .isThrownBy(() -> validationService.validateBody(formattedJson, testData.headerGroup(), false, true));
     }
 }
