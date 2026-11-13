@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 import uk.gov.hmcts.reform.pip.data.management.utils.FunctionalTestBase;
 import uk.gov.hmcts.reform.pip.data.management.utils.OAuthClient;
@@ -83,9 +84,10 @@ class LocationMetadataTest extends FunctionalTestBase {
     @Test
     @Order(1)
     void testAddLocationMetadataControllerHappyPath() {
-        Map<String, String> headerMap = Map.of(AUTHORIZATION, BEARER + accessToken,
-                CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE,
-                REQUESTER_ID_HEADER, systemAdminUserId
+        Map<String, String> headerMap = Map.of(
+            AUTHORIZATION, BEARER + accessToken,
+            CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE,
+            REQUESTER_ID_HEADER, systemAdminUserId
         );
 
         Response responseCreateLocationMetadata = doPostRequest(
@@ -100,8 +102,9 @@ class LocationMetadataTest extends FunctionalTestBase {
     @Test
     @Order(2)
     void testGetLocationMetadataByLocationIdControllerHappyPath() {
-        Map<String, String> headerMap = Map.of(AUTHORIZATION, BEARER + accessToken,
-                                               CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE
+        Map<String, String> headerMap = Map.of(
+            AUTHORIZATION, BEARER + accessToken,
+            CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE
         );
 
         Response responseGetLocationMetadataByLocationId = doGetRequest(
@@ -122,10 +125,45 @@ class LocationMetadataTest extends FunctionalTestBase {
 
     @Test
     @Order(3)
+    void testGetLocationWithOptionalMetadata() {
+        Map<String, String> headerMap = Map.of(
+            AUTHORIZATION, BEARER + accessToken,
+            CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE
+        );
+
+        Response responseGetLocationWithMetadata = doGetRequest(
+            "/locations/" + locationId + "/with-metadata",
+            headerMap
+        );
+
+        assertThat(responseGetLocationWithMetadata.getStatusCode()).isEqualTo(OK.value());
+
+        Location returnedLocation = responseGetLocationWithMetadata
+            .jsonPath()
+            .getObject("location", Location.class);
+
+        assertThat(returnedLocation.getLocationId().toString()).isEqualTo(locationId);
+        assertThat(returnedLocation.getName()).isEqualTo(BASE_COURT_NAME + "-" + locationId);
+
+        LocationMetadata returnedMetadata = responseGetLocationWithMetadata
+            .jsonPath()
+            .getObject("metadata", LocationMetadata.class);
+
+        locationMetadataId = returnedMetadata.getLocationMetadataId();
+        assertThat(returnedMetadata.getLocationId().toString()).isEqualTo(locationId);
+        assertThat(returnedMetadata.getCautionMessage()).isEqualTo(ENGLISH_CAUTION_MESSAGE);
+        assertThat(returnedMetadata.getWelshCautionMessage()).isEqualTo(WELSH_CAUTION_MESSAGE);
+        assertThat(returnedMetadata.getNoListMessage()).isEqualTo(ENGLISH_NO_LIST_MESSAGE);
+        assertThat(returnedMetadata.getWelshNoListMessage()).isEqualTo(WELSH_NO_LIST_MESSAGE);
+    }
+
+    @Test
+    @Order(4)
     void testUpdateLocationMetadataControllerHappyPath() {
-        Map<String, String> headerMap = Map.of(AUTHORIZATION, BEARER + accessToken,
-                                               CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE,
-                                               REQUESTER_ID_HEADER, systemAdminUserId
+        Map<String, String> headerMap = Map.of(
+            AUTHORIZATION, BEARER + accessToken,
+            CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE,
+            REQUESTER_ID_HEADER, systemAdminUserId
         );
 
         Response responseGetLocationMetadata = doGetRequest(
@@ -166,11 +204,12 @@ class LocationMetadataTest extends FunctionalTestBase {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     void testDeleteLocationMetadataByIdControllerHappyPath() {
-        Map<String, String> headerMap = Map.of(AUTHORIZATION, BEARER + accessToken,
-                                               CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE,
-                                               REQUESTER_ID_HEADER, systemAdminUserId
+        Map<String, String> headerMap = Map.of(
+            AUTHORIZATION, BEARER + accessToken,
+            CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE,
+            REQUESTER_ID_HEADER, systemAdminUserId
         );
 
         Response responseGetLocationMetadataByLocationId = doDeleteRequest(

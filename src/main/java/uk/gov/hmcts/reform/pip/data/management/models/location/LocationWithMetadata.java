@@ -1,0 +1,14 @@
+package uk.gov.hmcts.reform.pip.data.management.models.location;
+
+import lombok.Data;
+
+@Data
+public class LocationWithMetadata {
+    private final Location location;
+    private final LocationMetadata metadata;
+
+    public LocationWithMetadata(Location location, LocationMetadata metadata) {
+        this.location = location;
+        this.metadata = metadata;
+    }
+}

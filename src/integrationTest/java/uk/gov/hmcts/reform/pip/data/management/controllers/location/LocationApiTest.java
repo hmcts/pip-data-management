@@ -16,11 +16,11 @@ import uk.gov.hmcts.reform.pip.data.management.Application;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.ExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.UiExceptionResponse;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationWithMetadata;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
 import uk.gov.hmcts.reform.pip.data.management.utils.LocationIntegrationTestBase;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
 import uk.gov.hmcts.reform.pip.model.location.LocationType;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,6 +32,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -41,6 +42,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
+
 
 @SpringBootTest(classes = {Application.class},
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -539,6 +541,69 @@ class LocationApiTest extends LocationIntegrationTestBase {
                 get(DOWNLOAD_LOCATIONS_ENDPOINT)
                     .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID))
             .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testGetLocationWithMetadata() throws Exception {
+        List<Location> locations = createLocations(LOCATIONS_CSV);
+
+        Location location = locations.get(0);
+
+        when(accountManagementService.getUserById(any())).thenReturn(piUser);
+        createLocationMetadata(location.getLocationId());
+
+
+        MvcResult mvcResult = mockMvc.perform(
+                get(GET_LOCATION_BY_ID_ENDPOINT + location.getLocationId() + "/with-metadata")
+                    .param(LOCATION_NAME_PARAM, location.getName())
+                    .param(LANGUAGE_PARAM, ENGLISH_LANGUAGE_PARAM_VALUE))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        LocationWithMetadata returnedLocation = OBJECT_MAPPER.readValue(
+            mvcResult.getResponse().getContentAsString(), LocationWithMetadata.class);
+        assertEquals(location, returnedLocation.getLocation(), VALIDATION_UNKNOWN_LOCATION);
+        assertEquals(CAUTION_MESSAGE, returnedLocation.getMetadata().getCautionMessage(),
+                     "Caution message does not match");
+        assertEquals(NO_LIST_MESSAGE, returnedLocation.getMetadata().getNoListMessage(),
+                     "No list message does not match");
+    }
+
+
+    @Test
+    void testGetLocationByIdWithMetadataReturnsNotFound() throws Exception {
+        int unknownId = 1234;
+
+        MvcResult mvcResult = mockMvc.perform(
+                get(GET_LOCATION_BY_ID_ENDPOINT + unknownId + "/with-metadata"))
+            .andExpect(status().isNotFound())
+            .andReturn();
+
+        ExceptionResponse exceptionResponse = OBJECT_MAPPER.readValue(
+            mvcResult.getResponse().getContentAsString(),
+            ExceptionResponse.class
+        );
+
+        assertEquals("No location found with the id: " + unknownId, exceptionResponse.getMessage(),
+                     "Unexpected error message returned when location with metadata by ID not found");
+    }
+
+
+    @Test
+    void testGetLocationByIdWithMetadataReturnsNullMetadata() throws Exception {
+        List<Location> locations = createLocations(LOCATIONS_CSV);
+        Location location = locations.get(0);
+
+        MvcResult mvcResult = mockMvc.perform(
+                get(GET_LOCATION_BY_ID_ENDPOINT + location.getLocationId() + "/with-metadata"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        LocationWithMetadata returnedLocation = OBJECT_MAPPER.readValue(
+            mvcResult.getResponse().getContentAsString(), LocationWithMetadata.class);
+
+        assertEquals(location, returnedLocation.getLocation(), VALIDATION_UNKNOWN_LOCATION);
+        assertNull(returnedLocation.getMetadata(), "Metadata should be null when none exists");
     }
 }
 
