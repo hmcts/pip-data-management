@@ -37,7 +37,7 @@ class CrownAdvancePddaListTest extends IntegrationBasicTestBase {
     private static final String CROWN_ADVANCE_PDDA_LIST_INVALID_MESSAGE =
         "Invalid Crown Advance List marked as valid";
 
-    private static final String ADVANCED_LIST = "AdvancedList";
+    private static final String ADVANCED_LIST = "WarnedList";
     private static final String DOCUMENT_ID = "DocumentID";
     private static final String DOCUMENT_NAME = "DocumentName";
     private static final String UNIQUE_ID = "UniqueID";
