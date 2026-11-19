@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.pip.data.management.service.publication;
 
 import nl.altindag.log.LogCaptor;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,29 +13,21 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.CreateArtefactConflictException;
 import uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
-import uk.gov.hmcts.reform.pip.data.management.utils.JsonExtractor;
 
 import java.time.LocalDate;
-import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.FILE;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PAYLOAD;
 import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.PROVENANCE_ID;
-import static uk.gov.hmcts.reform.pip.data.management.helpers.ArtefactConstantTestHelper.SEARCH_VALUES;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 class PublicationCreationRunnerTest {
     private static final String LAST_RECEIVED_DATE_MESSAGE = "Last received date does not match";
-    private static final String SEARCH_VALUE_MESSAGE = "Search value does not match";
     private static final String LOG_MESSAGE = "Log message does not match";
     private static final String EXCEPTION_MESSAGE = "Exception does not match";
     private static final String JSON_PUBLICATION_LOG = "Uploaded json publication upload for location "
@@ -48,67 +39,20 @@ class PublicationCreationRunnerTest {
     private static final String FLAT_FILE_PUBLICATION_DEADLOCK = "Deadlock when creating flat file publication. "
         + "Please try again later.";
 
-    private static final Float PAYLOAD_SIZE_WITHIN_LIMIT = 90f;
-    private static final Float PAYLOAD_SIZE_OVER_LIMIT = 110f;
-
     @Mock
     private PublicationCreationService publicationCreationService;
-
-    @Mock
-    private PublicationRetrievalService publicationRetrievalService;
-
-    @Mock
-    JsonExtractor jsonExtractor;
 
     @InjectMocks
     private PublicationCreationRunner publicationCreationRunner;
 
     private final LogCaptor logCaptor = LogCaptor.forClass(PublicationCreationRunner.class);
 
-    @BeforeEach
-    void setup() {
-        lenient().when(publicationRetrievalService.payloadWithinJsonSearchLimit(PAYLOAD_SIZE_WITHIN_LIMIT))
-            .thenReturn(true);
-        lenient().when(publicationRetrievalService.payloadWithinJsonSearchLimit(PAYLOAD_SIZE_OVER_LIMIT))
-            .thenReturn(false);
-    }
-
     @Test
     void testRunMethodForJsonPublication() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
-        artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
-        when(publicationCreationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
-        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
-
-        Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD, true);
-
-        SoftAssertions softly = new SoftAssertions();
-
-        softly.assertThat(returnedArtefact.getLastReceivedDate().toLocalDate())
-            .as(LAST_RECEIVED_DATE_MESSAGE)
-            .isEqualTo(LocalDate.now());
-
-        softly.assertThat(returnedArtefact.getSearch())
-            .as(SEARCH_VALUE_MESSAGE)
-            .isEqualTo(SEARCH_VALUES);
-
-        softly.assertThat(logCaptor.getInfoLogs().get(0))
-            .as(LOG_MESSAGE)
-            .contains(JSON_PUBLICATION_LOG);
-
-        softly.assertAll();
-    }
-
-    @Test
-    void testRunMethodForJsonPublicationWithoutExtractingSearchTerms() {
-        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
-        artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
         when(publicationCreationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
 
-        Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD, false);
-
-        verify(publicationCreationService).applyInternalLocationId(returnedArtefact);
-        verify(jsonExtractor, never()).extractSearchTerms(PAYLOAD);
+        Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD);
 
         SoftAssertions softly = new SoftAssertions();
 
@@ -126,12 +70,10 @@ class PublicationCreationRunnerTest {
     @Test
     void testRunMethodForJsonPublicationWithCannotAcquireLockException() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
-        artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
         doThrow(CannotAcquireLockException.class).when(publicationCreationService)
             .createPublication(artefact, PAYLOAD);
-        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
-        assertThatThrownBy(() -> publicationCreationRunner.run(artefact, PAYLOAD, true))
+        assertThatThrownBy(() -> publicationCreationRunner.run(artefact, PAYLOAD))
             .as(EXCEPTION_MESSAGE)
             .isInstanceOf(CreateArtefactConflictException.class)
             .hasMessage(JSON_PUBLICATION_DEADLOCK);
@@ -144,12 +86,10 @@ class PublicationCreationRunnerTest {
     @Test
     void testRunMethodForJsonPublicationWithDataIntegrityViolationException() {
         Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
-        artefact.setPayloadSize(PAYLOAD_SIZE_WITHIN_LIMIT);
         doThrow(DataIntegrityViolationException.class).when(publicationCreationService)
             .createPublication(artefact, PAYLOAD);
-        when(jsonExtractor.extractSearchTerms(PAYLOAD)).thenReturn(SEARCH_VALUES);
 
-        assertThatThrownBy(() -> publicationCreationRunner.run(artefact, PAYLOAD, true))
+        assertThatThrownBy(() -> publicationCreationRunner.run(artefact, PAYLOAD))
             .as(EXCEPTION_MESSAGE)
             .isInstanceOf(CreateArtefactConflictException.class)
             .hasMessage(JSON_PUBLICATION_DEADLOCK);
@@ -157,28 +97,6 @@ class PublicationCreationRunnerTest {
         assertThat(logCaptor.getInfoLogs())
             .as(LOG_MESSAGE)
             .isEmpty();
-    }
-
-    @Test
-    void testSearchValuesNotGeneratedFOrJsonPublicationWhenPayloadOverLimit() {
-        Artefact artefact = ArtefactConstantTestHelper.buildArtefact();
-        artefact.setPayloadSize(PAYLOAD_SIZE_OVER_LIMIT);
-        when(publicationCreationService.createPublication(artefact, PAYLOAD)).thenReturn(artefact);
-
-        Artefact returnedArtefact = publicationCreationRunner.run(artefact, PAYLOAD, true);
-
-        SoftAssertions softly = new SoftAssertions();
-
-        softly.assertThat(returnedArtefact.getSearch())
-            .as(SEARCH_VALUE_MESSAGE)
-            .isEqualTo(Collections.emptyMap());
-
-        softly.assertThat(logCaptor.getInfoLogs().get(0))
-            .as(LOG_MESSAGE)
-            .contains(JSON_PUBLICATION_LOG);
-
-        softly.assertAll();
-        verifyNoInteractions(jsonExtractor);
     }
 
     @Test
@@ -199,7 +117,6 @@ class PublicationCreationRunnerTest {
             .contains(FLAT_FILE_PUBLICATION_LOG);
 
         softly.assertAll();
-        verifyNoInteractions(jsonExtractor);
     }
 
     @Test

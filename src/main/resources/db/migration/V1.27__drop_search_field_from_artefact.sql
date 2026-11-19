@@ -1,0 +1,2 @@
+ALTER TABLE artefact
+  DROP COLUMN IF EXISTS search;

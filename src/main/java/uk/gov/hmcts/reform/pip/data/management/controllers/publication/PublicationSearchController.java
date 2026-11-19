@@ -26,7 +26,6 @@ import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ListSearchConfig;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.views.ArtefactView;
 import uk.gov.hmcts.reform.pip.data.management.service.publication.PublicationSearchService;
-import uk.gov.hmcts.reform.pip.data.management.utils.CaseSearchTerm;
 import uk.gov.hmcts.reform.pip.model.publication.ArtefactCaseInfo;
 import uk.gov.hmcts.reform.pip.model.publication.ListType;
 
@@ -125,21 +124,16 @@ public class PublicationSearchController {
         return ResponseEntity.ok(publicationSearchService.findListSearchConfigByListType(listType));
     }
 
-    @ApiResponse(responseCode = OK_CODE, description = "List of Artefacts matching"
-        + " a given case value, verification parameters and date requirements")
+    @ApiResponse(responseCode = OK_CODE, description = "List of case number/name pairs matching"
+        + " a given artefact ID")
     @ApiResponse(responseCode = UNAUTHORISED_CODE, description = UNAUTHORISED_MESSAGE)
     @ApiResponse(responseCode = FORBIDDEN_CODE, description = FORBIDDEN_MESSAGE)
-    @ApiResponse(responseCode = NOT_FOUND_CODE, description = NOT_FOUND_DESCRIPTION)
-    @Operation(summary = "Get a series of publications matching a given case search value (e.g. "
-            + "CASE_URN/CASE_ID/CASE_NAME)")
-    @GetMapping("/search")
-    @JsonView(ArtefactView.Internal.class)
-    @PreAuthorize("@authorisationService.userCanSearchInPublicationData(#requesterId)")
-    @Deprecated
-    public ResponseEntity<List<Artefact>> getAllRelevantArtefactsBySearchValue(
-            @RequestParam CaseSearchTerm searchTerm, @RequestParam String searchValue,
-            @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
-        return ResponseEntity.ok(publicationSearchService.findAllBySearch(searchTerm, searchValue, requesterId));
+    @GetMapping("/search/{artefactId}")
+    @PreAuthorize("@authorisationService.userCanAccessListSearchConfig(#requesterId)")
+    public ResponseEntity<List<ArtefactCaseInfo>> getArtefactCaseInfo(
+        @PathVariable UUID artefactId,
+        @RequestHeader(REQUESTER_ID_HEADER) UUID requesterId) {
+        return ResponseEntity.ok(publicationSearchService.findCasesByArtefactId(artefactId));
     }
 
     @ApiResponse(responseCode = OK_CODE, description = "List of case number/name pairs matching"
