@@ -1,8 +1,8 @@
 terraform {
-  required_version = ">= 1.14.3"
+  required_version = ">= 1.14.6"
   required_providers {
     azurerm = {
-      version = "4.78.0"
+      version = "4.81.0"
     }
     postgresql = {
       source  = "cyrilgdn/postgresql"
