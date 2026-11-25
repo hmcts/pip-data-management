@@ -79,6 +79,16 @@ public class AzureArtefactBlobService {
         return blobClient.downloadContent().toString();
     }
 
+    /**
+     * Checks the existence of a blob.
+     *
+     * @param payloadId the identifier of the payload
+     * @return true if the blob exists, else false.
+     */
+    public boolean blobExists(String payloadId) {
+        return blobContainerClient.getBlobClient(payloadId).exists();
+    }
+
     public Resource getBlobFile(String payloadId) {
         BlobClient blobClient = blobContainerClient.getBlobClient(payloadId);
         byte[] data = blobClient.downloadContent().toBytes();

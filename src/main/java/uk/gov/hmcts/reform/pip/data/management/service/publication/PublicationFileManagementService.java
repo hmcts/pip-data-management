@@ -24,7 +24,7 @@ import static uk.gov.hmcts.reform.pip.model.publication.FileType.PDF;
 @Slf4j
 @Service
 public class PublicationFileManagementService {
-    private static final String ADDITIONAL_PDF_SUFFIX = "_cy";
+    public static final String ADDITIONAL_PDF_SUFFIX = "_cy";
 
     private final AzurePublicationBlobService azureBlobService;
     private final PublicationRetrievalService publicationRetrievalService;

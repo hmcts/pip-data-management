@@ -39,12 +39,7 @@ public class MigrationSupportService {
      */
     public List<PublicationWithRelatedData> getAllPublications(LocalDate lastReceivedDateFrom,
                                                                LocalDate lastReceivedDateTo) {
-        if (lastReceivedDateFrom != null && lastReceivedDateTo != null
-            && lastReceivedDateFrom.isAfter(lastReceivedDateTo)) {
-            throw new InvalidDateRangeException("lastReceivedDateFrom must not be after lastReceivedDateTo");
-        }
-
-        List<Artefact> artefacts = findArtefacts(lastReceivedDateFrom, lastReceivedDateTo);
+        List<Artefact> artefacts = getAllArtefacts(lastReceivedDateFrom, lastReceivedDateTo);
         List<UUID> artefactIds = artefacts.stream().map(Artefact::getArtefactId).toList();
 
         Map<UUID, List<ArtefactSearch>> searchDataByArtefact = new HashMap<>();
@@ -62,6 +57,23 @@ public class MigrationSupportService {
                 searchDataByArtefact.getOrDefault(artefact.getArtefactId(), List.of())
             ))
             .toList();
+    }
+
+    /**
+     * Retrieve all artefacts, optionally filtered by last received date.
+     *
+     * @param lastReceivedDateFrom Only include artefacts last received on or after this date (inclusive).
+     *                             Ignored if null.
+     * @param lastReceivedDateTo Only include artefacts last received on or before this date (inclusive).
+     *                           Ignored if null.
+     * @return The matching artefacts.
+     */
+    public List<Artefact> getAllArtefacts(LocalDate lastReceivedDateFrom, LocalDate lastReceivedDateTo) {
+        if (lastReceivedDateFrom != null && lastReceivedDateTo != null
+            && lastReceivedDateFrom.isAfter(lastReceivedDateTo)) {
+            throw new InvalidDateRangeException("lastReceivedDateFrom must not be after lastReceivedDateTo");
+        }
+        return findArtefacts(lastReceivedDateFrom, lastReceivedDateTo);
     }
 
     private List<Artefact> findArtefacts(LocalDate lastReceivedDateFrom, LocalDate lastReceivedDateTo) {
