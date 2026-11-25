@@ -37,6 +37,7 @@ java:
     ENABLE_FLYWAY: true
     RUN_DB_MIGRATION_ON_STARTUP: false
     ENABLE_TESTING_SUPPORT_API: false
+    ENABLE_MIGRATION_SUPPORT_API: false
   autoscaling:
     enabled: false #To be enabled as part of PUB-1692
 blobstorage:
