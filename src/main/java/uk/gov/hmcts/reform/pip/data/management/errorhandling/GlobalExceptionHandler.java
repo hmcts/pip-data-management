@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileForm
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FileSizeLimitException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.FlatFileException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.HeaderValidationException;
+import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.InvalidDateRangeException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.LocationNameValidationException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.NotFoundException;
 import uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions.PayloadValidationException;
@@ -148,6 +149,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(FileFormatNotSupportedException.class)
     public ResponseEntity<ExceptionResponse> handle(FileFormatNotSupportedException ex) {
+        log.error(writeLog("400, " + ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(generateExceptionResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidDateRangeException.class)
+    public ResponseEntity<ExceptionResponse> handle(InvalidDateRangeException ex) {
         log.error(writeLog("400, " + ex.getMessage()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(generateExceptionResponse(ex.getMessage()));
