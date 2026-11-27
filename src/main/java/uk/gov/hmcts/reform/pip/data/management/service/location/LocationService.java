@@ -26,6 +26,7 @@ import uk.gov.hmcts.reform.pip.data.management.helpers.TestingSupportLocationHel
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationWithMetadata;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
@@ -408,4 +409,11 @@ public class LocationService {
         }
         return locationDeletion;
     }
+
+    public LocationWithMetadata getLocationWithMetadata(Integer locationId) {
+        Location location = getLocationById(locationId);
+        LocationMetadata metadata = locationMetadataService.getLocationByIdOrNull(String.valueOf(locationId));
+        return new LocationWithMetadata(location, metadata);
+    }
+
 }

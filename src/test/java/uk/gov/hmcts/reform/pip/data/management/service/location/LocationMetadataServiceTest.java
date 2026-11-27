@@ -191,4 +191,25 @@ class LocationMetadataServiceTest {
 
         verify(locationMetadataRepository, times(1)).save(locationMetadata);
     }
+
+    @Test
+    void testGetLocationByIdOrNullSuccess() {
+        LocationMetadata expectedMetadata = new LocationMetadata();
+        expectedMetadata.setLocationId(123);
+
+        when(locationMetadataRepository.findByLocationId(123)).thenReturn(Optional.of(expectedMetadata));
+
+        LocationMetadata result = locationMetaDataService.getLocationByIdOrNull(LOCATION_ID);
+
+        assertEquals(expectedMetadata, result, LOCATION_METADATA_NOT_FOUND_MESSAGE);
+    }
+
+    @Test
+    void testGetLocationByIdOrNullNotFound() {
+        when(locationMetadataRepository.findByLocationId(123)).thenReturn(Optional.empty());
+
+        LocationMetadata result = locationMetaDataService.getLocationByIdOrNull(LOCATION_ID);
+
+        assertEquals(null, result, "Expected null when no location metadata is found");
+    }
 }

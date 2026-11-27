@@ -23,6 +23,7 @@ import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationReference;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationWithMetadata;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.Artefact;
 import uk.gov.hmcts.reform.pip.data.management.service.AccountManagementService;
 import uk.gov.hmcts.reform.pip.data.management.service.SystemAdminNotificationService;
@@ -46,6 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -81,6 +83,9 @@ class LocationServiceTest {
 
     @InjectMocks
     private LocationService locationService;
+
+    @Mock
+    private LocationMetadataService locationMetadataService;
 
     Location locationFirstExample;
     Location locationSecondExample;
@@ -799,5 +804,45 @@ class LocationServiceTest {
         assertThat(result).contains("Social Security and Child Support");
         assertThat(result).contains("Tribiwnlys Nawdd Cymdeithasol a Chynnal Plant");
     }
+
+    @Test
+    void shouldReturnLocationWithMetadataWhenMetadataExists() {
+        Integer locationId = 1;
+        LocationMetadata metadata = new LocationMetadata();
+
+        when(locationRepository.getLocationByLocationId(locationId))
+            .thenReturn(Optional.of(locationFirstExample));
+        when(locationMetadataService.getLocationByIdOrNull(String.valueOf(locationId)))
+            .thenReturn(metadata);
+
+        LocationWithMetadata result = locationService.getLocationWithMetadata(locationId);
+
+        assertNotNull(result);
+        assertEquals(locationFirstExample, result.getLocation());
+        assertEquals(metadata, result.getMetadata());
+
+        verify(locationRepository).getLocationByLocationId(locationId);
+        verify(locationMetadataService).getLocationByIdOrNull(String.valueOf(locationId));
+    }
+
+    @Test
+    void shouldReturnLocationWithNullMetadataWhenMetadataMissing() {
+        Integer locationId = 1;
+
+        when(locationRepository.getLocationByLocationId(locationId))
+            .thenReturn(Optional.of(locationFirstExample));
+        when(locationMetadataService.getLocationByIdOrNull(String.valueOf(locationId)))
+            .thenReturn(null);
+
+        LocationWithMetadata result = locationService.getLocationWithMetadata(locationId);
+
+        assertNotNull(result);
+        assertEquals(locationFirstExample, result.getLocation());
+        assertNull(result.getMetadata());
+
+        verify(locationRepository).getLocationByLocationId(locationId);
+        verify(locationMetadataService).getLocationByIdOrNull(String.valueOf(locationId));
+    }
+
 }
 

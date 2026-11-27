@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.http.MediaType;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationMetadata;
 import uk.gov.hmcts.reform.pip.model.account.PiUser;
 
 import java.io.InputStream;
@@ -19,14 +21,19 @@ import java.util.function.BiPredicate;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.hmcts.reform.pip.model.account.Roles.SYSTEM_ADMIN;
+
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LocationIntegrationTestBase extends IntegrationTestBase {
     protected static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private static final String UPLOAD_API = "/locations/upload";
     private static final String LOCATION_LIST = "locationList";
+    private static final String LOCATION_METADATA_URL = "/location-metadata";
+    protected static final String CAUTION_MESSAGE = "Cause message";
+    protected static final String NO_LIST_MESSAGE = "No List Message";
 
     public static final String REQUESTER_ID_HEADER = "x-requester-id";
     private static final String SYSTEM_ADMIN_ID = UUID.randomUUID().toString();
@@ -66,5 +73,18 @@ public class LocationIntegrationTestBase extends IntegrationTestBase {
             return Arrays.asList(
                 OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(), Location[].class));
         }
+    }
+
+    protected void createLocationMetadata(Integer locationId) throws Exception {
+        LocationMetadata metadata = new LocationMetadata();
+        metadata.setLocationId(locationId);
+        metadata.setCautionMessage(CAUTION_MESSAGE);
+        metadata.setNoListMessage(NO_LIST_MESSAGE);
+
+        mockMvc.perform(post(LOCATION_METADATA_URL)
+                            .header(REQUESTER_ID_HEADER, SYSTEM_ADMIN_ID)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(OBJECT_MAPPER.writeValueAsString(metadata)))
+            .andExpect(status().isCreated());
     }
 }

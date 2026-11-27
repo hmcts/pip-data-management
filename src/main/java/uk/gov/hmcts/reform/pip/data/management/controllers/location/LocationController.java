@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.hmcts.reform.pip.data.management.config.PublicationConfiguration;
 import uk.gov.hmcts.reform.pip.data.management.models.location.Location;
+import uk.gov.hmcts.reform.pip.data.management.models.location.LocationWithMetadata;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationDeletion;
 import uk.gov.hmcts.reform.pip.data.management.models.location.LocationViews;
 import uk.gov.hmcts.reform.pip.data.management.service.location.LocationService;
@@ -137,5 +138,15 @@ public class LocationController {
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
             .body(locationService.downloadLocations());
+    }
+
+    @ApiResponse(responseCode = OK_CODE, description = "Location with optional metadata found")
+    @ApiResponse(responseCode = NOT_FOUND_CODE, description = "No Location found with the id {locationId}")
+    @Operation(summary = "Gets location by id with optional metadata")
+    @GetMapping("/{locationId}/with-metadata")
+    public ResponseEntity<LocationWithMetadata> getLocationByIdWithMetadata(
+        @Parameter(description = "The Location Id to retrieve", required = true)
+        @PathVariable Integer locationId) {
+        return ResponseEntity.ok(locationService.getLocationWithMetadata(locationId));
     }
 }
