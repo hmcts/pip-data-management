@@ -194,4 +194,8 @@ logging:
 testingSupport:
   enableApi: ${ENABLE_TESTING_SUPPORT_API:true}
 
+# Used to conditionally enable migration support API
+migrationSupport:
+  enableApi: ${ENABLE_MIGRATION_SUPPORT_API:true}
+
 
