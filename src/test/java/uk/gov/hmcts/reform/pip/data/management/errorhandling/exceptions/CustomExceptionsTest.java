@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CustomExceptionsTest {
@@ -121,5 +122,12 @@ class CustomExceptionsTest {
         FileFormatNotSupportedException fileFormatNotSupportedException
             = new FileFormatNotSupportedException(TEST_MESSAGE);
         assertEquals(TEST_MESSAGE, fileFormatNotSupportedException.getMessage(), ASSERTION_MESSAGE);
+    }
+
+    @Test
+    void testCreationOfPayloadValidationException() {
+        PayloadValidationException exception = new PayloadValidationException(TEST_MESSAGE, true);
+        assertEquals(TEST_MESSAGE, exception.getMessage(), ASSERTION_MESSAGE);
+        assertTrue(exception.isUiError());
     }
 }

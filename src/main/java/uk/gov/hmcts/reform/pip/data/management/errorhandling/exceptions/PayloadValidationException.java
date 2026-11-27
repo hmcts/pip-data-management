@@ -1,11 +1,16 @@
 package uk.gov.hmcts.reform.pip.data.management.errorhandling.exceptions;
 
+import lombok.Getter;
+
 /**
  * Exception that captures when an payload is not validated against the criteria.
  */
+@Getter
 public class PayloadValidationException extends RuntimeException {
 
     private static final long serialVersionUID = -7073660693904036960L;
+
+    private boolean uiError;
 
     /**
      * Constructor for the Exception.
@@ -13,5 +18,10 @@ public class PayloadValidationException extends RuntimeException {
      */
     public PayloadValidationException(String message) {
         super(message);
+    }
+
+    public PayloadValidationException(String message, boolean uiError) {
+        super(message);
+        this.uiError = uiError;
     }
 }

@@ -336,7 +336,7 @@ class ValidationServiceTest extends IntegrationBasicTestBase {
             headerGroup.setListType(listType);
             String text = new String(jsonInput.readAllBytes(), StandardCharsets.UTF_8);
 
-            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup, false),
+            assertDoesNotThrow(() -> validationService.validateBody(text, headerGroup, false, true),
                                String.format("Valid %s marked as invalid", listType));
         }
     }
