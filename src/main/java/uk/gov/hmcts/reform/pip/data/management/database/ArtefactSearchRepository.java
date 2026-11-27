@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import uk.gov.hmcts.reform.pip.data.management.models.publication.ArtefactSearch;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,6 +15,8 @@ import java.util.UUID;
 public interface ArtefactSearchRepository extends JpaRepository<ArtefactSearch, UUID> {
 
     List<ArtefactSearch> findByArtefactId(UUID artefactId);
+
+    List<ArtefactSearch> findByArtefactIdIn(Collection<UUID> artefactIds);
 
     void deleteByArtefactId(UUID artefactId);
 
