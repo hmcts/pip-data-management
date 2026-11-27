@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pip.data.management.database;
 
 import jakarta.persistence.LockModeType;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
@@ -123,6 +124,14 @@ public interface ArtefactRepository extends JpaRepository<Artefact, Long> {
                                                   @Param(LOCATION_ID_PARAM) String locationId);
 
     List<Artefact> findAllByLocationIdIn(List<String> locationId);
+
+    List<Artefact> findAllByLastReceivedDateGreaterThanEqual(LocalDateTime from, Sort sort);
+
+    List<Artefact> findAllByLastReceivedDateLessThan(LocalDateTime to, Sort sort);
+
+    List<Artefact> findAllByLastReceivedDateGreaterThanEqualAndLastReceivedDateLessThan(LocalDateTime from,
+                                                                                        LocalDateTime to,
+                                                                                        Sort sort);
 
     @Query(value = "SELECT * FROM Artefact "
         + "WHERE DATE(content_date) = :curr_date "
