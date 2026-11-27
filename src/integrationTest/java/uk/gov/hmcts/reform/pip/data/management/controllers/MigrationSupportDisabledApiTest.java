@@ -31,4 +31,10 @@ class MigrationSupportDisabledApiTest extends IntegrationTestBase {
         mockMvc.perform(get("/migration-support/publication"))
             .andExpect(status().isNotFound());
     }
+
+    @Test
+    void testFilesEndpointNotAvailableWhenMigrationSupportDisabled() throws Exception {
+        mockMvc.perform(get("/migration-support/publication/files"))
+            .andExpect(status().isNotFound());
+    }
 }

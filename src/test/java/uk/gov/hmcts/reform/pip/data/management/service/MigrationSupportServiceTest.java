@@ -140,4 +140,22 @@ class MigrationSupportServiceTest {
         assertThat(migrationSupportService.getAllPublications(null, null)).isEmpty();
         verifyNoInteractions(artefactSearchRepository);
     }
+
+    @Test
+    void testGetAllArtefactsDoesNotRetrieveSearchData() {
+        Artefact artefact = artefact();
+        when(artefactRepository.findAllByLastReceivedDateGreaterThanEqualAndLastReceivedDateLessThan(
+            FROM_START_OF_DAY, DAY_AFTER_TO, SORT
+        )).thenReturn(List.of(artefact));
+
+        assertThat(migrationSupportService.getAllArtefacts(FROM, TO)).containsExactly(artefact);
+        verifyNoInteractions(artefactSearchRepository);
+    }
+
+    @Test
+    void testGetAllArtefactsFromAfterToThrowsException() {
+        assertThatThrownBy(() -> migrationSupportService.getAllArtefacts(TO, FROM))
+            .isInstanceOf(InvalidDateRangeException.class);
+        verifyNoInteractions(artefactRepository);
+    }
 }
